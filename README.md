@@ -1,6 +1,6 @@
 # ros2_rm_robot
 该功能包的主要作用为提供机械臂的ROS2支持，以下为使用环境。
-* 当前支持的机械臂有rm_65系列、rm_75系列、rm_eco65系列、rm_63系列，详细可参考网址（http://www.realman-robotics.com/）。
+* 当前支持的机械臂有rm_65系列、rm_75系列、rm_eco65系列、rm_63系列，详细可参考网址[RealMan robots]（http://www.realman-robotics.com/）。
 * 基于的Ubuntu版本为22.04。
 * ROS2版本为humble。
 
@@ -18,14 +18,14 @@
 ```
 sudo bash ros2_install.sh
 ```
-如果不想使用脚本安装也可以参考网址（https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html）进行安装。
+如果不想使用脚本安装也可以参考网址[ros2_install]（https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html）。
 ### 1.2安装Moveit2
 ----
 我们提供了ROS2的安装脚本moveit2_install.sh，该脚本位于rm_install功能包中的scripts文件夹下，在实际使用时我们需要移动到该路径执行如下指令。
 ```
 sudo bash moveit2_install.sh
 ```
-如果不想使用脚本安装也可以参考网址（https://moveit.ros.org/install-moveit2/binary/）进行安装。
+如果不想使用脚本安装也可以参考网址[moveit2_install]（https://moveit.ros.org/install-moveit2/binary/）进行安装。
 ### 1.3配置功能包环境
 ----
 该脚本位于rm_driver功能包中的lib文件夹下，在实际使用时我们需要移动到该路径执行如下指令。
