@@ -34,7 +34,7 @@ sudo bash lib_install.sh
 ```
 ### 1.4编译
 ----
-以上执行成功后，可以执行如下指令进行功能包编译，首先需要构建工作空间，并将功能包文件导入工作空间下的src文件夹下,之后使用colcon build指令进行编译。
+以上执行成功后，可以执行如下指令进行功能包编译，首先需要构建工作空间，并将功能包文件导入工作空间下的src文件夹下，之后使用colcon build指令进行编译。
 ```
 mkdir -p ~/ros2_ws/src
 cp -r ros2_rm_robot ~/ros2_ws/src
