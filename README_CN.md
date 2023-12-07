@@ -55,7 +55,7 @@ colocn build
 5.	启动([rm_bringup](http://www.realman-robotics.com/))
 * 该功能包为机械臂的节点启动功能包，其作用为快速启动多节点复合的机械臂功能。
 6.	模型描述([rm_description](http://www.realman-robotics.com/))
-* 该功能包为机械臂模型描述功能包，其作用为提供机械臂模型文件和加载节点，并未其他功能包提供机械臂关节间的坐标变换关系。
+* 该功能包为机械臂模型描述功能包，其作用为提供机械臂模型文件和模型加载节点，并为其他功能包提供机械臂关节间的坐标变换关系。
 7.	ROS消息接口([rm_ros_interfaces](http://www.realman-robotics.com/))
 * 该功能包为机械臂的消息文件功能包，其作用为提供机械臂适配ROS2的所有控制消息和状态消息。
 8.	Moveit2配置([rm_moveit2_config](http://www.realman-robotics.com/))
