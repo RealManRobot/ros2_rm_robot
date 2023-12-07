@@ -1,6 +1,6 @@
 # ros2_rm_robot
 该功能包的主要作用为提供机械臂的ROS2支持，以下为使用环境。
-* 当前支持的机械臂有rm_65系列、rm_75系列、rm_eco65系列、rm_63系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
+* 当前支持的机械臂有RM65I系列、RM75I系列、RMECO65I系列、RML63I系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
 * 基于的Ubuntu版本为22.04。
 * ROS2版本为humble。
 
