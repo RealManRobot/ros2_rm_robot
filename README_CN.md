@@ -49,15 +49,17 @@ colocn build
 ---
 功能包简介（介绍功能包的信息+软连接跳转到功能包）
 1.	安装与环境配置([rm_install](http://www.realman-robotics.com/))
-2.	硬件驱动([rm_driver](http://www.realman-robotics.com/))
-3.	启动([rm_bringup](http://www.realman-robotics.com/))
-4.	模型描述([rm_description](http://www.realman-robotics.com/))
-5.	ROS消息接口([rm_ros_interfaces](http://www.realman-robotics.com/))
-6.	Moveit2配置([rm_moveit_config](http://www.realman-robotics.com/))
-7.	Moveit2与硬件驱动通信连接([rm_config](http://www.realman-robotics.com/))
-8.	Gazebo仿真机械臂控制([rm_gazebo](http://www.realman-robotics.com/))
-9.	使用案例([rm_examples](http://www.realman-robotics.com/))
-10.	技术文档([rm_docs](http://www.realman-robotics.com/))
+   
+3.	硬件驱动([rm_driver](http://www.realman-robotics.com/))
+   机械臂的底层驱动程序，订阅和发布各topic数据，更新RVIZ内机械臂各关节角度。
+5.	启动([rm_bringup](http://www.realman-robotics.com/))
+6.	模型描述([rm_description](http://www.realman-robotics.com/))
+7.	ROS消息接口([rm_ros_interfaces](http://www.realman-robotics.com/))
+8.	Moveit2配置([rm_moveit_config](http://www.realman-robotics.com/))
+9.	Moveit2与硬件驱动通信连接([rm_config](http://www.realman-robotics.com/))
+10.	Gazebo仿真机械臂控制([rm_gazebo](http://www.realman-robotics.com/))
+11.	使用案例([rm_examples](http://www.realman-robotics.com/))
+12.	技术文档([rm_docs](http://www.realman-robotics.com/))
 
 以上为当前的十个功能包，每个功能包都有其独特的作用，详情请参考rm_doc功能包下的doc文件夹中的文档进行详细了解。
 ### 2.1运行虚拟机械臂
