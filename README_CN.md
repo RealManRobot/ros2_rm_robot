@@ -1,6 +1,7 @@
 # ros2_rm_robot
 该功能包的主要作用为提供机械臂的ROS2支持，以下为使用环境。
-* 当前支持的机械臂有RM65I系列、RM75I系列、RMECO65I系列、RML63I系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
+* 当前支持的机械臂有RM65系列、RM75系列、RMECO65系列、RML63系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
+* 支持的机械臂控制器版本1.4以上。
 * 基于的Ubuntu版本为22.04。
 * ROS2版本为humble。
 
@@ -46,7 +47,7 @@ colocn build
 
 ## 2.功能运行
 ---
-功能包简介
+功能包简介（介绍功能包的信息+软连接跳转到功能包）
 1.	安装与环境配置(rm_install)
 2.	硬件驱动(rm_driver)
 3.	启动(rm_bringup)
@@ -83,4 +84,5 @@ ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ros2 launch rm_bringup rm_65_bringup.launch.py
 ```
 启动成功后即可使用moveit2进行真实机械臂的控制。
+### 安全提示
 
