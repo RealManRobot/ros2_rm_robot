@@ -50,25 +50,25 @@ colocn build
 ## 2.功能运行
 ---
 功能包简介
-1.	安装与环境配置([rm_install](http://www.realman-robotics.com/))
+1.	安装与环境配置([rm_install](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_install))
 * 该功能包为机械臂使用辅助功能包，主要作用为介绍功能包使用环境安装与搭建方式，功能包的依赖库安装和功能包编译方法。
-3.	硬件驱动([rm_driver](http://www.realman-robotics.com/))
+3.	硬件驱动([rm_driver](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_driver))
 * 该功能包为机械臂的ROS2底层驱动功能包，其作用为订阅和发布机械臂底层相关话题信息。
-5.	启动([rm_bringup](http://www.realman-robotics.com/))
+5.	启动([rm_bringup](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_bringup))
 * 该功能包为机械臂的节点启动功能包，其作用为快速启动多节点复合的机械臂功能。
-6.	模型描述([rm_description](http://www.realman-robotics.com/))
+6.	模型描述([rm_description](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_description))
 * 该功能包为机械臂模型描述功能包，其作用为提供机械臂模型文件和模型加载节点，并为其他功能包提供机械臂关节间的坐标变换关系。
-7.	ROS消息接口([rm_ros_interfaces](http://www.realman-robotics.com/))
+7.	ROS消息接口([rm_ros_interfaces](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_ros_interfaces))
 * 该功能包为机械臂的消息文件功能包，其作用为提供机械臂适配ROS2的所有控制消息和状态消息。
-8.	Moveit2配置([rm_moveit2_config](http://www.realman-robotics.com/))
+8.	Moveit2配置([rm_moveit2_config](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_moveit2_config))
 * 该功能包为机械臂的moveit2适配功能包，其作用为适配和实现各系列机械臂的moveit2规划控制功能，主要包括虚拟机械臂控制和真实机械臂控制两部分控制功能。
-9.	Moveit2与硬件驱动通信连接([rm_config](http://www.realman-robotics.com/))
+9.	Moveit2与硬件驱动通信连接([rm_config](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_control))
 * 该功能包为底层驱动功能包（rm_driver）和moveit2功能包（rm_moveit2_config）之间的通信连接功能包，主要功能为将moveit2的规划点进行细分然后通过透传的形式传递给底层驱动功能包控制机械臂运动。
-10. Gazebo仿真机械臂控制([rm_gazebo](http://www.realman-robotics.com/))
+10. Gazebo仿真机械臂控制([rm_gazebo](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_gazebo))
 * 该功能包为gazebo仿真机械臂功能包，主要功能为在gazebo仿真环境中显示机械臂模型，可通过moveit2对仿真的机械臂进行规划控制。
-11. 使用案例([rm_examples](http://www.realman-robotics.com/))
+11. 使用案例([rm_examples](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_example))
 * 该功能包为机械臂的一些使用案例，主要功能为实现机械臂的一些基本的控制功能和运动功能的使用案例。
-12. 技术文档([rm_docs](http://www.realman-robotics.com/))
+12. 技术文档([rm_docs](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_doc))
 * 该功能包为介绍文档的功能包，其主要包括为对整体的功能包内容和使用方式进行总体介绍的文档和对每个功能包中的内容和使用方式进行详细介绍的文档。
 
 以上为当前的十个功能包，每个功能包都有其独特的作用，详情请参考rm_doc功能包下的doc文件夹中的文档进行详细了解。
