@@ -22,7 +22,7 @@ sudo bash ros2_install.sh
 如果不想使用脚本安装也可以参考网址 [ROS2_INSTALL](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)。
 ### 安装Moveit2
 ----
-我们提供了ROS2的安装脚本moveit2_install.sh，该脚本位于rm_install功能包中的scripts文件夹下，在实际使用时我们需要移动到该路径执行如下指令。
+我们提供了Moveit2的安装脚本moveit2_install.sh，该脚本位于rm_install功能包中的scripts文件夹下，在实际使用时我们需要移动到该路径执行如下指令。
 ```
 sudo bash moveit2_install.sh
 ```
@@ -65,11 +65,11 @@ colocn build
 9.	Moveit2与硬件驱动通信连接([rm_config](http://www.realman-robotics.com/))
 * 该功能包为底层驱动功能包（rm_driver）和moveit2功能包（rm_moveit2_config）之间的通信连接功能包，主要功能为将moveit2的规划点进行细分然后通过透传的形式传递给底层驱动功能包控制机械臂运动。
 10. Gazebo仿真机械臂控制([rm_gazebo](http://www.realman-robotics.com/))
-* 该功能包为gazebo仿真机械臂功能包，主要功能为在gazebo仿真环境中显示机械臂模型，可通过moveit2对方针的机械臂进行规划控制。
+* 该功能包为gazebo仿真机械臂功能包，主要功能为在gazebo仿真环境中显示机械臂模型，可通过moveit2对仿真的机械臂进行规划控制。
 11. 使用案例([rm_examples](http://www.realman-robotics.com/))
 * 该功能包为机械臂的一些使用案例，主要功能为实现机械臂的一些基本的控制功能和运动功能的使用案例。
 12. 技术文档([rm_docs](http://www.realman-robotics.com/))
-* 该功能包为介绍文档的功能包，其主要包括为对整体的功能包内容和使用方式进行总体介绍的文档和对每个功能包中的内容和使用方式进行介绍的详细介绍文档。
+* 该功能包为介绍文档的功能包，其主要包括为对整体的功能包内容和使用方式进行总体介绍的文档和对每个功能包中的内容和使用方式进行详细介绍的文档。
 
 以上为当前的十个功能包，每个功能包都有其独特的作用，详情请参考rm_doc功能包下的doc文件夹中的文档进行详细了解。
 ### 2.1运行虚拟机械臂
@@ -79,7 +79,7 @@ colocn build
 source ~/ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_gazebo.launch.py
 ```
-<arm_type>需要使用65、75、eco65、63字符进行代替，如使用rm_65机械臂时，命令如下。
+<arm_type>需要使用65、75、eco65、63字符进行代替，如使用RM65机械臂时，命令如下。
 ```
 ros2 launch rm_bringup rm_65_gazebo.launch.py
 ```
@@ -91,7 +91,7 @@ ros2 launch rm_bringup rm_65_gazebo.launch.py
 source ~/ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ```
-<arm_type>需要使用65、75、eco65、63字符进行代替，如使用rm_65机械臂时，命令如下。
+<arm_type>需要使用65、75、eco65、63字符进行代替，如使用RM65机械臂时，命令如下。
 ```
 ros2 launch rm_bringup rm_65_bringup.launch.py
 ```
@@ -100,7 +100,6 @@ ros2 launch rm_bringup rm_65_bringup.launch.py
 ----
 在使用机械臂时，为保证使用者安全，请参考如下操作规范。
 * 每次使用前检查机械臂的安装情况，包括固定螺丝是否松动，机械臂是否存在震动、晃动的情况。
-* 机械臂在运行过程吗，人不可处于机械臂落下或工作范围内，也不可将其他物体放到机械臂动作的安全范围内。
-* 在机械臂运行过程中要注意机械臂运转是否异常，如果有异响或滑动不顺，应立即停止进行检查。
+* 机械臂在运行过程中，人不可处于机械臂落下或工作范围内，也不可将其他物体放到机械臂动作的安全范围内。
 * 在不使用机械臂时，应将机械臂置于安全位置，防止震动时机械臂跌落而损坏或砸伤其他物体。
 * 在不使用机械臂时应及时断开机械臂电源。
