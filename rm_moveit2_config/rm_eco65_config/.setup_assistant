@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: rm_eco65_description
+    relative_path: urdf/rm_eco65.urdf.xacro
+  srdf:
+    relative_path: config/rm_eco65_description.srdf
+  package_settings:
+    author_name: Kaola
+    author_email: Kaola@qq.com
+    generated_timestamp: 1699967197
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
