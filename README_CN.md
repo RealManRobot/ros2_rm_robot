@@ -1,3 +1,5 @@
+当前支持的语言：[中文简体](https://github.com/kaola-zero/ros2_rm_robot/blob/main/README_CN.md)|
+[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/README.md)。
 # ros2_rm_robot
 该功能包的主要作用为提供机械臂的ROS2支持，以下为使用环境。
 * 当前支持的机械臂有RM65系列、RM75系列、ECO65系列、RML63系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
