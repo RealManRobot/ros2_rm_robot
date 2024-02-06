@@ -1,4 +1,4 @@
-[![English](https://badgen.net/badge/⭐/Gitee/blue)]([https://gitee.com/doocs/md](https://github.com/kaola-zero/ros2_rm_robot/edit/main/README.md))
+[![English](https://badgen.net/badge/⭐/Gitee/blue)](https://github.com/kaola-zero/ros2_rm_robot/edit/main/README.md)
 # ros2_rm_robot
 
 The package is mainly used for providing ROS2 support for the robotic arm, and the following is the use environment.
@@ -65,9 +65,9 @@ After the above execution is successful, execute the following commands to compi
 mkdir -p ~/ros2_ws/src
 cp -r ros2_rm_robot ~/ros2_ws/src
 cd ~/ros2_ws
-colocn build --packages-select rm_ros_interfaces
+colcon build --packages-select rm_ros_interfaces
 source ./install/setup.bash
-colocn build
+colcon build
 ```
 
 After the compilation is completed, the package can be run.
