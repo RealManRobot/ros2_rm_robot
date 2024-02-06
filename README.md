@@ -13,17 +13,15 @@ The package is mainly used for providing ROS2 support for the robotic arm, and t
 The following is the installation and use tutorial of the package.
 
 ## 1\. Build the environment
-
 ---
-
 Before using the package, we first need to do the following operations.
 
-* 1.[Install ROS2](#Install ROS2)
-* 2.[Install Moveit2](#Install Moveit2)
-* 3.[Configure the package environment](#Configure the package environment)
+* 1.[Install ROS2](#Install_ROS2)
+* 2.[Install Moveit2](#Install_Moveit2)
+* 3.[Configure the package environment](#Configure_the_package_environment)
 * 4.[Compile](#Compile)
 
-### Install ROS2
+### Install_ROS2
 
 ----
 
@@ -35,7 +33,7 @@ sudo bash ros2_install.sh
 
 If you do not want to use the script installation, you can also refer to the website [ROS2_INSTALL](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html).
 
-### Install Moveit2
+### Install_Moveit2
 
 ----
 
@@ -47,7 +45,7 @@ sudo bash moveit2_install.sh
 
 If you do not want to use the script installation, you can also refer to the website [Moveit2_INSTALL](https://moveit.ros.org/install-moveit2/binary/).
 
-### Configure the package environment
+### Configure_the_package_environment
 
 ----
 
