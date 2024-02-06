@@ -18,10 +18,10 @@ The following is the installation and use tutorial of the package.
 
 Before using the package, we first need to do the following operations.
 
-* 1.[Install ROS2](#InstallROS2)
-* 2.[Install Moveit2](#InstallMoveit2)
-* 3.[Configure the package environment]
-* 4.[Compile]
+* 1.[Install ROS2](#Install ROS2)
+* 2.[Install Moveit2](#Install Moveit2)
+* 3.[Configure the package environment](#Configure the package environment)
+* 4.[Compile](#Compile)
 
 ### Install ROS2
 
