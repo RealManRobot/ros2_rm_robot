@@ -1,4 +1,4 @@
-[![English](https://badgen.net/badge/⭐/Gitee/blue)](https://github.com/kaola-zero/ros2_rm_robot/edit/main/README.md)
+[中文简体](https://github.com/kaola-zero/ros2_rm_robot/blob/main/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/README.md)
 # ros2_rm_robot
 
 The package is mainly used for providing ROS2 support for the robotic arm, and the following is the use environment.
