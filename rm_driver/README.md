@@ -37,7 +37,7 @@ rm_driver package is very important in the ROS2 robotic arm package. This packag
 1.	Package use.
 2.	Package architecture description.
 3.	Package topic description.
-Through the introduction of the three parts, it can help you:
+* Through the introduction of the three parts, it can help you:
 1.	Understand the package use.
 2.	Familiar with the file structure and function of the package.
 3.	Familiar with the topic related to the package for easy development and use.
