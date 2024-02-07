@@ -87,25 +87,25 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 当前rm_driver功能包的文件构成如下。
 
 ```
-├── CMakeLists.txt                #编译规则文件
-├── config                        #配置文件夹
+├── CMakeLists.txt                 #编译规则文件
+├── config                         #配置文件夹
 │   ├── rm_63_config.yaml          #63配置文件
 │   ├── rm_65_config.yaml          #65配置文件
 │   ├── rm_75_config.yaml          #75配置文件
 │   └── rm_eco65_config.yaml       #eco65配置文件
-├── include                       #依赖头文件文件夹
+├── include                        #依赖头文件文件夹
 │   └── rm_driver
-│       ├── cJSON.h              #API头文件
+│       ├── cJSON.h                #API头文件
 │       ├── constant_define.h      #API头文件
-│       ├── rman_int.h            #API头文件
-│       ├── rm_base_global.h      #API头文件
-│       ├── rm_base.h            #API头文件
-│       ├── rm_define.h           #API头文件
+│       ├── rman_int.h             #API头文件
+│       ├── rm_base_global.h       #API头文件
+│       ├── rm_base.h              #API头文件
+│       ├── rm_define.h            #API头文件
 │       ├── rm_driver.h            #rm_driver.cpp头文件
-│       ├── rm_praser_data.h      #API头文件
-│       ├── rm_queue.h           #API头文件
+│       ├── rm_praser_data.h       #API头文件
+│       ├── rm_queue.h             #API头文件
 │       ├── rm_service_global.h    #API头文件
-│       ├── rm_service.h          #API头文件
+│       ├── rm_service.h           #API头文件
 │       └── robot_define.h         #API头文件
 ├── launch
 │   ├── rm_63_driver.launch.py     #63启动文件
@@ -116,10 +116,10 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── libRM_Service.so -> libRM_Service.so.1.0.0        #API库文件
 │   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      #API库文件
 │   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    #API库文件
-│   └── libRM_Service.so.1.0.0                          #API库文件
-├── package.xml                                      #依赖声明文件
+│   └── libRM_Service.so.1.0.0                            #API库文件
+├── package.xml                                           #依赖声明文件
 └── src
-    └── rm_driver.cpp                                  #驱动代码源文件
+    └── rm_driver.cpp                                     #驱动代码源文件
 ```
 
 ## rm_driver话题说明
