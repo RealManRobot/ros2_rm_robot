@@ -74,7 +74,7 @@ rm_driver:
 * 编译成功后可按如上指令进行功能包启动。
 ## rm_driver功能包架构说明
 ### 功能包文件总览
-* 当前rm_driver功能包的文件构成如下。
+当前rm_driver功能包的文件构成如下。
 
 ```
 ├── CMakeLists.txt                #编译规则文件
