@@ -243,8 +243,7 @@
 | 功能描述 | 笛卡尔空间圆弧运动MOVEC |
 | :---: | :---- |
 | 参数说明 | Movec.msg<br>geometry_msgs/Pose pose_mid：中间位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。<br>geometry_msgs/Pose pose_end：终点位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。<br>uint8 speed：速度百分比例系数，0~100。<br>bool block：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 |
-| 命令示例 | 首先使用movej_p到达指定位置<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:
-  position:<br>    x: 0.274946<br>    y: -0.058786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>w: 0.0<br>speed: 0<br>block: true"<br>使用movec到达指定位置<br>ros2 topic pub --once /rm_driver/movec_cmd rm_ros_interfaces/msg/Movec "pose_mid:<br>  position:<br>    x: 0.324946<br>    y: -0.008786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>pose_end:<br>  position:<br>    x: 0.274946<br>    y: 0.041214<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>speed: 20<br>block: false" |
+| 命令示例 | 首先使用movej_p到达指定位置<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:<br>  position:<br>    x: 0.274946<br>    y: -0.058786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>w: 0.0<br>speed: 0<br>block: true"<br>使用movec到达指定位置<br>ros2 topic pub --once /rm_driver/movec_cmd rm_ros_interfaces/msg/Movec "pose_mid:<br>  position:<br>    x: 0.324946<br>    y: -0.008786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>pose_end:<br>  position:<br>    x: 0.274946<br>    y: 0.041214<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>speed: 20<br>block: false" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/movec_result |
 #### 关节角度CANFD透传
@@ -275,14 +274,6 @@
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/move_stop_result |
 ### 控制器配置
-#### 获取控制器版本
-| 功能描述 | 获取控制器版本 |
-| :---: | :---- |
-| 参数说明 | Armsoftversion.msg<br>string planversion：读取到的用户接口内核版本号。<br>string ctrlversion：实时内核版本号。<br>string kernal1：实时内核子核心 1 版本号。<br>string kernal2：实时内核子核心 2 版本号。<br>string productversion：机械臂型号。 |
-| 命令示例 | ros2 topic pub /rm_driver/get_arm_software_version_cmd std_msgs/msg/Empty "{}" |
-| 返回值 | 成功返回：版本信息；失败返回：driver终端返回错误码。 |
-| 返回查询示例 | ros2 topic echo /rm_driver/get_arm_software_version_result |
-### 末端手爪控制（选配）
 #### 获取控制器版本
 | 功能描述 | 获取控制器版本 |
 | :---: | :---- |
@@ -395,7 +386,7 @@ block: true" |
 #### 升降机构位置闭环控制
 | 功能描述 | 升降机构位置闭环控制 |
 | :---: | :---- |
-| 参数说明 | Liftheight.msg<br>uint16 height：目标高度，单位 mm，范围：0~2600。<br>uint16 speed：速度百分比，1~100。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 参数说明 | Liftheight.msg<br>uint16 height：目标高度，单位 mm，范围：0-2600。<br>uint16 speed：速度百分比，1-100。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/set_lift_speed_cmd rm_ros_interfaces/msg/Liftspeed "speed: 100" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_lift_height_result |
@@ -451,52 +442,58 @@ block: true" |
 | 返回值 | 成功设置信息；失败返回：driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_realtime_push_result |
 #### UDP机械臂状态主动上报
-六维力
+* 六维力
 | 功能描述 | 六维力 |
 | :---: | :---- |
 | 参数说明 | Sixforce.msg<br>float32 force_fx：沿x轴方向受力大小。<br>float32 force_fy：沿y轴方向受力大小。<br>float32 force_fz：沿z轴方向受力大小。<br>float32 force_mx：沿x轴方向转动受力大小。<br>float32 force_my：沿y轴方向转动受力大小。<br>float32 force_mz：沿z轴方向转动受力大小。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_six_force |
-一维力
+
+* 一维力
+
 | 功能描述 | 一维力 |
 | :---: | :---- |
 | 参数说明 | Sixforce.msg<br>float32 force_fx：沿x轴方向受力大小。<br>float32 force_fy：沿y轴方向受力大小。<br>float32 force_fz：沿z轴方向受力大小。（仅该数值有效）<br>float32 force_mx：沿x轴方向转动受力大小。<br>float32 force_my：沿y轴方向转动受力大小。<br>float32 force_mz：沿z轴方向转动受力大小。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_one_force |
-机械臂错误
+
+* 机械臂错误
+
 | 功能描述 | 机械臂错误 |
 | :---: | :---- |
 | 参数说明 | std_msgs::msg::UInt16<br>uint16 data：机械臂报错信息。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_arm_err |
-系统错误
+
+* 系统错误
+
 | 功能描述 | 系统错误 |
 | :---: | :---- |
 | 参数说明 | std_msgs::msg::UInt16<br>uint16 data：系统报错信息。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_sys_err |
-关节错误
+* 关节错误
 | 功能描述 | 关节错误 |
 | :---: | :---- |
 | 参数说明 | Jointerrorcode.msg<br>uint16[] joint_error：每个关节报错信息。<br>Uint8 dof：机械臂自由度信息。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_joint_error_code |
-机械臂弧度数据
+* 机械臂弧度数据
 | 功能描述 | 机械臂弧度数据 |
 | :---: | :---- |
 | 参数说明 | sensor_msgs::msg::JointState<br>	builtin_interfaces/Time stamp<br>		int32 sec：时间信息，秒。<br>		uint32 nanosec：时间信息，纳秒。<br>	string frame_id：坐标系名称。<br>string[] name：关节名称。<br>float64[] position：关节弧度信息。<br>float64[] velocity：关节速度信息。（暂未使用）<br>float64[] effort：关节受力信息。（暂未使用） |
 | 查询示例 | ros2 topic echo /joint_states |
-位姿信息
+* 位姿信息
 | 功能描述 | 位姿信息 |
 | :---: | :---- |
 | 参数说明 | geometry_msgs::msg::Pose<br>Point position：机械臂当前坐标信息。<br>	float64 x<br>	float64 y<br>	float64 z<br>Quaternion orientation：机械臂当前姿态信息。<br>	float64 x 0<br>	float64 y 0<br>	float64 z 0<br>	float64 w 1 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_arm_position |
-当前六维力传感器系统外受力数据
+* 当前六维力传感器系统外受力数据
 | 功能描述 | 当前六维力传感器系统外受力数据 |
 | :---: | :---- |
 | 参数说明 | Sixforce.msg<br>float32 force_fx：当前传感器沿x轴方向受外力大小。<br>float32 force_fy：当前传感器沿y轴方向受外力大小。<br>float32 force_fz：当前传感器沿z轴方向受外力大小。<br>float32 force_mx：当前传感器沿x轴方向转动受外力大小。<br>float32 force_my：当前传感器沿y轴方向转动受外力大小。<br>float32 force_mz：当前传感器沿z轴方向转动受外力大小。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_six_zero_force |
-当前一维力传感器系统外受力数据
+* 当前一维力传感器系统外受力数据
 | 功能描述 | 当前一维力传感器系统外受力数据 |
 | :---: | :---- |
 | 参数说明 | Sixforce.msg<br>float32 force_fx：当前传感器沿x轴方向受外力大小。<br>float32 force_fy：当前传感器沿y轴方向受外力大小。<br>float32 force_fz：当前传感器沿z轴方向受外力大小。（仅该数据有效）<br>float32 force_mx：当前传感器沿x轴方向转动受外力大小。<br>float32 force_my：当前传感器沿y轴方向转动受外力大小。<br>float32 force_mz：当前传感器沿z轴方向转动受外力大小。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_one_zero_force |
-系统外受力数据参考坐标系
+* 系统外受力数据参考坐标系
 | 功能描述 | 系统外受力数据参考坐标系 |
 | :---: | :---- |
 | 参数说明 | std_msgs::msg::UInt16<br>uint16 data：系统外受力数据的坐标系，0 为传感器坐标系 1 为当前工作坐标系 2 为当前工具坐标系。该数据会影响一维力和六维力传感器系统外受力数据的参考坐标系 |
