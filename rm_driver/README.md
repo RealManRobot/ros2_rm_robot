@@ -36,7 +36,7 @@ Revision History:
 rm_driver package is very important in the ROS2 robotic arm package. This package realizes the function of controlling the robotic arm through communication between ROS and the robotic arm. The package will be introduced in detail in the following text through the following aspects:
 * 1.Package use.
 * 2.Package architecture description.
-* 3.Package topic description.
+* 3.Package topic description.  
 Through the introduction of the three parts, it can help you:
 * 1.Understand the package use.
 * 2.Familiar with the file structure and function of the package.
