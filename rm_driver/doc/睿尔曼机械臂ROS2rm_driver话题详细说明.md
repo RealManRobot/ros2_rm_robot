@@ -228,20 +228,8 @@
 #### 关节空间运动
 | 功能描述 | 关节空间运动MOVEJ |
 | :---: | :---- |
-| 参数说明 | Movej.msg
-float32[6] joint：关节角度，单位：弧度。
-uint8 speed：速度百分比例系数，0~100。
-bool block：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 |
-| 命令示例 | 六自由度
-ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0]
-speed: 20
-block: true 
-dof: 6"
-七自由度
-ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0, 0]
-speed: 20
-block: true 
-dof: 7" |
+| 参数说明 | Movej.msg<br>float32[6] joint：关节角度，单位：弧度。<br>uint8 speed：速度百分比例系数，0~100。<br>bool block：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 |
+| 命令示例 | 六自由度<br>ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0]<br>speed: 20<br>block: true <br>dof: 6"<br>七自由度<br>ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0, 0]<br>speed: 20<br>block: true <br>dof: 7" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/movej_result |
 #### 笛卡尔空间直线运动
@@ -254,108 +242,35 @@ dof: 7" |
 #### 笛卡尔空间圆弧运动
 | 功能描述 | 笛卡尔空间圆弧运动MOVEC |
 | :---: | :---- |
-| 参数说明 | Movec.msg
-geometry_msgs/Pose pose_mid：中间位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。
-geometry_msgs/Pose pose_end：终点位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。
-uint8 speed：速度百分比例系数，0~100。
-bool block：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 |
-| 命令示例 | 首先使用movej_p到达指定位置
-ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:
-  position:
-    x: 0.274946
-    y: -0.058786
-    z: 0.299028
-  orientation:
-    x: 0.7071
-    y: -0.7071
-    z: 0.0
-w: 0.0
-speed: 0
-block: true"
-使用movec到达指定位置
-ros2 topic pub --once /rm_driver/movec_cmd rm_ros_interfaces/msg/Movec "pose_mid:
-  position:
-    x: 0.324946
-    y: -0.008786
-    z: 0.299028
-  orientation:
-    x: 0.7071
-    y: -0.7071
-    z: 0.0
-    w: 0.0
-pose_end:
-  position:
-    x: 0.274946
-    y: 0.041214
-    z: 0.299028
-  orientation:
-    x: 0.7071
-    y: -0.7071
-    z: 0.0
-    w: 0.0
-speed: 20
-block: false" |
+| 参数说明 | Movec.msg<br>geometry_msgs/Pose pose_mid：中间位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。<br>geometry_msgs/Pose pose_end：终点位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。<br>uint8 speed：速度百分比例系数，0~100。<br>bool block：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 |
+| 命令示例 | 首先使用movej_p到达指定位置<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:
+  position:<br>    x: 0.274946<br>    y: -0.058786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>w: 0.0<br>speed: 0<br>block: true"<br>使用movec到达指定位置<br>ros2 topic pub --once /rm_driver/movec_cmd rm_ros_interfaces/msg/Movec "pose_mid:<br>  position:<br>    x: 0.324946<br>    y: -0.008786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>pose_end:<br>  position:<br>    x: 0.274946<br>    y: 0.041214<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>speed: 20<br>block: false" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/movec_result |
 #### 关节角度CANFD透传
 | 功能描述 | 关节角度CANFD透传 |
 | :---: | :---- |
-| 参数说明 | Jointpos.msg
-float32[6] joint：关节角度，单位：弧度。
-bool follow：跟随状态，true高跟随，false低跟随，不设置默认高跟随。
-float32 expand：拓展关节，单位：弧度。 |
-| 命令示例 | 透传需要连续发送多个连续的点实现，单纯靠以下命令并不能实现功能，当前moveit2控制使用了角度透传的控制方式。
-ros2 topic pub /rm_driver/movej_canfd_cmd rm_ros_interfaces/msg/Jointpos "joint: [0, 0, 0, 0, 0, 0]
-follow: false
-expand: 0.0
-dof: 6" |
+| 参数说明 | Jointpos.msg<br>float32[6] joint：关节角度，单位：弧度。<br>bool follow：跟随状态，true高跟随，false低跟随，不设置默认高跟随。<br>float32 expand：拓展关节，单位：弧度。 |
+| 命令示例 | 透传需要连续发送多个连续的点实现，单纯靠以下命令并不能实现功能，当前moveit2控制使用了角度透传的控制方式。<br>ros2 topic pub /rm_driver/movej_canfd_cmd rm_ros_interfaces/msg/Jointpos "joint: [0, 0, 0, 0, 0, 0]<br>follow: false<br>expand: 0.0<br>dof: 6" |
 | 返回值 | 成功：无返回值；失败返回：driver终端返回错误码。 |
 	
 #### 位姿CANFD透传
 | 功能描述 | 位姿CANFD透传 |
 | :---: | :---- |
-| 参数说明 | Jointpos.msg
-geometry_msgs/Pose pose：透传位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。
-bool follow：跟随状态，true高跟随，false低跟随，不设置默认高跟随。 |
-| 命令示例 | 需要是大量（10个以上）位置连续 的点，单纯靠以下命令并不能实现功能，以2ms以上的周期持续发布。
-ros2 topic pub /rm_driver/movep_canfd_cmd rm_ros_interfaces/msg/Cartepos "pose:
-  position:
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  orientation:
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-follow: false" |
+| 参数说明 | Jointpos.msg<br>geometry_msgs/Pose pose：透传位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。<br>bool follow：跟随状态，true高跟随，false低跟随，不设置默认高跟随。 |
+| 命令示例 | 需要是大量（10个以上）位置连续 的点，单纯靠以下命令并不能实现功能，以2ms以上的周期持续发布。<br>ros2 topic pub /rm_driver/movep_canfd_cmd rm_ros_interfaces/msg/Cartepos "pose:<br>  position:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>  orientation:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>    w: 1.0<br>follow: false" |
 | 返回值 | 成功：无返回值；失败返回：driver终端返回错误码。 |
 #### 关节空间规划到目标位姿
 | 功能描述 | 关节空间规划到目标位姿MOVEJP |
 | :---: | :---- |
-| 参数说明 | Movejp.msg
-geometry_msgs/Pose pose：目标位姿，x、y、z坐标（float类型，单位：m）+四元数。
-uint8 speed：速度百分比例系数，0~100。
-bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:
-  position:
-    x: -0.317239
-    y: 0.120903
-    z: 0.255765
-  orientation:
-    x: -0.983404
-    y: -0.178432
-    z: 0.032271
-    w: 0.006129
-speed: 20
-block: true" |
+| 参数说明 | Movejp.msg<br>geometry_msgs/Pose pose：目标位姿，x、y、z坐标（float类型，单位：m）+四元数。<br>uint8 speed：速度百分比例系数，0~100。<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:<br>  position:<br>    x: -0.317239<br>    y: 0.120903<br>    z: 0.255765<br>  orientation:<br>    x: -0.983404<br>    y: -0.178432<br>    z: 0.032271<br>    w: 0.006129<br>speed: 20<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/movej_p_result |
 #### 轨迹急停
 | 功能描述 | 运动规划轨迹急停 |
 | :---: | :---- |
-| 参数说明 | ROS官方msg std_msgs::msg::Bool
-bool data：是否轨迹急停true急停，false不急停。 |
+| 参数说明 | ROS官方msg std_msgs::msg::Bool<br>bool data：是否轨迹急停true急停，false不急停。 |
 | 命令示例 | ros2 topic pub /rm_driver/move_stop_cmd std_msgs/msg/Bool "data: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/move_stop_result |
@@ -363,12 +278,7 @@ bool data：是否轨迹急停true急停，false不急停。 |
 #### 获取控制器版本
 | 功能描述 | 获取控制器版本 |
 | :---: | :---- |
-| 参数说明 | Armsoftversion.msg
-string planversion：读取到的用户接口内核版本号。
-string ctrlversion：实时内核版本号。
-string kernal1：实时内核子核心 1 版本号。
-string kernal2：实时内核子核心 2 版本号。
-string productversion：机械臂型号。 |
+| 参数说明 | Armsoftversion.msg<br>string planversion：读取到的用户接口内核版本号。<br>string ctrlversion：实时内核版本号。<br>string kernal1：实时内核子核心 1 版本号。<br>string kernal2：实时内核子核心 2 版本号。<br>string productversion：机械臂型号。 |
 | 命令示例 | ros2 topic pub /rm_driver/get_arm_software_version_cmd std_msgs/msg/Empty "{}" |
 | 返回值 | 成功返回：版本信息；失败返回：driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_arm_software_version_result |
@@ -376,12 +286,7 @@ string productversion：机械臂型号。 |
 #### 获取控制器版本
 | 功能描述 | 获取控制器版本 |
 | :---: | :---- |
-| 参数说明 | Armsoftversion.msg
-string planversion：读取到的用户接口内核版本号。
-string ctrlversion：实时内核版本号。
-string kernal1：实时内核子核心 1 版本号。
-string kernal2：实时内核子核心 2 版本号。
-string productversion：机械臂型号。 |
+| 参数说明 | Armsoftversion.msg<br>string planversion：读取到的用户接口内核版本号。<br>string ctrlversion：实时内核版本号。<br>string kernal1：实时内核子核心 1 版本号。<br>string kernal2：实时内核子核心 2 版本号。<br>string productversion：机械臂型号。 |
 | 命令示例 | ros2 topic pub /rm_driver/get_arm_software_version_cmd std_msgs/msg/Empty "{}" |
 | 返回值 | 成功返回：版本信息；失败返回：driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_arm_software_version_result |
@@ -389,8 +294,7 @@ string productversion：机械臂型号。 |
 #### 设置工具端电源输出
 | 功能描述 | 设置工具端电源输出 |
 | :---: | :---- |
-| 参数说明 | ROS自带消息文件：std_msgs::msg::UInt16
-uint16 data：电源输出类型，范围：0~3   0-0V，1-5V，2-12V，3-24V |
+| 参数说明 | ROS自带消息文件：std_msgs::msg::UInt16<br>uint16 data：电源输出类型，范围：0~3   0-0V，1-5V，2-12V，3-24V |
 | 命令示例 | ros2 topic pub --once /rm_driver/set_tool_voltage_cmd std_msgs/msg/UInt16 "data: 0" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_tool_voltage_result |
@@ -399,59 +303,36 @@ uint16 data：电源输出类型，范围：0~3   0-0V，1-5V，2-12V，3-24V |
 #### 设置夹爪力控夹取
 | 功能描述 | 设置夹爪力控夹取 |
 | :---: | :---- |
-| 参数说明 | Gripperpick.msg
-uint16 speed：1～1000,代表手爪开合速度，无量纲。
-uint16 force：1～1000,代表手爪夹持力，最大1.5kg。
-bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200
-force: 200
-block: true" |
+| 参数说明 | Gripperpick.msg<br>uint16 speed：1～1000,代表手爪开合速度，无量纲。<br>uint16 force：1～1000,代表手爪夹持力，最大1.5kg。<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_gripper_pick_result |
 #### 设置夹爪持续力控夹取
 | 功能描述 | 设置夹爪持续力控夹取 |
 | :---: | :---- |
-| 参数说明 | Gripperpick.msg
-uint16 speed：1～1000,代表手爪开合速度，无量纲。
-uint16 force：1～1000,代表手爪夹持力，最大1.5kg。
-bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_on_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200
-force: 200
-block: true" |
+| 参数说明 | Gripperpick.msg<br>uint16 speed：1～1000,代表手爪开合速度，无量纲。<br>uint16 force：1～1000,代表手爪夹持力，最大1.5kg。<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_on_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_gripper_pick_on_result |
 #### 夹爪到达指定位置
 | 功能描述 | 夹爪到达指定位置 |
 | :---: | :---- |
-| 参数说明 | Gripperset.msg
-uint16 position：手爪目标位置，范围：1～1000,代表手爪开口度：0～70mm
-bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_position_cmd rm_ros_interfaces/msg/Gripperset "position: 500
-block: true" |
+| 参数说明 | Gripperset.msg<br>uint16 position：手爪目标位置，范围：1～1000,代表手爪开口度：0～70mm<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_position_cmd rm_ros_interfaces/msg/Gripperset "position: 500<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_gripper_position_result |
 ### 拖动示教及轨迹复现
 #### 设置力位混合控制
 | 功能描述 | 设置力位混合控制 |
 | :---: | :---- |
-| 参数说明 | Setforceposition.msg
-uint8 sensor: 0-一维力；1-六维力
-uint8 mode: 0-基坐标系力控；1-工具坐标系力控
-uint8 direction: 力控方向；0-沿X轴；1-沿Y轴；2-沿Z轴；3-沿RX姿态方向；4-沿RY姿态方向；5-沿RZ姿态方向
-int16 n: 力的大小，单位N，精确到0.1N
-bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_force_postion_cmd rm_ros_interfaces/msg/Setforceposition "sensor: 1
-mode: 0
-direction: 2
-n: 3
-block: false" |
+| 参数说明 | Setforceposition.msg<br>uint8 sensor: 0-一维力；1-六维力<br>uint8 mode: 0-基坐标系力控；1-工具坐标系力控<br>uint8 direction: 力控方向；0-沿X轴；1-沿Y轴；2-沿Z轴；3-沿RX姿态方向；4-沿RY姿态方向；5-沿RZ姿态方向<br>int16 n: 力的大小，单位N，精确到0.1N<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_force_postion_cmd rm_ros_interfaces/msg/Setforceposition "sensor: 1<br>mode: 0<br>direction: 2<br>n: 3<br>block: false" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_force_postion_result |
 #### 结束力位混合控制
 | 功能描述 | 结束力位混合控制 |
 | :---: | :---- |
-| 参数说明 | std_msgs::msg::Bool
-bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 参数说明 | std_msgs::msg::Bool<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
 | 命令示例 | ros2 topic pub /rm_driver/stop_force_postion_cmd std_msgs/msg/Bool "data: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/clear_force_data_result |
@@ -460,8 +341,7 @@ bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
 #### 清空六维力数据
 | 功能描述 | 清空六维力数据 |
 | :---: | :---- |
-| 参数说明 | std_msgs::msg::Bool
-bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 参数说明 | std_msgs::msg::Bool<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
 | 命令示例 | ros2 topic pub /rm_driver/clear_force_data_cmd std_msgs/msg/Bool "data: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/clear_force_data_result |
@@ -470,19 +350,14 @@ bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
 #### 设置灵巧手手势序号
 | 功能描述 | 设置灵巧手手势序号 |
 | :---: | :---- |
-| 参数说明 | Handposture.msg
-uint16 posture_num：预先保存在灵巧手内的手势序号，范围：1~40。
-bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_hand_posture_cmd rm_ros_interfaces/msg/Handposture "posture_num: 1
-block: true" |
+| 参数说明 | Handposture.msg<br>uint16 posture_num：预先保存在灵巧手内的手势序号，范围：1~40。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_hand_posture_cmd rm_ros_interfaces/msg/Handposture "posture_num: 1<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_hand_posture_result |
 #### 设置灵巧手动作序列
 | 功能描述 | 设置灵巧手动作序列 |
 | :---: | :---- |
-| 参数说明 | Handseq.msg
-uint16 seq_num：预先保存在灵巧手内的序列序号，范围：1~40。
-bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 参数说明 | Handseq.msg<br>uint16 seq_num：预先保存在灵巧手内的序列序号，范围：1~40。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/set_hand_seq_cmd rm_ros_interfaces/msg/Handseq "seq_num: 1
 block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
@@ -490,37 +365,22 @@ block: true" |
 #### 设置灵巧手各自由度角度
 | 功能描述 | 设置灵巧手各自由度角度 |
 | :---: | :---- |
-| 参数说明 | Handangle.msg
-int16[6] hand_angle：手指角度数组，范围：0~1000.另外，-1 代表该自由度不执行任何操作，保持当前状态。
-bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_hand_angle_cmd rm_ros_interfaces/msg/Handangle "hand_angle:
-- 0
-- 0
-- 0
-- 0
-- 0
-- 0
-block: true" |
+| 参数说明 | Handangle.msg<br>int16[6] hand_angle：手指角度数组，范围：0~1000.另外，-1 代表该自由度不执行任何操作，保持当前状态。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_hand_angle_cmd rm_ros_interfaces/msg/Handangle "hand_angle:<br>- 0<br>- 0<br>- 0<br>- 0<br>- 0<br>- 0<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_hand_angle_result |
 #### 设置灵巧手速度
 | 功能描述 | 设置灵巧手速度 |
 | :---: | :---- |
-| 参数说明 | Handspeed.msg
-uint16 hand_speed：手指速度，范围：1~1000。
-bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_hand_speed_cmd rm_ros_interfaces/msg/Handspeed "hand_speed: 200
-block: true" |
+| 参数说明 | Handspeed.msg<br>uint16 hand_speed：手指速度，范围：1~1000。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_hand_speed_cmd rm_ros_interfaces/msg/Handspeed "hand_speed: 200<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_hand_speed_result |
 #### 设置灵巧手力阈值
 | 功能描述 | 设置灵巧手速度 |
 | :---: | :---- |
-| 参数说明 | Handforce.msg
-uint16 hand_force：手指力，范围：1~1000。
-bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_hand_force_cmd rm_ros_interfaces/msg/Handforce "hand_force: 200
-block: true" |
+| 参数说明 | Handforce.msg<br>uint16 hand_force：手指力，范围：1~1000。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_hand_force_cmd rm_ros_interfaces/msg/Handforce "hand_force: 200<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_hand_force_result |
 ### 升降机构
@@ -528,29 +388,21 @@ block: true" |
 #### 升降机构速度开环控制
 | 功能描述 | 升降机构速度开环控制 |
 | :---: | :---- |
-| 参数说明 | Liftspeed.msg
-int16 speed：速度百分比，-100~100，Speed < 0:升降机构向下运动，Speed > 0:升降机构向上运动，Speed = 0:升降机构停止运动。
-bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 参数说明 | Liftspeed.msg<br>int16 speed：速度百分比，-100~100，Speed < 0:升降机构向下运动，Speed > 0:升降机构向上运动，Speed = 0:升降机构停止运动。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
 | 命令示例 | ros2 topic pub /rm_driver/set_lift_speed_cmd rm_ros_interfaces/msg/Liftspeed "speed: 100" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_lift_speed_result |
 #### 升降机构位置闭环控制
 | 功能描述 | 升降机构位置闭环控制 |
 | :---: | :---- |
-| 参数说明 | Liftheight.msg
-uint16 height：目标高度，单位 mm，范围：0~2600。
-uint16 speed：速度百分比，1~100。
-bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 参数说明 | Liftheight.msg<br>uint16 height：目标高度，单位 mm，范围：0~2600。<br>uint16 speed：速度百分比，1~100。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/set_lift_speed_cmd rm_ros_interfaces/msg/Liftspeed "speed: 100" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_lift_height_result |
 #### 获取升降机构状态
 | 功能描述 | 获取升降机构状态 |
 | :---: | :---- |
-| 参数说明 | Liftstate.msg
-int16 height：当前高度。
-int16 current：当前电流。
-uint16 err_flag：驱动错误代码。 |
+| 参数说明 | Liftstate.msg<br>int16 height：当前高度。<br>int16 current：当前电流。<br>uint16 err_flag：驱动错误代码。 |
 | 命令示例 | ros2 topic pub /rm_driver/get_lift_state_cmd std_msgs/msg/Empty "{}" |
 | 返回值 | 成功返回：升降机构当前状态；失败返回：driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_lift_state_result |
@@ -574,73 +426,27 @@ uint16 err_flag：驱动错误代码。 |
 #### 透传力位混合补偿（关节）
 | 功能描述 | 透传力位混合补偿（关节） |
 | :---: | :---- |
-| 参数说明 | Forcepositionmovejoint.msg
-float32[6] joint：目标关节弧度
-uint8 sensor：所使用传感器类型，0-一维力，1-六维力
-uint8 mode：模式，0-沿基坐标系，1-沿工具端坐标系
-int16 dir：力控方向，0~5分别代表X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z方向
-float32 force：力的大小 单位0.1N
-bool follow：是否高跟随，true:高跟随，false：低跟随。
-uint8 dof：机械臂自由度 |
-| 命令示例 | 需要是大量（10个以上）位置连续的点，以2ms以上的周期持续发布。
-ros2 topic pub /rm_driver/force_position_move_joint_cmd rm_ros_interfaces/msg/Forcepositionmovejoint " joint: [0, 0, 0, 0, 0, 0]
-sensor: 0
-mode: 0
-dir: 0
-force: 0.0
-follow: false
-dof: 6 |
+| 参数说明 | Forcepositionmovejoint.msg<br>float32[6] joint：目标关节弧度<br>uint8 sensor：所使用传感器类型，0-一维力，1-六维力<br>uint8 mode：模式，0-沿基坐标系，1-沿工具端坐标系<br>int16 dir：力控方向，0~5分别代表X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z方向<br>float32 force：力的大小 单位0.1N<br>bool follow：是否高跟随，true:高跟随，false：低跟随。<br>uint8 dof：机械臂自由度 |
+| 命令示例 | 需要是大量（10个以上）位置连续的点，以2ms以上的周期持续发布。<br>ros2 topic pub /rm_driver/force_position_move_joint_cmd rm_ros_interfaces/msg/Forcepositionmovejoint " joint: [0, 0, 0, 0, 0, 0]<br>sensor: 0<br>mode: 0<br>dir: 0<br>force: 0.0<br>follow: false<br>dof: 6 |
 | 返回值 | 成功无返回；失败返回：false，driver终端返回错误码。 |
 #### 透传力位混合补偿（位姿）
 | 功能描述 | 透传力位混合补偿（位姿） |
 | :---: | :---- |
-| 参数说明 | Forcepositionmovepose.msg
-geometry_msgs/Pose pose：目标位姿，x、y、z坐标（float类型，单位：m）+四元数。
-uint8 sensor：所使用传感器类型，0-一维力，1-六维力
-uint8 mode：模式，0-沿基坐标系，1-沿工具端坐标系
-int16 dir：力控方向，0~5分别代表X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z方向
-float32 force：力的大小 单位0.1N
-bool follow：是否高跟随，true:高跟随，false：低跟随。 |
-| 命令示例 | 需要是大量（10个以上）位置连续 的点，以2ms以上的周期持续发布。
-ros2 topic pub /rm_driver/force_position_move_pose_cmd rm_ros_interfaces/msg/Forcepositionmovepose "pose:
-  position:
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  orientation:
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-sensor: 0
-mode: 0
-dir: 0
-force: 0
-follow: false" |
+| 参数说明 | Forcepositionmovepose.msg<br>geometry_msgs/Pose pose：目标位姿，x、y、z坐标（float类型，单位：m）+四元数。<br>uint8 sensor：所使用传感器类型，0-一维力，1-六维力<br>uint8 mode：模式，0-沿基坐标系，1-沿工具端坐标系<br>int16 dir：力控方向，0~5分别代表X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z方向<br>float32 force：力的大小 单位0.1N<br>bool follow：是否高跟随，true:高跟随，false：低跟随。 |
+| 命令示例 | 需要是大量（10个以上）位置连续 的点，以2ms以上的周期持续发布。<br>ros2 topic pub /rm_driver/force_position_move_pose_cmd rm_ros_interfaces/msg/Forcepositionmovepose "pose:<br>  position:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>  orientation:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>    w: 1.0<br>sensor: 0<br>mode: 0<br>dir: 0<br>force: 0<br>follow: false" |
 | 返回值 | 成功无返回；失败返回：false，driver终端返回错误码。
 ### 机械臂状态主动上报
 #### 设置 UDP 机械臂状态主动上报配置
 | 功能描述 | 设置UDP 机械臂状态主动上报配置 |
 | :---: | :---- |
-| 参数说明 | Setrealtimepush.msg
-uint16 cycle：设置广播周期，为5ms的倍数（默认1即1*5=5ms,200Hz）。
-uint16 port：设置广播的端口号（默认8089）。
-uint16 force_coordinate：设置系统外受力数据的坐标系(仅带有力传感器的机械臂支持)。
-string ip：设置自定义的上报目标IP 地址（默认192.168.1.10）。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_realtime_push_cmd rm_ros_interfaces/msg/Setrealtimepush "cycle: 1
-port: 8089
-force_coordinate: 0
-ip: '192.168.1.10'" |
+| 参数说明 | Setrealtimepush.msg<br>uint16 cycle：设置广播周期，为5ms的倍数（默认1即1*5=5ms,200Hz）。<br>uint16 port：设置广播的端口号（默认8089）。<br>uint16 force_coordinate：设置系统外受力数据的坐标系(仅带有力传感器的机械臂支持)。<br>string ip：设置自定义的上报目标IP 地址（默认192.168.1.10）。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_realtime_push_cmd rm_ros_interfaces/msg/Setrealtimepush "cycle: 1<br>port: 8089<br>force_coordinate: 0<br>ip: '192.168.1.10'" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_realtime_push_result |
 #### 查询 UDP 机械臂状态主动上报配置
 | 功能描述 | 查询UDP 机械臂状态主动上报配置 |
 | :---: | :---- |
-| 参数说明 | Setrealtimepush.msg
-uint16 cycle：设置广播周期，为5ms的倍数（默认1即1*5=5ms,200Hz）。
-uint16 port：设置广播的端口号（默认8089）。
-uint16 force_coordinate：设置系统外受力数据的坐标系(仅带有力传感器的机械臂支持)。
-string ip：设置自定义的上报目标IP 地址（默认192.168.1.10）。 |
+| 参数说明 | Setrealtimepush.msg<br>uint16 cycle：设置广播周期，为5ms的倍数（默认1即1*5=5ms,200Hz）。<br>uint16 port：设置广播的端口号（默认8089）。<br>uint16 force_coordinate：设置系统外受力数据的坐标系(仅带有力传感器的机械臂支持)。<br>string ip：设置自定义的上报目标IP 地址（默认192.168.1.10）。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/get_realtime_push_cmd std_msgs/msg/Empty "{}" |
 | 返回值 | 成功设置信息；失败返回：driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_realtime_push_result |
@@ -648,97 +454,51 @@ string ip：设置自定义的上报目标IP 地址（默认192.168.1.10）。 |
 六维力
 | 功能描述 | 六维力 |
 | :---: | :---- |
-| 参数说明 | Sixforce.msg
-float32 force_fx：沿x轴方向受力大小。
-float32 force_fy：沿y轴方向受力大小。
-float32 force_fz：沿z轴方向受力大小。
-float32 force_mx：沿x轴方向转动受力大小。
-float32 force_my：沿y轴方向转动受力大小。
-float32 force_mz：沿z轴方向转动受力大小。 |
+| 参数说明 | Sixforce.msg<br>float32 force_fx：沿x轴方向受力大小。<br>float32 force_fy：沿y轴方向受力大小。<br>float32 force_fz：沿z轴方向受力大小。<br>float32 force_mx：沿x轴方向转动受力大小。<br>float32 force_my：沿y轴方向转动受力大小。<br>float32 force_mz：沿z轴方向转动受力大小。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_six_force |
 一维力
 | 功能描述 | 一维力 |
 | :---: | :---- |
-| 参数说明 | Sixforce.msg
-float32 force_fx：沿x轴方向受力大小。
-float32 force_fy：沿y轴方向受力大小。
-float32 force_fz：沿z轴方向受力大小。（仅该数值有效）
-float32 force_mx：沿x轴方向转动受力大小。
-float32 force_my：沿y轴方向转动受力大小。
-float32 force_mz：沿z轴方向转动受力大小。 |
+| 参数说明 | Sixforce.msg<br>float32 force_fx：沿x轴方向受力大小。<br>float32 force_fy：沿y轴方向受力大小。<br>float32 force_fz：沿z轴方向受力大小。（仅该数值有效）<br>float32 force_mx：沿x轴方向转动受力大小。<br>float32 force_my：沿y轴方向转动受力大小。<br>float32 force_mz：沿z轴方向转动受力大小。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_one_force |
 机械臂错误
 | 功能描述 | 机械臂错误 |
 | :---: | :---- |
-| 参数说明 | std_msgs::msg::UInt16
-uint16 data：机械臂报错信息。 |
+| 参数说明 | std_msgs::msg::UInt16<br>uint16 data：机械臂报错信息。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_arm_err |
 系统错误
 | 功能描述 | 系统错误 |
 | :---: | :---- |
-| 参数说明 | std_msgs::msg::UInt16
-uint16 data：系统报错信息。 |
+| 参数说明 | std_msgs::msg::UInt16<br>uint16 data：系统报错信息。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_sys_err |
 关节错误
 | 功能描述 | 关节错误 |
 | :---: | :---- |
-| 参数说明 | Jointerrorcode.msg
-uint16[] joint_error：每个关节报错信息。
-Uint8 dof：机械臂自由度信息。 |
+| 参数说明 | Jointerrorcode.msg<br>uint16[] joint_error：每个关节报错信息。<br>Uint8 dof：机械臂自由度信息。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_joint_error_code |
 机械臂弧度数据
 | 功能描述 | 机械臂弧度数据 |
 | :---: | :---- |
-| 参数说明 | sensor_msgs::msg::JointState
-	builtin_interfaces/Time stamp
-		int32 sec：时间信息，秒。
-		uint32 nanosec：时间信息，纳秒。
-	string frame_id：坐标系名称。
-string[] name：关节名称。
-float64[] position：关节弧度信息。
-float64[] velocity：关节速度信息。（暂未使用）
-float64[] effort：关节受力信息。（暂未使用） |
+| 参数说明 | sensor_msgs::msg::JointState<br>	builtin_interfaces/Time stamp<br>		int32 sec：时间信息，秒。<br>		uint32 nanosec：时间信息，纳秒。<br>	string frame_id：坐标系名称。<br>string[] name：关节名称。<br>float64[] position：关节弧度信息。<br>float64[] velocity：关节速度信息。（暂未使用）<br>float64[] effort：关节受力信息。（暂未使用） |
 | 查询示例 | ros2 topic echo /joint_states |
 位姿信息
 | 功能描述 | 位姿信息 |
 | :---: | :---- |
-| 参数说明 | geometry_msgs::msg::Pose
-Point position：机械臂当前坐标信息。
-	float64 x
-	float64 y
-	float64 z
-Quaternion orientation：机械臂当前姿态信息。
-	float64 x 0
-	float64 y 0
-	float64 z 0
-	float64 w 1 |
+| 参数说明 | geometry_msgs::msg::Pose<br>Point position：机械臂当前坐标信息。<br>	float64 x<br>	float64 y<br>	float64 z<br>Quaternion orientation：机械臂当前姿态信息。<br>	float64 x 0<br>	float64 y 0<br>	float64 z 0<br>	float64 w 1 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_arm_position |
 当前六维力传感器系统外受力数据
 | 功能描述 | 当前六维力传感器系统外受力数据 |
 | :---: | :---- |
-| 参数说明 | Sixforce.msg
-float32 force_fx：当前传感器沿x轴方向受外力大小。
-float32 force_fy：当前传感器沿y轴方向受外力大小。
-float32 force_fz：当前传感器沿z轴方向受外力大小。
-float32 force_mx：当前传感器沿x轴方向转动受外力大小。
-float32 force_my：当前传感器沿y轴方向转动受外力大小。
-float32 force_mz：当前传感器沿z轴方向转动受外力大小。 |
+| 参数说明 | Sixforce.msg<br>float32 force_fx：当前传感器沿x轴方向受外力大小。<br>float32 force_fy：当前传感器沿y轴方向受外力大小。<br>float32 force_fz：当前传感器沿z轴方向受外力大小。<br>float32 force_mx：当前传感器沿x轴方向转动受外力大小。<br>float32 force_my：当前传感器沿y轴方向转动受外力大小。<br>float32 force_mz：当前传感器沿z轴方向转动受外力大小。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_six_zero_force |
 当前一维力传感器系统外受力数据
 | 功能描述 | 当前一维力传感器系统外受力数据 |
 | :---: | :---- |
-| 参数说明 | Sixforce.msg
-float32 force_fx：当前传感器沿x轴方向受外力大小。
-float32 force_fy：当前传感器沿y轴方向受外力大小。
-float32 force_fz：当前传感器沿z轴方向受外力大小。（仅该数据有效）
-float32 force_mx：当前传感器沿x轴方向转动受外力大小。
-float32 force_my：当前传感器沿y轴方向转动受外力大小。
-float32 force_mz：当前传感器沿z轴方向转动受外力大小。 |
+| 参数说明 | Sixforce.msg<br>float32 force_fx：当前传感器沿x轴方向受外力大小。<br>float32 force_fy：当前传感器沿y轴方向受外力大小。<br>float32 force_fz：当前传感器沿z轴方向受外力大小。（仅该数据有效）<br>float32 force_mx：当前传感器沿x轴方向转动受外力大小。<br>float32 force_my：当前传感器沿y轴方向转动受外力大小。<br>float32 force_mz：当前传感器沿z轴方向转动受外力大小。 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_one_zero_force |
 系统外受力数据参考坐标系
 | 功能描述 | 系统外受力数据参考坐标系 |
 | :---: | :---- |
-| 参数说明 | std_msgs::msg::UInt16
-uint16 data：系统外受力数据的坐标系，0 为传感器坐标系 1 为当前工作坐标系 2 为当前工具坐标系。该数据会影响一维力和六维力传感器系统外受力数据的参考坐标系 |
+| 参数说明 | std_msgs::msg::UInt16<br>uint16 data：系统外受力数据的坐标系，0 为传感器坐标系 1 为当前工作坐标系 2 为当前工具坐标系。该数据会影响一维力和六维力传感器系统外受力数据的参考坐标系 |
 | 查询示例 | ros2 topic echo /rm_driver/udp_arm_coordinate |
 
