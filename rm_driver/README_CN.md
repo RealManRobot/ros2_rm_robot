@@ -45,7 +45,9 @@ rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 当我们的机械臂IP被改变后我们的启动指令就失效了，再直接使用如上指令就无法成功连接到机械臂了，我们可以通过修改如下配置文件，重新建立连接。  
 该配置文件位于我们的rm_driver功能包下的config文件夹下。  
  
-其配置文件内容如下：  
+其配置文件内容如下：
+
+```
 rm_driver:   
   ros__parameters:  
     #robot param  
@@ -58,7 +60,9 @@ rm_driver:
     udp_ip: "192.168.1.10"        #设置udp主动上报IP  
     udp_cycle: 5                  #udp主动上报周期，需要是5的倍数  
     udp_port: 8089                #设置udp主动上报端口  
-    udp_force_coordinate: 0       #设置系统受力时六维力的基准坐标，0为传感器坐标系 1为当前工作坐标系 2为当前工具坐标系  
+    udp_force_coordinate: 0       #设置系统受力时六维力的基准坐标，0为传感器坐标系 1为当前工作坐标系 2为当前工具坐标系
+```
+
 其中主要有以下几个参数。
 * arm_ip：改参数代表机械臂当前的IP
 * tcp_port：设置TCP连接时的端口。
