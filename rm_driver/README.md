@@ -61,7 +61,7 @@ rm_driver:
   ros__parameters:
     #robot param
     arm_ip: "192.168.1.18"        # Set the IP address for the TCP connection
-    tcp_port: 8080#        # Set the port for the TCP connection
+    tcp_port: 8080#               # Set the port for the TCP connection
     
     arm_type: "RM_65"             # set the robotic arm model       
     arm_dof: 6                    # Set the degree of freedom of the robotic arm
@@ -69,7 +69,7 @@ rm_driver:
     udp_ip: "192.168.1.10"        # set the udp active reporting IP address
     udp_cycle: 5                  # the active reporting cycle of UDP, which needs to be a multiple of 5.  
     udp_port: 8089                # Set the udp active reporting port   
-    udp_force_coordinate: 0      # Set the base coordinate of the six-axis force when the system is forced, where 0 is the sensor coordinate system, 1 is the current work coordinate system, and 2 is the current tool coordinate system
+    udp_force_coordinate: 0       # Set the base coordinate of the six-axis force when the system is forced, where 0 is the sensor coordinate system, 1 is the current work coordinate system, and 2 is the current tool coordinate system
 ```
 
 There are mainly the following parameters.
@@ -95,24 +95,24 @@ The current rm_driver package is composed of the following files.
 
 ```
 ├── CMakeLists.txt                # compilation rule file
-├── config                             # config folder
-│   ├── rm_63_config.yaml     #63 configuration file
-│   ├── rm_65_config.yaml     #65 configuration file
-│   ├── rm_75_config.yaml     #75 configuration file
-│   └── rm_eco65_config.yaml    # eco65 configuration file
+├── config                        # config folder
+│   ├── rm_63_config.yaml         # 63 configuration file
+│   ├── rm_65_config.yaml         # 65 configuration file
+│   ├── rm_75_config.yaml         # 75 configuration file
+│   └── rm_eco65_config.yaml      # eco65 configuration file
 ├── include                       # dependency header file folder
 │   └── rm_driver
-│       ├── cJSON.h              # API header file
+│       ├── cJSON.h                # API header file
 │       ├── constant_define.h      # API header file
-│       ├── rman_int.h            # API header file
-│       ├── rm_base_global.h      # API header file
-│       ├── rm_base.h            # API header file
-│       ├── rm_define.h           # API header file
-│       ├── rm_driver.h            #rm_driver.cpp header file
-│       ├── rm_praser_data.h      # API header file
-│       ├── rm_queue.h           # API header file
+│       ├── rman_int.h             # API header file
+│       ├── rm_base_global.h       # API header file
+│       ├── rm_base.h              # API header file
+│       ├── rm_define.h            # API header file
+│       ├── rm_driver.h            # rm_driver.cpp header file
+│       ├── rm_praser_data.h       # API header file
+│       ├── rm_queue.h             # API header file
 │       ├── rm_service_global.h    # API header file
-│       ├── rm_service.h          # API header file
+│       ├── rm_service.h           # API header file
 │       └── robot_define.h         # API header file
 ├── launch
 │   ├── rm_63_driver.launch.py     # 63 launch file
@@ -123,10 +123,10 @@ The current rm_driver package is composed of the following files.
 │   ├── libRM_Service.so -> libRM_Service.so.1.0.0        # API library file
 │   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      # API library file
 │   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    # API library file
-│   └── libRM_Service.so.1.0.0                          #API library file
-├── package.xml                                      # dependency declaration file
+│   └── libRM_Service.so.1.0.0                            # API library file
+├── package.xml                                           # dependency declaration file
 └── src
-    └── rm_driver.cpp                                  # driver code source file
+    └── rm_driver.cpp                                     # driver code source file
 ```
 
 ### 4. rm_driver topic description
