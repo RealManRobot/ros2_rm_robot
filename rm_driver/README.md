@@ -1,6 +1,6 @@
 <div align="right">
 
-[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/README_CN.md)|[English]()
+[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/tree/main/rm_driver)
  
 </div>
 
@@ -20,14 +20,14 @@ Revision History:
 
  
 
-Content
-1. rm_driver package description	3
-2. rm_driver package use	3
-2.1 Basic use of the package	3
-2.2 Advanced use of the package	4
-3. rm_driver package architecture description	5
-3.1 Overview of Package Files	5
-4. rm_driver topic description	7
+## Content
+* 1. rm_driver package description	3
+* 2. rm_driver package use	3
+* 2.1 Basic use of the package	3
+* 2.2 Advanced use of the package	4
+* 3. rm_driver package architecture description	5
+* 3.1 Overview of Package Files	5
+* 4. rm_driver topic description	7
 
 
 
