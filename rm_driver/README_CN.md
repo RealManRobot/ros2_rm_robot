@@ -1,6 +1,8 @@
-<div align="center">
+<div align="right">
  
-[简体中文]()|[English]()
+[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/README_CN.md)|[English]()
+
+</div>
 
 # 睿尔曼机器人rm_driver使用说明书V1.0
 
