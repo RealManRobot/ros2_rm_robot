@@ -16,13 +16,13 @@ V1.0	2024-2-6	拟制
 </div>
 
 ## 目录
-* 1. [rm_driver功能包说明](#rm_driver功能包说明)
-* 2. [rm_driver功能包使用](#rm_driver功能包使用)
+* 1.[rm_driver功能包说明](#rm_driver功能包说明)
+* 2.[rm_driver功能包使用](#rm_driver功能包使用)
 * 2.1[功能包基础使用](#功能包基础使用)
 * 2.2[功能包进阶使用](#功能包进阶使用)
-* 3. [rm_driver功能包架构说明](#rm_driver功能包架构说明)
+* 3.[rm_driver功能包架构说明](#rm_driver功能包架构说明)
 * 3.1[功能包文件总览](#功能包文件总览)
-* 4. [rm_driver话题说明](#rm_driver话题说明)
+* 4.[rm_driver话题说明](#rm_driver话题说明)
 
 ## rm_driver功能包说明
 rm_driver功能包在机械臂ROS2功能包中是十分重要的，该功能包实现了通过ROS与机械臂进行通信控制机械臂的功能，在下文中将通过以下几个方面详细介绍该功能包。  
@@ -60,21 +60,23 @@ rm_driver:
     udp_port: 8089                #设置udp主动上报端口  
     udp_force_coordinate: 0       #设置系统受力时六维力的基准坐标，0为传感器坐标系 1为当前工作坐标系 2为当前工具坐标系  
 其中主要有以下几个参数。
-arm_ip：改参数代表机械臂当前的IP
-tcp_port：设置TCP连接时的端口。
-arm_type：该参数代表机械臂当前的型号，可以选择的参数有RM_65（65系列）、RM_eco65（ECO65系列）、RM_63（63系列）、RM_75（75系列）。
-arm_dof: 机械臂自由度设置。6为6自由度，7为7自由度。
-udp_ip: 设置udp主动上报目标IP。
-udp_cycle：udp主动上报周期，需要是5的倍数。
-udp_port：设置udp主动上报端口。
-udp_force_coordinate：设置系统受力时六维力的基准坐标，0为传感器坐标系（原始数据） 1为当前工作坐标系 2为当前工具坐标系。
-再实际使用时，我们选择对应的launch文件启动时会自动选择正确的型号，若有特殊要求可在此处进行相应的参数修改，修改之后需要在工作空间目录下进行重新编译，之后修改的配置才会生效。
-在工作空间目录运行colcon build指令。
-rm@rm-desktop: ~/ros2_ws$ colcon build
-编译成功后可按如上指令进行功能包启动。
+* arm_ip：改参数代表机械臂当前的IP
+* tcp_port：设置TCP连接时的端口。
+* arm_type：该参数代表机械臂当前的型号，可以选择的参数有RM_65（65系列）、RM_eco65（ECO65系列）、RM_63（63系列）、RM_75（75系列）。
+* arm_dof: 机械臂自由度设置。6为6自由度，7为7自由度。
+* udp_ip: 设置udp主动上报目标IP。
+* udp_cycle：udp主动上报周期，需要是5的倍数。
+* udp_port：设置udp主动上报端口。
+* udp_force_coordinate：设置系统受力时六维力的基准坐标，0为传感器坐标系（原始数据） 1为当前工作坐标系 2为当前工具坐标系。
+* 再实际使用时，我们选择对应的launch文件启动时会自动选择正确的型号，若有特殊要求可在此处进行相应的参数修改，修改之后需要在工作空间目录下进行重新编译，之* 后修改的配置才会生效。
+* 在工作空间目录运行colcon build指令。
+* rm@rm-desktop: ~/ros2_ws$ colcon build
+* 编译成功后可按如上指令进行功能包启动。
 ## rm_driver功能包架构说明
 ### 功能包文件总览
-当前rm_driver功能包的文件构成如下。
+* 当前rm_driver功能包的文件构成如下。
+
+```
 ├── CMakeLists.txt                #编译规则文件
 ├── config                        #配置文件夹
 │   ├── rm_63_config.yaml          #63配置文件
@@ -108,6 +110,8 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 ├── package.xml                                      #依赖声明文件
 └── src
     └── rm_driver.cpp                                  #驱动代码源文件
+```
+
 ## rm_driver话题说明
 rm_driver的话题较多，可以通过如下指令了解其话题信息。
  
