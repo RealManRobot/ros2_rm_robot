@@ -22,7 +22,7 @@ V1.0	2024-2-6	拟制
 * 2.2[功能包进阶使用](#2.2功能包进阶使用)
 * 3.[rm_driver功能包架构说明](#3.rm_driver功能包架构说明)
 * 3.1[功能包文件总览](#3.1功能包文件总览)
-* 4.[rm_driver话题说明](#4.rm_driver话题说明)
+* 4.[rm_driver话题说明](#rm_driver话题说明)
 
 ## 1.rm_driver功能包说明
 rm_driver功能包在机械臂ROS2功能包中是十分重要的，该功能包实现了通过ROS与机械臂进行通信控制机械臂的功能，在下文中将通过以下几个方面详细介绍该功能包。
@@ -108,7 +108,7 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 ├── package.xml                                      #依赖声明文件
 └── src
     └── rm_driver.cpp                                  #驱动代码源文件
-## 4.rm_driver话题说明
+## rm_driver话题说明
 rm_driver的话题较多，可以通过如下指令了解其话题信息。
  
  
