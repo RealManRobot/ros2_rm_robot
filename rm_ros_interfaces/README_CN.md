@@ -29,34 +29,34 @@
 * 3[rm_ros_interface功能包架构说明](#rm_ros_interface功能包架构说明)
 * 3.1[功能包文件总览](#功能包文件总览)
 * 4[rm_ros_interface消息说明](#rm_ros_interface消息说明)
-* 4.1[关节错误代码Jointerrorcode.msg](#关节错误代码Jointerrorcode.msg)
-* 4.2[清除关节错误代码Jointerrclear.msg](#清除关节错误代码Jointerrclear.msg)
-* 4.3[所有坐标系名称Getallframe.msg](#所有坐标系名称Getallframe.msg)
-* 4.4[关节运动Movej.msg](#关节运动Movej.msg)
-* 4.5[直线运动Movel.msg](#直线运动Movel.msg)
-* 4.6[圆弧运动Movec.msg](#圆弧运动Movec.msg)
-* 4.7[关节空间规划到目标位姿Movejp.msg](#关节空间规划到目标位姿Movejp.msg)
-* 4.8[角度透传Jointpos.msg](#角度透传Jointpos.msg)
-* 4.9[位姿透传Cartepos.msg](#位姿透传Cartepos.msg)
-* 4.10[机械臂当前状态（角度+欧拉角）Armoriginalstate.msg](#机械臂当前状态（角度+欧拉角）Armoriginalstate.msg)
-* 4.11[机械臂当前状态（弧度+四元数）Armstate.msg](#机械臂当前状态（弧度+四元数）Armstate.msg)
-* 4.12[读取软件版本号Armsoftversion.msg](#读取软件版本号Armsoftversion.msg)
-* 4.13[手爪力控夹取Gripperpick.msg](#手爪力控夹取Gripperpick.msg)
-* 4.14[手爪力控夹取-持续力控夹取Gripperpick.msg](#手爪力控夹取-持续力控夹取Gripperpick.msg)
-* 4.15[手爪到达指定位置Gripperset.msg](#手爪到达指定位置Gripperset.msg)
-* 4.16[力位混合控制Setforceposition.msg](#力位混合控制Setforceposition.msg)
-* 4.17[六维力数据Sixforce.msg](#六维力数据Sixforce.msg)
-* 4.18[设置灵巧手手势Handposture.msg](#设置灵巧手手势Handposture.msg)
-* 4.19[设置灵巧手动作序列Handseq.msg](#设置灵巧手动作序列Handseq.msg)
-* 4.20[设置灵巧手各自由度角度Handangle.msg](#设置灵巧手各自由度角度Handangle.msg)
-* 4.21[设置灵巧手速度Handspeed.msg](#设置灵巧手速度Handspeed.msg)
-* 4.22[设置灵巧手力阈值Handforce.msg](#设置灵巧手力阈值Handforce.msg)
-* 4.23[透传力位混合补偿-角度Forcepositionmovejoint.msg](#透传力位混合补偿-角度Forcepositionmovejoint.msg)
-* 4.24[透传力位混合补偿-位姿Forcepositionmovejoint.msg](#透传力位混合补偿-位姿Forcepositionmovejoint.msg)
-* 4.25[速度开环控制-升降机构Liftspeed.msg](#速度开环控制-升降机构Liftspeed.msg)
-* 4.26[位置闭环控制-升降机构Liftheight.msg](#位置闭环控制-升降机构Liftheight.msg)
-* 4.27[获取升降机构状态-升降机构Liftstate.msg](#获取升降机构状态-升降机构Liftstate.msg)
-
+* 4.1[关节错误代码Jointerrorcode_msg](#关节错误代码Jointerrorcode_msg)
+* 4.2[清除关节错误代码Jointerrclear_msg](#清除关节错误代码Jointerrclear_msg)
+* 4.3[所有坐标系名称Getallframe_msg](#所有坐标系名称Getallframe_msg)
+* 4.4[关节运动Movej_msg](#关节运动Movej_msg)
+* 4.5[直线运动Movel_msg](#直线运动Movel_msg)
+* 4.6[圆弧运动Movec_msg](#圆弧运动Movec_msg)
+* 4.7[关节空间规划到目标位姿Movejp_msg](#关节空间规划到目标位姿Movejp_msg)
+* 4.8[角度透传Jointpos_msg](#角度透传Jointpos_msg)
+* 4.9[位姿透传Cartepos_msg](#位姿透传Cartepos_msg)
+* 4.10[机械臂当前状态-角度和欧拉角Armoriginalstate_msg](#机械臂当前状态-角度和欧拉角Armoriginalstate_msg)
+* 4.11[机械臂当前状态-弧度和四元数Armstate_msg](#机械臂当前状态-弧度和四元数Armstate_msg)
+* 4.12[读取软件版本号Armsoftversion_msg](#读取软件版本号Armsoftversion_msg)
+* 4.13[手爪力控夹取Gripperpick_msg](#手爪力控夹取Gripperpick_msg)
+* 4.14[手爪力控夹取-持续力控夹取Gripperpick_msg](#手爪力控夹取-持续力控夹取Gripperpick_msg)
+* 4.15[手爪到达指定位置Gripperset_msg](#手爪到达指定位置Gripperset_msg)
+* 4.16[力位混合控制Setforceposition_msg](#力位混合控制Setforceposition_msg)
+* 4.17[六维力数据Sixforce_msg](#六维力数据Sixforce_msg)
+* 4.18[设置灵巧手手势Handposture_msg](#设置灵巧手手势Handposture_msg)
+* 4.19[设置灵巧手动作序列Handseq_msg](#设置灵巧手动作序列Handseq_msg)
+* 4.20[设置灵巧手各自由度角度Handangle_msg](#设置灵巧手各自由度角度Handangle_msg)
+* 4.21[设置灵巧手速度Handspeed_msg](#设置灵巧手速度Handspeed_msg)
+* 4.22[设置灵巧手力阈值Handforce_msg](#设置灵巧手力阈值Handforce_msg)
+* 4.23[透传力位混合补偿-角度Forcepositionmovejoint_msg](#透传力位混合补偿-角度Forcepositionmovejoint_msg)
+* 4.24[透传力位混合补偿-位姿Forcepositionmovejoint_msg](#透传力位混合补偿-位姿Forcepositionmovejoint_msg)
+* 4.25[速度开环控制-升降机构Liftspeed_msg](#速度开环控制-升降机构Liftspeed_msg)
+* 4.26[位置闭环控制-升降机构Liftheight_msg](#位置闭环控制-升降机构Liftheight_msg)
+* 4.27[获取升降机构状态-升降机构Liftstate_msg](#获取升降机构状态-升降机构Liftstate_msg)
+* 4.28[查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg](#查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg)
 
 ## rm_ros_interface功能包说明
 rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行提供必要的 消息文件，在下文中将通过以下几个方面详细介绍该功能包。
@@ -77,45 +77,45 @@ rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行
 ├── include                       #依赖头文件文件夹
 │   └── rm_ros_interfaces
 ├── msg                          #当前的消息文件（详细请看下方介绍）
-│   ├── Armoriginalstate.msg
-│   ├── Armsoftversion.msg
-│   ├── Armstate.msg
-│   ├── Cartepos.msg
-│   ├── Forcepositionmovejoint75.msg
-│   ├── Forcepositionmovejoint.msg
-│   ├── Forcepositionmovepose.msg
-│   ├── Force_Position_State.msg
-│   ├── Getallframe.msg
-│   ├── GetArmState_Command.msg
-│   ├── Gripperpick.msg
-│   ├── Gripperset.msg
-│   ├── Handangle.msg
-│   ├── Handforce.msg
-│   ├── Handposture.msg
-│   ├── Handseq.msg
-│   ├── Handspeed.msg
-│   ├── Jointerrclear.msg
-│   ├── Jointerrorcode75.msg
-│   ├── Jointerrorcode.msg
-│   ├── Jointpos75.msg
-│   ├── Jointpos.msg
-│   ├── Liftheight.msg
-│   ├── Liftspeed.msg
-│   ├── Liftstate.msg
-│   ├── Movec.msg
-│   ├── Movej75.msg
-│   ├── Movej.msg
-│   ├── Movejp.msg
-│   ├── Movel.msg
-│   ├── Setforceposition.msg
-│   ├── Setrealtimepush.msg
-│   ├── Sixforce.msg
-│   └── Stop.msg
+│   ├── Armoriginalstate_msg
+│   ├── Armsoftversion_msg
+│   ├── Armstate_msg
+│   ├── Cartepos_msg
+│   ├── Forcepositionmovejoint75_msg
+│   ├── Forcepositionmovejoint_msg
+│   ├── Forcepositionmovepose_msg
+│   ├── Force_Position_State_msg
+│   ├── Getallframe_msg
+│   ├── GetArmState_Command_msg
+│   ├── Gripperpick_msg
+│   ├── Gripperset_msg
+│   ├── Handangle_msg
+│   ├── Handforce_msg
+│   ├── Handposture_msg
+│   ├── Handseq_msg
+│   ├── Handspeed_msg
+│   ├── Jointerrclear_msg
+│   ├── Jointerrorcode75_msg
+│   ├── Jointerrorcode_msg
+│   ├── Jointpos75_msg
+│   ├── Jointpos_msg
+│   ├── Liftheight_msg
+│   ├── Liftspeed_msg
+│   ├── Liftstate_msg
+│   ├── Movec_msg
+│   ├── Movej75_msg
+│   ├── Movej_msg
+│   ├── Movejp_msg
+│   ├── Movel_msg
+│   ├── Setforceposition_msg
+│   ├── Setrealtimepush_msg
+│   ├── Sixforce_msg
+│   └── Stop_msg
 ├── package.xml                       #依赖声明文件
 └── src
 ```
 ## rm_ros_interface消息说明
-### 关节错误代码Jointerrorcode.msg
+### 关节错误代码Jointerrorcode_msg
 uint16[] joint_error  
 uint8 dof  
 msg成员  
@@ -123,7 +123,7 @@ uint16[] joint_error
 每个关节报错信息。  
 uint8 dof  
 机械臂自由度信息。  
-### 清除关节错误代码Jointerrclear.msg
+### 清除关节错误代码Jointerrclear_msg
 uint8 joint_num  
 bool block  
 msg成员  
@@ -131,12 +131,12 @@ joint_num
 对应关节序号，从基座到机械臂手爪端，序号依次为1～6或1~7。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 所有坐标系名称Getallframe.msg
+### 所有坐标系名称Getallframe_msg
 string[10] frame_name  
 msg成员  
 frame_name  
 返回的工作坐标系的名称数组。  
-### 关节运动Movej.msg
+### 关节运动Movej_msg
 float32[] joint  
 uint8 speed  
 bool block  
@@ -150,7 +150,7 @@ block
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 dof  
 机械臂自由度信息。  
-### 直线运动Movel.msg
+### 直线运动Movel_msg
 geometry_msgs/Pose pose  
 uint8 speed  
 bool block  
@@ -161,7 +161,7 @@ speed
 速度百分比例系数，0~100。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 圆弧运动Movec.msg
+### 圆弧运动Movec_msg
 geometry_msgs/Pose pose_mid  
 geometry_msgs/Pose pose_end  
 uint8 speed  
@@ -175,7 +175,7 @@ speed
 速度百分比例系数，0~100。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 关节空间规划到目标位姿Movejp.msg
+### 关节空间规划到目标位姿Movejp_msg
 geometry_msgs/Pose pose  
 uint8 speed  
 bool block  
@@ -186,7 +186,7 @@ speed
 速度百分比例系数，0~100。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 角度透传Jointpos.msg
+### 角度透传Jointpos_msg
 float32[] joint  
 bool follow  
 float32 expand  
@@ -200,7 +200,7 @@ expand
 拓展关节，float类型，单位：弧度。  
 dof  
 机械臂自由度信息。  
-### 位姿透传Cartepos.msg
+### 位姿透传Cartepos_msg
 geometry_msgs/Pose pose  
 bool follow  
 msg成员  
@@ -208,7 +208,7 @@ pose
 机械臂位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
 follow  
 跟随状态，bool类型，true高跟随，false低跟随，不设置默认高跟随。  
-### 机械臂当前状态（角度+欧拉角）Armoriginalstate.msg
+### 机械臂当前状态-角度和欧拉角Armoriginalstate_msg
 float32[] joint  
 float32[6] pose  
 uint16 arm_err  
@@ -225,7 +225,7 @@ arm_err
 控制器错误代码，unsigned int类型。  
 dof  
 机械臂自由度信息。  
-### 机械臂当前状态（弧度+四元数）Armstate.msg
+### 机械臂当前状态-弧度和四元数Armstate_msg
 float32[] joint  
 geometry_msgs/Pose pose  
 uint16 arm_err  
@@ -242,7 +242,7 @@ arm_err
 控制器错误代码，unsigned int类型。  
 dof  
 机械臂自由度信息。  
-### 读取软件版本号Armsoftversion.msg
+### 读取软件版本号Armsoftversion_msg
 string planversion  
 string ctrlversion  
 string kernal1  
@@ -259,7 +259,7 @@ kernal2
 实时内核子核心 2 版本号，string类型。  
 productversion  
 机械臂型号，string类型。  
-### 手爪力控夹取Gripperpick.msg
+### 手爪力控夹取Gripperpick_msg
 uint16 speed  
 uint16 force  
 bool block  
@@ -270,7 +270,7 @@ force
 手爪夹取力矩阈值，unsigned int类型，范围 ：50~1000。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 手爪力控夹取（持续力控夹取）Gripperpick.msg
+### 手爪力控夹取-持续力控夹取Gripperpick_msg
 uint16 speed  
 uint16 force  
 bool block  
@@ -281,7 +281,7 @@ force
 手爪夹取力矩阈值，unsigned int类型，范围 ：50~1000。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 手爪到达指定位置Gripperset.msg
+### 手爪到达指定位置Gripperset_msg
 uint16 position  
 bool block  
 msg成员  
@@ -289,7 +289,7 @@ position
 手爪目标位置，unsigned int类型，范围：1～1000,代表手爪开口度：0～70mm。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 力位混合控制Setforceposition.msg
+### 力位混合控制Setforceposition_msg
 uint8 sensor  
 uint8 mode  
 uint8 direction  
@@ -306,7 +306,7 @@ n
 力的大小，单位 0.1N。  
 block  
 是否阻塞，true:阻塞，false:非阻塞。  
-### 六维力数据Sixforce.msg
+### 六维力数据Sixforce_msg
 float32 force_fx  
 float32 force_fy  
 float32 force_fz  
@@ -326,7 +326,7 @@ force_my
 沿y轴方向转动受力大小。  
 force_mz  
 沿z轴方向转动受力大小。  
-### 设置灵巧手手势Handposture.msg
+### 设置灵巧手手势Handposture_msg
 uint16 posture_num  
 bool block  
 msg成员  
@@ -334,7 +334,7 @@ posture_num
 预先保存在灵巧手内的手势序号，范围：1~40。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 设置灵巧手动作序列Handseq.msg
+### 设置灵巧手动作序列Handseq_msg
 uint16 seq_num  
 bool block  
 msg成员  
@@ -342,7 +342,7 @@ seq_num
 预先保存在灵巧手内的序列序号，范围：1~40。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 设置灵巧手各自由度角度Handangle.msg
+### 设置灵巧手各自由度角度Handangle_msg
 int16[6] hand_angle   
 bool block  
 msg成员  
@@ -350,7 +350,7 @@ hand_angle
 手指角度数组，范围：0~1000。另外，-1 代表该自由度不执行任何操作，保持当前状态。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 设置灵巧手速度Handspeed.msg
+### 设置灵巧手速度Handspeed_msg
 uint16 hand_speed  
 bool block  
 msg成员  
@@ -358,7 +358,7 @@ hand_speed
 手指速度，范围：1~1000。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 设置灵巧手力阈值Handforce.msg
+### 设置灵巧手力阈值Handforce_msg
 uint16 hand_force  
 bool block  
 msg成员  
@@ -366,7 +366,7 @@ hand_force
 手指力，范围：1~1000。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 透传力位混合补偿（角度）Forcepositionmovejoint.msg
+### 透传力位混合补偿-角度Forcepositionmovejoint_msg
 float32[] joint  
 uint8 sensor  
 uint8 mode  
@@ -389,7 +389,7 @@ block
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 dof  
 机械臂自由度信息。  
-### 透传力位混合补偿（位姿）Forcepositionmovejoint.msg
+### 透传力位混合补偿-位姿Forcepositionmovejoint_msg
 geometry_msgs/Pose pose  
 uint8 sensor  
 uint8 mode  
@@ -409,7 +409,7 @@ force
 力的大小，精度 0.1N 或者 0.1Nm。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 速度开环控制（升降机构）Liftspeed.msg
+### 速度开环控制-升降机构Liftspeed_msg
 int16 speed  
 bool block  
 msg成员  
@@ -417,7 +417,7 @@ speed
 速度百分比，-100~100。Speed < 0:升降机构向下运动；Speed > 0:升降机构向上运动；Speed = 0:升降机构停止运动。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 位置闭环控制（升降机构）Liftheight.msg
+### 位置闭环控制-升降机构Liftheight_msg
 uint16 height  
 uint16 speed  
 bool block  
@@ -428,7 +428,7 @@ speed
 速度百分比，1~100。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-### 获取升降机构状态（升降机构）Liftstate.msg
+### 获取升降机构状态-升降机构Liftstate_msg
 int16 height   
 int16 current  
 uint16 err_flag  
@@ -437,7 +437,7 @@ height
 当前升降机构高度，单位：mm，精度：1mm，范围：0~2300。  
 current  
 升降驱动错误代码，错误代码类型参考关节错误代码。  
-### 查询（设置）UDP 机械臂状态主动上报配置Setrealtimepush.msg
+### 查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg
 uint16 cycle  
 uint16 port  
 uint16 force_coordinate  
