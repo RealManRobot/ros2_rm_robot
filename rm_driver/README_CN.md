@@ -43,11 +43,11 @@ rm_driver功能包在机械臂ROS2功能包中是十分重要的，该功能包�
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py  
 在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75。  
 底层驱动启动成功后，将显示以下画面。  
-![image](doc/rm_driver1.png)
+![image](doc/rm_driver1.png)  
 ### 功能包进阶使用
 当我们的机械臂IP被改变后我们的启动指令就失效了，再直接使用如上指令就无法成功连接到机械臂了，我们可以通过修改如下配置文件，重新建立连接。  
 该配置文件位于我们的rm_driver功能包下的config文件夹下。  
-![image](doc/rm_driver4.png)
+![image](doc/rm_driver4.png)  
 其配置文件内容如下：
 
 ```
@@ -126,5 +126,5 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 ## rm_driver话题说明
 rm_driver的话题较多，可以通过如下指令了解其话题信息。
 ![image](doc/rm_driver2.png)
-![image](doc/rm_driver3.png)
+![image](doc/rm_driver3.png)  
 主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。
