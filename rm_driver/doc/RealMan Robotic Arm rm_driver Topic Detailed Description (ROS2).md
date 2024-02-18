@@ -7,7 +7,7 @@
 
 <div align="center">
 
-# 睿尔曼机械臂接口函数说明(ROS2)V1.0.0
+# RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2) V1.0
 
 
  
@@ -17,13 +17,13 @@ RealMan Intelligent Technology (Beijing) Co., Ltd.
  
 Revision History:
 
-|版本号 | Date | Comment |
+|No. | Date | Comment |
 | :---: | :---- | :---: |
-|V1.0 | 2024-2-18 | 拟制|
+|V1.0 | 2024-2-18 | Draft |
 		
 </div>
 
-## 目录
+## Content
 * 1.[Introduction](#Introduction)
 * 2.[Error Description](#Error_Description)
 * 2.1[Controller error type](#Controller_error_type)
@@ -40,8 +40,8 @@ Revision History:
 * 3.3.3[Get the current work coordinate system](#Get_the_current_work_coordinate_system)
 * 3.3.4[Get all work coordinate system names](#Get_all_work_coordinate_system_names)
 * 3.4[Functions related to the arm state query](#Functions_related_to_the_arm_state_query)
-* 3.4.1[Get the current state of the robot arm - return each joint angle + Euler angle](#Get_the_current_state_of_the_robot_arm-return_each_joint_angle+Euler_angle)
-* 3.4.2[Get the current state of the robotic arm - return each joint radians + quaternion](#Get_the_current_state_of_the_robotic_arm-return_each_joint_radians_quaternion)
+* 3.4.1[Get the current state of the robot arm - return each joint angle + Euler angle](#Get_the_current_state_of_the_robot_arm-return_each_joint_angle_and_Euler_angle)
+* 3.4.2[Get the current state of the robotic arm - return each joint radians + quaternion](#Get_the_current_state_of_the_robotic_arm-return_each_joint_radians_and_quaternion)
 * 3.5[Functions related to motion planning of the robotic arm](#Functions_related_to_motion_planning_of_the_robotic_arm)
 * 3.5.1[Joint Space Motion](#Joint_Space_Motion)
 * 3.5.2[Linear motion in Cartesian space](#Linear_motion_in_Cartesian_space)
@@ -76,8 +76,8 @@ Revision History:
 * 3.13[Functions related to the transmissive force-position compensation Mode](#Functions_related_to_the_transmissive_force-position_compensation_Mode)
 * 3.13.1[Starting the transmissive force-position mixing control compensation mode](#Starting_the_transmissive_force-position_mixing_control_compensation_mode)
 * 3.13.2[Stopping the transmissive force-position mixing control compensation mode](#Stopping_the_transmissive_force-position_mixing_control_compensation_mode)
-* 3.13.3[Transmissive force-position mixing control compensation - joint](#Transmissive_force-position_mixing_control_compensation)
-* 3.13.4[Transmissive force-position mixing control compensation - pose](#Transmissive_force-position_mixing_control_compensation)
+* 3.13.3[Transmissive force-position mixing control compensation - joint](#Transmissive_force-position_mixing_control_compensation-joint)
+* 3.13.4[Transmissive force-position mixing control compensation - pose](#Transmissive_force-position_mixing_control_compensation-pose)
 * 3.14[Robotic arm state active reporting](#Robotic_arm_state_active_reporting)
 * 3.14.1[Setting UDP robotic arm state active reporting configuration](#Setting_UDP_robotic_arm_state_active_reporting_configuration)
 * 3.14.2[Getting UDP robotic arm state active reporting configuration](#Getting_UDP_robotic_arm_state_active_reporting_configuration)
@@ -208,14 +208,14 @@ This section describes how to query and control the robotic arm through the topi
 | Return value | All work coordinate system names |
 | Return example | ros2 topic echo /rm_driver/change_work_frame_result |
 ### Functions_related_to_the_arm_state_query
-#### Get_the_current_state_of_the_robot_arm-return_each_joint_angle+Euler_angle
+#### Get_the_current_state_of_the_robot_arm-return_each_joint_angle_and_Euler_angle
 | Function description | Retrieve the current state of the robotic arm |
 | :---: | :---- |
 | Parameter description | ROS msg std_msgs::msg::Empty |
 | Command example | ros2 topic pub --once /rm_driver/get_current_arm_state_cmd std_msgs/msg/Empty "{}" |
 | Return value | The current robotic arm joint state (angle) + pose information (Euler angle) + error information |
 | Return example | ros2 topic echo /rm_driver/get_current_arm_original_state_result |
-#### Get_the_current_state_of_the_robotic_arm-return_each_joint_radians_quaternion
+#### Get_the_current_state_of_the_robotic_arm-return_each_joint_radians_and_quaternion
 | Function description | Retrieve the current state of the robotic arm |
 | :---: | :---- |
 | Parameter description | ROS msg std_msgs::msg::Empty |
