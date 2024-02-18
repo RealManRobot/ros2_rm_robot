@@ -1,7 +1,7 @@
 <div align="right">
   
-[中文简体](https://github.com/kaola-zero/ros2_rm_robot/blob/main/README_CN.md)|
-[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/README.md)
+[中文简体](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)|
+[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)
 
 </div>
 
