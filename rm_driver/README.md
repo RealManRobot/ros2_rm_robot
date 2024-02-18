@@ -50,11 +50,11 @@ The current control is based on the fact that we have not changed the IP of the 
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, and 75.
 The following screen will appear if the underlying driver is successfully started.
- 
+![image](doc/rm_driver1.png)
 ### 2.2 Advanced use of the package
 When our robotic arm's IP is changed, our start command is invalid. If we use the above command directly, we cannot successfully connect to the robotic arm. We can re-establish the connection by modifying the following configuration file.
 The configuration file is located in the config folder under our rm_driver package.
- 
+![image](doc/rm_driver4.png)
 The contents of the configuration file are as follows:
 
 ```
@@ -132,6 +132,6 @@ The current rm_driver package is composed of the following files.
 
 ### 4. rm_driver topic description
 rm_driver has many topics, and you can learn about the topic information through the following commands.
- 
- 
+![image](doc/rm_driver2.png)
+![image](doc/rm_driver3.png)
 It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".
