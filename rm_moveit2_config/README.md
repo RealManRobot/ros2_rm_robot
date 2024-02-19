@@ -1,6 +1,6 @@
 <div align="right">
 
-[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_description/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_description/README.md)
+[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_moveit2_config/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_moveit2_config/README.md)
  
 </div>
 
