@@ -1,6 +1,6 @@
 <div align="right">
 
-[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_control/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_control/README.md)
+[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_bringup/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_bringup/README.md)
  
 </div>
 
@@ -37,8 +37,8 @@ Through the introduction of the three parts, it can help you:
 * 2.Familiar with the file structure and function of the package.
 * 3.Familiar with the topic related to the package for easy development and use.
 Source code address: https://github.com/RealManRobot/ros2_rm_robot.git。
-## rm_bringup Package Use
-### moveit2 Controlling Real Robotic Arm
+## rm_bringup_Package_Use
+### moveit2_Controlling_Real_Robotic_Arm
 First, after configuring the environment and completing the connection, we can directly launch the node and run the launch.py file in the rm_bringup package through the following command.
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
@@ -49,9 +49,9 @@ For example, the launch command of 65 robotic arm:
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_65_bringup.launch.py
 ```
 The following screen appears in the interface after a successful node launch.
-![image](doc/rm_bringup1.png)
-The launch file launches the function of moveit2 to control the real robotic arm. Then, you can control the robotic arm movement by dragging the control ball. For details, please refer to "rm_moveit2_config Detailed Description".
-### Gazebo control of robotic arm
+![image](doc/rm_bringup1.png)  
+The launch file launches the function of moveit2 to control the real robotic arm. Then, you can control the robotic arm movement by dragging the control ball. For details, please refer to "[rm_moveit2_config Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_moveit2_config/README.md)".
+### Gazebo_control_of_robotic_arm
 We can run the launch.py file in the rm_bringup package through the following command, and directly launch the gzaebo simulation node.
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_gazebo.launch.py
@@ -65,8 +65,8 @@ The following screen appears in the interface after a successful node launch.
 ![image](doc/rm_bringup2.png)
 Then, we use the following command to launch moveit2 to control the simulation robot arm in Gazebo.
 ![image](doc/rm_bringup3.png)
-## rm_bringup Package Architecture Description
-### Overview of package files
+## rm_bringup_Package_Architecture_Description
+### Overview_of_Package_Files
 The current rm_driver package is composed of the following files.
 ```
 ├── CMakeLists.txt                     # compilation rule file
@@ -84,5 +84,5 @@ The current rm_driver package is composed of the following files.
 ├── package.xml
 └── src
 ```
-## rm_bringup Topic Description
+## rm_bringup_Topic_Description
 This package currently does not have its topic. It is mainly to call other packages. For the topics related to moveit2, please refer to "[rm_moveit2_config Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_moveit2_config/README.md)".
