@@ -44,7 +44,7 @@ rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
 rm@rm-desktop:~$ ros2 launch rm_description rm_65_display.launch.py
 ```
 节点启动成功后，将显示以下画面。  
- 
+![image](doc/rm_description2.png)
 之后我们还需要启动rm_driver节点。  
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
@@ -54,11 +54,11 @@ rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 rm@rm-desktop:~$ rviz2
 ```
 通过如下配置打开机器人模型。  
- 
+![image](doc/rm_description3.png)
 在rm_description功能包的rviz文件夹下找到对应的配置文件。  
- 
+![image](doc/rm_description4.png)
 加载后就可以在rviz2的界面中看到当前的机械臂状态了。  
- 
+![image](doc/rm_description1.png)
 ## rm_description功能包架构说明
 ## 功能包文件总览
 当前rm_driver功能包的文件构成如下。  

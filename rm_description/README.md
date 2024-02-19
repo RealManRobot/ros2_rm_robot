@@ -46,7 +46,7 @@ For example, the launch command of 65 robotic arm:
 rm@rm-desktop:~$ ros2 launch rm_description rm_65_display.launch.py
 ```
 The following screen appears in the interface after successful node startup.  
- 
+![image](doc/rm_description2.png)
 Then we need to launch the rm_driver node.  
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
@@ -56,11 +56,11 @@ After a successful launch, we can check the state of the robotic arm in rviz2. R
 rm@rm-desktop:~$ rviz2
 ```
 Open the robot model with the following configuration.  
- 
+![image](doc/rm_description3.png)  
 Find the corresponding configuration file under the rviz folder of the rm_description package.  
- 
+![image](doc/rm_description4.png)
 After loading, you can see the current state of the robotic arm in the interface of rviz2.  
- 
+![image](doc/rm_description1.png)
 ## rm_description_Package_Architecture_Description
 ### Overview_of_package_files
 The current rm_driver package is composed of the following files.  
