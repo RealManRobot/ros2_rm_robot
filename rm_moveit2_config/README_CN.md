@@ -77,32 +77,32 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo.launch.py
 ### 功能包文件总览
 当前rm_driver功能包的文件构成如下。  
 ```
-├── rm_63_config                             #63机械臂moveit2功能包
-│   ├── CMakeLists.txt                         #63机械臂moveit2功能包编译规则
-│   ├── config                                 #63机械臂moveit2功能包参数文件夹
-│   │   ├── initial_positions.yaml                 #63机械臂moveit2初始化位姿
-│   │   ├── joint_limits.yaml                     #63机械臂关节限制
-│   │   ├── kinematics.yaml                     #63机械臂运动学参数
-│   │   ├── moveit_controllers.yaml               #63机械臂moveit2控制器
-│   │   ├── moveit.rviz                          #63机械臂rviz2显示配置文件
+├── rm_63_config                                    #63机械臂moveit2功能包
+│   ├── CMakeLists.txt                              #63机械臂moveit2功能包编译规则
+│   ├── config                                      #63机械臂moveit2功能包参数文件夹
+│   │   ├── initial_positions.yaml                  #63机械臂moveit2初始化位姿
+│   │   ├── joint_limits.yaml                       #63机械臂关节限制
+│   │   ├── kinematics.yaml                         #63机械臂运动学参数
+│   │   ├── moveit_controllers.yaml                 #63机械臂moveit2控制器
+│   │   ├── moveit.rviz                             #63机械臂rviz2显示配置文件
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rml_63_description.ros2_control.xacro    #63机械臂xacro描述文件
+│   │   ├── rml_63_description.ros2_control.xacro   #63机械臂xacro描述文件
 │   │   ├── rml_63_description.srdf                 #63机械臂moveit2控制配置文件
 │   │   ├── rml_63_description.urdf.xacro           #63机械臂xacro描述文件
-│   │   └── ros2_controllers.yaml                  #63机械臂运动控制器
+│   │   └── ros2_controllers.yaml                   #63机械臂运动控制器
 │   ├── launch
-│   │   ├── demo.launch.py                       #63虚拟机械臂moveit2启动文件
-│   │   ├── gazebo_moveit_demo.launch.py         #63仿真机械臂moveit2启动文件
+│   │   ├── demo.launch.py                          #63虚拟机械臂moveit2启动文件
+│   │   ├── gazebo_moveit_demo.launch.py            #63仿真机械臂moveit2启动文件
 │   │   ├── move_group.launch.py
 │   │   ├── moveit_rviz.launch.py
-│   │   ├── real_moveit_demo.launch.py            #63真实机械臂moveit2启动文件
+│   │   ├── real_moveit_demo.launch.py              #63真实机械臂moveit2启动文件
 │   │   ├── rsp.launch.py
 │   │   ├── setup_assistant.launch.py
 │   │   ├── spawn_controllers.launch.py
 │   │   ├── static_virtual_joint_tfs.launch.py
 │   │   └── warehouse_db.launch.py
 │   └── package.xml
-├── rm_65_config                #65机械臂moveit2功能包（文件解释参考63）
+├── rm_65_config                                    #65机械臂moveit2功能包（文件解释参考63）
 │   ├── CMakeLists.txt
 │   ├── config
 │   │   ├── initial_positions.yaml

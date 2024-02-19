@@ -79,32 +79,32 @@ After completing the above operations, the following interface appears, and we c
 ### Overview_of_package_files
 The current rm_driver package is composed of the following files.
 ```
-├── rm_63_config                             #63 robotic arm moveit2 package
-│   ├── CMakeLists.txt                         #63 robotic arm moveit2 package compilation rules
-│   ├── config                                 #63 robotic arm moveit2 package parameter folder
+├── rm_63_config                                   #63 robotic arm moveit2 package
+│   ├── CMakeLists.txt                             #63 robotic arm moveit2 package compilation rules
+│   ├── config                                     #63 robotic arm moveit2 package parameter folder
 │   │   ├── initial_positions.yaml                 #63 robotic arm moveit2 initial position
-│   │   ├── joint_limits.yaml                     #63 robotic arm joint limits
-│   │   ├── kinematics.yaml                     #63 robotic arm kinematics parameters
-│   │   ├── moveit_controllers.yaml               #63 robotic arm moveit2 controller
-│   │   ├── moveit.rviz                          #63 robotic arm rviz2 display configuration file
+│   │   ├── joint_limits.yaml                      #63 robotic arm joint limits
+│   │   ├── kinematics.yaml                        #63 robotic arm kinematics parameters
+│   │   ├── moveit_controllers.yaml                #63 robotic arm moveit2 controller
+│   │   ├── moveit.rviz                            #63 robotic arm rviz2 display configuration file
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rml_63_description.ros2_control.xacro    #63 robotic arm xacro description file
-│   │   ├── rml_63_description.srdf                 #63 robotic arm moveit2 control configuration file
-│   │   ├── rml_63_description.urdf.xacro           #63 robotic arm xacro description file
+│   │   ├── rml_63_description.ros2_control.xacro  #63 robotic arm xacro description file
+│   │   ├── rml_63_description.srdf                #63 robotic arm moveit2 control configuration file
+│   │   ├── rml_63_description.urdf.xacro          #63 robotic arm xacro description file
 │   │   └── ros2_controllers.yaml                  #63 robotic arm move controller
 │   ├── launch
-│   │   ├── demo.launch.py                       #63 virtual robotic arm moveit2 launch file
-│   │   ├── gazebo_moveit_demo.launch.py         #63 simulation robotic arm moveit2 launch file
+│   │   ├── demo.launch.py                         #63 virtual robotic arm moveit2 launch file
+│   │   ├── gazebo_moveit_demo.launch.py           #63 simulation robotic arm moveit2 launch file
 │   │   ├── move_group.launch.py
 │   │   ├── moveit_rviz.launch.py
-│   │   ├── real_moveit_demo.launch.py            #63 real robotic arm moveit2 launch file
+│   │   ├── real_moveit_demo.launch.py             #63 real robotic arm moveit2 launch file
 │   │   ├── rsp.launch.py
 │   │   ├── setup_assistant.launch.py
 │   │   ├── spawn_controllers.launch.py
 │   │   ├── static_virtual_joint_tfs.launch.py
 │   │   └── warehouse_db.launch.py
 │   └── package.xml
-├── rm_65_config                #65 robotic arm moveit2 package (file explanation reference 63)
+├── rm_65_config                                   #65 robotic arm moveit2 package (file explanation reference 63)
 │   ├── CMakeLists.txt
 │   ├── config
 │   │   ├── initial_positions.yaml
