@@ -39,7 +39,7 @@ Revision History:
 rm_bringup package is used for realizing some basic robotic arm functions. And we can also refer to the code to realize other robotic arm functions. This package is introduced in detail in the following aspects.
 * 1.Package use.
 * 2.Package architecture description.
-* 3.Package topic description.
+* 3.Package topic description.  
 Through the introduction of the three parts, it can help you:
 * 1.Understand the package use.
 * 2.Familiar with the file structure and function of the package.
@@ -51,7 +51,7 @@ First, we need to run the underlying driver node of the robotic arm rm_driver.
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, and 75.
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, and 75.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -77,7 +77,7 @@ First, we need to run the underlying driver node of the robotic arm rm_driver.
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, and 75.
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, and 75.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -150,19 +150,19 @@ After successful execution, the interface appears as follows, and the robotic ar
 ### Overview_of_Package_Files
 The current rm_driver package is composed of the following files.
 ```
-├── CMakeLists.txt                # compilation rule file
+├── CMakeLists.txt                           # compilation rule file
 ├── include
 │   └── rm_example
 ├── launch
-│   ├── rm_6dof_movej.launch.py                 # 6 degrees of freedom MoveJ movement launch file
-│   └── rm_7dof_movej.launch.py                 #7 degrees of freedom MoveJ movement launch file
+│   ├── rm_6dof_movej.launch.py              # 6 degrees of freedom MoveJ movement launch file
+│   └── rm_7dof_movej.launch.py              # 7 degrees of freedom MoveJ movement launch file
 ├── package.xml
 └── src
-    ├── api_ChangeWorkFrame_demo.cpp        # source file to change the work coordinate system
-    ├── api_Get_Arm_State_demo.cpp            # source file to get the robotic arm's state
-    ├── api_MoveJ_demo.cpp                    #MoveJ motion source file
-    ├── api_MoveJP_demo.cpp                  #MoveJP motion source file
-    └── api_MoveL_demo.cpp                   #MoveL motion source file
+    ├── api_ChangeWorkFrame_demo.cpp         # source file to change the work coordinate system
+    ├── api_Get_Arm_State_demo.cpp           # source file to get the robotic arm's state
+    ├── api_MoveJ_demo.cpp                   # MoveJ motion source file
+    ├── api_MoveJP_demo.cpp                  # MoveJP motion source file
+    └── api_MoveL_demo.cpp                   # MoveL motion source file
 ```
 ## rm_example_Topic_Description
 ### rm_change_work_frame_topic_description
