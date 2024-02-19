@@ -56,7 +56,7 @@ Revision History-
 * 4.25[Speed open loop control-lifting mechanism-Liftspeed_msg](#Speed_open_loop_control-lifting_mechanism-Liftspeed_msg)
 * 4.26[Position closed-loop control-lifting mechanism-Lift height_msg](#Position_closed-loop_control-lifting_mechanism-Lift_height_msg)
 * 4.27[Getting the state of the lifting mechanism-Liftstate_msg](#Getting_the_state_of_the_lifting_mechanism-Liftstate_msg)
-* 4.28[Getting-setting UDP active reporting configuration-Setrealtimepush_msg](Getting-setting_UDP_active_reporting_configuration-Setrealtimepush_msg)
+* 4.28[Getting-setting UDP active reporting configuration-Setrealtimepush_msg](Getting_or_setting_UDP_active_reporting_configuration-Setrealtimepush_msg)
 
 
 ## rm_ros_interface_Package_Description
@@ -491,7 +491,7 @@ __height__
 Current lifting mechanism height, unit: mm, accuracy: 1mm, range: 0-2300.  
 __current__  
 Lifting drive error code, error code type refers to joint error code.  
-### Getting-setting_UDP_active_reporting_configuration-Setrealtimepush_msg
+### Getting_or_setting_UDP_active_reporting_configuration-Setrealtimepush_msg
 ```
 uint16 cycle  
 uint16 port  
