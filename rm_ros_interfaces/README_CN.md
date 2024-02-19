@@ -128,7 +128,7 @@ uint8 joint_num
 bool block  
 msg成员  
 joint_num  
-对应关节序号，从基座到机械臂手爪端，序号依次为1～6或1~7。  
+对应关节序号，从基座到机械臂手爪端，序号依次为1-6或1-7。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 所有坐标系名称Getallframe_msg
@@ -145,7 +145,7 @@ msg成员
 joint  
 关节角度，float类型，单位：弧度。  
 speed  
-速度百分比例系数，0~100。  
+速度百分比例系数，0-100。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 dof  
@@ -158,7 +158,7 @@ msg成员
 pose  
 机械臂位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数（float类型）。  
 speed  
-速度百分比例系数，0~100。  
+速度百分比例系数，0-100。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 圆弧运动Movec_msg
@@ -172,7 +172,7 @@ pose_mid
 pose_end  
 目标位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
 speed  
-速度百分比例系数，0~100。  
+速度百分比例系数，0-100。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 关节空间规划到目标位姿Movejp_msg
@@ -183,7 +183,7 @@ msg成员
 pose  
 目标位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
 speed  
-速度百分比例系数，0~100。  
+速度百分比例系数，0-100。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 角度透传Jointpos_msg
@@ -265,9 +265,9 @@ uint16 force
 bool block  
 msg成员  
 speed  
-手爪力控夹取速度，unsigned int类型，范围：1~1000。  
+手爪力控夹取速度，unsigned int类型，范围：1-1000。  
 force  
-手爪夹取力矩阈值，unsigned int类型，范围 ：50~1000。  
+手爪夹取力矩阈值，unsigned int类型，范围 ：50-1000。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 手爪力控夹取-持续力控夹取Gripperpick_msg
@@ -276,9 +276,9 @@ uint16 force
 bool block  
 msg成员  
 speed  
-手爪力控夹取速度，unsigned int类型，范围：1~1000。  
+手爪力控夹取速度，unsigned int类型，范围：1-1000。  
 force  
-手爪夹取力矩阈值，unsigned int类型，范围 ：50~1000。  
+手爪夹取力矩阈值，unsigned int类型，范围 ：50-1000。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 手爪到达指定位置Gripperset_msg
@@ -286,7 +286,7 @@ uint16 position
 bool block  
 msg成员  
 position  
-手爪目标位置，unsigned int类型，范围：1～1000,代表手爪开口度：0～70mm。  
+手爪目标位置，unsigned int类型，范围：1-1000,代表手爪开口度：0-70mm。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 力位混合控制Setforceposition_msg
@@ -331,7 +331,7 @@ uint16 posture_num
 bool block  
 msg成员  
 posture_num  
-预先保存在灵巧手内的手势序号，范围：1~40。  
+预先保存在灵巧手内的手势序号，范围：1-40。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 设置灵巧手动作序列Handseq_msg
@@ -339,7 +339,7 @@ uint16 seq_num
 bool block  
 msg成员  
 seq_num	  
-预先保存在灵巧手内的序列序号，范围：1~40。  
+预先保存在灵巧手内的序列序号，范围：1-40。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 设置灵巧手各自由度角度Handangle_msg
@@ -347,7 +347,7 @@ int16[6] hand_angle
 bool block  
 msg成员  
 hand_angle  
-手指角度数组，范围：0~1000。另外，-1 代表该自由度不执行任何操作，保持当前状态。  
+手指角度数组，范围：0-1000。另外，-1 代表该自由度不执行任何操作，保持当前状态。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 设置灵巧手速度Handspeed_msg
@@ -355,7 +355,7 @@ uint16 hand_speed
 bool block  
 msg成员  
 hand_speed
-手指速度，范围：1~1000。  
+手指速度，范围：1-1000。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 设置灵巧手力阈值Handforce_msg
@@ -363,7 +363,7 @@ uint16 hand_force
 bool block  
 msg成员  
 hand_force  
-手指力，范围：1~1000。  
+手指力，范围：1-1000。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 透传力位混合补偿-角度Forcepositionmovejoint_msg
@@ -382,7 +382,7 @@ sensor
 mode  
 模式，0-沿工作坐标系，1-沿工具端坐标系。  
 dir  
-力控方向，0~5 分别代表 X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z 方向。  
+力控方向，0-5 分别代表 X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z 方向。  
 force  
 力的大小，精度 0.1N 或者 0.1Nm。  
 block  
@@ -404,7 +404,7 @@ sensor
 mode  
 模式，0-沿工作坐标系，1-沿工具端坐标系。  
 dir  
-力控方向，0~5 分别代表 X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z 方向。  
+力控方向，0-5 分别代表 X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z 方向。  
 force  
 力的大小，精度 0.1N 或者 0.1Nm。  
 block  
@@ -414,7 +414,7 @@ int16 speed
 bool block  
 msg成员  
 speed  
-速度百分比，-100~100。Speed < 0:升降机构向下运动；Speed > 0:升降机构向上运动；Speed = 0:升降机构停止运动。  
+速度百分比，-100-100。Speed < 0:升降机构向下运动；Speed > 0:升降机构向上运动；Speed = 0:升降机构停止运动。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 位置闭环控制-升降机构Liftheight_msg
@@ -423,9 +423,9 @@ uint16 speed
 bool block  
 msg成员  
 height  
-目标高度，单位 mm，范围：0~2600。  
+目标高度，单位 mm，范围：0-2600。  
 speed  
-速度百分比，1~100。  
+速度百分比，1-100。  
 block  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 获取升降机构状态-升降机构Liftstate_msg
@@ -434,7 +434,7 @@ int16 current
 uint16 err_flag  
 msg成员  
 height  
-当前升降机构高度，单位：mm，精度：1mm，范围：0~2300。  
+当前升降机构高度，单位：mm，精度：1mm，范围：0-2300。  
 current  
 升降驱动错误代码，错误代码类型参考关节错误代码。  
 ### 查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg

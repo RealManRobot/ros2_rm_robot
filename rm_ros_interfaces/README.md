@@ -1,7 +1,7 @@
 <div align="right">
   
-[中文简体](https-//github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)|
-[English](https-//github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)
+[中文简体](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_ros_interfaces/README_CN.md)|
+[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_ros_interfaces/README.md)
 
 </div>
 
@@ -116,340 +116,396 @@ This package does not have any executable commands, but it is used to provide th
 ```
 ## rm_ros_interface_message_description
 ### Joint_error_code-Jointerrorcode_msg
+```
 uint16[] joint_error  
 uint8 dof  
-msg member  
-uint16[] joint_error  
+```
+__msg member__  
+__uint16[] joint_error__  
 Error message for each joint.  
-uint8 dof  
+__uint8 dof__  
 Degree of freedom message of the robotic arm.  
 ### Clearing_the_joint's_error_code-Jointerrclear_msg
+```
 uint8 joint_num  
 bool block  
-msg member  
-joint_num  
+```
+__msg member__  
+__joint_num__  
 the corresponding joint number, from the base to the robotic arm gripper, the number is 1-6 or 1-7.  
-block  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
 ### All_coordinate_system_names-Getallframe_msg
+```
 string[10] frame_name  
-msg member  
-frame_name  
+```
+__msg member__  
+__frame_name__  
 The array of work coordinate system names returned  
 ### Joine_motion-Movej_msg
+```
 float32[] joint  
 uint8 speed  
 bool block  
 uint8 dof  
-msg member  
-joint  
+```
+__msg member__  
+__joint__  
 Joint angle, float type, unit-radians.  
-speed  
+__speed__  
 Speed percentage ratio coefficient, 0-100.  
-block  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-dof  
+__dof__  
 Degree of freedom message of the robotic arm.  
 ### Linear_motion-Movel_msg
+```
 geometry_msgs/Pose pose  
 uint8 speed  
 bool block  
-msg member  
-pose  
+```
+__msg member__  
+__pose__  
 Robotic arm pose-geometry_msgs/Pose type, x, y, z coordinates (float type, unit-m) + quaternion (float type).  
-speed  
+__speed__  
 Speed percentage ratio coefficient, 0-100.  
-block  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 圆弧运动Movec_msg
+### Circular_motion-Movec_msg
+```
 geometry_msgs/Pose pose_mid  
 geometry_msgs/Pose pose_end  
 uint8 speed  
 bool block  
-msg member  
-pose_mid  
-中间位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
-pose_end  
-目标位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
-speed  
-速度百分比例系数，0~100。  
-block  
+```
+__msg member__  
+__pose_mid__  
+Middle pose: geometry_msgs/Pose type, x, y, z coordinates (float type, unit: m) + quaternion.  
+__pose_end__  
+Target pose: geometry_msgs/Pose type, x, y, z coordinates (float type, unit: m) + quaternion.  
+__speed__  
+Speed percentage ratio coefficient, 0-100.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 关节空间规划到目标位姿Movejp_msg
+### Joint_space_planning_to_target_pose-Movejp_msg
+```
 geometry_msgs/Pose pose  
 uint8 speed  
-bool block  
-msg member  
-pose  
-目标位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
-speed  
-速度百分比例系数，0~100。  
-block  
+bool block 
+```  
+__msg member__ 
+__pose__  
+Target pose: geometry_msgs/Pose type, x, y, z coordinates (float type, unit: m) + quaternion.  
+__speed__  
+Speed percentage ratio coefficient, 0-100.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 角度透传Jointpos_msg
+### Joint_transmission-Jointpos_msg
+```
 float32[] joint  
 bool follow  
 float32 expand  
 uint8 dof  
-msg member  
-joint
-关节角度，float类型，单位：弧度。  
-follow  
-跟随状态，bool类型，true高跟随，false低跟随，不设置默认高跟随。  
-expand  
-拓展关节，float类型，单位：弧度。  
-dof  
-机械臂自由度信息。  
-### 位姿透传Cartepos_msg
+```
+__msg member__  
+__joint__
+Joint angle, float type, unit: radians.  
+__follow__  
+Follow state, bool type, true: high follow, false: low follow, default high follow if not set.  
+__expand__  
+Expand joint, float type, unit: radians.  
+__dof__  
+Degree of freedom message of the robotic arm.  
+### Pose_transmission-Cartepos_msg
+```
 geometry_msgs/Pose pose  
 bool follow  
-msg member  
-pose  
-机械臂位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
-follow  
-跟随状态，bool类型，true高跟随，false低跟随，不设置默认高跟随。  
-### 机械臂当前状态（角度+欧拉角）Armoriginalstate_msg
+```
+__msg member__  
+__pose__  
+Robotic arm poses geometry_msgs/Pose type, x, y, z coordinates (float type, unit: m) + quaternion.  
+__follow__  
+Follow state, bool type, true: high follow, false: low follow, default high follow if not set.  
+### Current_robotic_arm_state_Angle_and_Euler_angle-Armoriginalstate_msg
+```
 float32[] joint  
 float32[6] pose  
 uint16 arm_err  
 uint16 sys_err  
-uint8 dof  
-msg member  
-joint  
-关节角度，float类型，单位：度。  
-pose  
-机械臂当前位姿，float类型，x、y、z坐标，单位：m，x、y、z欧拉角，单位：度。  
-arm_err  
-机械臂运行错误代码，unsigned int类型。  
-arm_err
-控制器错误代码，unsigned int类型。  
-dof  
-机械臂自由度信息。  
-### 机械臂当前状态（弧度+四元数）Armstate_msg
+uint8 dof
+```  
+__msg member__  
+__joint__  
+Joint angle, float type, unit: °.  
+__pose__  
+Current pose of the robotic arm, float type, x, y, z coordinates, unit: m, x, y, z Euler angle, unit: degree.  
+__arm_err__  
+Robotic arm running error code, unsigned int type.  
+__arm_err__
+Controller error code, unsigned int type.  
+__dof__  
+Degree of freedom message of the robotic arm.  
+### Current_arm_state_radians_and_quaternion-Armstate_msg
+```
 float32[] joint  
 geometry_msgs/Pose pose  
 uint16 arm_err  
 uint16 sys_err  
 uint8 dof  
-msg member  
-joint  
-关节角度，float类型，单位：弧度。  
-pose  
-机械臂当前位姿，float类型，x、y、z坐标，单位：m，x、y、z、w四元数。  
-arm_err  
-机械臂运行错误代码，unsigned int类型。  
-arm_err  
-控制器错误代码，unsigned int类型。  
-dof  
-机械臂自由度信息。  
-### 读取软件版本号Armsoftversion_msg
+```
+__msg member__  
+__joint__  
+Joint angle, float type, unit: radians.  
+__pose__  
+Current pose of the robotic arm, float type, x, y, z coordinates, unit: m, x, y, z, w quaternion.  
+__arm_err__  
+Robotic arm running error code, unsigned int type.  
+__arm_err__  
+Controller error code, unsigned int type.  
+__dof__  
+Degree of freedom message of the robotic arm.  
+### Getting_the_software_version-Armsoftversion_msg
+```
 string planversion  
 string ctrlversion  
 string kernal1  
 string kernal2  
 string productversion  
-msg member  
-planversion  
-读取到的用户接口内核版本号，string类型。  
-ctrlversion  
-实时内核版本号，string类型。  
-kernal1  
-实时内核子核心 1 版本号，string类型。  
-kernal2  
-实时内核子核心 2 版本号，string类型。  
-productversion  
-机械臂型号，string类型。  
-### 手爪力控夹取Gripperpick_msg
+```
+__msg member__  
+__planversion__  
+The read user interface kernel version number, string type.  
+__ctrlversion__  
+Real-time kernel version number, string type.  
+__kernal1__  
+The version number of sub-core 1 of the real-time kernel, string type.  
+__kernal2__  
+The version number of sub-core 2 of the real-time kernel, string type.  
+__productversion__  
+Robotic arm model, string type.  
+### Gripper's_pick-Gripperpick_msg
+```
 uint16 speed  
 uint16 force  
 bool block  
-msg member  
-speed  
-手爪力控夹取速度，unsigned int类型，范围：1~1000。  
-force  
-手爪夹取力矩阈值，unsigned int类型，范围 ：50~1000。  
-block  
+```
+__msg member__  
+__speed__  
+Gripper pick speed, unsigned int type, range: 1-1000.  
+__force__  
+Gripper pick torque threshold, unsigned int type, range: 50-1000.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 手爪力控夹取（持续力控夹取）Gripperpick_msg
+### Gripper's_pick_gripper's_pick-on-Gripperpick_msg
+```
 uint16 speed  
 uint16 force  
 bool block  
-msg member  
+```
+__msg member__  
 speed  
-手爪力控夹取速度，unsigned int类型，范围：1~1000。  
+Gripper pick speed, unsigned int type, range: 1-1000.  
 force  
-手爪夹取力矩阈值，unsigned int类型，范围 ：50~1000。  
+Gripper picks torque threshold, unsigned int type, range: 50-1000.  
 block  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 手爪到达指定位置Gripperset_msg
+### Gripper_reaching_the_given_position-Gripperset_msg
+```
 uint16 position  
-bool block  
-msg member  
-position  
-手爪目标位置，unsigned int类型，范围：1～1000,代表手爪开口度：0～70mm。  
-block  
+bool block 
+``` 
+__msg member__  
+__position__  
+Gripper target position, unsigned int type, range: 1-1000, representing the degree of opening of the gripper: 0-70 mm.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 力位混合控制Setforceposition_msg
+### Force-position_mixing_control-Setforceposition_msg
+```
 uint8 sensor  
 uint8 mode  
 uint8 direction  
 int16 n  
-bool block  
-msg member  
-sensor  
-传感器；0-一维力；1-六维力。  
-mode  
-Mode：0-工作坐标系力控； 1-工具坐标系力控。  
-Direction  
-力控方向；0-沿X 轴；1-沿Y 轴；2-沿 Z 轴；3-沿RX 姿态方向；4-沿 RY 姿态方向；5-沿 RZ 姿态方向。  
-n  
-力的大小，单位 0.1N。  
-block  
-是否阻塞，true-阻塞，false-非阻塞。  
-### 六维力数据Sixforce_msg
+bool block
+```  
+__msg member__  
+__sensor__  
+Sensor; 0 - One-axis force; 1 - Six-axis force.  
+__mode__  
+Mode: 0 - Base coordinate system force control; 1 - Tool coordinate system force control.  
+__Direction__  
+Force control direction; 0 - Along the X-axis; 1 - Along the Y-axis; 2 - Along the Z-axis; 3 - Along the RX posture direction; 4 - Along the RY posture direction; 5 - Along the RZ posture direction.  
+__n__  
+Force value, unit: 0.1 N.  
+__block__  
+whether it is a blocking mode, true: blocking, false: non-blocking.  
+### Six-axis_force_data-Sixforce_msg
+```
 float32 force_fx  
 float32 force_fy  
 float32 force_fz  
 float32 force_mx  
 float32 force_my  
-float32 force_mz  
-msg member  
-force_fx  
-沿x轴方向受力大小。  
-force_fy  
-沿y轴方向受力大小。  
-force_fz
-沿z轴方向受力大小。  
-force_mx  
-沿x轴方向转动受力大小。  
-force_my  
-沿y轴方向转动受力大小。  
-force_mz  
-沿z轴方向转动受力大小。  
-### 设置灵巧手手势Handposture_msg
+float32 force_mz
+```  
+__msg member__  
+__force_fx__  
+the force along the x-axis direction.  
+__force_fy__  
+the force along the y-axis direction.  
+__force_fz__
+the force along the z-axis direction.  
+__force_mx__  
+the force when rotating along the x-axis direction.  
+__force_my__  
+the force when rotating along the y-axis direction.  
+__force_mz__  
+the force when rotating along the z-axis direction.  
+### Setting_the_dexterous_hand_posture-Hand_posture_msg
+```
 uint16 posture_num  
-bool block  
-msg member  
-posture_num  
-预先保存在灵巧手内的手势序号，范围：1~40。  
-block  
+bool block 
+``` 
+__msg member__  
+__posture_num__  
+The serial number of the posture pre-saved in the dexterous hand, ranges from 1 to 40.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 设置灵巧手动作序列Handseq_msg
+### Setting_the_dexterous_hand_action_sequence-Handseq_msg
+```
 uint16 seq_num  
-bool block  
-msg member  
-seq_num	  
-预先保存在灵巧手内的序列序号，范围：1~40。  
-block  
+bool block
+```  
+__msg member__  
+__seq_num__	  
+The serial number of the sequence pre-saved in the dexterous hand, ranging from 1 to 40.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 设置灵巧手各自由度角度Handangle_msg
+### Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand-Handangle_msg
+```
 int16[6] hand_angle   
-bool block  
-msg member  
-hand_angle  
-手指角度数组，范围：0~1000。另外，-1 代表该自由度不执行任何操作，保持当前状态。  
-block  
+bool block
+```  
+__msg member__  
+__hand_angle__  
+Hand angle array, range: 0-1000. And -1 represents that no operation is performed on this degree of freedom and the current state remains.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 设置灵巧手速度Handspeed_msg
+### Setting_the_dexterous_hand_action_sequence-Handspeed_msg
+```
 uint16 hand_speed  
-bool block  
-msg member  
-hand_speed
-手指速度，范围：1~1000。  
-block  
+bool block
+```  
+__msg member__  
+__hand_speed__
+Hand speed, range: 1-1000.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 设置灵巧手力阈值Handforce_msg
+### Setting_the_force_threshold_for_the_dexterous_hand-Handforce_msg
+```
 uint16 hand_force  
-bool block  
-msg member  
-hand_force  
-手指力，范围：1~1000。  
-block  
+bool block
+```  
+__msg member__  
+__hand_force__  
+Hand force, range: 1-1000.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 透传力位混合补偿（角度）Forcepositionmovejoint_msg
+### Transmissive_force-position_mixing_control_compensation-angle-Forcepositionmovejoint_msg
+```
 float32[] joint  
 uint8 sensor  
 uint8 mode  
 int16 dir  
 float32 force  
 bool follow  
-uint8 dof  
-msg member  
-joint  
-角度力位混合透传，单位：弧度。  
-sensor  
-所使用传感器类型，0-一维力，1-六维力。  
-mode  
-模式，0-沿工作坐标系，1-沿工具端坐标系。  
-dir  
-力控方向，0~5 分别代表 X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z 方向。  
-force  
-力的大小，精度 0.1N 或者 0.1Nm。  
-block  
+uint8 dof
+```  
+__msg member__  
+__joint__  
+Angle force-position mixing transmission, unit: radians.  
+__sensor__  
+Type of sensor used, 0 - One-axis force, 1 - Six-axis force.  
+__mode__  
+Mode, 0 - Along the work coordinate system, 1 - Along the tool end coordinate system.  
+__dir__  
+Force control direction, 0 to 5 represent X/Y/Z/Rx/Ry/Rz respectively, and the default direction for one-axis force type is the Z direction.  
+__force__  
+Force value, accuracy: 0.1 N or 0.1 Nm.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
 dof  
-机械臂自由度信息。  
-### 透传力位混合补偿（位姿）Forcepositionmovejoint_msg
+Degree of freedom message of the robotic arm.  
+### Transmissive_force-position_mixing_control_compensation-pose-Forcepositionmovejoint_msg
+```
 geometry_msgs/Pose pose  
 uint8 sensor  
 uint8 mode  
 int16 dir  
 float32 force  
-bool follow  
-msg member  
-pose  
-机械臂位姿信息，x、y、z位置信息+四元数姿态信息。  
-sensor  
-所使用传感器类型，0-一维力，1-六维力。  
-mode  
-模式，0-沿工作坐标系，1-沿工具端坐标系。  
-dir  
-力控方向，0~5 分别代表 X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z 方向。  
-force  
-力的大小，精度 0.1N 或者 0.1Nm。  
-block  
+bool follow
+```  
+__msg member__  
+__pose__  
+Robotic arm pose message, x, y, z position message + quaternion posture message.  
+__sensor__  
+Type of sensor used, 0 - One-axis force, 1 - Six-axis force.  
+__mode__  
+Mode, 0 - Along the work coordinate system, 1 - Along the tool end coordinate system.  
+__dir__  
+Force control direction, 0 to 5 represent X/Y/Z/Rx/Ry/Rz respectively, and the default direction for one-axis force type is the Z direction.  
+__force__  
+Force value, accuracy: 0.1 N or 0.1 Nm.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 速度开环控制（升降机构）Liftspeed_msg
+### Speed_open_loop_control-lifting_mechanism-Liftspeed_msg
+```
 int16 speed  
-bool block  
-msg member  
-speed  
-速度百分比，-100~100。Speed < 0-升降机构向下运动；Speed > 0-升降机构向上运动；Speed = 0-升降机构停止运动。  
-block  
+bool block
+```  
+__msg member__  
+__speed__  
+Speed percentage, -100-100. Speed < 0: the lifting mechanism moves downward; Speed > 0: the lifting mechanism moves upward; Speed = 0: the lifting mechanism stops.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 位置闭环控制（升降机构）Liftheight_msg
+### Position_closed-loop_control-lifting_mechanism-Lift_height_msg
+```
 uint16 height  
 uint16 speed  
-bool block  
-msg member  
-height  
-目标高度，单位 mm，范围：0~2600。  
-speed  
-速度百分比，1~100。  
-block  
+bool block
+```  
+__msg member__  
+__height__  
+Target height, unit: mm, accuracy: 0-2600.  
+__speed__  
+Speed percentage, 1-100.  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### 获取升降机构状态（升降机构）Liftstate_msg
+### Getting_the_state_of_the_lifting_mechanism-Liftstate_msg
+```
 int16 height   
 int16 current  
-uint16 err_flag  
-msg member  
-height  
-当前升降机构高度，单位：mm，精度：1mm，范围：0~2300。  
-current  
-升降驱动错误代码，错误代码类型参考关节错误代码。  
-### 查询（设置）UDP 机械臂状态主动上报配置Setrealtimepush_msg
+uint16 err_flag
+```  
+__msg member__  
+__height__  
+Current lifting mechanism height, unit: mm, accuracy: 1mm, range: 0-2300.  
+__current__  
+Lifting drive error code, error code type refers to joint error code.  
+### Getting-setting_UDP_active_reporting_configuration-Setrealtimepush_msg
+```
 uint16 cycle  
 uint16 port  
 uint16 force_coordinate  
-string ip  
-msg member  
-cycle  
-设置广播周期，为5ms的倍数。  
-port  
-设置广播的端口号。  
-force_coordinate  
-系统外受力数据的坐标系，0 为传感器坐标系 1 为当前工作坐标系 2 为当前工具坐标系。  
-ip  
-自定义的上报目标IP 地址。  
+string ip
+```  
+__msg member__  
+__cycle__  
+Set the broadcast cycle, which is a multiple of 5ms.  
+__port__  
+Set the port number for broadcasting.  
+__force_coordinate__  
+Coordinate system for external force data of the system, where 0 is the sensor coordinate system, 1 is the current work coordinate system, and 2 is the current tool coordinate system.  
+__ip__  
+Customized reporting target IP address.  
 
-主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https-//github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。
+It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".
