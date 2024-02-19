@@ -19,11 +19,11 @@ Revision History:
 </div>
 
 ## Content
-* 1[rm_description Package Description](#rm_description_Package_Description)
-* 2[rm_description Package Use](#rm_description_Package_Use)
-* 3[rm_description Package Architecture Description](#rm_description_Package_Architecture_Description)
+* 1.[rm_description Package Description](#rm_description_Package_Description)
+* 2.[rm_description Package Use](#rm_description_Package_Use)
+* 3.[rm_description Package Architecture Description](#rm_description_Package_Architecture_Description)
 * 3.1[Overview of Package Files](#Overview_of_Package_Files)
-* 4[rm_description Topic Description](#rm_description_Topic_Description)
+* 4.[rm_description Topic Description](#rm_description_Topic_Description)
 
 ## rm_description_Package_Description
 rm_description is a function package for displaying the robot model and TF transformation. Through this package, we can realize the linkage effect between a virtual robotic arm in a computer and a real robot arm in reality. In the moveit2 control, we also need the support of this package. This package is introduced in detail in the following aspects.  
