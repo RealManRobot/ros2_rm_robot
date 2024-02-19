@@ -1,6 +1,6 @@
 <div align="right">
 
-[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_gazebo/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_gazebo/README.md)
+[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_control/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_control/README.md)
  
 </div>
 
@@ -66,6 +66,7 @@ After successful compilation, follow the above commands to start the package.
 ## rm_control_Package_Architecture_Description
 ### Overview_of_package_files
 The current rm_driver package is composed of the following files.
+```
 ├── CMakeLists.txt                     # compilation rule file
 ├── include                            # dependency header file folder
 │   ├── cubicSpline.h                  # cubic spline interpolation header file
@@ -78,6 +79,7 @@ The current rm_driver package is composed of the following files.
 ├── package.xml                        # dependency declaration file
 └── src
     └── rm_control.cpp                 # code source file
+```
 ## rm_control_Topic_Description
 The following is the topic description of the package.
 ```
