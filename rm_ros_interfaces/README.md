@@ -303,11 +303,11 @@ uint16 force
 bool block  
 ```
 __msg member__  
-speed  
+__speed__  
 Gripper pick speed, unsigned int type, range: 1-1000.  
-force  
+__force__  
 Gripper picks torque threshold, unsigned int type, range: 50-1000.  
-block  
+__block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
 ### Gripper_reaching_the_given_position-Gripperset_msg
 ```

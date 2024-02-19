@@ -116,340 +116,396 @@ rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行
 ```
 ## rm_ros_interface消息说明
 ### 关节错误代码Jointerrorcode_msg
+```
 uint16[] joint_error  
-uint8 dof  
-msg成员  
-uint16[] joint_error  
+uint8 dof
+```  
+__msg成员__  
+__uint16[] joint_error__  
 每个关节报错信息。  
-uint8 dof  
+__uint8 dof__  
 机械臂自由度信息。  
 ### 清除关节错误代码Jointerrclear_msg
+```
 uint8 joint_num  
-bool block  
-msg成员  
-joint_num  
+bool block
+```  
+__msg成员__  
+__joint_num__  
 对应关节序号，从基座到机械臂手爪端，序号依次为1-6或1-7。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 所有坐标系名称Getallframe_msg
-string[10] frame_name  
-msg成员  
-frame_name  
+```
+string[10] frame_name
+```  
+__msg成员__  
+__frame_name__  
 返回的工作坐标系的名称数组。  
 ### 关节运动Movej_msg
+```
 float32[] joint  
 uint8 speed  
 bool block  
-uint8 dof  
-msg成员  
-joint  
+uint8 dof 
+``` 
+__msg成员__  
+__joint__  
 关节角度，float类型，单位：弧度。  
-speed  
+__speed__  
 速度百分比例系数，0-100。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-dof  
+__dof__  
 机械臂自由度信息。  
 ### 直线运动Movel_msg
+```
 geometry_msgs/Pose pose  
 uint8 speed  
-bool block  
-msg成员  
-pose  
+bool block
+```  
+__msg成员__  
+__pose__  
 机械臂位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数（float类型）。  
-speed  
+__speed__  
 速度百分比例系数，0-100。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 圆弧运动Movec_msg
+```
 geometry_msgs/Pose pose_mid  
 geometry_msgs/Pose pose_end  
 uint8 speed  
-bool block  
-msg成员  
-pose_mid  
+bool block
+```  
+__msg成员__  
+__pose_mid__  
 中间位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
-pose_end  
+__pose_end__  
 目标位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
-speed  
+__speed__  
 速度百分比例系数，0-100。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 关节空间规划到目标位姿Movejp_msg
+```
 geometry_msgs/Pose pose  
 uint8 speed  
-bool block  
-msg成员  
-pose  
+bool block
+```  
+__msg成员__  
+__pose__  
 目标位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
-speed  
+__speed__  
 速度百分比例系数，0-100。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 角度透传Jointpos_msg
+```
 float32[] joint  
 bool follow  
 float32 expand  
-uint8 dof  
-msg成员  
-joint
+uint8 dof
+```  
+__msg成员__  
+__joint__
 关节角度，float类型，单位：弧度。  
-follow  
+__follow__  
 跟随状态，bool类型，true高跟随，false低跟随，不设置默认高跟随。  
-expand  
+__expand__  
 拓展关节，float类型，单位：弧度。  
-dof  
+__dof__  
 机械臂自由度信息。  
 ### 位姿透传Cartepos_msg
+```
 geometry_msgs/Pose pose  
-bool follow  
-msg成员  
-pose  
+bool follow
+```  
+__msg成员__  
+__pose__  
 机械臂位姿，geometry_msgs/Pose类型，x、y、z坐标（float类型，单位：m）+四元数。  
-follow  
+__follow __ 
 跟随状态，bool类型，true高跟随，false低跟随，不设置默认高跟随。  
 ### 机械臂当前状态-角度和欧拉角Armoriginalstate_msg
+```
 float32[] joint  
 float32[6] pose  
 uint16 arm_err  
 uint16 sys_err  
-uint8 dof  
-msg成员  
-joint  
+uint8 dof
+```  
+__msg成员__  
+__joint__  
 关节角度，float类型，单位：度。  
-pose  
+__pose__  
 机械臂当前位姿，float类型，x、y、z坐标，单位：m，x、y、z欧拉角，单位：度。  
-arm_err  
+__arm_err__  
 机械臂运行错误代码，unsigned int类型。  
-arm_err
+__arm_err__
 控制器错误代码，unsigned int类型。  
-dof  
+__dof__  
 机械臂自由度信息。  
 ### 机械臂当前状态-弧度和四元数Armstate_msg
+```
 float32[] joint  
 geometry_msgs/Pose pose  
 uint16 arm_err  
 uint16 sys_err  
-uint8 dof  
-msg成员  
-joint  
+uint8 dof
+```  
+__msg成员__  
+__joint__  
 关节角度，float类型，单位：弧度。  
-pose  
+__pose__  
 机械臂当前位姿，float类型，x、y、z坐标，单位：m，x、y、z、w四元数。  
-arm_err  
+__arm_err__  
 机械臂运行错误代码，unsigned int类型。  
-arm_err  
+__arm_err__  
 控制器错误代码，unsigned int类型。  
-dof  
+__dof__  
 机械臂自由度信息。  
 ### 读取软件版本号Armsoftversion_msg
+```
 string planversion  
 string ctrlversion  
 string kernal1  
 string kernal2  
-string productversion  
-msg成员  
-planversion  
+string productversion
+```  
+__msg成员__  
+__planversion__  
 读取到的用户接口内核版本号，string类型。  
-ctrlversion  
+__ctrlversion__  
 实时内核版本号，string类型。  
-kernal1  
+__kernal1__  
 实时内核子核心 1 版本号，string类型。  
-kernal2  
+__kernal2__  
 实时内核子核心 2 版本号，string类型。  
-productversion  
+__productversion__  
 机械臂型号，string类型。  
 ### 手爪力控夹取Gripperpick_msg
+```
 uint16 speed  
 uint16 force  
-bool block  
-msg成员  
-speed  
+bool block
+```  
+__msg成员__  
+__speed__  
 手爪力控夹取速度，unsigned int类型，范围：1-1000。  
-force  
+__force__  
 手爪夹取力矩阈值，unsigned int类型，范围 ：50-1000。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 手爪力控夹取-持续力控夹取Gripperpick_msg
+```
 uint16 speed  
 uint16 force  
-bool block  
-msg成员  
-speed  
+bool block
+```  
+__msg成员__  
+__speed__  
 手爪力控夹取速度，unsigned int类型，范围：1-1000。  
-force  
+__force__  
 手爪夹取力矩阈值，unsigned int类型，范围 ：50-1000。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 手爪到达指定位置Gripperset_msg
+```
 uint16 position  
-bool block  
-msg成员  
-position  
+bool block
+```  
+__msg成员__  
+__position__  
 手爪目标位置，unsigned int类型，范围：1-1000,代表手爪开口度：0-70mm。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 力位混合控制Setforceposition_msg
+```
 uint8 sensor  
 uint8 mode  
 uint8 direction  
 int16 n  
-bool block  
-msg成员  
-sensor  
+bool block
+```  
+__msg成员__  
+__sensor__  
 传感器；0-一维力；1-六维力。  
-mode  
+__mode__  
 Mode：0-工作坐标系力控； 1-工具坐标系力控。  
-Direction  
+__Direction__  
 力控方向；0-沿X 轴；1-沿Y 轴；2-沿 Z 轴；3-沿RX 姿态方向；4-沿 RY 姿态方向；5-沿 RZ 姿态方向。  
-n  
+__n__  
 力的大小，单位 0.1N。  
-block  
+__block__  
 是否阻塞，true:阻塞，false:非阻塞。  
 ### 六维力数据Sixforce_msg
+```
 float32 force_fx  
 float32 force_fy  
 float32 force_fz  
 float32 force_mx  
 float32 force_my  
-float32 force_mz  
-msg成员  
-force_fx  
+float32 force_mz
+```  
+__msg成员__  
+__force_fx__  
 沿x轴方向受力大小。  
-force_fy  
+__force_fy__  
 沿y轴方向受力大小。  
-force_fz
+__force_fz__
 沿z轴方向受力大小。  
-force_mx  
+__force_mx__  
 沿x轴方向转动受力大小。  
-force_my  
+__force_my__  
 沿y轴方向转动受力大小。  
-force_mz  
+__force_mz__  
 沿z轴方向转动受力大小。  
 ### 设置灵巧手手势Handposture_msg
+```
 uint16 posture_num  
-bool block  
-msg成员  
-posture_num  
+bool block
+```  
+__msg成员__  
+__posture_num__  
 预先保存在灵巧手内的手势序号，范围：1-40。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 设置灵巧手动作序列Handseq_msg
+```
 uint16 seq_num  
-bool block  
-msg成员  
-seq_num	  
+bool block
+```  
+__msg成员__  
+__seq_num__	  
 预先保存在灵巧手内的序列序号，范围：1-40。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 设置灵巧手各自由度角度Handangle_msg
+```
 int16[6] hand_angle   
-bool block  
-msg成员  
-hand_angle  
+bool block
+```  
+__msg成员__  
+__hand_angle__  
 手指角度数组，范围：0-1000。另外，-1 代表该自由度不执行任何操作，保持当前状态。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 设置灵巧手速度Handspeed_msg
+```
 uint16 hand_speed  
-bool block  
-msg成员  
-hand_speed
+bool block
+```  
+__msg成员__  
+__hand_speed__
 手指速度，范围：1-1000。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 设置灵巧手力阈值Handforce_msg
+```
 uint16 hand_force  
-bool block  
-msg成员  
-hand_force  
+bool block
+```  
+__msg成员__  
+__hand_force__  
 手指力，范围：1-1000。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 透传力位混合补偿-角度Forcepositionmovejoint_msg
+```
 float32[] joint  
 uint8 sensor  
 uint8 mode  
 int16 dir  
 float32 force  
 bool follow  
-uint8 dof  
-msg成员  
-joint  
+uint8 dof
+```  
+__msg成员__  
+__joint__  
 角度力位混合透传，单位：弧度。  
-sensor  
+__sensor__  
 所使用传感器类型，0-一维力，1-六维力。  
-mode  
+__mode__  
 模式，0-沿工作坐标系，1-沿工具端坐标系。  
-dir  
+__dir__  
 力控方向，0-5 分别代表 X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z 方向。  
-force  
+__force__  
 力的大小，精度 0.1N 或者 0.1Nm。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
-dof  
+__dof__  
 机械臂自由度信息。  
 ### 透传力位混合补偿-位姿Forcepositionmovejoint_msg
+```
 geometry_msgs/Pose pose  
 uint8 sensor  
 uint8 mode  
 int16 dir  
 float32 force  
-bool follow  
-msg成员  
-pose  
+bool follow
+```  
+__msg成员__  
+__pose__  
 机械臂位姿信息，x、y、z位置信息+四元数姿态信息。  
-sensor  
+__sensor__  
 所使用传感器类型，0-一维力，1-六维力。  
-mode  
+__mode__  
 模式，0-沿工作坐标系，1-沿工具端坐标系。  
-dir  
+__dir__  
 力控方向，0-5 分别代表 X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z 方向。  
-force  
+__force__  
 力的大小，精度 0.1N 或者 0.1Nm。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 速度开环控制-升降机构Liftspeed_msg
+```
 int16 speed  
-bool block  
-msg成员  
-speed  
+bool block
+```  
+__msg成员__  
+__speed__  
 速度百分比，-100-100。Speed < 0:升降机构向下运动；Speed > 0:升降机构向上运动；Speed = 0:升降机构停止运动。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 位置闭环控制-升降机构Liftheight_msg
+```
 uint16 height  
 uint16 speed  
-bool block  
-msg成员  
-height  
+bool block
+```  
+__msg成员__  
+__height__  
 目标高度，单位 mm，范围：0-2600。  
-speed  
+__speed__  
 速度百分比，1-100。  
-block  
+__block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 获取升降机构状态-升降机构Liftstate_msg
+```
 int16 height   
 int16 current  
-uint16 err_flag  
-msg成员  
-height  
+uint16 err_flag
+```  
+__msg成员__  
+__height__  
 当前升降机构高度，单位：mm，精度：1mm，范围：0-2300。  
-current  
+__current__  
 升降驱动错误代码，错误代码类型参考关节错误代码。  
 ### 查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg
+```
 uint16 cycle  
 uint16 port  
 uint16 force_coordinate  
-string ip  
-msg成员  
-cycle  
+string ip
+```  
+__msg成员__  
+__cycle__  
 设置广播周期，为5ms的倍数。  
-port  
+__port__  
 设置广播的端口号。  
-force_coordinate  
+__force_coordinate__  
 系统外受力数据的坐标系，0 为传感器坐标系 1 为当前工作坐标系 2 为当前工具坐标系。  
-ip  
+__ip__  
 自定义的上报目标IP 地址。  
 
 主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。
