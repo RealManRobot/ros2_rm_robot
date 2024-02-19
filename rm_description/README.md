@@ -1,6 +1,6 @@
 <div align="right">
 
-[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/README.md)
+[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_description/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_description/README.md)
  
 </div>
 
@@ -127,7 +127,7 @@ The current rm_driver package is composed of the following files.
     ├── rml_63_gazebo.urdf               #63gazebo simulation urdf description file
     └── rml_63.urdf                      #63 urdf description file
 ```
-## Overview_of_Package_Files
+## rm_description_Topic_Description
 The following is the topic description of the package.  
 ```
   Subscribers:
