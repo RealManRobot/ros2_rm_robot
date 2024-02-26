@@ -1,4 +1,4 @@
-# Default initial positions for rml_63_description's ros2_control fake system
+# Default initial positions for rm_75_description's ros2_control fake system
 
 initial_positions:
   joint1: 0

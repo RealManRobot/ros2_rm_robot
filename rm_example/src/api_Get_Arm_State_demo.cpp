@@ -4,6 +4,7 @@
 #include <chrono>
 #include <functional>
 #include <memory>
+#include <unistd.h>
 #include <thread>
 #include "rclcpp/rclcpp.hpp"
 #include "rm_ros_interfaces/msg/armoriginalstate.hpp"
@@ -18,7 +19,7 @@ class GetArmState: public rclcpp::Node
   public:
     GetArmState();                                                                                   //构造函数
     void get_arm_state();                                                                            //改变工作坐标系函数
-    void GetArmState_Callback(const rm_ros_interfaces::msg::Armoriginalstate & msg);                 //结果回调函数
+    void GetArmState_Callback(const rm_ros_interfaces::msg::Armoriginalstate::SharedPtr msg);                 //结果回调函数
   
   private:
     rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr publisher_;                                   //声明发布器
@@ -27,20 +28,20 @@ class GetArmState: public rclcpp::Node
 
 
 /******************************接收到订阅的机械臂执行状态消息后，会进入消息回调函数**************************/ 
-void GetArmState::GetArmState_Callback(const rm_ros_interfaces::msg::Armoriginalstate & msg)
+void GetArmState::GetArmState_Callback(const rm_ros_interfaces::msg::Armoriginalstate::SharedPtr msg)
 {
     // 将接收到的消息打印出来，显示是否执行成功
-    if(msg.dof == 7)
+    if(msg->dof == 7)
     {
-      RCLCPP_INFO (this->get_logger(),"joint state is: [%lf, %lf, %lf, %lf, %lf, %lf, %lf]\n", msg.joint[0],msg.joint[1],msg.joint[2],msg.joint[3],msg.joint[4],msg.joint[5],msg.joint[6]);
+      RCLCPP_INFO (this->get_logger(),"joint state is: [%lf, %lf, %lf, %lf, %lf, %lf, %lf]\n", msg->joint[0],msg->joint[1],msg->joint[2],msg->joint[3],msg->joint[4],msg->joint[5],msg->joint[6]);
     }
     else
     {
-      RCLCPP_INFO (this->get_logger(),"joint state is: [%lf, %lf, %lf, %lf, %lf, %lf]\n", msg.joint[0],msg.joint[1],msg.joint[2],msg.joint[3],msg.joint[4],msg.joint[5]);
+      RCLCPP_INFO (this->get_logger(),"joint state is: [%lf, %lf, %lf, %lf, %lf, %lf]\n", msg->joint[0],msg->joint[1],msg->joint[2],msg->joint[3],msg->joint[4],msg->joint[5]);
     }
-    RCLCPP_INFO (this->get_logger(),"pose state is: [%lf, %lf, %lf, %lf, %lf, %lf]\n", msg.pose[0],msg.pose[1],msg.pose[2],msg.pose[3],msg.pose[4],msg.pose[5]);
-    RCLCPP_INFO (this->get_logger(),"arm_err is: %d\n",msg.arm_err);
-    RCLCPP_INFO (this->get_logger(),"sys_err is: %d\n",msg.sys_err);
+    RCLCPP_INFO (this->get_logger(),"pose state is: [%lf, %lf, %lf, %lf, %lf, %lf]\n", msg->pose[0],msg->pose[1],msg->pose[2],msg->pose[3],msg->pose[4],msg->pose[5]);
+    RCLCPP_INFO (this->get_logger(),"arm_err is: %d\n",msg->arm_err);
+    RCLCPP_INFO (this->get_logger(),"sys_err is: %d\n",msg->sys_err);
 }   
 /***********************************************end**************************************************/
 

@@ -440,8 +440,7 @@ public:
     /// \param len   返回的工具数量
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
-//    RM_SERVICESHARED_EXPORT int Service_Get_All_Tool_Frame(SOCKHANDLE ArmSocket, std::string names, int *len);
-    RM_SERVICESHARED_EXPORT int Service_Get_All_Tool_Frame(SOCKHANDLE ArmSocket, std::shared_ptr<FRAMENAME>& names, int *len);
+    RM_SERVICESHARED_EXPORT int Service_Get_All_Tool_Frame(SOCKHANDLE ArmSocket, std::shared_ptr<NAMES>& names, int *len);
     RM_SERVICESHARED_EXPORT int Service_Get_All_Tool_Frame(SOCKHANDLE ArmSocket, FRAME_NAME* names, int *len);
 
     /// \brief Service_Auto_Set_Work_Frame 三点法自动设置工作坐标系
@@ -508,7 +507,7 @@ public:
     /// \param len 返回的工作坐标系名称长度
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Get_All_Work_Frame(SOCKHANDLE ArmSocket, std::shared_ptr<FRAMENAME>& names, int *len);
+    RM_SERVICESHARED_EXPORT int Service_Get_All_Work_Frame(SOCKHANDLE ArmSocket, std::shared_ptr<NAMES>& names, int *len);
     RM_SERVICESHARED_EXPORT int Service_Get_All_Work_Frame(SOCKHANDLE ArmSocket, FRAME_NAME* names, int *len);
 
     ///
@@ -605,6 +604,7 @@ public:
     /// \param                      ArmSocket socket句柄
     /// \param x                    旋转角
     /// \param y                    俯仰角
+    /// \param z                    方位角
     /// \param block                RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
     /// \return                     0-成功，失败返回:错误码, rm_define.h查询.
     ///
@@ -626,11 +626,12 @@ public:
     /// \param joint 目标关节1~7角度数组
     /// \param v 速度比例1~100，即规划速度和加速度占关节最大线转速和加速度的百分比
     /// \param r 轨迹交融半径，目前默认0。
+    /// \param trajectory_connect：代表是否和下一条运动一起规划，0代表立即规划，1代表和下一条轨迹一起规划，当为1时，轨迹不会立即执行
     /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待机械臂到达位置或者规划失败
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Movej_Cmd(SOCKHANDLE ArmSocket, const float *joint,
-                                                  byte v, float r, bool block);
+                                                  byte v, float r, int trajectory_connect, bool block);
 
     ///
     /// \brief Service_MoveRotate_Cmd       环绕运动
@@ -640,8 +641,9 @@ public:
     /// \param choose_axis
     /// \param v                            速度
     /// \param r                            交融半径
+    /// \param trajectory_connect           代表是否和下一条运动一起规划，0代表立即规划，1代表和下一条轨迹一起规划，当为1时，轨迹不会立即执行
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
-    RM_SERVICESHARED_EXPORT int Service_MoveRotate_Cmd(SOCKHANDLE ArmSocket, int rotateAxis, float rotateAngle, Pose choose_axis, byte v, float r,  bool block);
+    RM_SERVICESHARED_EXPORT int Service_MoveRotate_Cmd(SOCKHANDLE ArmSocket, int rotateAxis, float rotateAngle, Pose choose_axis, byte v, float r, int trajectory_connect, bool block);
 
     ///
     /// \brief cartesian_tool           沿工具端位姿移动
@@ -652,10 +654,11 @@ public:
     /// \param m_dev                    机械臂型号
     /// \param v                        速度
     /// \param r                        交融半径
+    /// \param trajectory_connect       代表是否和下一条运动一起规划，0代表立即规划，1代表和下一条轨迹一起规划，当为1时，轨迹不会立即执行
     /// \param block                    RM_NONBLOCK-非阻塞，发送后立即返回; RM_BLOCK-阻塞，等待机械臂到达位置或者规划失败
-    /// \return                         工作坐标系下的位姿
+    /// \return                         0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_MoveCartesianTool_Cmd(SOCKHANDLE ArmSocket, float *Joint_Cur, float movelengthx, float movelengthy, float movelengthz, int m_dev, byte v, float r,  bool block);
+    RM_SERVICESHARED_EXPORT int Service_MoveCartesianTool_Cmd(SOCKHANDLE ArmSocket, float *Joint_Cur, float movelengthx, float movelengthy, float movelengthz, int m_dev, byte v, float r, int trajectory_connect, bool block);
 
     ///
     /// \brief Service_Movel_Cmd 笛卡尔空间直线运动
@@ -663,10 +666,11 @@ public:
     /// \param pose 目标位姿,位置单位：米，姿态单位：弧度
     /// \param v 速度比例1~100，即规划速度和加速度占机械臂末端最大线速度和线加速度的百分比
     /// \param r 轨迹交融半径，目前默认0。
+    /// \param trajectory_connect：代表是否和下一条运动一起规划，0代表立即规划，1代表和下一条轨迹一起规划，当为1时，轨迹不会立即执行
     /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待机械臂到达位置或者规划失败
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Movel_Cmd(SOCKHANDLE ArmSocket, Pose pose, byte v, float r, bool block);
+    RM_SERVICESHARED_EXPORT int Service_Movel_Cmd(SOCKHANDLE ArmSocket, Pose pose, byte v, float r, int trajectory_connect, bool block);
 
     ///
     /// \brief Service_Movec_Cmd 笛卡尔空间圆弧运动
@@ -676,11 +680,12 @@ public:
     /// \param v 速度比例1~100，即规划速度和加速度占机械臂末端最大角速度和角加速度的百分比
     /// \param r 轨迹交融半径，目前默认0。
     /// \param loop 规划圈数，目前默认0.
+    /// \param trajectory_connect：代表是否和下一条运动一起规划，0代表立即规划，1代表和下一条轨迹一起规划，当为1时，轨迹不会立即执行
     /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待机械臂到达位置或者规划失败
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Movec_Cmd(SOCKHANDLE ArmSocket, Pose pose_via, Pose pose_to,
-                                                  byte v, float r, byte loop, bool block);
+                                                  byte v, float r, byte loop, int trajectory_connect, bool block);
 
     ///
     /// \brief Service_Movej_CANFD 角度不经规划，直接通过CANFD透传给机械臂
@@ -757,6 +762,7 @@ public:
     ///// \param data 无规划和关节空间规划为当前关节1~7角度数组；笛卡尔空间规划则为当前末端位姿
     ///// \return 0-成功，失败返回:错误码, rm_define.h查询.
     /////
+    RM_SERVICESHARED_EXPORT int Service_Get_Current_Trajectory(SOCKHANDLE ArmSocket, int *type, float *data);
     RM_SERVICESHARED_EXPORT int Service_Get_Current_Trajectory(SOCKHANDLE ArmSocket, ARM_CTRL_MODES *type, float *data);
 
     ///
@@ -767,10 +773,11 @@ public:
     ///                   用户在使用该指令前务必确保，否则目标位姿会出错！！
     /// \param v: 速度比例1~100，即规划速度和加速度占机械臂末端最大线速度和线加速度的百分比
     /// \param r: 轨迹交融半径，目前默认0。
+    /// \param trajectory_connect：代表是否和下一条运动一起规划，0代表立即规划，1代表和下一条轨迹一起规划，当为1时，轨迹不会立即执行
     /// \param block: RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待机械臂到达位置或者规划失败
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Movej_P_Cmd(SOCKHANDLE ArmSocket, Pose pose, byte v, float r, bool block);
+    RM_SERVICESHARED_EXPORT int Service_Movej_P_Cmd(SOCKHANDLE ArmSocket, Pose pose, byte v, float r, int trajectory_connect, bool block);
 
     ///
     /// \brief Service_Joint_Teach_Cmd 关节示教
@@ -901,7 +908,7 @@ public:
     ///
     /// \brief Service_Get_Controller_RS485_Mode 查询控制器RS485模式
     /// \param ArmSocket socket句柄
-    /// \param mode 0代表默认模式  1代表modbus主站模式
+    /// \param mode 0代表默认RS485串行通讯，1代表modbus-RTU主站模式，2-代表modbus-RTU从站模式
     /// \param baudrate 波特率
     /// \param timeout modbus协议超时时间，单位100ms，仅在modbus模式下提供此字段
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
@@ -910,7 +917,7 @@ public:
     ///
     /// \brief Service_Get_Tool_RS485_Mode 查询末端RS485模式
     /// \param ArmSocket socket句柄
-    /// \param mode 0代表默认模式  1代表modbus主站模式
+    /// \param mode 0代表默认RS485串行通讯，1代表modbus-RTU主站模式
     /// \param baudrate 波特率
     /// \param timeout modbus协议超时时间，单位100ms，仅在modbus模式下提供此字段
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
@@ -1002,24 +1009,14 @@ public:
     RM_SERVICESHARED_EXPORT int Service_Set_High_Speed_Eth(SOCKHANDLE ArmSocket, byte num, bool block);
 
     ///
-    /// \brief Service_Set_IO_State 设置数字IO状态
-    /// \param ArmSocket socket句柄
-    /// \param IO 0-数字IO  1-模拟IO
-    /// \param num 通道号，1~4
-    /// \param state true-高，   false-低
-    /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
-    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    ///
-    RM_SERVICESHARED_EXPORT int Service_Set_IO_State(SOCKHANDLE ArmSocket, int IO,byte num, bool state, bool block);
-
-    ///
     /// \brief Service_Get_IO_State 获取IO状态[-I]
     /// \param ArmSocket socket句柄
     /// \param num      通道号，1~4
-    /// \param state    state 输出参数 true-高，false-低
-    /// \param mode     0-通用输入模式，1-通用输出模式、2-输入开始功能复用模式，3-输入暂停功能复用模式，4-输入继续功能复用模式，5-输入急停功能复用模式
-    ///                 6-输入进入电流环拖动复用模式，7-输入进入力只动位置拖动模式，8-输入进入力只动姿态拖动模式，9-输入进入力位姿结合拖动复用模式，
-    ///                 10-输入外部轴最大软限位复用模式，11-输入外部轴最小软限位复用模式
+    /// \param state    IO状态
+    /// \param mode     0-通用输入模式，1-通用输出模式、2-输入开始功能复用模式、3-输入暂停功能复用模式、4-输入继续功能复用模式、5-输入急停功能复用模式、
+    ///                 6-输入进入电流环拖动复用模式、7-输入进入力只动位置拖动模式（六维力版本可配置）、8-输入进入力只动姿态拖动模式（六维力版本可配置）、
+    ///                 9-输入进入力位姿结合拖动复用模式（六维力版本可配置）、10-输入外部轴最大软限位复用模式（外部轴模式可配置）、
+    ///                 11-输入外部轴最小软限位复用模式（外部轴模式可配置）
     /// \return         0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Get_IO_State(SOCKHANDLE ArmSocket, byte num, byte *state, byte *mode);
@@ -1137,6 +1134,15 @@ public:
     RM_SERVICESHARED_EXPORT int Service_Set_Gripper_Position(SOCKHANDLE ArmSocket, int position, bool block);
 
     ///
+    /// \brief Service_Get_Gripper_State 获取夹爪状态
+    /// \param ArmSocket socket句柄
+    /// \param gripper_state 夹爪状态
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Gripper_State(SOCKHANDLE ArmSocket, std::shared_ptr<GripperState> &gripper_state);
+    RM_SERVICESHARED_EXPORT int Service_Get_Gripper_State(SOCKHANDLE ArmSocket, GripperState* gripper_state);
+
+    ///
     /// \brief Service_Start_Drag_Teach 开始控制机械臂进入拖动示教模式
     /// \param ArmSocket socket句柄
     /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
@@ -1202,10 +1208,11 @@ public:
     /// \param ArmSocket socket句柄
     /// \param mode                         拖动示教模式 0-电流环模式，1-使用末端六维力，只动位置，2-使用末端六维力 ，只动姿态，
     ///                                     3-使用末端六维力，位置和姿态同时动
+    /// \param singular_wall                仅在六维力模式拖动示教中生效，用于指定是否开启拖动奇异墙，0表示关闭拖动奇异墙，1表示开启拖动奇异墙
     /// \param block                        RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Start_Multi_Drag_Teach(SOCKHANDLE ArmSocket, int mode,bool block);
+    RM_SERVICESHARED_EXPORT int Service_Start_Multi_Drag_Teach(SOCKHANDLE ArmSocket, int mode,int singular_wall,bool block);
 
     ///
     /// \brief Set_Force_Postion            力位混合控制
@@ -1268,7 +1275,7 @@ public:
     RM_SERVICESHARED_EXPORT int Service_Manual_Set_Force(SOCKHANDLE ArmSocket, int type,const float* joint);
 
     ///
-    /// \brief Service_Stop_Set_Force_Sensor 在标定六维力过程中，如果发生意外，发送该指令，停止机械臂运动，退出标定流程
+    /// \brief Service_Stop_Set_Force_Sensor 在标定六/一维力过程中，如果发生意外，发送该指令，停止机械臂运动，退出标定流程
     /// \param ArmSocket socket句柄
     /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
@@ -1357,7 +1364,7 @@ public:
     ///
     /// \brief Service_Set_Modbus_Mode 配置通讯端口 Modbus RTU 模式
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口
+    /// \param port: 通讯端口，0-控制器RS485端口为RTU主站，1-末端接口板RS485接口为RTU从站，2-控制器RS485端口为RTU从站
     /// \param baudrate: 波特率，支持 9600,115200,460800 三种常见波特率
     /// \param timeout: 超时时间，单位秒。
     /// \param block: RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
@@ -1368,20 +1375,37 @@ public:
     ///
     /// \brief Service_Close_Modbus_Mode 关闭通讯端口 Modbus RTU 模式
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口
+    /// \param port: 通讯端口，0-控制器RS485端口为RTU主站，1-末端接口板RS485接口为RTU从站，2-控制器RS485端口为RTU从站
     /// \param block: RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Close_Modbus_Mode(SOCKHANDLE ArmSocket, int port,bool block);
 
     ///
+    /// \brief Service_Set_Modbustcp_Mode   配置连接 ModbusTCP 从站（I系列）
+    /// \param ArmSocket socket句柄
+    /// \param ip: 从机IP地址
+    /// \param port: 端口号
+    /// \param timeout: 超时时间，单位秒。
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Set_Modbustcp_Mode(SOCKHANDLE ArmSocket, const char* ip, int port, int timeout);
+
+    ///
+    /// \brief Service_Close_Modbustcp_Mode 配置关闭 ModbusTCP 从站（I 系列）
+    /// \param ArmSocket socket句柄
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Close_Modbustcp_Mode(SOCKHANDLE ArmSocket);
+
+    ///
     /// \brief Service_Get_Read_Coils 读线圈
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口
+    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
     /// \param address: 线圈起始地址
     /// \param num: 要读的线圈的数量，该指令最多一次性支持读 8 个线圈数据，即返回的数据不会超过一个字节
     /// \param device: 外设设备地址
-    /// \param coils_data: 返回离散量
+    /// \param coils_data: 返回线圈状态
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Get_Read_Coils(SOCKHANDLE ArmSocket, int port,int address,int num,
@@ -1390,22 +1414,22 @@ public:
     ///
     /// \brief 读多圈数据 read_multiple_coils
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口
+    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
     /// \param address: 线圈起始地址
     /// \param num: 8< num <= 120 要读的线圈的数量，该指令最多一次性支持读 120 个线圈数据， 即15个byte
     /// \param device: 外设设备地址
-    /// \param coils_data: 返回离散量
+    /// \param coils_data: 返回线圈状态
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Get_Read_Multiple_Coils(SOCKHANDLE ArmSocket, int port,int address,int num,
                                                                 int device,int *coils_data, int len);
     RM_SERVICESHARED_EXPORT int Service_Get_Read_Multiple_Coils(SOCKHANDLE ArmSocket, int port,int address,int num,
-                                                             int device,int *coils_data);
+                                                                int device,int *coils_data);
 
     ///
     /// \brief Service_Get_Read_Input_Status 读离散量输入
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口
+    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
     /// \param address: 线圈起始地址
     /// \param num: 要读的线圈的数量，该指令最多一次性支持读 8 个线圈数据，即返回的数据不会一个字节
     /// \param device: 外设设备地址
@@ -1418,10 +1442,10 @@ public:
     ///
     /// \brief Service_Get_Read_Holding_Registers 读保持寄存器
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口
+    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
     /// \param address: 线圈起始地址
     /// \param device: 外设设备地址
-    /// \param coils_data: 返回离散量
+    /// \param coils_data: 返回寄存器数据
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Get_Read_Holding_Registers(SOCKHANDLE ArmSocket, int port,int address,
@@ -1430,10 +1454,10 @@ public:
     ///
     /// \brief Service_Get_Read_Input_Registers 读输入寄存器
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口
+    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
     /// \param address: 线圈起始地址
     /// \param device: 外设设备地址
-    /// \param coils_data: 返回离散量
+    /// \param coils_data: 返回寄存器数据
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Get_Read_Input_Registers(SOCKHANDLE ArmSocket, int port,int address,
@@ -1442,7 +1466,7 @@ public:
     ///
     /// \brief Service_Write_Single_Coil 写单圈数据
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口
+    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
     /// \param address: 线圈起始地址
     /// \param data: 要写入线圈的数据，数据类型：int16
     /// \param device: 外设设备地址
@@ -1455,7 +1479,7 @@ public:
     ///
     /// \brief Service_Write_Coils 写多圈数据
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器RS485端口，1-末端接口板RS485接口
+    /// \param port: 通讯端口，0-控制器RS485端口，1-末端接口板RS485接口，3-控制器 ModbusTCP 设备
     /// \param address: 线圈起始地址
     /// \param num: 写线圈个数，每次写的数量不超过160个
     /// \param data: 要写入线圈的数据数组，类型：byte。若线圈个数不大于8，则写入的数据为1个字节；否则，则为多个数据的数组
@@ -1471,7 +1495,7 @@ public:
     ///
     /// \brief Service_Write_Single_Register 写单个寄存器
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口
+    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
     /// \param address: 线圈起始地址
     /// \param data: 要写入寄存器的数据，数据类型：int16
     /// \param device: 外设设备地址
@@ -1484,7 +1508,7 @@ public:
     ///
     /// \brief Service_Write_Registers 写多个寄存器
     /// \param ArmSocket socket句柄
-    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口
+    /// \param port: 通讯端口，0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
     /// \param address: 寄存器起始地址
     /// \param num: 写寄存器个数，寄存器每次写的数量不超过10个
     /// \param data: 要写入寄存器的数据数组，类型：byte
@@ -1496,6 +1520,21 @@ public:
                                                         byte *single_data, int len, int device, bool block);
     RM_SERVICESHARED_EXPORT int Service_Write_Registers(SOCKHANDLE ArmSocket, int port,int address,int num,
                                                         byte *single_data, int device, bool block);
+
+    ///
+    /// \brief Get_Multi_Holding_Registers  读多个保存寄存器
+    /// \param ArmSocket                    socket句柄
+    /// \param port                         通讯端口,0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
+    /// \param address                      寄存器起始地址
+    /// \param num                          要读的寄存器数量[2 < num < 17]
+    /// \param device                       外设设备地址
+    /// \param coils_data                   寄存器数据
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Read_Multiple_Holding_Registers(SOCKHANDLE ArmSocket, int port, int address,
+                                                                        int num, int device, int *coils_data, int len);
+    RM_SERVICESHARED_EXPORT int Service_Read_Multiple_Holding_Registers(SOCKHANDLE ArmSocket, int port, int address,
+                                                                        int num, int device, int *coils_data);
 
     ///
     /// \brief Service_Set_Lift_Speed           速度开环控制
@@ -1602,19 +1641,31 @@ public:
     RM_SERVICESHARED_EXPORT int Service_Start_Force_Position_Move(SOCKHANDLE ArmSocket, bool block);
 
     ///
-    /// \brief Service_Force_Position_Move          透传力位混合补偿
+    /// \brief Service_Force_Position_Move_Pose          透传力位混合补偿（透传位姿）
     /// \param ArmSocket                    socket句柄
     /// \param pose                         当前坐标系下目标位姿
-    /// \param joint                        目标关节角度
     /// \param sensor                       所使用传感器类型，0-一维力，1-六维力
     /// \param mode                         模式，0-沿基坐标系，1-沿工具端坐标系
     /// \param dir                          力控方向，0~5分别代表X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z方向
     /// \param force                        力的大小 单位N
+    /// \param follow                       表示驱动器的运动跟随效果，true为高跟随，false为低跟随
     /// \param block                        RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Force_Position_Move_Pose(SOCKHANDLE ArmSocket, Pose pose, byte sensor,
                                                                  byte mode, int dir, float force, bool follow);
+
+    ///
+    /// \brief Service_Force_Position_Move_Joint          透传力位混合补偿（透传关节角度）
+    /// \param ArmSocket                    socket句柄
+    /// \param joint                        目标关节角度
+    /// \param sensor                       所使用传感器类型，0-一维力，1-六维力
+    /// \param mode                         模式，0-沿基坐标系，1-沿工具端坐标系
+    /// \param dir                          力控方向，0~5分别代表X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z方向
+    /// \param force                        力的大小 单位N
+    /// \param follow                       表示驱动器的运动跟随效果，true为高跟随，false为低跟随
+    /// \param block                        RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
     RM_SERVICESHARED_EXPORT int Service_Force_Position_Move_Joint(SOCKHANDLE ArmSocket, const float *joint, byte sensor,
                                                                   byte mode, int dir, float force, bool follow);
 
@@ -1634,6 +1685,13 @@ public:
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Set_Teach_Frame(SOCKHANDLE ArmSocket, int type, bool block);
+
+    ///
+    /// \brief Service_Get_Teach_Frame              获取示教参考坐标系
+    /// \param ArmSocket                    socket句柄
+    /// \param type                         0: 基座标运动, 1: 工具坐标系运动
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    RM_SERVICESHARED_EXPORT int Service_Get_Teach_Frame(SOCKHANDLE ArmSocket, int* type);
 
     ///
     /// \brief Service_Send_TrajectoryFile      轨迹文件下发
@@ -1679,20 +1737,16 @@ public:
     ///                                     vague_search:模糊搜索 （传递此参数可进行模糊查询）
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Get_Program_Trajectory_List(SOCKHANDLE ArmSocket, std::shared_ptr<ProgramTrajectoryData> &programlist);
+    RM_SERVICESHARED_EXPORT int Service_Get_Program_Trajectory_List(SOCKHANDLE ArmSocket, int page_num, int page_size, char *vague_search, std::shared_ptr<ProgramTrajectoryData> &programlist);
     RM_SERVICESHARED_EXPORT int Service_Get_Program_Trajectory_List(SOCKHANDLE ArmSocket, ProgramTrajectoryData* programlist);
 
     ///
     /// \brief Service_Get_Program_Run_State        查询在线编程程序运行状态
     /// \param ArmSocket                    socket句柄
-    /// \param run_state                    0 未开始 1运行中 2暂停中
-    /// \param id                           运行轨迹编号，已存储轨迹 的id，没有存储则为0 ，未运行则不返回
-    /// \param plan_num                     运行到的行数，未运行则不返回
-    /// \param loop_num                     存在循环指令的行数，未运行则不返回
-    /// \param loop_cont                    循环指令行数对应的运行次数，未运行则不返回
-    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    /// \param state                        运行状态结构体
     ///
-    RM_SERVICESHARED_EXPORT int Service_Get_Program_Run_State(SOCKHANDLE ArmSocket, int *run_state, int *id, int *plan_num, int *loop_num, int *loop_cont);
+    RM_SERVICESHARED_EXPORT int Service_Get_Program_Run_State(SOCKHANDLE ArmSocket, std::shared_ptr<ProgramRunState> &state);
+    RM_SERVICESHARED_EXPORT int Service_Get_Program_Run_State(SOCKHANDLE ArmSocket, ProgramRunState* state);
 
     ///
     /// \brief Service_Set_Program_ID_Start         开始运行指定编号轨迹
@@ -1777,33 +1831,22 @@ public:
     RM_SERVICESHARED_EXPORT int Service_Set_Net_Default(SOCKHANDLE ArmSocket);
 
     ///
-    /// \brief Get_Multi_Holding_Registers  读多个保存寄存器
-    /// \param ArmSocket                    socket句柄
-    /// \param port                         通讯端口[0/1]
-    /// \param address                      寄存器起始地址
-    /// \param num                          要读的寄存器数量[2 < num < 17]
-    /// \param device                       外设设备地址
-    /// \param coils_data                   线圈状态
-    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
-    ///
-    RM_SERVICESHARED_EXPORT int Service_Read_Multiple_Holding_Registers(SOCKHANDLE ArmSocket, int port, int address,
-                                                             int num, int device, int *coils_data, int len);
-    RM_SERVICESHARED_EXPORT int Service_Read_Multiple_Holding_Registers(SOCKHANDLE ArmSocket, int port, int address,
-                                                                        int num, int device, int *coils_data);
-
-    ///
     /// \brief Set_IO_Mode                  设置数字IO模式[-I]
     /// \param ArmSocket                    socket句柄
     /// \param io_num                       IO端口号，范围：1~4
-    /// \param io_mode                      模式，0-通用输入模式，1-通用输出模式、2-输入开始功能复用模式，3-输入暂停功能复用模式，4-输入继续功能复用模式，5-输入急停功能复用模式
+    /// \param io_mode                      0-通用输入模式，1-通用输出模式、2-输入开始功能复用模式、3-输入暂停功能复用模式、4-输入继续功能复用模式、5-输入急停功能复用模式、
+    ///                                     6-输入进入电流环拖动复用模式、7-输入进入力只动位置拖动模式（六维力版本可配置）、8-输入进入力只动姿态拖动模式（六维力版本可配置）、
+    ///                                     9-输入进入力位姿结合拖动复用模式（六维力版本可配置）、10-输入外部轴最大软限位复用模式（外部轴模式可配置）、
+    ///                                     11-输入外部轴最小软限位复用模式（外部轴模式可配置）
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Set_IO_Mode(SOCKHANDLE ArmSocket, byte io_num, byte io_mode);
 
     ///
     /// \brief Service_Set_DO_State         设置数字IO输出
+    /// \param ArmSocket                    socket句柄
     /// \param io_num                       通道号，1~4
-    /// \param state                        true-高，   false-低
+    /// \param state                        IO状态，true-高，false-低
     /// \param block                        0-非阻塞，发送后立即返回；1-阻塞，等待控制器返回设置成功指令
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
     ///
@@ -1811,6 +1854,7 @@ public:
 
     ///
     /// \brief Service_Get_DO_State         查询数字IO输出状态（基础系列）
+    /// \param ArmSocket                    socket句柄
     /// \param io_num                       通道号，1~4
     /// \param state                        指定数字IO通道返回的状态，1-高，   0-低
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
@@ -1819,6 +1863,7 @@ public:
 
     ///
     /// \brief Service_Get_DI_State         查询数字IO输入状态（基础系列）
+    /// \param ArmSocket                    socket句柄
     /// \param io_num                       通道号，1~3
     /// \param state                        指定数字IO通道返回的状态，1-高，   0-低
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
@@ -1827,6 +1872,7 @@ public:
 
     ///
     /// \brief Service_Set_AO_State         设置模拟IO输出（基础系列）
+    /// \param ArmSocket                    socket句柄
     /// \param io_num                       通道号，1~4
     /// \param voltage                      IO输出电压，分辨率0.001V，范围：0~10000，代表输出电压0v~10v
     /// \param block                        0-非阻塞，发送后立即返回；1-阻塞，等待控制器返回设置成功指令
@@ -1836,6 +1882,7 @@ public:
 
     ///
     /// \brief Service_Get_AO_State         查询模拟IO输出状态（基础系列）
+    /// \param ArmSocket                    socket句柄
     /// \param io_num                       通道号，1~4
     /// \param voltage                      IO输出电压，分辨率0.001V，范围：0~10000，代表输出电压0v~10v
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
@@ -1844,6 +1891,7 @@ public:
 
     ///
     /// \brief Service_Get_AI_State         查询模拟IO输入状态（基础系列）
+    /// \param ArmSocket                    socket句柄
     /// \param io_num                       通道号，1~4
     /// \param voltage                      IO输入电压，分辨率0.001V，范围：0~10000，代表输入电压0v~10v
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
@@ -1877,6 +1925,7 @@ public:
     RM_SERVICESHARED_EXPORT int Service_Save_Trajectory(SOCKHANDLE ArmSocket, char * filename, int* num);
     ///
     /// \brief Service_Get_Realtime_Push            获取主动上报接口配置
+    /// \param ArmSocket                    socket句柄
     /// \param cycle                        获取广播周期，为5ms的倍数
     /// \param port                         获取广播的端口号
     /// \param enable                       获取使能，是否使能主动上上报
@@ -1889,9 +1938,9 @@ public:
     /// \brief Service_Set_Realtime_Push            设置主动上报接口配置
     /// \param cycle                        设置广播周期，为5ms的倍数
     /// \param port                         设置广播的端口号
+    /// \param enable                       设置使能，是否使能主动上上报
     /// \param force_coordinate             设置系统外受力数据的坐标系(仅带有力传感器的机械臂支持)
     /// \param ip                           设置自定义的上报目标IP地址
-    /// \param enable                       设置使能，是否使能主动上上报
     ///
     RM_SERVICESHARED_EXPORT int Service_Set_Realtime_Push(SOCKHANDLE ArmSocket, int cycle, int port, bool enable, int force_coordinate, const char* ip);
 
@@ -1908,6 +1957,223 @@ public:
     RM_SERVICESHARED_EXPORT int Service_Get_Realtime_Arm_Joint_State(std::shared_ptr<RobotStatus>& RobotStatus);
     RM_SERVICESHARED_EXPORT int Service_Get_Realtime_Arm_Joint_State(RobotStatus* RobotStatus);
 
+
+    ///
+    /// \brief Service_Set_Electronic_Fence_Enable 设置电子围栏使能状态
+    /// \param ArmSocket socket句柄
+    /// \param enable_state：true代表使能，false代表禁使能
+    /// \param in_out_side：0-机器人在电子围栏内部，1-机器人在电子围栏外部
+    /// \param effective_region：0-针对整臂区域生效
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Set_Electronic_Fence_Enable(SOCKHANDLE ArmSocket, bool enable_state, int in_out_side, int effective_region);
+
+    ///
+    /// \brief Service_Get_Electronic_Fence_Enable 获取电子围栏使能状态
+    /// \param ArmSocket socket句柄
+    /// \param enable_state  true代表使能，false代表禁使能
+    /// \param in_out_side  0-机器人在电子围栏内部，1-机器人在电子围栏外部
+    /// \param effective_region  0-针对整臂区域生效
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_Enable(SOCKHANDLE ArmSocket, bool* enable, int* in_out_side, int* effective_region);
+
+    ///
+    /// \brief Service_Set_Electronic_Fence_Config 设置当前电子围栏参数
+    /// \param ArmSocket socket句柄
+    /// \param config   当前电子围栏参数（无需设置电子围栏名称）
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Set_Electronic_Fence_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig config);
+
+    ///
+    /// \brief Service_Get_Electronic_Fence_Config 获取当前电子围栏参数
+    /// \param ArmSocket socket句柄
+    /// \param config   当前电子围栏参数（返回参数中不包含电子围栏名称）
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_Config(SOCKHANDLE ArmSocket, std::shared_ptr<ElectronicFenceConfig> &config);
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig* config);
+
+    ///
+    /// \brief Service_Add_Electronic_Fence_Config 新增电子围栏参数（最多支持 10 个电子围栏）
+    /// \param ArmSocket socket句柄
+    /// \param config   电子围栏参数
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Add_Electronic_Fence_Config(SOCKHANDLE ArmSocket,const char* name, ElectronicFenceConfig config);
+    RM_SERVICESHARED_EXPORT int Service_Add_Electronic_Fence_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig config);
+
+    ///
+    /// \brief Service_Update_Electronic_Fence_Config 更新电子围栏参数（最多支持 10 个电子围栏）
+    /// \param ArmSocket socket句柄
+    /// \param config   电子围栏参数
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Update_Electronic_Fence_Config(SOCKHANDLE ArmSocket,const char* name, ElectronicFenceConfig config);
+    RM_SERVICESHARED_EXPORT int Service_Update_Electronic_Fence_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig config);
+
+    ///
+    /// \brief Service_Delete_Electronic_Fence_Config 删除电子围栏参数（最多支持 10 个电子围栏）
+    /// \param ArmSocket socket句柄
+    /// \param name   指定电子围栏名称
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Delete_Electronic_Fence_Config(SOCKHANDLE ArmSocket, const char* name);
+
+    ///
+    /// \brief Service_Get_Electronic_Fence_List_Names 查询所有电子围栏名称（最多支持 10 个电子围栏）
+    /// \param ArmSocket socket句柄
+    /// \param names   电子围栏名称列表，长度为实际存在电子围栏
+    /// \param len  电子围栏名称列表长度
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Names(SOCKHANDLE ArmSocket, std::shared_ptr<NAMES> &names, int *len);
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Names(SOCKHANDLE ArmSocket, ElectronicFenceNames* names, int *len);
+
+    ///
+    /// \brief Service_Given_Electronic_Fence_Config 查询指定电子围栏参数（最多支持 10 个电子围栏）
+    /// \param ArmSocket socket句柄
+    /// \param name   指定电子围栏
+    /// \param config  返回电子围栏参数
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Given_Electronic_Fence_Config(SOCKHANDLE ArmSocket,  const char *name, std::shared_ptr<ElectronicFenceConfig> &config);
+    RM_SERVICESHARED_EXPORT int Service_Given_Electronic_Fence_Config(SOCKHANDLE ArmSocket,  const char *name, ElectronicFenceConfig* config);
+
+    ///
+    /// \brief Service_Get_Electronic_Fence_List_Info 查询所有电子围栏信息（最多支持 10 个电子围栏）
+    /// \param ArmSocket socket句柄
+    /// \param config  电子围栏信息列表，长度为实际存在电子围栏
+    /// \param len  电子围栏信息列表长度
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Info(SOCKHANDLE ArmSocket, std::shared_ptr<ElectronicFenceConfigList> &config, int *len);
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Info(SOCKHANDLE ArmSocket, ElectronicFenceConfig* config, int *len);
+
+    ///
+    /// \brief Service_Set_Self_Collision_Enable 设置自碰撞安全检测使能状态
+    /// \param ArmSocket socket句柄
+    /// \param enable_state true代表使能，false代表禁使能
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：自碰撞安全检测功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Set_Self_Collision_Enable(SOCKHANDLE ArmSocket, bool enable_state);
+
+    ///
+    /// \brief Service_Get_Self_Collision_Enable 获取自碰撞安全检测使能状态
+    /// \param ArmSocket socket句柄
+    /// \param enable_state true代表使能，false代表禁使能
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：自碰撞安全检测功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    RM_SERVICESHARED_EXPORT int Service_Get_Self_Collision_Enable(SOCKHANDLE ArmSocket, bool* enable_state);
+
+    ///
+    /// \brief Service_Service_Set_Joint_Drive_Speed 设置关节最大速度(驱动器)
+    /// \param ArmSocket socket句柄
+    /// \param joint_num 关节序号，1~7
+    /// \param speed 关节转速，单位：°/s
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Set_Joint_Drive_Speed(SOCKHANDLE ArmSocket, byte joint_num, float speed);
+
+    ///
+    /// \brief Service_Set_Joint_Drive_Acc 设置关节最大加速度(驱动器)
+    /// \param ArmSocket socket句柄
+    /// \param joint_num 关节序号，1~7
+    /// \param acc 关节转速，单位：°/s²
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Set_Joint_Drive_Acc(SOCKHANDLE ArmSocket, byte joint_num, float acc);
+
+    ///
+    /// \brief Service_Set_Joint_Drive_Min_Pos 设置关节最小限位(驱动器)
+    /// \param ArmSocket socket句柄
+    /// \param joint_num 关节序号，1~7
+    /// \param min_joint 关节最小位置，单位：°
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Set_Joint_Drive_Min_Pos(SOCKHANDLE ArmSocket, byte joint_num, float min_joint);
+
+    ///
+    /// \brief Service_Set_Joint_Drive_Max_Pos 设置关节最大限位(驱动器)
+    /// \param ArmSocket socket句柄
+    /// \param joint_num 关节序号，1~7
+    /// \param max_joint 关节最大位置，单位：°
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Set_Joint_Drive_Max_Pos(SOCKHANDLE ArmSocket, byte joint_num, float max_joint);
+    ///
+    /// \brief Service_Get_Joint_Drive_Speed 查询关节最大速度(驱动器)
+    /// \param ArmSocket socket句柄
+    /// \param speed 关节1~7转速数组，单位：°/s
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Joint_Drive_Speed(SOCKHANDLE ArmSocket, float *speed);
+
+    ///
+    /// \brief Service_Service_Get_Joint_Drive_Acc 查询关节最大加速度(驱动器)
+    /// \param ArmSocket socket句柄
+    /// \param acc 关节1~7加速度数组，单位：°/s²
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Joint_Drive_Acc(SOCKHANDLE ArmSocket, float *acc);
+
+    ///
+    /// \brief Service_Get_Joint_Drive_Min_Pos 获取关节最小限位(驱动器)
+    /// \param ArmSocket socket句柄
+    /// \param min_joint 关节1~7最小位置数组，单位：°
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Joint_Drive_Min_Pos(SOCKHANDLE ArmSocket, float *min_joint);
+
+    ///
+    /// \brief Service_Get_Joint_Drive_Max_Pos 获取关节最大限位(驱动器)
+    /// \param ArmSocket socket句柄
+    /// \param max_joint 关节1~7最大位置数组，单位：°
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Joint_Drive_Max_Pos(SOCKHANDLE ArmSocket, float *max_joint);
+
+    ///
+    /// \brief Service_Auto_Fix_Joint_Over_Soft_Limit 超出限位后，自动运动到限位内
+    /// \param ArmSocket socket句柄
+    /// \param block                        0-非阻塞，发送后立即返回；1-阻塞，等待控制器返回设置成功指令
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Auto_Fix_Joint_Over_Soft_Limit(SOCKHANDLE ArmSocket, bool block);
+
+    ///
+    /// \brief Service_Auto_Set_Joint_Limit     自动设置限位
+    /// \param ArmSocket                socket句柄
+    /// \param limit_mode               设置类型 1 正式模式，各关节限位为规格参数中的软限位和硬件限位限位
+    /// \return                         0-成功，失败返回:错误码, rm_define.h查询
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Auto_Set_Joint_Limit(SOCKHANDLE ArmSocket, byte limit_mode);
+
+    ///
+    /// \brief Service_Get_Arm_Software_Info 读取机械臂软件信息
+    /// \param ArmSocket socket句柄
+    /// \param software_info    机械臂软件信息
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Arm_Software_Info(SOCKHANDLE ArmSocket, std::shared_ptr<ArmSoftwareInfo> &software_info);
+    RM_SERVICESHARED_EXPORT int Service_Get_Arm_Software_Info(SOCKHANDLE ArmSocket, ArmSoftwareInfo* software_info);
+
+    ///
+    /// \brief Service_Set_Arm_Run_Mode             设置机械臂模式(仿真/真实)
+    /// \param ArmSocket                    socket句柄
+    /// \param mode                         模式 0:仿真 1:真实
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Set_Arm_Run_Mode(SOCKHANDLE ArmSocket, int mode);
+
+    ///
+    /// \brief Service_Get_Arm_Run_Mode             获取机械臂模式(仿真/真实)
+    /// \param ArmSocket                    socket句柄
+    /// \param mode                         模式 0:仿真 1:真实
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Arm_Run_Mode(SOCKHANDLE ArmSocket, int *mode);
 
     //*************************************算法封装*************************************
     ///
@@ -2022,7 +2288,7 @@ public:
     /// \brief  Algo_WorkFrame2Base     工作坐标系转基坐标系
     /// \param  matrix                  工作坐标系在基坐标系下的矩阵
     /// \param  state                   工具端坐标在工作坐标系下位姿
-    /// \return Pose                    工作坐标系下的位姿
+    /// \return Pose                    工作坐标系在基坐标系下的位姿
     ///
     RM_SERVICESHARED_EXPORT Pose Service_Algo_WorkFrame2Base(Matrix matrix, Pose state);
 

@@ -1,123 +1,210 @@
-from moveit_configs_utils import MoveItConfigsBuilder
-from moveit_configs_utils.launches import generate_moveit_rviz_launch
-
+import os
+import yaml
 from launch import LaunchDescription
-from launch.actions import (
-    DeclareLaunchArgument,
-    IncludeLaunchDescription,
-)
-from moveit_configs_utils.launch_utils import (
-    add_debuggable_node,
-    DeclareBooleanLaunchArg,
-)
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
-from launch_ros.parameter_descriptions import ParameterValue
-from launch_ros.substitutions import FindPackageShare
+from launch.conditions import IfCondition, UnlessCondition
+from launch_ros.actions import Node
+from launch.actions import ExecuteProcess
+from ament_index_python.packages import get_package_share_directory
+import xacro
+
+
+def load_file(package_name, file_path):
+    package_path = get_package_share_directory(package_name)
+    absolute_file_path = os.path.join(package_path, file_path)
+
+    try:
+        with open(absolute_file_path, "r") as file:
+            return file.read()
+    except EnvironmentError:  # parent of IOError, OSError *and* WindowsError where available
+        return None
+
+
+def load_yaml(package_name, file_path):
+    package_path = get_package_share_directory(package_name)
+    absolute_file_path = os.path.join(package_path, file_path)
+
+    try:
+        with open(absolute_file_path, "r") as file:
+            return yaml.safe_load(file)
+    except EnvironmentError:  # parent of IOError, OSError *and* WindowsError where available
+        return None
+
 
 def generate_launch_description():
-    moveit_config = MoveItConfigsBuilder("rm_eco65_description", package_name="rm_eco65_config").to_moveit_configs() 
 
-    ld = LaunchDescription()
-
-    # 启动move_group
-    my_generate_move_group_launch(ld, moveit_config)
-    # 启动rviz
-    my_generate_moveit_rviz_launch(ld, moveit_config)
-
-    # generate_rsp_launch(ld, moveit_config)
-
-    return ld
-
-
-def my_generate_move_group_launch(ld, moveit_config):
-
-    ld.add_action(DeclareBooleanLaunchArg("debug", default_value=False))
-    ld.add_action(
-        DeclareBooleanLaunchArg("allow_trajectory_execution", default_value=True)
+    # Command-line arguments
+    tutorial_arg = DeclareLaunchArgument(
+        "rviz_tutorial", default_value="False", description="Tutorial flag"
     )
-    ld.add_action(
-        DeclareBooleanLaunchArg("publish_monitored_planning_scene", default_value=True)
-    )
-    # load non-default MoveGroup capabilities (space separated)
-    ld.add_action(DeclareLaunchArgument("capabilities", default_value=""))
-    # inhibit these default MoveGroup capabilities (space separated)
-    ld.add_action(DeclareLaunchArgument("disable_capabilities", default_value=""))
 
-    # do not copy dynamics information from /joint_states to internal robot monitoring
-    # default to false, because almost nothing in move_group relies on this information
-    ld.add_action(DeclareBooleanLaunchArg("monitor_dynamics", default_value=False))
-
-    should_publish = LaunchConfiguration("publish_monitored_planning_scene")
-
-    move_group_configuration = {
-        "publish_robot_description_semantic": True,
-        "allow_trajectory_execution": LaunchConfiguration("allow_trajectory_execution"),
-        # Note: Wrapping the following values is necessary so that the parameter value can be the empty string
-        "capabilities": ParameterValue(
-            LaunchConfiguration("capabilities"), value_type=str
-        ),
-        "disable_capabilities": ParameterValue(
-            LaunchConfiguration("disable_capabilities"), value_type=str
-        ),
-        # Publish the planning scene of the physical robot so that rviz plugin can know actual robot
-        "publish_planning_scene": should_publish,
-        "publish_geometry_updates": should_publish,
-        "publish_state_updates": should_publish,
-        "publish_transforms_updates": should_publish,
-        "monitor_dynamics": False,
-    }
-
-    trajectory_execution = {
-        "moveit_manage_controllers": False,
-        "trajectory_execution.allowed_execution_duration_scaling": 1.2,
-        "trajectory_execution.allowed_goal_duration_margin": 0.5,
-        "trajectory_execution.allowed_start_tolerance": 0.15,
-    }
-
-    move_group_params = [
-        moveit_config.to_dict(),
-        move_group_configuration,
-        trajectory_execution,
-    ]
-
-    add_debuggable_node(
-        ld,
-        package="moveit_ros_move_group",
-        executable="move_group",
-        commands_file=str(moveit_config.package_path / "launch" / "gdb_settings.gdb"),
-        output="screen",
-        parameters=move_group_params,
-        extra_debug_args=["--debug"],
-        # Set the display variable, in case OpenGL code is used internally
-        additional_env={"DISPLAY": ":0"},
-    )
-    return ld
-
-def my_generate_moveit_rviz_launch(ld, moveit_config):
-    """Launch file for rviz"""
-
-    ld.add_action(DeclareBooleanLaunchArg("debug", default_value=False))
-    ld.add_action(
-        DeclareLaunchArgument(
-            "rviz_config",
-            default_value=str(moveit_config.package_path / "config/moveit.rviz"),
+    # planning_context
+    robot_description_config = xacro.process_file(
+        os.path.join(
+            get_package_share_directory("rm_eco65_config"),
+            "config",
+            "rm_eco65.urdf.xacro",
         )
     )
 
-    rviz_parameters = [
-        moveit_config.planning_pipelines,
-        moveit_config.robot_description_kinematics,
-    ]
+    robot_description = {"robot_description": robot_description_config.toxml()}
 
-    add_debuggable_node(
-        ld,
-        package="rviz2",
-        executable="rviz2",
-        output="log",
-        respawn=False,
-        arguments=["-d", LaunchConfiguration("rviz_config")],
-        parameters=rviz_parameters,
+    robot_description_semantic_config = load_file(
+        "rm_eco65_config", "config/rm_eco65_description.srdf"
     )
 
-    return ld
+    robot_description_semantic = {
+        "robot_description_semantic": robot_description_semantic_config
+    }
 
+    kinematics_yaml = load_yaml(
+        "rm_eco65_config", "config/kinematics.yaml"
+    )
+    robot_description_kinematics = {"robot_description_kinematics": kinematics_yaml}
+
+    # Planning Functionality
+    ompl_planning_pipeline_config = {
+        "move_group": {
+            "planning_plugin": "ompl_interface/OMPLPlanner",
+            "request_adapters": """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
+            "start_state_max_bounds_error": 0.1,
+        }
+    }
+    ompl_planning_yaml = load_yaml(
+        "moveit_resources_panda_moveit_config", "config/ompl_planning.yaml"
+    )
+    ompl_planning_pipeline_config["move_group"].update(ompl_planning_yaml)
+
+    # Trajectory Execution Functionality
+    moveit_simple_controllers_yaml = load_yaml(
+        "rm_eco65_config", "config/moveit_controllers.yaml"
+    )
+
+    moveit_controllers = {
+        "moveit_simple_controller_manager": moveit_simple_controllers_yaml,
+        "moveit_controller_manager": "moveit_simple_controller_manager/MoveItSimpleControllerManager",
+    }
+
+    trajectory_execution = {
+        "moveit_manage_controllers": True,
+        "trajectory_execution.allowed_execution_duration_scaling": 1.2,
+        "trajectory_execution.allowed_goal_duration_margin": 0.5,
+        "trajectory_execution.allowed_start_tolerance": 0.1,
+    }
+
+    planning_scene_monitor_parameters = {
+        "publish_planning_scene": True,
+        "publish_geometry_updates": True,
+        "publish_state_updates": True,
+        "publish_transforms_updates": True,
+    }
+
+    # Start the actual move_group node/action server
+    run_move_group_node = Node(
+        package="moveit_ros_move_group",
+        executable="move_group",
+        output="screen",
+        parameters=[
+            robot_description,
+            robot_description_semantic,
+            kinematics_yaml,
+            ompl_planning_pipeline_config,
+            trajectory_execution,
+            moveit_controllers,
+            planning_scene_monitor_parameters,
+        ],
+    )
+
+    # RViz
+    tutorial_mode = LaunchConfiguration("rviz_tutorial")
+    rviz_base = os.path.join(get_package_share_directory("rm_eco65_config"), "rviz")
+    rviz_full_config = os.path.join(rviz_base, "moveit.rviz")
+    rviz_empty_config = os.path.join(rviz_base, "panda_moveit_config_demo_empty.rviz")
+
+    rviz_node = Node(
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="log",
+        arguments=["-d", rviz_full_config],
+        parameters=[
+            robot_description,
+            robot_description_semantic,
+            ompl_planning_pipeline_config,
+            kinematics_yaml,
+        ],
+        # condition=UnlessCondition(tutorial_mode),
+    )
+
+    # Static TF
+    static_tf = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="static_transform_publisher",
+        output="log",
+        arguments=["0.0", "0.0", "0.0", "0.0", "0.0", "0.0", "world", "base_link"],
+    )
+
+    # Publish TF
+    robot_state_publisher = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        name="robot_state_publisher",
+        output="both",
+        parameters=[robot_description],
+    )
+
+    # ros2_control using FakeSystem as hardware
+    ros2_controllers_path = os.path.join(
+        get_package_share_directory("rm_eco65_config"),
+        "config",
+        "ros_moveit_controllers.yaml",
+    )
+    
+    ros2_control_node = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[robot_description, ros2_controllers_path],
+        output={
+            "stdout": "screen",
+            "stderr": "screen",
+        },
+    )
+
+    # Load controllers
+    
+    load_controllers = []
+    for controller in [
+        "rm_group_controller"]:
+        load_controllers += [
+            ExecuteProcess(
+                cmd=["ros2 run controller_manager spawner.py {}".format(controller)],
+                shell=True,
+                output="screen",
+            )
+        ]
+
+    # Warehouse mongodb server
+    mongodb_server_node = Node(
+       package="warehouse_ros_mongo",
+       executable="mongo_wrapper_ros.py",
+       parameters=[
+           {"warehouse_port": 33829},
+           {"warehouse_host": "localhost"},
+           {"warehouse_plugin": "warehouse_ros_mongo::MongoDatabaseConnection"},
+       ],
+       output="screen",
+    )
+
+    return LaunchDescription(
+        [
+            tutorial_arg,
+            rviz_node,
+            static_tf,
+            robot_state_publisher,
+            run_move_group_node,
+            ros2_control_node,
+        ]
+        + load_controllers
+    )

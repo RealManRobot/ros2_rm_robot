@@ -16,10 +16,6 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(('rm_driver')),'launch', 'rm_75_driver.launch.py'))
     )
 
-    rm_75_description = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('rm_description'), 'launch', 'rm_75_display.launch.py')),
-    )
-
     rm_75_control = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(('rm_control')),'launch', 'rm_75_control.launch.py'))
     )
@@ -30,7 +26,6 @@ def generate_launch_description():
 
     return LaunchDescription([
     rm_75_driver,
-    rm_75_description,
     rm_75_control,
     rm_75_moveit_config
     ])

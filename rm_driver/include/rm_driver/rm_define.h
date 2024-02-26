@@ -47,7 +47,7 @@ typedef SOCKET  SOCKHANDLE;
 typedef int SOCKHANDLE;
 #endif
 
-#define  SDK_VERSION (char*)"4.2.4"
+#define  SDK_VERSION (char*)"4.2.8"
 
 typedef unsigned char byte;
 typedef unsigned short u16;
@@ -78,32 +78,6 @@ typedef struct
     uint16_t sys_err;   // 返回系统错误
 } CallbackData;
 
-// 无线网络信息结构体
-typedef struct{
-    int channel;               // 信道 AP模式时存在此字段
-    char ip[16];               // IP 地址
-    char mac[18];              // MAC 地址
-    char mask[16];             // 子网掩码
-    char mode[5];              // 模式
-    char password[16];         // 密码
-    char ssid[32];             // 网络名称 (SSID)
-}WiFi_Info;
-
-typedef struct  {
-    int id;
-    int size;
-    int speed;
-    char trajectory_name[32];
-}TrajectoryData;
-
-typedef struct{
-    int page_num;       //页码（全部查询时此参数传NULL）
-    int page_size;      //每页大小（全部查询时此参数传NULL）
-    int total_size;
-    char vague_search[32];  //模糊搜索 （传递此参数可进行模糊查询）
-    TrajectoryData list[100];   // 符合的在线编程列表
-}ProgramTrajectoryData;
-
 //坐标系
 typedef struct
 {
@@ -113,8 +87,8 @@ typedef struct
 //坐标系名称列表-兼容MATLAB API
 typedef struct
 {
-    FRAME_NAME name[10];    //坐标系名称,不超过10个字符
-}FRAMENAME;
+    FRAME_NAME name[10];    //名称列表
+}NAMES;
 
 //坐标系
 typedef struct
@@ -168,13 +142,13 @@ typedef enum
 //机械臂状态参数
 typedef struct
 {
-    //float joint[ARM_DOF];       //关节角度
-    float temperature[ARM_DOF];   //关节温度
-    float voltage[ARM_DOF];       //关节电压
-    float current[ARM_DOF];       //关节电流
-    byte en_state[ARM_DOF];       //使能状态
-    uint16_t err_flag[ARM_DOF];   //关节错误代码
-    uint16_t sys_err;             //机械臂系统错误代码
+    //float joint[ARM_DOF];       // 关节角度
+    float temperature[ARM_DOF];   // 关节温度
+    float voltage[ARM_DOF];       // 关节电压
+    float current[ARM_DOF];       // 关节电流
+    byte en_state[ARM_DOF];       // 使能状态
+    uint16_t err_flag[ARM_DOF];   // 关节错误代码
+    uint16_t sys_err;             // 机械臂系统错误代码
 }JOINT_STATE;
 
 //位置
@@ -244,15 +218,53 @@ typedef struct
 //    eul euler;
 //}Pose;
 
+// 无线网络信息结构体
+typedef struct{
+    int channel;               // 信道 AP模式时存在此字段
+    char ip[16];               // IP 地址
+    char mac[18];              // MAC 地址
+    char mask[16];             // 子网掩码
+    char mode[5];              // 模式
+    char password[16];         // 密码
+    char ssid[32];             // 网络名称 (SSID)
+}WiFi_Info;
+
+// 在线编程存储信息
+typedef struct  {
+    int id;
+    int size;
+    int speed;
+    char trajectory_name[32];
+}TrajectoryData;
+
+// 在线编程程序列表
+typedef struct{
+    int page_num;       // 页码（全部查询时此参数传NULL）
+    int page_size;      // 每页大小（全部查询时此参数传NULL）
+    int total_size;
+    char vague_search[32];  // 模糊搜索 （传递此参数可进行模糊查询）
+    TrajectoryData list[100];   // 符合的在线编程列表
+}ProgramTrajectoryData;
+
+// 在线编程运行状态结构体
+typedef struct{
+    int run_state;  // 0 未开始 1运行中 2暂停中
+    int id;         // 运行轨迹编号，已存储轨迹 的id，没有存储则为0 ，未运行则不返回
+    int plan_num;   // 运行到的行数，未运行则不返回
+    int loop_num[10];   // 存在循环指令的行数，未运行则不返回
+    int loop_cont[10];  // 循环指令行数对应的运行次数，未运行则不返回
+    int step_mode;  // 单步模式，1为单步模式，0为非单步模式，未运行则不返回
+    int plan_speed; // 全局规划速度比例 1-100，未运行则不返回
+}ProgramRunState;
+
 //扩展关节配置参数
 typedef struct{
-    int rpm_max;        //  关节的最大速度
-    int rpm_acc;        // 最大加速度
-    int conversin_coe;  // 减速比,该字段只针对升降关节（指直线运动的关节）有效；如果是旋转关节（指做旋转运动的关节），则不发送该字段，注意参数的设置一定跟电机匹配，避免发生意外
-    int limit_min;      // 最小限位，如果是旋转关节，单位为°，精度0.001，如果是升降关节，则单位为mm
-    int limit_max;      // 最大限位，如果是旋转关节，单位为°，精度0.001，如果是升降关节，则单位为mm
+    int32_t rpm_max;        //  关节的最大速度
+    int32_t rpm_acc;        // 最大加速度
+    int32_t conversin_coe;  // 减速比,该字段只针对升降关节（指直线运动的关节）有效；如果是旋转关节（指做旋转运动的关节），则不发送该字段，注意参数的设置一定跟电机匹配，避免发生意外
+    int32_t limit_min;      // 最小限位，如果是旋转关节，单位为°，精度0.001，如果是升降关节，则单位为mm
+    int32_t limit_max;      // 最大限位，如果是旋转关节，单位为°，精度0.001，如果是升降关节，则单位为mm
 }ExpandConfig;
-
 
 
 //实时机械臂状态上报
@@ -283,6 +295,73 @@ typedef struct {
     uint16_t sys_err;
     Pose waypoint;
 } RobotStatus;
+
+
+//电子围栏名称列表
+typedef struct
+{
+    char name[12];    // 电子围栏名称,不超过10个字符
+}ElectronicFenceNames;
+
+//所有电子围栏信息
+typedef struct
+{
+    int form;           // 形状，1表示立方体
+    char name[12];      // 电子围栏名称，不超过10个字节，支持字母、数字、下划线
+    // 立方体
+    int32_t x_min_limit;    // 立方体基于世界坐标系 X 方向最小位置，单位 0.001m
+    int32_t x_max_limit;    // 立方体基于世界坐标系 X 方向最大位置，单位 0.001m
+    int32_t y_min_limit;    // 立方体基于世界坐标系 Y 方向最小位置，单位 0.001m
+    int32_t y_max_limit;    // 立方体基于世界坐标系 Y 方向最大位置，单位 0.001m
+    int32_t z_min_limit;    // 立方体基于世界坐标系 Z 方向最小位置，单位 0.001m
+    int32_t z_max_limit;    // 立方体基于世界坐标系 Z 方向最大位置，单位 0.001m
+}ElectronicFenceConfig;
+
+// 电子围栏参数列表-适配matlab
+typedef struct
+{
+    ElectronicFenceConfig config[10];
+}ElectronicFenceConfigList;
+
+//夹爪状态
+typedef struct
+{
+    bool enable_state;  // 夹爪使能标志，0 表示未使能，1 表示使能
+    bool status;         // 夹爪在线状态，0 表示离线， 1表示在线
+    int32_t error;          // 夹爪错误信息，低8位表示夹爪内部的错误信息bit5-7 保留bit4 内部通bit3 驱动器bit2 过流 bit1 过温bit0 堵转
+    int32_t mode;           // 当前工作状态：1 夹爪张开到最大且空闲，2 夹爪闭合到最小且空闲，3 夹爪停止且空闲，4 夹爪正在闭合，5 夹爪正在张开，6 夹爪闭合过程中遇到力控停止
+    int32_t current_force;  // 夹爪当前的压力，单位g
+    int32_t temperature;    // 当前温度，单位℃
+    int32_t actpos;         // 夹爪开口度
+}GripperState;
+
+typedef struct{
+    char build_time[20];
+    char version[10];
+}CtrlInfo;
+
+typedef struct{
+    char model_version[5];
+}DynamicInfo;
+
+typedef struct{
+    char build_time[20];
+    char version[10];
+}PlanInfo;
+
+typedef struct {
+    char version[10];
+}AlgorithmInfo;
+
+// 机械臂软件信息
+typedef struct
+{
+    char product_version[10];
+    AlgorithmInfo algorithm_info;
+    CtrlInfo ctrl_info;
+    DynamicInfo dynamic_info;
+    PlanInfo plan_info;
+}ArmSoftwareInfo;
 
 typedef void (*RobotStatusListener)(RobotStatus data);
 typedef void (*RM_Callback)(CallbackData data);

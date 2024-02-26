@@ -113,7 +113,7 @@
     <!-- 加载ros2_control插件 -->
     <gazebo>
         <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-            <parameters>$(find rm_75_config)/config/ros2_controllers.yaml</parameters>
+            <parameters>$(find rm_75_config)/config/gazebo_controllers.yaml</parameters>
             <robot_param>robot_description</robot_param>
             <robot_param_node>robot_state_publisher</robot_param_node>
         </plugin>
@@ -121,4 +121,3 @@
 
 
 </robot>
-

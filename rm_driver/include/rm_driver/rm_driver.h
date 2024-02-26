@@ -83,8 +83,16 @@ int realman_arm;
 char* tcp_ip;
 //tcp port
 int tcp_port;
+//udp hz
+int udp_cycle_g = 5;
+//arm dof
+int arm_dof_g = 6;
 //ctrl+c触发信号
 bool ctrl_flag = false;
+//api类
+RM_Service Rm_Api;
+//机械臂TCp网络通信套接字
+SOCKHANDLE m_sockhand = -1;
 //机械臂状态参数
 typedef struct
 {
@@ -109,6 +117,19 @@ typedef struct
     uint16_t coordinate;               //当前六维力传感器的基准坐标
 } JOINT_STATE_VALUE;
 JOINT_STATE_VALUE Udp_RM_Joint;
+
+std_msgs::msg::UInt16 sys_err_;                                     //系统错误信息
+std_msgs::msg::UInt16 arm_err_;                                     //机械臂错误信息
+std_msgs::msg::UInt16 arm_coordinate_;                              //六维力基准坐标系
+sensor_msgs::msg::JointState udp_real_joint_;                       //关节角度
+geometry_msgs::msg::Pose udp_arm_pose_;                             //位姿
+rm_ros_interfaces::msg::Sixforce udp_sixforce_;                     //六维力传感器原始数据
+rm_ros_interfaces::msg::Sixforce udp_zeroforce_;                    //六维力传感器转化后数据
+rm_ros_interfaces::msg::Sixforce udp_oneforce_;                     //一维力传感器原始数据
+rm_ros_interfaces::msg::Sixforce udp_onezeroforce_;                 //一维力传感器转化后数据
+rm_ros_interfaces::msg::Jointerrorcode udp_joint_error_code_;       //关节报错数据
+rm_ros_interfaces::msg::Armoriginalstate Arm_original_state;        //机械臂原始数据（角度+欧拉角）
+rm_ros_interfaces::msg::Armstate Arm_state;                         //机械臂数据（弧度+四元数）
 
 class RmArm: public rclcpp::Node
 {
@@ -168,42 +189,27 @@ public:
     void Arm_Get_Current_Arm_State_Callback(const std_msgs::msg::Empty::SharedPtr msg);
     /*********************************六维力数据清零******************************/
     void Arm_Clear_Force_Data_Callback(const std_msgs::msg::Bool::SharedPtr msg);
-    /*******************************主动上报定时器数据处理回调函数**************************/
-    void udp_timer_callback();
+    
 /***************************************************************end******************************************************/
 private:
-    SOCKHANDLE m_sockhand = -1; //机械臂TCp网络通信套接字
-    RM_Service Rm_Api;          //api类
-    int Arm_Start(void);        //TCP连接函数
-    void Arm_Close();           //TCP断连函数
+    // int Arm_Start(void);        //TCP连接函数
+    // void Arm_Close();           //TCP断连函数
 
 /************************************************************变量信息******************************************************/
     std_msgs::msg::Empty::SharedPtr copy;                               //闲置
-    std_msgs::msg::UInt16 sys_err_;                                     //系统错误信息
-    std_msgs::msg::UInt16 arm_err_;                                     //机械臂错误信息
-    std_msgs::msg::UInt16 arm_coordinate_;                              //六维力基准坐标系
-    sensor_msgs::msg::JointState udp_real_joint_;                       //关节角度
-    geometry_msgs::msg::Pose udp_arm_pose_;                             //位姿
-    rm_ros_interfaces::msg::Sixforce udp_sixforce_;                     //六维力传感器原始数据
-    rm_ros_interfaces::msg::Sixforce udp_zeroforce_;                    //六维力传感器转化后数据
-    rm_ros_interfaces::msg::Sixforce udp_oneforce_;                     //一维力传感器原始数据
-    rm_ros_interfaces::msg::Sixforce udp_onezeroforce_;                 //一维力传感器转化后数据
-    rm_ros_interfaces::msg::Jointerrorcode udp_joint_error_code_;       //关节报错数据
-    rm_ros_interfaces::msg::Armoriginalstate Arm_original_state;        //机械臂原始数据（角度+欧拉角）
-    rm_ros_interfaces::msg::Armstate Arm_state;                         //机械臂数据（弧度+四元数）
+    // std_msgs::msg::UInt16 sys_err_;                                     //系统错误信息
+    // std_msgs::msg::UInt16 arm_err_;                                     //机械臂错误信息
+    // std_msgs::msg::UInt16 arm_coordinate_;                              //六维力基准坐标系
+    // sensor_msgs::msg::JointState udp_real_joint_;                       //关节角度
+    // geometry_msgs::msg::Pose udp_arm_pose_;                             //位姿
+    // rm_ros_interfaces::msg::Sixforce udp_sixforce_;                     //六维力传感器原始数据
+    // rm_ros_interfaces::msg::Sixforce udp_zeroforce_;                    //六维力传感器转化后数据
+    // rm_ros_interfaces::msg::Sixforce udp_oneforce_;                     //一维力传感器原始数据
+    // rm_ros_interfaces::msg::Sixforce udp_onezeroforce_;                 //一维力传感器转化后数据
+    // rm_ros_interfaces::msg::Jointerrorcode udp_joint_error_code_;       //关节报错数据
+    // rm_ros_interfaces::msg::Armoriginalstate Arm_original_state;        //机械臂原始数据（角度+欧拉角）
+    // rm_ros_interfaces::msg::Armstate Arm_state;                         //机械臂数据（弧度+四元数）
 
-    rclcpp::TimerBase::SharedPtr Udp_Timer;                             //UDP定时器
-    /*****************************************************UDP数据发布话题************************************************/
-    rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr Joint_Position_Result;                                //关节当前状态发布器
-    rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr Arm_Position_Result;                                      //末端位姿当前状态发布器
-    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr Six_Force_Result;                                 //六维力发布器
-    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr Six_Zero_Force_Result;                            //六维力目标坐标系下系统受力发布器
-    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr One_Force_Result;                                 //一维力发布器
-    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr One_Zero_Force_Result;                            //一维力目标坐标系下系统受力发布器
-    rclcpp::Publisher<rm_ros_interfaces::msg::Jointerrorcode>::SharedPtr Joint_Error_Code_Result;                    //关节报错信息发布器
-    rclcpp::Publisher<std_msgs::msg::UInt16>::SharedPtr Sys_Err_Result;                                              //系统报错发布器
-    rclcpp::Publisher<std_msgs::msg::UInt16>::SharedPtr Arm_Err_Result;                                              //机械臂报错发布器
-    rclcpp::Publisher<std_msgs::msg::UInt16>::SharedPtr Arm_Coordinate_Result;                                       //力传感器基准坐标发布器
     /****************************************udp主动上报配置查询发布器*************************************/
     rclcpp::Publisher<rm_ros_interfaces::msg::Setrealtimepush>::SharedPtr Get_Realtime_Push_Result;
     /****************************************udp主动上报配置查询订阅器*************************************/
@@ -378,12 +384,12 @@ private:
 
     std::string arm_ip_ = "192.168.1.18";    
     std::string udp_ip_ = "192.168.1.10";
-    std::string  arm_type_ = "RM_eco65";  
-    int connect_state = 0;                             //网络连接状态
-    int come_time = 0;
+    std::string  arm_type_ = "RM_75";  
+    
+    
     int tcp_port_ = 8080;  
     int udp_port_ = 8089; 
-    int arm_dof_ = 6;                                  //机械臂自由度
+    int arm_dof_ = 7;                                  //机械臂自由度
     int udp_cycle_ = 5;                                //udp主动上报周期（ms）
     int udp_force_coordinate_ = 0;                     //udp主动上报系统六维力参考坐标系
 
@@ -392,3 +398,51 @@ private:
     rclcpp::CallbackGroup::SharedPtr callback_group_sub3_;
     rclcpp::CallbackGroup::SharedPtr callback_group_sub4_;
 };
+
+class UdpPublisherNode : public rclcpp::Node
+{
+public:
+    UdpPublisherNode();
+    /*******************************主动上报定时器数据处理回调函数**************************/
+    void udp_timer_callback();
+    bool read_data();
+//   : Node("UdpPublisherNode"), count_(0)
+//   {
+//     publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
+//     auto timer_callback =
+//       [this]() -> void {
+//         auto message = std_msgs::msg::String();
+//         message.data = "Hello World! " + std::to_string(this->count_++);
+
+//         // Extract current thread
+//         auto curr_thread = string_thread_id();
+
+//         // Prep display message
+//         auto info_message = "\n<<THREAD " + curr_thread + ">> Publishing '%s'";
+//         RCLCPP_INFO(this->get_logger(), info_message, message.data.c_str());
+//         this->publisher_->publish(message);
+//       };
+//     timer_ = this->create_wall_timer(500ms, timer_callback);
+//   }
+
+private:
+    rclcpp::TimerBase::SharedPtr Udp_Timer;                             //UDP定时器
+    /*****************************************************UDP数据发布话题************************************************/
+    rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr Joint_Position_Result;                                //关节当前状态发布器
+    rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr Arm_Position_Result;                                      //末端位姿当前状态发布器
+    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr Six_Force_Result;                                 //六维力发布器
+    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr Six_Zero_Force_Result;                            //六维力目标坐标系下系统受力发布器
+    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr One_Force_Result;                                 //一维力发布器
+    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr One_Zero_Force_Result;                            //一维力目标坐标系下系统受力发布器
+    rclcpp::Publisher<rm_ros_interfaces::msg::Jointerrorcode>::SharedPtr Joint_Error_Code_Result;                    //关节报错信息发布器
+    rclcpp::Publisher<std_msgs::msg::UInt16>::SharedPtr Sys_Err_Result;                                              //系统报错发布器
+    rclcpp::Publisher<std_msgs::msg::UInt16>::SharedPtr Arm_Err_Result;                                              //机械臂报错发布器
+    rclcpp::Publisher<std_msgs::msg::UInt16>::SharedPtr Arm_Coordinate_Result;                                       //力传感器基准坐标发布器
+    int connect_state = 0;                             //网络连接状态
+    int come_time = 0;
+    struct sockaddr_in clientAddr;
+    socklen_t clientAddrLen = sizeof(clientAddr);
+    char udp_socket_buffer[800];
+
+};
+

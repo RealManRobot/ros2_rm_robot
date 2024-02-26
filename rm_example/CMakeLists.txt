@@ -1,6 +1,17 @@
 cmake_minimum_required(VERSION 3.8)
 project(rm_example)
 
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -36,12 +47,14 @@ endif()
 
 add_executable(rm_change_work_frame src/api_ChangeWorkFrame_demo.cpp)
 add_executable(rm_get_state src/api_Get_Arm_State_demo.cpp)
+# add_executable(rm_get_state src/api_Get_Arm_State_demo.cpp)
 add_executable(movej_demo src/api_MoveJ_demo.cpp)
 add_executable(movejp_demo src/api_MoveJP_demo.cpp)
 add_executable(movel_demo src/api_MoveL_demo.cpp)
 
 ament_target_dependencies(rm_change_work_frame rclcpp std_msgs)
 ament_target_dependencies(rm_get_state rclcpp std_msgs rm_ros_interfaces)
+# ament_target_dependencies(rm_get_state rclcpp std_msgs rm_ros_interfaces)
 ament_target_dependencies(movej_demo rclcpp std_msgs rm_ros_interfaces)
 ament_target_dependencies(movejp_demo rclcpp std_msgs rm_ros_interfaces)
 ament_target_dependencies(movel_demo rclcpp std_msgs rm_ros_interfaces)

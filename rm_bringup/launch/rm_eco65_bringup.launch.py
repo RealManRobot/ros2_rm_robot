@@ -16,10 +16,6 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(('rm_driver')),'launch', 'rm_eco65_driver.launch.py'))
     )
 
-    rm_eco65_description = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('rm_description'), 'launch', 'rm_eco65_display.launch.py')),
-    )
-
     rm_eco65_control = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(('rm_control')),'launch', 'rm_eco65_control.launch.py'))
     )
@@ -30,7 +26,6 @@ def generate_launch_description():
 
     return LaunchDescription([
     rm_eco65_driver,
-    rm_eco65_description,
     rm_eco65_control,
     rm_eco65_moveit_config
     ])

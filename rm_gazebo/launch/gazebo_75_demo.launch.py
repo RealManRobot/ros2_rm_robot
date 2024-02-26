@@ -10,6 +10,28 @@ from launch.event_handlers import OnProcessExit
 from ament_index_python.packages import get_package_share_directory
 
 import xacro
+import yaml
+
+# LOAD FILE:
+def load_file(package_name, file_path):
+    package_path = get_package_share_directory(package_name)
+    absolute_file_path = os.path.join(package_path, file_path)
+    try:
+        with open(absolute_file_path, 'r') as file:
+            return file.read()
+    except EnvironmentError:
+        # parent of IOError, OSError *and* WindowsError where available.
+        return None
+# LOAD YAML:
+def load_yaml(package_name, file_path):
+    package_path = get_package_share_directory(package_name)
+    absolute_file_path = os.path.join(package_path, file_path)
+    try:
+        with open(absolute_file_path, 'r') as file:
+            return yaml.safe_load(file)
+    except EnvironmentError:
+        # parent of IOError, OSError *and* WindowsError where available.
+        return None
 
 def generate_launch_description():
     package_name = 'rm_gazebo'
@@ -19,7 +41,19 @@ def generate_launch_description():
     pkg_share = FindPackageShare(package=package_name).find(package_name) 
     urdf_model_path = os.path.join(pkg_share, f'config/gazebo_75_description.urdf.xacro')
 
-    
+     # DECLARE Gazebo WORLD file:
+    rm_ros2_gazebo = os.path.join(
+        get_package_share_directory('rm_gazebo'),
+        'worlds',
+        'realman.world')
+    # DECLARE Gazebo LAUNCH file:
+    gazebo = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
+                launch_arguments={'world': rm_ros2_gazebo}.items(),
+             )
+
+
     print("---", urdf_model_path)
 
     doc = xacro.parse(open(urdf_model_path))
@@ -28,11 +62,29 @@ def generate_launch_description():
 
     print("urdf", doc.toxml())
 
+    robot_description_config = xacro.process_file(
+        os.path.join(
+            get_package_share_directory("rm_gazebo"),
+            "config",
+            "gazebo_75_description.urdf.xacro",
+        )
+    )
+    robot_description = {"robot_description": robot_description_config.toxml()}
+
+    ros2_controllers_path = os.path.join(
+        get_package_share_directory("rm_75_config"),
+        "config",
+        "gazebo_controllers.yaml",
+    )
     # 启动gazebo
-    gazebo = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
-             )
+    # gazebo = IncludeLaunchDescription(
+    #             PythonLaunchDescriptionSource([os.path.join(
+    #                 get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
+    #          )
+    
+    # gazebo =  ExecuteProcess(
+    #     cmd=['gazebo', '--verbose','-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so'],
+    #     output='screen')
 
     # 启动了robot_state_publisher节点后，该节点会发布 robot_description 话题，话题内容是模型文件urdf的内容
     # 并且会订阅 /joint_states 话题，获取关节的数据，然后发布tf和tf_static话题.
@@ -48,44 +100,36 @@ def generate_launch_description():
                                    '-entity', f'{robot_name_in_model}'], 
                         output='screen')
 
-    # gazebo在加载urdf时，根据urdf的设定，会启动一个joint_states节点
-    # 关节状态发布器
-    load_joint_state_controller = ExecuteProcess(
-        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-             'joint_state_broadcaster'],
-        output='screen'
+    ros2_control_node = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[robot_description, ros2_controllers_path],
+        output={
+            "stdout": "screen",
+            "stderr": "screen",
+        },
     )
 
-    # 路径执行控制器，也就是那个action
-    # 这个rm_group_controller需要根据urdf文件里面引用的ros2_controllers.yaml里面的名字确定
-    load_joint_trajectory_controller = ExecuteProcess(
-        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-             'rm_group_controller'],
-        output='screen'
-    )
-
-    # 用下面这两个估计是想控制好各个节点的启动顺序
-    # 监听 spawn_entity_cmd，当其退出（完全启动）时，启动load_joint_state_controller
-    close_evt1 =  RegisterEventHandler( 
-            event_handler=OnProcessExit(
-                target_action=spawn_entity,
-                on_exit=[load_joint_state_controller],
+    # Load controllers
+    
+    load_controllers = []
+    for controller in [
+        "joint_state_broadcaster","rm_group_controller"]:
+        load_controllers += [
+            ExecuteProcess(
+                cmd=["ros2 run controller_manager spawner.py {}".format(controller)],
+                shell=True,
+                output="screen",
             )
-    )
-    # 监听 load_joint_state_controller，当其退出（完全启动）时，启动load_joint_trajectory_controller
-    close_evt2 = RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=load_joint_state_controller,
-                on_exit=[load_joint_trajectory_controller],
-            )
-    )
+        ]
     
     ld = LaunchDescription([
-        close_evt1,
-        close_evt2,
         gazebo,
         node_robot_state_publisher,
         spawn_entity,
-    ])
+        ros2_control_node,
+    ]
+    + load_controllers
+    )
 
     return ld

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file:      robot_define.h
  * 
  * @author:    leon  
@@ -89,9 +89,9 @@ typedef struct
 
 typedef enum
 {
-    _B,
-    _ZF,
-    _SF
+    B,
+    ZF,
+    SF
 } SensorType;
 
 typedef enum

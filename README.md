@@ -40,9 +40,9 @@ sudo bash lib_install.sh
 mkdir -p ~/ros2_ws/src
 cp -r ros2_rm_robot ~/ros2_ws/src
 cd ~/ros2_ws
-colocn build --packages-select rm_ros_interfaces
+colcon build --packages-select rm_ros_interfaces
 source ./install/setup.bash
-colocn build
+colcon build
 ```
 编译完成后即可进行功能包的运行操作。
 

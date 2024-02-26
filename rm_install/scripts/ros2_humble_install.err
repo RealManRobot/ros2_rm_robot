@@ -1,0 +1,26 @@
+debconf: 因为并未安装 apt-utils，所以软件包的设定过程将被推迟
+debconf: 因为并未安装 apt-utils，所以软件包的设定过程将被推迟
+debconf: 因为并未安装 apt-utils，所以软件包的设定过程将被推迟
+debconf: 因为并未安装 apt-utils，所以软件包的设定过程将被推迟
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 23.0.1 -> 23.3.1
+[notice] To update, run: python3 -m pip install --upgrade pip
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 23.0.1 -> 23.3.1
+[notice] To update, run: python3 -m pip install --upgrade pip
+--2023-12-06 17:03:38--  https://mirrors.tuna.tsinghua.edu.cn/github-raw/ros/rosdistro/master/rosdep/sources.list.d/20-default.list
+正在解析主机 mirrors.tuna.tsinghua.edu.cn (mirrors.tuna.tsinghua.edu.cn)... 101.6.15.130, 2402:f000:1:400::2
+正在连接 mirrors.tuna.tsinghua.edu.cn (mirrors.tuna.tsinghua.edu.cn)|101.6.15.130|:443... 已连接。
+已发出 HTTP 请求，正在等待回应... 200 OK
+长度： 550 [application/octet-stream]
+正在保存至: “/etc/ros/rosdep/sources.list.d/20-default.list”
+
+     0K                                                       100% 63.0M=0s
+
+2023-12-06 17:03:41 (63.0 MB/s) - 已保存 “/etc/ros/rosdep/sources.list.d/20-default.list” [550/550])
+
+Warning: running 'rosdep update' as root is not recommended.
+  You should run 'sudo rosdep fix-permissions' and invoke 'rosdep update' again without sudo.
+debconf: 因为并未安装 apt-utils，所以软件包的设定过程将被推迟

@@ -1,9 +1,11 @@
 //
 // Created by ubuntu on 23-11-28.
 //
+#include <iostream>
 #include <chrono>
 #include <functional>
 #include <memory>
+#include <unistd.h>
 #include <thread>
 #include "rclcpp/rclcpp.hpp"
 #include "rm_ros_interfaces/msg/movejp.hpp"
@@ -18,7 +20,7 @@ class MoveJPDemo: public rclcpp::Node
   public:
     MoveJPDemo();                                                                                 //构造函数
     void movejp_demo();                                                                           //movejp运动规划函数
-    void MoveJPDemo_Callback(const std_msgs::msg::Bool & msg);                                    //结果回调函数
+    void MoveJPDemo_Callback(const std_msgs::msg::Bool::SharedPtr msg);                                    //结果回调函数
   
   private:
     rclcpp::Publisher<rm_ros_interfaces::msg::Movejp>::SharedPtr movejp_publisher_;               //声明发布器
@@ -27,10 +29,10 @@ class MoveJPDemo: public rclcpp::Node
 
 
 /******************************接收到订阅的机械臂执行状态消息后，会进入消息回调函数**************************/ 
-void MoveJPDemo::MoveJPDemo_Callback(const std_msgs::msg::Bool & msg)
+void MoveJPDemo::MoveJPDemo_Callback(const std_msgs::msg::Bool::SharedPtr msg)
 {
     // 将接收到的消息打印出来，显示是否执行成功
-    if(msg.data)
+    if(msg->data)
     {
         RCLCPP_INFO (this->get_logger(),"*******MoveJP succeeded\n");
     } else {
