@@ -1,6 +1,6 @@
 <div align="right">
  
-[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_bringup/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_bringup/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_bringup/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_bringup/README.md)
 
 </div>
 

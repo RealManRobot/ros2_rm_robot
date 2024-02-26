@@ -1,6 +1,6 @@
 <div align="right">
 
-[简体中文](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/README_CN.md)|[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README.md)
  
 </div>
 
@@ -135,4 +135,4 @@ The current rm_driver package is composed of the following files.
 rm_driver has many topics, and you can learn about the topic information through the following commands.
 ![image](doc/rm_driver2.png)
 ![image](doc/rm_driver3.png)  
-It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".
+It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".
