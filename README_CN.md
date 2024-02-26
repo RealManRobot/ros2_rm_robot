@@ -9,8 +9,8 @@
 该功能包的主要作用为提供机械臂的ROS2支持，以下为使用环境。
 * 当前支持的机械臂有RM65系列、RM75系列、ECO65系列、RML63系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
 * 支持的机械臂控制器版本1.4.3以上。
-* 基于的Ubuntu版本为22.04。
-* ROS2版本为humble。
+* 基于的Ubuntu版本为20.04。
+* ROS2版本为foxy。
 
 下面为功能包安装使用教程。
 ## 1.搭建环境
