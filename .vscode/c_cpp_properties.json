@@ -1,0 +1,58 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/kaola/ros2_ws/install/rm_ros_interfaces/include/**",
+        "/opt/ros/foxy/include/**",
+        "/home/kaola/Downloads/ros2_rm_robot/rm_control/include/**",
+        "/home/kaola/Downloads/ros2_rm_robot/rm_driver/include/**",
+        "/home/kaola/Downloads/src/rm_bringup/include/**",
+        "/home/kaola/Downloads/src/rm_control/include/**",
+        "/home/kaola/Downloads/src/rm_doc/include/**",
+        "/home/kaola/Downloads/src/rm_driver/include/**",
+        "/home/kaola/Downloads/src/rm_example/include/**",
+        "/home/kaola/Downloads/src/rm_gazebo/include/**",
+        "/home/kaola/Downloads/src/rm_install/include/**",
+        "/home/kaola/Downloads/src/rm_ros_interfaces/include/**",
+        "/home/kaola/feixi_ws/src/flexiv_ros2-foxy/flexiv_controllers/include/**",
+        "/home/kaola/ros2_rm_robot/rm_bringup/include/**",
+        "/home/kaola/ros2_rm_robot/rm_control/include/**",
+        "/home/kaola/ros2_rm_robot/rm_doc/include/**",
+        "/home/kaola/ros2_rm_robot/rm_driver/include/**",
+        "/home/kaola/ros2_rm_robot/rm_example/include/**",
+        "/home/kaola/ros2_rm_robot/rm_gazebo/include/**",
+        "/home/kaola/ros2_rm_robot/rm_install/include/**",
+        "/home/kaola/ros2_rm_robot/rm_ros_interfaces/include/**",
+        "/home/kaola/ros2_ws/src/rm_bringup/include/**",
+        "/home/kaola/ros2_ws/src/rm_control/include/**",
+        "/home/kaola/ros2_ws/src/rm_doc/include/**",
+        "/home/kaola/ros2_ws/src/rm_driver/include/**",
+        "/home/kaola/ros2_ws/src/rm_example/include/**",
+        "/home/kaola/ros2_ws/src/rm_gazebo/include/**",
+        "/home/kaola/ros2_ws/src/rm_install/include/**",
+        "/home/kaola/ros2_ws/src/rm_ros_interfaces/include/**",
+        "/home/kaola/src/rm_bringup/include/**",
+        "/home/kaola/src/rm_control/include/**",
+        "/home/kaola/src/rm_doc/include/**",
+        "/home/kaola/src/rm_driver/include/**",
+        "/home/kaola/src/rm_example/include/**",
+        "/home/kaola/src/rm_gazebo/include/**",
+        "/home/kaola/src/rm_install/include/**",
+        "/home/kaola/src/rm_ros_interfaces/include/**",
+        "/home/kaola/ws_moveit2/src/moveit_visual_tools/include/**",
+        "/home/kaola/ws_moveit2/src/rviz_visual_tools/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
