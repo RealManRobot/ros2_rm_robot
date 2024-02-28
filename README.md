@@ -1,105 +1,174 @@
-# ros2_rm_robot
-该功能包的主要作用为提供机械臂的ROS2支持，以下为使用环境。
-* 当前支持的机械臂有RM65系列、RM75系列、ECO65系列、RML63系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
-* 支持的机械臂控制器版本1.4.3以上。
-* 基于的Ubuntu版本为22.04。
-* ROS2版本为humble。
+<div align="right">
+  
+[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/README_CN.md)|
+[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/README.md)
 
-下面为功能包安装使用教程。
-## 1.搭建环境
+</div>
+
+# ros2_rm_robot
+
+The package is mainly used for providing ROS2 support for the robotic arm, and the following is the use environment.
+
+* Currently supported robotic arms are RM65 series, RM75 series, ECO65 series, RML63 series, and the details can be referred to the website [RealMan robots](http://www.realman-robotics.com/).
+* The supported robotic arm controller version is 1.4.3 or above.
+* The Ubuntu version is 22.04.
+* The ROS2 version is humble.
+
+The following is the installation and use tutorial of the package.
+
+## 1\. Build the environment
 ---
-在使用功能包之前我们首先需要进行如下操作。
-* 1.[安装ROS2](#安装ROS2)
-* 2.[安装Moveit2](#安装Moveit2)
-* 3.[配置功能包环境](#配置功能包环境)
-* 4.[编译](#编译)
-### 安装ROS2
+Before using the package, we first need to do the following operations.
+
+* 1.[Install ROS2](#1.Install_ROS2)
+* 2.[Install Moveit2](#Install_Moveit2)
+* 3.[Configure the package environment](#Configure_the_package_environment)
+* 4.[Compile](#Compile)
+
+### 1.Install_ROS2
+
 ----
-我们提供了ROS2的安装脚本ros2_install.sh，该脚本位于rm_install功能包中的scripts文件夹下，在实际使用时我们需要移动到该路径执行如下指令。
+
+We provide the installation script for ROS2, ros2_install.sh, which is located in the scripts folder of the rm_install package. In practice, we need to move to the path and execute the following commands.
+
 ```
 sudo bash ros2_install.sh
 ```
-如果不想使用脚本安装也可以参考网址 [ROS2_INSTALL](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)。
-### 安装Moveit2
+
+If you do not want to use the script installation, you can also refer to the website [ROS2_INSTALL](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html).
+
+### Install_Moveit2
+
 ----
-我们提供了Moveit2的安装脚本moveit2_install.sh，该脚本位于rm_install功能包中的scripts文件夹下，在实际使用时我们需要移动到该路径执行如下指令。
+
+We provide the installation script for Moveit2, moveit2_install.sh, which is located in the scripts folder of the rm_install package. In practice, we need to move to the path and execute the following commands.
+
 ```
 sudo bash moveit2_install.sh
 ```
-如果不想使用脚本安装也可以参考网址 [Moveit2_INSTALL](https://moveit.ros.org/install-moveit2/binary/)进行安装。
-### 配置功能包环境
+
+If you do not want to use the script installation, you can also refer to the website [Moveit2_INSTALL](https://moveit.ros.org/install-moveit2/binary/).
+
+### Configure_the_package_environment
+
 ----
-该脚本位于rm_driver功能包中的lib文件夹下，在实际使用时我们需要移动到该路径执行如下指令。
+
+This script is located in the lib folder of the rm_driver package. In practice, we need to move to the path and execute the following commands.
+
 ```
 sudo bash lib_install.sh
 ```
-### 编译
+
+### Compile
+
 ----
-以上执行成功后，可以执行如下指令进行功能包编译，首先需要构建工作空间，并将功能包文件导入工作空间下的src文件夹下，之后使用colcon build指令进行编译。
+
+After the above execution is successful, execute the following commands to compile the package. First, we need to build a workspace and import the package file into the src folder under the workspace, and then use the colcon build command to compile.
+
 ```
 mkdir -p ~/ros2_ws/src
 cp -r ros2_rm_robot ~/ros2_ws/src
 cd ~/ros2_ws
-colocn build --packages-select rm_ros_interfaces
+colcon build --packages-select rm_ros_interfaces
 source ./install/setup.bash
-colocn build
+colcon build
 ```
-编译完成后即可进行功能包的运行操作。
 
+After the compilation is completed, the package can be run.
 
-## 2.功能运行
+## 2\. Function running
+
 ---
-功能包简介
-1.	安装与环境配置([rm_install](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_install))
-* 该功能包为机械臂使用辅助功能包，主要作用为介绍功能包使用环境安装与搭建方式，功能包的依赖库安装和功能包编译方法。
-3.	硬件驱动([rm_driver](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_driver))
-* 该功能包为机械臂的ROS2底层驱动功能包，其作用为订阅和发布机械臂底层相关话题信息。
-5.	启动([rm_bringup](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_bringup))
-* 该功能包为机械臂的节点启动功能包，其作用为快速启动多节点复合的机械臂功能。
-6.	模型描述([rm_description](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_description))
-* 该功能包为机械臂模型描述功能包，其作用为提供机械臂模型文件和模型加载节点，并为其他功能包提供机械臂关节间的坐标变换关系。
-7.	ROS消息接口([rm_ros_interfaces](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_ros_interfaces))
-* 该功能包为机械臂的消息文件功能包，其作用为提供机械臂适配ROS2的所有控制消息和状态消息。
-8.	Moveit2配置([rm_moveit2_config](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_moveit2_config))
-* 该功能包为机械臂的moveit2适配功能包，其作用为适配和实现各系列机械臂的moveit2规划控制功能，主要包括虚拟机械臂控制和真实机械臂控制两部分控制功能。
-9.	Moveit2与硬件驱动通信连接([rm_config](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_control))
-* 该功能包为底层驱动功能包（rm_driver）和moveit2功能包（rm_moveit2_config）之间的通信连接功能包，主要功能为将moveit2的规划点进行细分然后通过透传的形式传递给底层驱动功能包控制机械臂运动。
-10. Gazebo仿真机械臂控制([rm_gazebo](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_gazebo))
-* 该功能包为gazebo仿真机械臂功能包，主要功能为在gazebo仿真环境中显示机械臂模型，可通过moveit2对仿真的机械臂进行规划控制。
-11. 使用案例([rm_examples](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_example))
-* 该功能包为机械臂的一些使用案例，主要功能为实现机械臂的一些基本的控制功能和运动功能的使用案例。
-12. 技术文档([rm_docs](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_doc))
-* 该功能包为介绍文档的功能包，其主要包括为对整体的功能包内容和使用方式进行总体介绍的文档和对每个功能包中的内容和使用方式进行详细介绍的文档。
 
-以上为当前的十个功能包，每个功能包都有其独特的作用，详情请参考rm_doc功能包下的doc文件夹中的文档进行详细了解。
-### 2.1运行虚拟机械臂
+Package introduction
+
+1. Installation and environment configuration ([rm_install](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_install))
+
+* This package is the auxiliary package for using the robotic arm. It is mainly used to introduce the installation and construction method of the package use environment, the installation of the dependent library and the compilation method of the function package.
+
+3. Hardware driver ([rm_driver](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_driver))
+
+* This package is the ROS2 underlying driver package of the robotic arm. It is used to subscribe and publish the underlying related topic information of the robotic arm.
+
+5. Launch ([rm_bringup](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_bringup))
+
+* This package is the node launch package of the robotic arm. It is used to quickly launch the multi-node compound robotic arm function.
+
+6. Model description ([rm_description](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_description))
+
+* This package is the model description package of the robotic arm. It is used to provide the robotic arm model file and model load node, and provide the coordinate transformation relationship between the joints of the robotic arm for other packages.
+
+7. ROS message interface ([rm_ros_interfaces](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_ros_interfaces))
+
+* This package is the message file package of the robotic arm. It is used to provide all control messages and state messages for the robotic arm to adapt to ROS2.
+
+8. Moveit2 configuration [(rm_moveit2_config](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_moveit2_config))
+
+* This package is the moveit2 adaptation package of the robotic arm. It is used to adapt and realize the moveit2 planning and control functions of various series of robotic arms, mainly including the control functions of virtual robotic arm control and real robotic arm control.
+
+9. Moveit2 and hardware driver communication connection ([rm_config](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_control))
+
+* This package is the communication connection package between the underlying driver package (rm_driver) and the moveit2 package (rm_moveit2_config). It is mainly used to subdivide the planning points of moveit2 and then pass them to the underlying driver package in the form of transmission to control the motion of the robotic arm.
+
+10. Gazebo simulation robotic arm control ([rm_gazebo](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_gazebo))
+
+* This package is the gazebo simulation robotic arm package. It is mainly used to display the robotic arm model in the gazebo simulation environment, and the planning and control of the simulated robotic arm can be carried out through moveit2.
+
+11. Use examples ([rm_examples](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_example))
+
+* This package is some use examples of the robotic arm, and it is mainly used to realize some basic control functions and motion functions of the robotic arm.
+
+12. Technical documentation ([rm_docs](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_doc))
+
+* This package is an introduction document package, which mainly includes a document that provides an overall introduction to the content and usage of the packages, as well as a document that provides a detailed introduction to the content and usage of each package.
+
+The above are the current ten packages; each package has its own unique role. Please refer to the document in the doc folder under the rm_doc package for a detailed understanding.
+
+### 2.1 Run the virtual robotic arm
+
 ----
-使用如下指令可以启动gazebo显示仿真机械臂，并同时启动moveit2进行仿真机械臂的规划操控。
+
+Use the following command to launch the gazebo to display the simulation robotic arm, and launch moveit2 for the planning and control of the simulation robotic arm.
+
 ```
 source ~/ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_gazebo.launch.py
 ```
-<arm_type>需要使用65、75、eco65、63字符进行代替，如使用RM65机械臂时，命令如下。
+
+\<arm_type> needs to use 65, 75, eco65, 63 characters to replace it. For example, when using an RM65 robotic arm, the command is as follows.
+
 ```
 ros2 launch rm_bringup rm_65_gazebo.launch.py
 ```
-启动成功后即可使用moveit2进行虚拟机械臂的控制。
-### 2.2控制真实机械臂
+
+After successful launch, you can use moveit2 for the control of the virtual robotic arm.
+
+### 2.2 Control the real robotic arm
+
 ----
-使用如下指令可以启动机械臂硬件驱动，并同时启动moveit2进行机械臂的规划操控。
+
+Use the following command to launch the hardware driver of the robotic arm, and launch moveit2 for the planning and control of the robotic arm.
+
 ```
 source ~/ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ```
-<arm_type>需要使用65、75、eco65、63字符进行代替，如使用RM65机械臂时，命令如下。
+
+\<arm_type> needs to use 65, 75, eco65, 63 characters to replace it. For example, when using an RM65 robotic arm, the command is as follows.
+
 ```
 ros2 launch rm_bringup rm_65_bringup.launch.py
 ```
-启动成功后即可使用moveit2进行真实机械臂的控制。
-### 安全提示
+
+After successful launch, you can use moveit2 for the control of the real robotic arm.
+
+### Safety Tips
+
 ----
-在使用机械臂时，为保证使用者安全，请参考如下操作规范。
-* 每次使用前检查机械臂的安装情况，包括固定螺丝是否松动，机械臂是否存在震动、晃动的情况。
-* 机械臂在运行过程中，人不可处于机械臂落下或工作范围内，也不可将其他物体放到机械臂动作的安全范围内。
-* 在不使用机械臂时，应将机械臂置于安全位置，防止震动时机械臂跌落而损坏或砸伤其他物体。
-* 在不使用机械臂时应及时断开机械臂电源。
+
+Please refer to the following operation specifications when using the robotic arm to ensure the user's safety.
+
+* Check the installation of the robotic arm before each use, including whether the mounting screw is loose and whether the robotic arm is vibrating or trembling.
+* During the running of the robotic arm, no person shall be in the falling or working range of the robotic arm, nor shall any other object be placed in the robot arm's safety range.
+* Place the robotic arm in a safe location when not in use to avoid it from falling down and damaging or injuring other objects during vibration.
+* Disconnect the robotic arm from the power supply in time when not in use.
