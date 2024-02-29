@@ -1,7 +1,7 @@
 <div align="right">
   
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_ros_interfaces/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_ros_interfaces/README.md)
+[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/main/rm_ros_interfaces/README_CN.md)|
+[English](https://github.com/RealManRobot/ros2_rm_robot/blob/main/rm_ros_interfaces/README.md)
 
 </div>
 
