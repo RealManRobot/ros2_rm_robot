@@ -50,6 +50,7 @@ void MoveLDemo::MoveJPDemo_Callback(const std_msgs::msg::Bool & msg)
         moveL_TargetPose.pose.orientation.z = 0.032271;
         moveL_TargetPose.pose.orientation.w = 0.006129;
         moveL_TargetPose.speed = 20;
+        moveL_TargetPose.trajectory_connect = 0;
         moveL_TargetPose.block = true;
         
         this->movel_publisher_->publish(moveL_TargetPose);
@@ -84,6 +85,7 @@ void MoveLDemo::movejp_demo()
     moveJ_P_TargetPose.pose.orientation.z = 0.032271;
     moveJ_P_TargetPose.pose.orientation.w = 0.006129;
     moveJ_P_TargetPose.speed = 20;
+    moveJ_P_TargetPose.trajectory_connect = 0;
     moveJ_P_TargetPose.block = true;
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     this->publisher_->publish(moveJ_P_TargetPose);

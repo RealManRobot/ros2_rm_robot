@@ -67,6 +67,7 @@ void MoveJDemo::movej_demo()
       movej_way.speed = 20;
       movej_way.dof = 7;
     }
+    movej_way.trajectory_connect = 0;
     movej_way.block = true;
     this->publisher_->publish(movej_way);
 }

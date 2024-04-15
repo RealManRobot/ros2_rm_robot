@@ -10,6 +10,7 @@
 The package is mainly used for providing ROS2 support for the robotic arm, and the following is the use environment.
 
 * Currently supported robotic arms are RM65 series, RM75 series, ECO65 series, RML63 series, and the details can be referred to the website [RealMan robots](http://www.realman-robotics.com/).
+* Version V1.0.1.
 * The supported robotic arm controller version is 1.4.3 or above.
 * The Ubuntu version is 22.04.
 * The ROS2 version is humble.
