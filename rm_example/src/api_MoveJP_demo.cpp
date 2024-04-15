@@ -52,6 +52,7 @@ void MoveJPDemo::movejp_demo()
     moveJ_P_TargetPose.pose.orientation.z = 0.032271;
     moveJ_P_TargetPose.pose.orientation.w = 0.006129;
     moveJ_P_TargetPose.speed = 20;
+    moveJ_P_TargetPose.trajectory_connect = 0;
     moveJ_P_TargetPose.block = true;
     this->movejp_publisher_->publish(moveJ_P_TargetPose);
 }

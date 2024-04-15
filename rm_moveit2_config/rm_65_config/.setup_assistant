@@ -1,6 +1,6 @@
 moveit_setup_assistant_config:
   urdf:
-    package: rm_65_description
+    package: rm_description
     relative_path: urdf/rm_65.urdf
   srdf:
     relative_path: config/rm_65_description.srdf

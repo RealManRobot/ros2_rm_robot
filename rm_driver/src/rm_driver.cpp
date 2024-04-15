@@ -1,4 +1,4 @@
-// Copyright (c) 2023  RealMan Intelligent Ltd
+// Copyright (c) 2024  RealMan Intelligent Ltd
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -57,27 +57,16 @@ int Arm_Socket_Start_Connect(void)
 		}
         else
         {
-            //1.定时依赖于头文件#include <sys/time.h>
             struct timeval tm;  
-            //2s
+
 			tm.tv_sec = 2;      
 			tm.tv_usec = 0;
 
 			fd_set wset;
 
-            /* ;将指定的文件描述符集清空，在对文件描述符集合进行设置前，必须对其进行初始化，
-            如果不清空，由于在系统分配内存空间后，通常并不作清空处理，所以结果是不可知的 */
 			FD_ZERO(&wset);
 
-            // 使用方式：
-            /*FD_SET(10,&set);将set的第十位置一，也就是set.__fds_bits[0]为1024！
-            FD_SET(32,&set);将set的第32位置一，也就是set.__fds_bits[1]为1！*/
-            // 经过观察基本上Arm_Socket都为10所以这里处理完后就是在bit[0]的第十位写一也就是数值1024。
 			FD_SET(Arm_Socket,&wset); 
-            /*
-            函数原型：int select(int nfds, fd_set *readset, fd_set *writeset,fd_set* exceptset, struct tim *timeout);
-            函数功能：测试指定的fd可读？可写？有异常条件待处理？
-            */
 			int res = select(Arm_Socket+1, NULL, &wset, NULL, &tm);
             if(res <= 0)
 			{
@@ -85,16 +74,13 @@ int Arm_Socket_Start_Connect(void)
 				close(Arm_Socket);
 				return 3;
 			}
-            /*判断Arm_Socket是否在wset中*/
+
             if(FD_ISSET(Arm_Socket,&wset))
 			{
-				// ROS_INFO("test \n");
+
 				int err = -1;
 				socklen_t len = sizeof(int);
-				/*
-                *函数原型：int getsockopt(int socket, int level, int option_name,void *restrict option_value, socklen_t *restrict option_len);
-                *返回值：    成功：0    失败：-1
-                */
+
 				if(getsockopt(Arm_Socket, SOL_SOCKET, SO_ERROR, &err, &len ) < 0) //两种错误处理方式
 				{
 					std::cout<<"errno :" << errno << strerror(errno) <<std::endl;
@@ -119,14 +105,14 @@ int Arm_Socket_Start_Connect(void)
     return 0;
 }
 
-int RmArm::Arm_Start(void)
+int Arm_Start(void)
 {
-    m_sockhand =  Arm_Socket_Start((char*)arm_ip_.c_str(), tcp_port_, 5000);
-    RCLCPP_INFO (this->get_logger(),"%s_driver is running ",arm_type_.c_str());
+    m_sockhand =  Rm_Api.Service_Arm_Socket_Start((char*)tcp_ip, tcp_port, 5000);
+    
     return 0;
 }
 
-void RmArm::Arm_Close(void)
+void Arm_Close(void)
 {
     Rm_Api.Service_Arm_Socket_Close(m_sockhand);
 }
@@ -139,7 +125,8 @@ void RmArm::Arm_MoveJ_Callback(rm_ros_interfaces::msg::Movej::SharedPtr msg)
     u_int32_t res;
     std_msgs::msg::UInt32 movej_data;
     std_msgs::msg::Bool movej_result;
-    
+    int trajectory_connect;
+
     for(int i = 0; i < 6; i++)
     {
         joint[i] = msg->joint[i] * RAD_DEGREE;
@@ -149,8 +136,9 @@ void RmArm::Arm_MoveJ_Callback(rm_ros_interfaces::msg::Movej::SharedPtr msg)
         joint[6] = msg->joint[6] * RAD_DEGREE;
     }
     v = msg->speed;
+    trajectory_connect = msg->trajectory_connect;
     block = msg->block;
-    res = Rm_Api.Service_Movej_Cmd(m_sockhand, joint, v ,0, block);
+    res = Rm_Api.Service_Movej_Cmd(m_sockhand, joint, v ,0, trajectory_connect, block);
     movej_data.data = res;
     if(movej_data.data == 0)
     {
@@ -176,6 +164,7 @@ void RmArm::Arm_MoveL_Callback(rm_ros_interfaces::msg::Movel::SharedPtr msg)
     std_msgs::msg::Bool movel_result;
     Quat rec_pose;
     Euler tarns_euler;
+    int trajectory_connect;
 
     pose.position.x = msg->pose.position.x;
     pose.position.y = msg->pose.position.y;
@@ -190,7 +179,8 @@ void RmArm::Arm_MoveL_Callback(rm_ros_interfaces::msg::Movel::SharedPtr msg)
     pose.euler.rz = tarns_euler.rz;
     v = msg->speed;
     block = msg->block;
-    res = Rm_Api.Service_Movel_Cmd(m_sockhand, pose, v ,0, block);
+    trajectory_connect = msg->trajectory_connect;
+    res = Rm_Api.Service_Movel_Cmd(m_sockhand, pose, v ,0, trajectory_connect, block);
     movel_data.data = res;
     if(movel_data.data == 0)
     {
@@ -215,6 +205,7 @@ void RmArm::Arm_MoveC_Callback(rm_ros_interfaces::msg::Movec::SharedPtr msg)
     std_msgs::msg::Bool movec_result;
     Quat rec_pose_via, rec_pose_to;
     Euler tarns_euler_via, tarns_euler_to;
+    int trajectory_connect;
     bool block;
 
     pose_via.position.x = msg->pose_mid.position.x;
@@ -244,7 +235,8 @@ void RmArm::Arm_MoveC_Callback(rm_ros_interfaces::msg::Movec::SharedPtr msg)
     v = msg->speed;
     loop = msg->loop;
     block = msg->block;
-    res = Rm_Api.Service_Movec_Cmd(m_sockhand, pose_via, pose_to, v, 0, loop, block);
+    trajectory_connect = msg->trajectory_connect;
+    res = Rm_Api.Service_Movec_Cmd(m_sockhand, pose_via, pose_to, v, 0, loop, trajectory_connect, block);
     movec_data.data = res;
     if(movec_data.data == 0)
     {
@@ -327,6 +319,7 @@ void RmArm::Arm_MoveJ_P_Callback(rm_ros_interfaces::msg::Movejp::SharedPtr msg)
     std_msgs::msg::Bool movej_p_result;
     Quat rec_pose;
     Euler tarns_euler;
+    int trajectory_connect;
 
     pose.position.x = msg->pose.position.x;
     pose.position.y = msg->pose.position.y;
@@ -340,8 +333,9 @@ void RmArm::Arm_MoveJ_P_Callback(rm_ros_interfaces::msg::Movejp::SharedPtr msg)
     pose.euler.ry = tarns_euler.ry;
     pose.euler.rz = tarns_euler.rz;
     v = msg->speed;
+    trajectory_connect = msg->trajectory_connect;
     block = msg->block;
-    res = Rm_Api.Service_Movej_P_Cmd(m_sockhand, pose, v ,0, block);
+    res = Rm_Api.Service_Movej_P_Cmd(m_sockhand, pose, v ,0, trajectory_connect, block);
     movej_p_data.data = res;
     if(movej_p_data.data == 0)
     {
@@ -444,7 +438,7 @@ void RmArm::Set_UDP_Configuration(int udp_cycle, int udp_port, int udp_force_coo
     res = Rm_Api.Service_Set_Realtime_Push(m_sockhand, cycle, port, true, force_coordinate, ip);
     if(res == 0)
     {
-        RCLCPP_INFO (this->get_logger(),"UDP_Configuration is cycle:%d,port:%d,force_coordinate:%d,ip:%s\n", udp_cycle, port, udp_force_coordinate, udp_ip.c_str());
+        RCLCPP_INFO (this->get_logger(),"UDP_Configuration is cycle:%dms,port:%d,force_coordinate:%d,ip:%s\n", udp_cycle, port, udp_force_coordinate, udp_ip.c_str());
     }
     else
     {
@@ -1241,7 +1235,7 @@ void Udp_RobotStatuscallback(RobotStatus Udp_RM_Callback)
     Udp_RM_Joint.coordinate = Udp_RM_Callback.force_sensor.coordinate;
 }
 
-void RmArm::udp_timer_callback() 
+void UdpPublisherNode::udp_timer_callback() 
 {
     connect_state = Rm_Api.Service_Arm_Socket_State(m_sockhand);
     if(connect_state == 0)
@@ -1253,7 +1247,7 @@ void RmArm::udp_timer_callback()
             udp_real_joint_.position[i] = Udp_RM_Joint.joint[i] * DEGREE_RAD;
             udp_joint_error_code_.joint_error[i] = Udp_RM_Joint.err_flag[i];
         }
-        if(arm_dof_ == 7)
+        if(arm_dof_g == 7)
         {
             udp_real_joint_.position[6] = Udp_RM_Joint.joint[6] * DEGREE_RAD;
             udp_joint_error_code_.joint_error[6] = Udp_RM_Joint.err_flag[6];
@@ -1329,6 +1323,54 @@ void RmArm::udp_timer_callback()
     }
 }
 
+bool UdpPublisherNode::read_data()
+{
+    memset(udp_socket_buffer, 0, sizeof(udp_socket_buffer));
+
+    ssize_t numBytes = recvfrom(16, udp_socket_buffer, sizeof(udp_socket_buffer), 0,
+        (struct sockaddr*) & clientAddr, &clientAddrLen);
+    if (numBytes < 0) {
+        // std::cerr << "Error in recvfrom" << std::endl;
+        close(16);
+        return false;
+    }
+    // 将接收到的数据输出到控制台
+    udp_socket_buffer[numBytes] = '\0'; // 添加字符串结束符
+    std::cout << "Received from "                                         //<< inet_ntoa(clientAddr.sin_addr)
+    << ":" << ntohs(clientAddr.sin_port) << ": "
+    << udp_socket_buffer << std::endl;
+    if((udp_socket_buffer[numBytes-2]==0X0D)&&(udp_socket_buffer[numBytes-1]==0X0A))
+    {
+        return true;
+    }
+    else
+    {
+        // ROS_ERROR("udp_socket_buffer IS error");
+        return false;
+    }
+}
+
+UdpPublisherNode::UdpPublisherNode():
+    rclcpp::Node("udp_publish_node"){
+        /*****************************************************UDP定时器*****************************************************************/
+        Udp_Timer = this->create_wall_timer(std::chrono::milliseconds(udp_cycle_g), 
+        std::bind(&UdpPublisherNode::udp_timer_callback,this));
+        /********************************************************************UDP传输数据**********************************************************/
+        Joint_Position_Result = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);                                 //发布当前的关节角度
+        Arm_Position_Result = this->create_publisher<geometry_msgs::msg::Pose>("rm_driver/udp_arm_position", 10);                          //发布当前的关节姿态
+        Six_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_six_force", 10);                        //发布当前的原始六维力数据
+        Six_Zero_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_six_zero_force", 10);              //发布当前标坐标系下六维力数据
+        One_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_one_force", 10);                        //发布当前的原始一维力数据
+        One_Zero_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_one_zero_force", 10);              //发布当前目标坐标系下一维力数据
+        Joint_Error_Code_Result = this->create_publisher<rm_ros_interfaces::msg::Jointerrorcode>("rm_driver/udp_joint_error_code", 10);   //发布当前的关节错误码
+        Sys_Err_Result = this->create_publisher<std_msgs::msg::UInt16>("rm_driver/udp_sys_err", 10);                                       //发布当前的系统错误码
+        Arm_Err_Result = this->create_publisher<std_msgs::msg::UInt16>("rm_driver/udp_arm_err", 10);                                       //发布当前的机械臂错误码
+        Arm_Coordinate_Result = this->create_publisher<std_msgs::msg::UInt16>("rm_driver/udp_arm_coordinate", 10);                         //发布当前六维力数据的基准坐标系
+    
+    
+    }
+
+
 RmArm::~RmArm()
 { 
     Arm_Close();
@@ -1337,30 +1379,30 @@ RmArm::~RmArm()
 RmArm::RmArm():
     rclcpp::Node("rm_driver"){
     //参数初始化
-    this->declare_parameter<std::string>("arm_ip", arm_ip_);
-    this->get_parameter("arm_ip", arm_ip_);
-
-    this->declare_parameter<std::string>("udp_ip", udp_ip_);
-    this->get_parameter("udp_ip", udp_ip_);
+    this->declare_parameter("arm_ip", "192.168.1.18");
+    arm_ip_ = this->get_parameter("arm_ip").as_string();
+    
+    this->declare_parameter("udp_ip", "192.168.1.10");
+    udp_ip_ = this->get_parameter("udp_ip").as_string();
 
     this->declare_parameter<std::string>("arm_type", arm_type_);
-    this->get_parameter("arm_type", arm_type_);
+    this->get_parameter<std::string>("arm_type", arm_type_);
 
     this->declare_parameter<int>("tcp_port", tcp_port_);
-    this->get_parameter("tcp_port", tcp_port_);
+    this->get_parameter<int>("tcp_port", tcp_port_);
 
     this->declare_parameter<int>("udp_port", udp_port_);
-    this->get_parameter("udp_port", udp_port_);
+    this->get_parameter<int>("udp_port", udp_port_);
 
     this->declare_parameter<int>("arm_dof", arm_dof_);
-    this->get_parameter("arm_dof", arm_dof_);
+    this->get_parameter<int>("arm_dof", arm_dof_);
 
     this->declare_parameter<int>("udp_cycle", udp_cycle_);
-    this->get_parameter("udp_cycle", udp_cycle_);
+    this->get_parameter<int>("udp_cycle", udp_cycle_);
 
     this->declare_parameter<int>("udp_force_coordinate", udp_force_coordinate_);
-    this->get_parameter("udp_force_coordinate", udp_force_coordinate_);
-
+    this->get_parameter<int>("udp_force_coordinate", udp_force_coordinate_);
+    udp_cycle_g = udp_cycle_;
     if(arm_type_ == "RM_65")
     {
         Rm_Api.Service_RM_API_Init(65, NULL);
@@ -1384,7 +1426,7 @@ RmArm::RmArm():
     tcp_ip = (char*)arm_ip_.c_str();
     
     tcp_port = tcp_port_;
-
+    
     while(Arm_Socket_Start_Connect())
     {
         if(ctrl_flag == true )
@@ -1395,6 +1437,8 @@ RmArm::RmArm():
         RCLCPP_INFO (this->get_logger(),"Waiting for connect");
         sleep(1);
     }
+    usleep(2000000);
+    RCLCPP_INFO (this->get_logger(),"%s_driver is running ",arm_type_.c_str());
     /************************************************初始化变量********************************************/
     if(arm_dof_ == 7)
     {
@@ -1410,6 +1454,7 @@ RmArm::RmArm():
         udp_joint_error_code_.joint_error.resize(7);
         Arm_original_state.joint.resize(7);
         Arm_state.joint.resize(7);
+        arm_dof_g = 7;
     }
     else
     {
@@ -1424,44 +1469,30 @@ RmArm::RmArm():
         udp_joint_error_code_.joint_error.resize(6);
         Arm_original_state.joint.resize(6);
         Arm_state.joint.resize(6);
+        arm_dof_g = 6;
     }
     /**************************************************end**********************************************/
-
+    
     /**********************************************初始化、连接函数****************************************/
     Arm_Start();
     /***************************************************end**********************************************/
 
     /*************************************************多线程********************************************/
-    callback_group_sub1_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    callback_group_sub1_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
     auto sub_opt1 = rclcpp::SubscriptionOptions();
     sub_opt1.callback_group = callback_group_sub1_;
-    callback_group_sub2_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    callback_group_sub2_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
     auto sub_opt2 = rclcpp::SubscriptionOptions();
     sub_opt2.callback_group = callback_group_sub2_;
-    callback_group_sub3_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    callback_group_sub3_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
     auto sub_opt3 = rclcpp::SubscriptionOptions();
     sub_opt3.callback_group = callback_group_sub3_;
-    callback_group_sub4_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    callback_group_sub4_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
     auto sub_opt4 = rclcpp::SubscriptionOptions();
-    sub_opt4.callback_group = callback_group_sub4_;
+    sub_opt3.callback_group = callback_group_sub4_;
 
     Get_Arm_Version();//获取机械臂版本
     Set_UDP_Configuration(udp_cycle_, udp_port_, udp_force_coordinate_, udp_ip_);
-    /*****************************************************UDP定时器*****************************************************************/
-    Udp_Timer = this->create_wall_timer(std::chrono::milliseconds(udp_cycle_), 
-        std::bind(&RmArm::udp_timer_callback,this));
-
-/********************************************************************UDP传输数据**********************************************************/
-    Joint_Position_Result = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);                                 //发布当前的关节角度
-    Arm_Position_Result = this->create_publisher<geometry_msgs::msg::Pose>("rm_driver/udp_arm_position", 10);                          //发布当前的关节姿态
-    Six_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_six_force", 10);                        //发布当前的原始六维力数据
-    Six_Zero_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_six_zero_force", 10);              //发布当前标坐标系下六维力数据
-    One_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_one_force", 10);                        //发布当前的原始一维力数据
-    One_Zero_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_one_zero_force", 10);              //发布当前目标坐标系下一维力数据
-    Joint_Error_Code_Result = this->create_publisher<rm_ros_interfaces::msg::Jointerrorcode>("rm_driver/udp_joint_error_code", 10);   //发布当前的关节错误码
-    Sys_Err_Result = this->create_publisher<std_msgs::msg::UInt16>("rm_driver/udp_sys_err", 10);                                       //发布当前的系统错误码
-    Arm_Err_Result = this->create_publisher<std_msgs::msg::UInt16>("rm_driver/udp_arm_err", 10);                                       //发布当前的机械臂错误码
-    Arm_Coordinate_Result = this->create_publisher<std_msgs::msg::UInt16>("rm_driver/udp_arm_coordinate", 10);                         //发布当前六维力数据的基准坐标系
     /******************************************************获取udp配置********************************************************************/
     Get_Realtime_Push_Result = this->create_publisher<rm_ros_interfaces::msg::Setrealtimepush>("rm_driver/get_realtime_push_result", 10);
     Get_Realtime_Push_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_realtime_push_cmd",10,
@@ -1672,9 +1703,11 @@ RmArm::RmArm():
 int main(int argc, char **argv) {
     rclcpp::init(argc, argv);
     signal(SIGINT, my_handler); 
-    rclcpp::executors::MultiThreadedExecutor executor(rclcpp::ExecutorOptions(),5,true);
+    rclcpp::executors::MultiThreadedExecutor executor(rclcpp::ExecutorOptions(),8,true);
     auto node = std::make_shared<RmArm>();
+    auto udpnode = std::make_shared<UdpPublisherNode>();
     executor.add_node(node);
+    executor.add_node(udpnode);
     executor.spin();
     rclcpp::shutdown();
     return EXIT_SUCCESS;
