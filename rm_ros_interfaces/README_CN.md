@@ -1,7 +1,7 @@
 <div align="right">
   
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_ros_interfaces/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_ros_interfaces/README.md)
+[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_ros_interfaces/README_CN.md)|
+[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_ros_interfaces/README.md)
 
 </div>
 
@@ -19,8 +19,9 @@
 
 |版本号 | 时间 | 备注 |
 | :---: | :---- | :---: |
-|V1.0 | 2024-2-18 | 拟制|
-		
+|V1.0 | 2024-2-18 | 拟制 |
+|V1.1 | 2024-7-3  | 修订 |
+
 </div>
 
 ## 目录
@@ -303,6 +304,7 @@ __productversion__
 uint16 speed  
 uint16 force  
 bool block
+uint16 timeout
 ```  
 __msg成员__  
 __speed__  
@@ -311,11 +313,14 @@ __force__
 手爪夹取力矩阈值，unsigned int类型，范围 ：50-1000。  
 __block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+__timeout__
+设置返回超时时间，阻塞模式生效（以秒为单位）。
 ### 手爪力控夹取-持续力控夹取Gripperpick_msg
 ```
 uint16 speed  
 uint16 force  
 bool block
+uint16 timeout
 ```  
 __msg成员__  
 __speed__  
@@ -324,16 +329,21 @@ __force__
 手爪夹取力矩阈值，unsigned int类型，范围 ：50-1000。  
 __block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+__timeout__
+设置返回超时时间，阻塞模式生效（以秒为单位）。
 ### 手爪到达指定位置Gripperset_msg
 ```
 uint16 position  
 bool block
+uint16 timeout
 ```  
 __msg成员__  
 __position__  
 手爪目标位置，unsigned int类型，范围：1-1000,代表手爪开口度：0-70mm。  
 __block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+__timeout__
+设置返回超时时间，阻塞模式生效（以秒为单位）。
 ### 力位混合控制Setforceposition_msg
 ```
 uint8 sensor  

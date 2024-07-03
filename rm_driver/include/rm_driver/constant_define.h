@@ -15,11 +15,11 @@
 #define __CONSTANT_DEFINE_H__
 
 #ifndef ROBOT_DOF
-#define ROBOT_DOF 7
+#define ROBOT_DOF 8
 #endif
 
 #ifndef CYCLE_PERIOD
-#define CYCLE_PERIOD (0.004f)
+#define CYCLE_PERIOD (0.002f)
 #endif
 
 #ifndef FRIC_PARMS_NUM
@@ -62,21 +62,6 @@
 #define PI_2 (1.5707963267949f)
 #endif
 
-//* (RM75)outside the reachable zone
-#ifndef OUTSIDE_REACHABLE_ZONE
-#define OUTSIDE_REACHABLE_ZONE (-1)       
-#endif
-
-//* (RM6)fit = 1000;(RM75)fit0 = .....=fit8 = 0
-#ifndef INVERSE_FAIL
-#define INVERSE_FAIL (-5)                 
-#endif
-
-//* overspeed
-#ifndef OVERSPEED
-#define OVERSPEED (-3)                    
-#endif
-
 #ifndef UNKNOWN_TYPE
 #define UNKNOWN_TYPE (-2)
 #endif
@@ -88,5 +73,25 @@
 #ifndef GRAVITY_ACC_CONSTANT
 #define GRAVITY_ACC_CONSTANT (-9.81f)
 #endif
+
+#ifndef IKINE_SUCCESSFUL
+#define IKINE_SUCCESSFUL 0
+#endif
+
+#ifndef IKINE_FAILED
+#define IKINE_FAILED -1
+#endif
+
+#ifndef IKINE_LIMITED
+#define IKINE_LIMITED -2
+#endif 
+
+#ifndef IKINE_OVERSPEED 
+#define IKINE_OVERSPEED -3
+#endif 
+
+#ifndef IKINE_UNKNOWN_TYPE
+#define IKINE_UNKNOWN_TYPE -4
+#endif 
 
 #endif

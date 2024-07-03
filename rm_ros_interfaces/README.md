@@ -1,7 +1,7 @@
 <div align="right">
   
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_ros_interfaces/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_ros_interfaces/README.md)
+[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_ros_interfaces/README_CN.md)|
+[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_ros_interfaces/README.md)
 </div>
 
 <div align="center">
@@ -19,7 +19,8 @@ Revision History-
 | No. | Date| Comment |
 | -----| -----| -----|
 |V1.0 | 2-18-2024 | Draft |
-		
+|V1.1 | 7/3 /2024 | Amend |
+
 </div>
 
 ## 目录
@@ -40,8 +41,8 @@ Revision History-
 * 4.10[Current robotic arm state Angle and Euler angle-Armoriginalstate_msg](#Current_robotic_arm_state_Angle_and_Euler_angle-Armoriginalstate_msg)
 * 4.11[Current arm state radians and quaternion-Armstate_msg](#Current_arm_state_radians_and_quaternion-Armstate_msg)
 * 4.12[Getting the software version-Armsoftversion_msg](#Getting_the_software_version-Armsoftversion_msg)
-* 4.13[Gripper's pick-Gripperpick_msg](#Gripper's_pick-Gripperpick_msg)
-* 4.14[Gripper's pick gripper's pick-on-Gripperpick_msg](#Gripper's_pick_gripper's_pick-on-Gripperpick_msg)
+* 4.13[Gripper's pick-Gripperpick_msg](#Gripper_pick-Gripperpick_msg)
+* 4.14[Gripper's pick gripper's pick-on-Gripperpick_msg](#Gripper_pick_gripper_pick-on-Gripperpick_msg)
 * 4.15[Gripper reaching the given position-Gripperset_msg](#Gripper_reaching_the_given_position-Gripperset_msg)
 * 4.16[Force-position mixing control-Setforceposition_msg](#Force-position_mixing_control-Setforceposition_msg)
 * 4.17[Six-axis force data-Sixforce_msg](#Six-axis_force_data-Sixforce_msg)
@@ -297,11 +298,12 @@ __kernal2__
 The version number of sub-core 2 of the real-time kernel, string type.  
 __productversion__  
 Robotic arm model, string type.  
-### Gripper's_pick-Gripperpick_msg
+### Gripper_pick-Gripperpick_msg
 ```
 uint16 speed  
 uint16 force  
-bool block  
+bool block 
+uint16 timeout 
 ```
 __msg member__  
 __speed__  
@@ -310,11 +312,14 @@ __force__
 Gripper pick torque threshold, unsigned int type, range: 50-1000.  
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### Gripper's_pick_gripper's_pick-on-Gripperpick_msg
+__timeout__ 
+Set the timeout for the return, and the blocking mode will take effect (in seconds).
+### Gripper_pick_gripper_pick-on-Gripperpick_msg
 ```
 uint16 speed  
 uint16 force  
 bool block  
+uint16 timeout 
 ```
 __msg member__  
 __speed__  
@@ -323,16 +328,21 @@ __force__
 Gripper picks torque threshold, unsigned int type, range: 50-1000.  
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+__timeout__ 
+Set the timeout for the return, and the blocking mode will take effect (in seconds).
 ### Gripper_reaching_the_given_position-Gripperset_msg
 ```
 uint16 position  
 bool block 
+uint16 timeout 
 ``` 
 __msg member__  
 __position__  
 Gripper target position, unsigned int type, range: 1-1000, representing the degree of opening of the gripper: 0-70 mm.  
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+__timeout__ 
+Set the timeout for the return, and the blocking mode will take effect (in seconds).
 ### Force-position_mixing_control-Setforceposition_msg
 ```
 uint8 sensor  

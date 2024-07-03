@@ -1,6 +1,6 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_control/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_control/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_control/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_control/README.md)
 
 </div>
 
@@ -14,6 +14,7 @@
 | 版本号| 时间   | 备注  | 
 | :---: | :-----: | :---: |
 |V1.0    |2024-2-19  |拟制 |
+|V1.1    |2024-7-3   |修订 |
 
 </div>
 
@@ -41,7 +42,7 @@ rm_control功能包为实现moveit2控制真实机械臂时所必须的一个功
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_<arm_type>_control.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75。
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75、gen72。
 例如65机械臂的启动命令：
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_65_control.launch.py
@@ -54,7 +55,7 @@ rm@rm-desktop:~$ ros2 launch  rm_control rm_65_control.launch.py
 ![image](doc/rm_control2.png)
 如上图所示第一个红框框出的位置为文件的路径，第二个框出的位置为当前可配置的参数。  
 参数follow：代表当前透传使用的跟随模式，true:高跟随，false:低跟随。高跟随即机械臂运动方式与透传完全一致，需要根据透传的速率和机械臂的速度、加速度参数进行较详细的计算，使用门槛较高，但控制精细。低跟随即机械臂会基本根据透传速率和速度、加速度向透传点运动，若有来不及到达的点可能会有丢弃现象发生，使用门槛低，控制不太精细，但基本满足使用。  
-参数arm_type：代表当前使用的机械臂型号，可以选择的参数有65（65系列）、651（eco65）、632（63系列）、75（75系列）。  
+参数arm_type：代表当前使用的机械臂型号，可以选择的参数有65（RM65系列）、651（ECO65系列）、632（63系列）、75（75系列）72（GEN72系列）。  
 再实际使用时，我们选择对应的launch文件启动时会自动选择正确的型号，若有特殊要求可在此处进行相应的参数修改，修改之后需要在工作空间目录下进行重新编译，之后修改的配置才会生效。  
 在工作空间目录运行colcon build指令。
 ```
@@ -66,6 +67,9 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 当前rm_driver功能包的文件构成如下。
 ```
 ├── CMakeLists.txt                  #编译规则文件
+├── doc                             #辅助文档、图片存放文件夹
+│   ├── rm_control1.png             
+│   └── rm_control2.png             
 ├── include                         #依赖头文件文件夹
 │   ├── cubicSpline.h               #三次样条插值头文件
 │   └── rm_control.h                #rm_control头文件
@@ -73,8 +77,11 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_63_control.launch.py     #63启动文件
 │   ├── rm_65_control.launch.py     #65启动文件
 │   ├── rm_75_control.launch.py     #75启动文件
-│   └── rm_eco65_control.launch.py  #eco65启动文件
+│   ├── rm_eco65_control.launch.py  #eco65启动文件
+│   └── rm_gen72_control.launch.py  #gen72启动文件
 ├── package.xml                     #依赖声明文件
+├── README_CN.md
+├── README.md
 └── src
     └── rm_control.cpp              #代码源文件
 ```

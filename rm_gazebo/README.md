@@ -1,6 +1,6 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_gazebo/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_gazebo/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_gazebo/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_gazebo/README.md)
  
 </div>
 
@@ -15,7 +15,7 @@ Revision History:
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
 |V1.0	  | 2/19/2024 | Draft |
-
+|V1.1	  | 7/3 /2024 | Amend |
 </div>
 
 ## Content
@@ -40,12 +40,13 @@ Use the following command to launch the Gazebo virtual space and the virtual rob
 ```
 rm@rm-desktop:~$ ros2 launch rm_gazebo gazebo_65_demo.launch.py
 ```
-The interface displays as follows after successful running.
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, 75, and gen72. The interface displays as follows after successful running.  
 ![image](doc/rm_gazebo1.png)
 Then, we use the following command to launch moveit2 to control the simulation robot arm in Gazebo.
 ```
-rm@rm-desktop:~$ ros2 launch rm_65_config gazebo_moveit_demo.launch.py
+rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config gazebo_moveit_demo.launch.py
 ```
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, 75, and gen72.   
 After the control interface of rviz2 pops up, you can perform the simulation control of moveit2 and Gazebo.
 ![image](doc/rm_gazebo2.png)
 ## rm_gazebo_Package_Architecture_Description
@@ -57,14 +58,18 @@ The current rm_gazebo package is composed of the following files.
 │   ├── gazebo_63_description.urdf.xacro     #63gazebo model description file
 │   ├── gazebo_65_description.urdf.xacro     #65gazebo model description file
 │   ├── gazebo_75_description.urdf.xacro     #75gazebo model description file
-│   └── gazebo_eco65_description.urdf.xacro  #eco65gazebo model description file
-├── include
-│   └── rm_gazebo
+│   ├── gazebo_eco65_description.urdf.xacro  #eco65gazebo model description file
+│   └── gazebo_gen72_description.urdf.xacro  #gen72gazebo model description file
+├── doc
+│   ├── rm_gazebo1.png
+│   └── rm_gazebo2.png
 ├── launch
-│   ├── gazebo_63_demo.launch.py     # 63gazebo launch file
-│   ├── gazebo_65_demo.launch.py     # 65gazebo launch file
-│   ├── gazebo_75_demo.launch.py     # 75gazebo launch file
-│   └── gazebo_eco65_demo.launch.py  # eco65gazebo launch file
+│   ├── gazebo_63_demo.launch.py             # 63gazebo launch file
+│   ├── gazebo_65_demo.launch.py             # 65gazebo launch file
+│   ├── gazebo_75_demo.launch.py             # 75gazebo launch file
+│   ├── gazebo_eco65_demo.launch.py          # eco65gazebo launch file
+│   └── gazebo_gen72_demo.launch.py          # gen72gazebo launch file
 ├── package.xml
-└── src
+├── README_CN.md
+└── README.md
 ```

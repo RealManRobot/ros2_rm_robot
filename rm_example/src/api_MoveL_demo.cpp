@@ -77,9 +77,9 @@ void MoveLDemo::MoveLDemo_Callback(const std_msgs::msg::Bool & msg)
 void MoveLDemo::movejp_demo()
 {
     rm_ros_interfaces::msg::Movejp moveJ_P_TargetPose;
-    moveJ_P_TargetPose.pose.position.x = -0.317239;
+    moveJ_P_TargetPose.pose.position.x = -0.257239;
     moveJ_P_TargetPose.pose.position.y = 0.120903;
-    moveJ_P_TargetPose.pose.position.z = 0.255765;
+    moveJ_P_TargetPose.pose.position.z = 0.205765;
     moveJ_P_TargetPose.pose.orientation.x = -0.983404;
     moveJ_P_TargetPose.pose.orientation.y = -0.178432;
     moveJ_P_TargetPose.pose.orientation.z = 0.032271;
@@ -97,10 +97,10 @@ void MoveLDemo::movejp_demo()
 MoveLDemo::MoveLDemo():rclcpp::Node("Movel_demo_node")
 {
 
-  subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movej_p_result", 10, std::bind(&MoveLDemo::MoveJPDemo_Callback, this,_1));
-  publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movejp>("/rm_driver/movej_p_cmd", 10);
-  movel_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movel_result", 10, std::bind(&MoveLDemo::MoveLDemo_Callback, this,_1));
-  movel_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movel>("/rm_driver/movel_cmd", 10);
+  subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movej_p_result", rclcpp::ParametersQoS(), std::bind(&MoveLDemo::MoveJPDemo_Callback, this,_1));
+  publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movejp>("/rm_driver/movej_p_cmd", rclcpp::ParametersQoS());
+  movel_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movel_result", rclcpp::ParametersQoS(), std::bind(&MoveLDemo::MoveLDemo_Callback, this,_1));
+  movel_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movel>("/rm_driver/movel_cmd", rclcpp::ParametersQoS());
   sleep(1);
   movejp_demo();
 }

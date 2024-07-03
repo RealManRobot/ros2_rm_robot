@@ -443,6 +443,5 @@ private:
     struct sockaddr_in clientAddr;
     socklen_t clientAddrLen = sizeof(clientAddr);
     char udp_socket_buffer[800];
-
 };
 

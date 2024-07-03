@@ -1,6 +1,6 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_driver/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_driver/README.md)
 
 </div>
 
@@ -14,7 +14,7 @@
 | 版本号| 时间   | 备注  | 
 | :---: | :-----: | :---: |
 |V1.0    |2024-2-7  |拟制 |
-
+|V1.1    |2024-7-3  |修订 |
 </div>
 
 ## 目录
@@ -41,7 +41,7 @@ rm_driver功能包在机械臂ROS2功能包中是十分重要的，该功能包�
 首先配置好环境完成连接后我们可以通过以下命令直接启动节点，控制机械臂。  
 当前的控制基于我们没有改变过机械臂的IP即当前机械臂的IP仍为192.168.1.18。  
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py  
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75、gen72。  
 底层驱动启动成功后，将显示以下画面。  
 ![image](doc/rm_driver1.png)  
 ### 功能包进阶使用
@@ -69,7 +69,7 @@ rm_driver:
 其中主要有以下几个参数。
 * arm_ip：改参数代表机械臂当前的IP
 * tcp_port：设置TCP连接时的端口。
-* arm_type：该参数代表机械臂当前的型号，可以选择的参数有RM_65（65系列）、RM_eco65（ECO65系列）、RML_63（63系列）、RM_75（75系列）。
+* arm_type：该参数代表机械臂当前的型号，可以选择的参数有RM_65（65系列）、RM_eco65（ECO65系列）、RML_63（63系列）、RM_75（75系列）、GEN_72（GEN72系列）。
 * arm_dof: 机械臂自由度设置。6为6自由度，7为7自由度。
 * udp_ip: 设置udp主动上报目标IP。
 * udp_cycle：udp主动上报周期，需要是5的倍数。
@@ -93,7 +93,15 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_63_config.yaml          #63配置文件
 │   ├── rm_65_config.yaml          #65配置文件
 │   ├── rm_75_config.yaml          #75配置文件
-│   └── rm_eco65_config.yaml       #eco65配置文件
+│   ├── rm_eco65_config.yaml       #eco65配置文件
+│   └── rm_gen72_config.yaml       #gen725配置文件
+├── doc
+│   ├── RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2).md
+│   ├── rm_driver1.png
+│   ├── rm_driver2.png
+│   ├── rm_driver3.png
+│   ├── rm_driver4.png
+│   └── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
 ├── include                        #依赖头文件文件夹
 │   └── rm_driver
 │       ├── cJSON.h                #API头文件
@@ -112,13 +120,24 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_63_driver.launch.py     #63启动文件
 │   ├── rm_65_driver.launch.py     #65启动文件
 │   ├── rm_75_driver.launch.py     #75启动文件
-│   └── rm_eco65_driver.launch.py  #eco65启动文件
+│   ├── rm_eco65_driver.launch.py  #eco65启动文件
+│   └── rm_gen72_driver.launch.py  #gen72启动文件
 ├── lib
 │   ├── libRM_Service.so -> libRM_Service.so.1.0.0        #API库文件
 │   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      #API库文件
 │   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    #API库文件
 │   └── libRM_Service.so.1.0.0                            #API库文件
-├── package.xml                                           #依赖声明文件
+├── lib
+│   ├── lib_install.sh                                    #库文件安装脚本
+│   ├── libRM_Service.so -> libRM_Service.so.1.0.0        #API库文件
+│   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      #API库文件
+│   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    #API库文件
+│   ├── libRM_Service.so.1.0.0                            #API库文件
+│   ├── linux_arm_service_release_v4.3.2.t1.tar.bz2       #API库文件
+│   └── linux_x86_service_release_v4.3.2.t1.tar.bz2       #API库文件
+├── package.xml
+├── README_CN.md
+├── README.md
 └── src
     └── rm_driver.cpp                                     #驱动代码源文件
 ```
@@ -127,4 +146,4 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 rm_driver的话题较多，可以通过如下指令了解其话题信息。
 ![image](doc/rm_driver2.png)
 ![image](doc/rm_driver3.png)  
-主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。
+主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。

@@ -855,12 +855,14 @@ void RmArm::Arm_Set_Gripper_Pick_On_Callback(const rm_ros_interfaces::msg::Gripp
     int speed;
     int force;
     bool block;
+    int timeout;
     u_int32_t res;
     std_msgs::msg::Bool set_gripper_pick_on_result;
     speed = msg->speed;
     force = msg->force;
     block = msg->block;
-    res = Rm_Api.Service_Set_Gripper_Pick_On(m_sockhand, speed, force, block);
+    timeout = msg->timeout;
+    res = Rm_Api.Service_Set_Gripper_Pick_On(m_sockhand, speed, force, block, timeout);
     
     if(res == 0)
     {
@@ -880,12 +882,14 @@ void RmArm::Arm_Set_Gripper_Pick_Callback(const rm_ros_interfaces::msg::Gripperp
     int speed;
     int force;
     bool block;
+    int timeout;
     u_int32_t res;
     std_msgs::msg::Bool set_gripper_pick_result;
     speed = msg->speed;
     force = msg->force;
     block = msg->block;
-    res = Rm_Api.Service_Set_Gripper_Pick(m_sockhand, speed, force, block);
+    timeout = msg->timeout;
+    res = Rm_Api.Service_Set_Gripper_Pick(m_sockhand, speed, force, block, timeout);
     
     if(res == 0)
     {
@@ -905,10 +909,12 @@ void RmArm::Arm_Set_Gripper_Position_Callback(const rm_ros_interfaces::msg::Grip
     int position;
     bool block;
     u_int32_t res;
+    int timeout;
     std_msgs::msg::Bool set_gripper_position_result;
     position = msg->position;
     block = msg->block;
-    res = Rm_Api.Service_Set_Gripper_Position(m_sockhand, position, block);
+    timeout = msg->timeout;
+    res = Rm_Api.Service_Set_Gripper_Position(m_sockhand, position, block, timeout);
     
     if(res == 0)
     {
@@ -1092,16 +1098,18 @@ void RmArm::Arm_Get_Lift_State_Callback(const std_msgs::msg::Empty::SharedPtr ms
     int current;
     int height;
     int err_flag;
+    int mode;
     u_int32_t res;
     rm_ros_interfaces::msg::Liftstate lift_state;
     copy = msg;
-    res = Rm_Api.Service_Get_Lift_State(m_sockhand, &height, &current, &err_flag);
+    res = Rm_Api.Service_Get_Lift_State(m_sockhand, &height, &current, &err_flag, &mode);
     
     if(res == 0)
     {
         lift_state.current = current;
         lift_state.height = height;
         lift_state.err_flag = err_flag;
+        lift_state.mode = mode;
         this->Get_Lift_State_Result->publish(lift_state);
     }
     else
@@ -1423,6 +1431,11 @@ RmArm::RmArm():
         Rm_Api.Service_RM_API_Init(651, NULL);
         realman_arm = 651;
     }
+    else if(arm_type_ == "GEN_72")
+    {
+        Rm_Api.Service_RM_API_Init(72, NULL);
+        realman_arm = 72;
+    }
     tcp_ip = (char*)arm_ip_.c_str();
     
     tcp_port = tcp_port_;
@@ -1493,207 +1506,208 @@ RmArm::RmArm():
 
     Get_Arm_Version();//获取机械臂版本
     Set_UDP_Configuration(udp_cycle_, udp_port_, udp_force_coordinate_, udp_ip_);
+
     /******************************************************获取udp配置********************************************************************/
-    Get_Realtime_Push_Result = this->create_publisher<rm_ros_interfaces::msg::Setrealtimepush>("rm_driver/get_realtime_push_result", 10);
-    Get_Realtime_Push_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_realtime_push_cmd",10,
+    Get_Realtime_Push_Result = this->create_publisher<rm_ros_interfaces::msg::Setrealtimepush>("rm_driver/get_realtime_push_result", rclcpp::ParametersQoS());
+    Get_Realtime_Push_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_realtime_push_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Get_Realtime_Push_Callback,this,std::placeholders::_1),
         sub_opt2);
     /******************************************************设置udp配置********************************************************************/
-    Set_Realtime_Push_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_realtime_push_result", 10);
-    Set_Realtime_Push_Cmd = this->create_subscription<rm_ros_interfaces::msg::Setrealtimepush>("rm_driver/set_realtime_push_cmd",10,
+    Set_Realtime_Push_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_realtime_push_result", rclcpp::ParametersQoS());
+    Set_Realtime_Push_Cmd = this->create_subscription<rm_ros_interfaces::msg::Setrealtimepush>("rm_driver/set_realtime_push_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Realtime_Push_Callback,this,std::placeholders::_1),
         sub_opt2);
 /******************************************************************************end*******************************************************************/
 
 /***********************************************************************运动配置**********************************************************************/
     /****************************************MoveJ运动控制*************************************/
-    MoveJ_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movej_result", 10);
-    MoveJ_Cmd = this->create_subscription<rm_ros_interfaces::msg::Movej>("rm_driver/movej_cmd",10,
+    MoveJ_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movej_result", rclcpp::ParametersQoS());
+    MoveJ_Cmd = this->create_subscription<rm_ros_interfaces::msg::Movej>("rm_driver/movej_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_MoveJ_Callback,this,std::placeholders::_1),
         sub_opt4);
     /****************************************MoveL运动控制*************************************/
-    MoveL_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movel_result", 10);
-    MoveL_Cmd = this->create_subscription<rm_ros_interfaces::msg::Movel>("rm_driver/movel_cmd",10,
+    MoveL_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movel_result", rclcpp::ParametersQoS());
+    MoveL_Cmd = this->create_subscription<rm_ros_interfaces::msg::Movel>("rm_driver/movel_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_MoveL_Callback,this,std::placeholders::_1),
         sub_opt4);
     /****************************************MoveC运动控制*************************************/
-    MoveC_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movec_result", 10);
-    MoveC_Cmd = this->create_subscription<rm_ros_interfaces::msg::Movec>("rm_driver/movec_cmd",10,
+    MoveC_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movec_result", rclcpp::ParametersQoS());
+    MoveC_Cmd = this->create_subscription<rm_ros_interfaces::msg::Movec>("rm_driver/movec_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_MoveC_Callback,this,std::placeholders::_1),
         sub_opt4);
     /******************************************角度透传*****************************************/
-    Movej_CANFD_Cmd = this->create_subscription<rm_ros_interfaces::msg::Jointpos>("rm_driver/movej_canfd_cmd",10,
+    Movej_CANFD_Cmd = this->create_subscription<rm_ros_interfaces::msg::Jointpos>("rm_driver/movej_canfd_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Movej_CANFD_Callback,this,std::placeholders::_1),
         sub_opt4);
     /*******************************************位姿透传****************************************/
-    Movep_CANFD_Cmd = this->create_subscription<rm_ros_interfaces::msg::Cartepos>("rm_driver/movep_canfd_cmd",10,
+    Movep_CANFD_Cmd = this->create_subscription<rm_ros_interfaces::msg::Cartepos>("rm_driver/movep_canfd_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Movep_CANFD_Callback,this,std::placeholders::_1),
         sub_opt4);
     /****************************************MoveJ_P运动控制*************************************/
-    MoveJ_P_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movej_p_result", 10);
-    MoveJ_P_Cmd = this->create_subscription<rm_ros_interfaces::msg::Movejp>("rm_driver/movej_p_cmd",10,
+    MoveJ_P_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movej_p_result", rclcpp::ParametersQoS());
+    MoveJ_P_Cmd = this->create_subscription<rm_ros_interfaces::msg::Movejp>("rm_driver/movej_p_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_MoveJ_P_Callback,this,std::placeholders::_1),
         sub_opt4);
     /***********************************************轨迹急停****************************************/
-    Move_Stop_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/move_stop_result", 10);
-    Move_Stop_Cmd = this->create_subscription<std_msgs::msg::Bool>("rm_driver/move_stop_cmd",10,
+    Move_Stop_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/move_stop_result", rclcpp::ParametersQoS());
+    Move_Stop_Cmd = this->create_subscription<std_msgs::msg::Bool>("rm_driver/move_stop_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Move_Stop_Callback,this,std::placeholders::_1),
         sub_opt2);
 /******************************************************************************end*******************************************************************/
 
     /************************************************************************查询机械臂固件版本***************************************************************/
-    Get_Arm_Software_Version_Result = this->create_publisher<rm_ros_interfaces::msg::Armsoftversion>("rm_driver/get_arm_software_version_result", 10);
-    Get_Arm_Software_Version_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_arm_software_version_cmd",10,
+    Get_Arm_Software_Version_Result = this->create_publisher<rm_ros_interfaces::msg::Armsoftversion>("rm_driver/get_arm_software_version_result", rclcpp::ParametersQoS());
+    Get_Arm_Software_Version_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_arm_software_version_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Get_Arm_Software_Version_Callback,this,std::placeholders::_1),
         sub_opt2);
     /*********************************************************************************end*******************************************************************/
 
 /**********************************************************************透传力位混合控制***********************************************************/
     /******************************************************开启力位混合********************************************************************/
-    Start_Force_Position_Move_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/start_force_position_move_result", 10);
-    Start_Force_Position_Move_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/start_force_position_move_cmd",10,
+    Start_Force_Position_Move_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/start_force_position_move_result", rclcpp::ParametersQoS());
+    Start_Force_Position_Move_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/start_force_position_move_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Start_Force_Position_Move_Callback,this,std::placeholders::_1),
         sub_opt2);
     /********************************************************关闭力位混合*******************************************************************/
-    Stop_Force_Position_Move_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/stop_force_position_move_result", 10);
-    Stop_Force_Position_Move_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/stop_force_position_move_cmd",10,
+    Stop_Force_Position_Move_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/stop_force_position_move_result", rclcpp::ParametersQoS());
+    Stop_Force_Position_Move_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/stop_force_position_move_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Stop_Force_Position_Move_Callback,this,std::placeholders::_1),
         sub_opt2);
     /********************************************************角度透传力位混合*****************************************************************/
-    Force_Position_Move_Joint_Cmd = this->create_subscription<rm_ros_interfaces::msg::Forcepositionmovejoint>("rm_driver/force_position_move_joint_cmd",10,
+    Force_Position_Move_Joint_Cmd = this->create_subscription<rm_ros_interfaces::msg::Forcepositionmovejoint>("rm_driver/force_position_move_joint_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Force_Position_Move_Joint_Callback,this,std::placeholders::_1),
         sub_opt4);
     /********************************************************位姿透传力位混合*****************************************************************/
-    Force_Position_Move_Pose_Cmd = this->create_subscription<rm_ros_interfaces::msg::Forcepositionmovepose>("rm_driver/force_position_move_pose_cmd",10,
+    Force_Position_Move_Pose_Cmd = this->create_subscription<rm_ros_interfaces::msg::Forcepositionmovepose>("rm_driver/force_position_move_pose_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Force_Position_Move_Pose_Callback,this,std::placeholders::_1),
         sub_opt4);
     /********************************************************设置力位混合控制*******************************************************************/
-    Set_Force_Postion_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_force_postion_result", 10);
-    Set_Force_Postion_Cmd = this->create_subscription<rm_ros_interfaces::msg::Setforceposition>("rm_driver/set_force_postion_cmd",10,
+    Set_Force_Postion_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_force_postion_result", rclcpp::ParametersQoS());
+    Set_Force_Postion_Cmd = this->create_subscription<rm_ros_interfaces::msg::Setforceposition>("rm_driver/set_force_postion_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Force_Postion_Callback,this,std::placeholders::_1),
         sub_opt4);
     /********************************************************结束力位混合控制*******************************************************************/
-    Stop_Force_Postion_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/stop_force_postion_result", 10);
-    Stop_Force_Postion_Cmd = this->create_subscription<std_msgs::msg::Bool>("rm_driver/stop_force_postion_cmd",10,
+    Stop_Force_Postion_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/stop_force_postion_result", rclcpp::ParametersQoS());
+    Stop_Force_Postion_Cmd = this->create_subscription<std_msgs::msg::Bool>("rm_driver/stop_force_postion_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Stop_Force_Postion_Callback,this,std::placeholders::_1),
         sub_opt4);
 /****************************************************************************end******************************************************************/
 
 /************************************************************************坐标系指令*************************************************************/
     /**********************************************************切换工作坐标系********************************************************************/
-    Change_Work_Frame_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/change_work_frame_result", 10);
-    Change_Work_Frame_Cmd = this->create_subscription<std_msgs::msg::String>("rm_driver/change_work_frame_cmd",10,
+    Change_Work_Frame_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/change_work_frame_result", rclcpp::ParametersQoS());
+    Change_Work_Frame_Cmd = this->create_subscription<std_msgs::msg::String>("rm_driver/change_work_frame_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Change_Work_Frame_Callback,this,std::placeholders::_1),
         sub_opt2);
     /**********************************************************获得工作坐标系********************************************************************/
-    Get_Curr_WorkFrame_Result = this->create_publisher<std_msgs::msg::String>("rm_driver/get_curr_workFrame_result", 10);
-    Get_Curr_WorkFrame_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_curr_workFrame_cmd",10,
+    Get_Curr_WorkFrame_Result = this->create_publisher<std_msgs::msg::String>("rm_driver/get_curr_workFrame_result", rclcpp::ParametersQoS());
+    Get_Curr_WorkFrame_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_curr_workFrame_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Get_Curr_WorkFrame_Callback,this,std::placeholders::_1),
         sub_opt2);
     /**********************************************************获得工具坐标系********************************************************************/
-    Get_Current_Tool_Frame_Result = this->create_publisher<std_msgs::msg::String>("rm_driver/get_current_tool_frame_result", 10);
-    Get_Current_Tool_Frame_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_current_tool_frame_cmd",10,
+    Get_Current_Tool_Frame_Result = this->create_publisher<std_msgs::msg::String>("rm_driver/get_current_tool_frame_result", rclcpp::ParametersQoS());
+    Get_Current_Tool_Frame_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_current_tool_frame_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Get_Current_Tool_Frame_Callback,this,std::placeholders::_1),
         sub_opt2);
     /**********************************************************获得所有工具坐标系********************************************************************/
-    Get_All_Tool_Frame_Result = this->create_publisher<rm_ros_interfaces::msg::Getallframe>("rm_driver/get_all_tool_frame_result", 10);
-    Get_All_Tool_Frame_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_all_tool_frame_cmd",10,
+    Get_All_Tool_Frame_Result = this->create_publisher<rm_ros_interfaces::msg::Getallframe>("rm_driver/get_all_tool_frame_result", rclcpp::ParametersQoS());
+    Get_All_Tool_Frame_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_all_tool_frame_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Get_All_Tool_Frame_Callback,this,std::placeholders::_1),
         sub_opt2);
     /**********************************************************获得所有工作坐标系********************************************************************/
-    Get_All_Work_Frame_Result = this->create_publisher<rm_ros_interfaces::msg::Getallframe>("rm_driver/get_all_work_frame_result", 10);
-    Get_All_Work_Frame_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_all_work_frame_cmd",10,
+    Get_All_Work_Frame_Result = this->create_publisher<rm_ros_interfaces::msg::Getallframe>("rm_driver/get_all_work_frame_result", rclcpp::ParametersQoS());
+    Get_All_Work_Frame_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_all_work_frame_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Get_All_Work_Frame_Callback,this,std::placeholders::_1),
         sub_opt2);
 /*****************************************************************************end***************************************************************/
     
     /**********************************************************设置工具端电源输出********************************************************************/
-    Set_Tool_Voltage_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_tool_voltage_result", 10);
-    Set_Tool_Voltage_Cmd = this->create_subscription<std_msgs::msg::UInt16>("rm_driver/set_tool_voltage_cmd",10,
+    Set_Tool_Voltage_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_tool_voltage_result", rclcpp::ParametersQoS());
+    Set_Tool_Voltage_Cmd = this->create_subscription<std_msgs::msg::UInt16>("rm_driver/set_tool_voltage_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Tool_Voltage_Callback,this,std::placeholders::_1),
         sub_opt2);
     /*****************************************************************************end***************************************************************/
 
     /**********************************************************清除机械臂错误码********************************************************************/
-    Set_Joint_Err_Clear_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_joint_err_clear_result", 10);
-    Set_Joint_Err_Clear_Cmd = this->create_subscription<rm_ros_interfaces::msg::Jointerrclear>("rm_driver/set_joint_err_clear_cmd",10,
+    Set_Joint_Err_Clear_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_joint_err_clear_result", rclcpp::ParametersQoS());
+    Set_Joint_Err_Clear_Cmd = this->create_subscription<rm_ros_interfaces::msg::Jointerrclear>("rm_driver/set_joint_err_clear_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Joint_Err_Clear_Callback,this,std::placeholders::_1),
         sub_opt2);
     /*****************************************************************************end***************************************************************/
 
 /********************************************************************末端工具-手爪控制****************************************************************/
     /****************************************手爪持续力控夹取**********************************/
-    Set_Gripper_Pick_On_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_gripper_pick_on_result", 10);
-    Set_Gripper_Pick_On_Cmd = this->create_subscription<rm_ros_interfaces::msg::Gripperpick>("rm_driver/set_gripper_pick_on_cmd",10,
+    Set_Gripper_Pick_On_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_gripper_pick_on_result", rclcpp::ParametersQoS());
+    Set_Gripper_Pick_On_Cmd = this->create_subscription<rm_ros_interfaces::msg::Gripperpick>("rm_driver/set_gripper_pick_on_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Gripper_Pick_On_Callback,this,std::placeholders::_1),
         sub_opt3);
     /********************************************手爪力控夹取**********************************/
-    Set_Gripper_Pick_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_gripper_pick_result", 10);
-    Set_Gripper_Pick_Cmd = this->create_subscription<rm_ros_interfaces::msg::Gripperpick>("rm_driver/set_gripper_pick_cmd",10,
+    Set_Gripper_Pick_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_gripper_pick_result", rclcpp::ParametersQoS());
+    Set_Gripper_Pick_Cmd = this->create_subscription<rm_ros_interfaces::msg::Gripperpick>("rm_driver/set_gripper_pick_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Gripper_Pick_Callback,this,std::placeholders::_1),
         sub_opt3);
     /*****************************************手爪到达指定位置**********************************/
-    Set_Gripper_Position_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_gripper_position_result", 10);
-    Set_Gripper_Position_Cmd = this->create_subscription<rm_ros_interfaces::msg::Gripperset>("rm_driver/set_gripper_position_cmd",10,
+    Set_Gripper_Position_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_gripper_position_result", rclcpp::ParametersQoS());
+    Set_Gripper_Position_Cmd = this->create_subscription<rm_ros_interfaces::msg::Gripperset>("rm_driver/set_gripper_position_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Gripper_Position_Callback,this,std::placeholders::_1),
         sub_opt3);
 /*******************************************************************************end*****************************************************************/
 
 /********************************************************************末端工具-五指灵巧手控制************************************************************/
     /****************************************设置灵巧手手势序号**********************************/
-    Set_Hand_Posture_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_hand_posture_result", 10);
-    Set_Hand_Posture_Cmd = this->create_subscription<rm_ros_interfaces::msg::Handposture>("rm_driver/set_hand_posture_cmd",10,
+    Set_Hand_Posture_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_hand_posture_result", rclcpp::ParametersQoS());
+    Set_Hand_Posture_Cmd = this->create_subscription<rm_ros_interfaces::msg::Handposture>("rm_driver/set_hand_posture_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Hand_Posture_Callback,this,std::placeholders::_1),
         sub_opt3);
     /***************************************设置灵巧手动作序列序号*********************************/
-    Set_Hand_Seq_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_hand_seq_result", 10);
-    Set_Hand_Seq_Cmd = this->create_subscription<rm_ros_interfaces::msg::Handseq>("rm_driver/set_hand_seq_cmd",10,
+    Set_Hand_Seq_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_hand_seq_result", rclcpp::ParametersQoS());
+    Set_Hand_Seq_Cmd = this->create_subscription<rm_ros_interfaces::msg::Handseq>("rm_driver/set_hand_seq_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Hand_Seq_Callback,this,std::placeholders::_1),
         sub_opt3);
     /*******************************************设置灵巧手角度************************************/
-    Set_Hand_Angle_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_hand_angle_result", 10);
-    Set_Hand_Angle_Cmd = this->create_subscription<rm_ros_interfaces::msg::Handangle>("rm_driver/set_hand_angle_cmd",10,
+    Set_Hand_Angle_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_hand_angle_result", rclcpp::ParametersQoS());
+    Set_Hand_Angle_Cmd = this->create_subscription<rm_ros_interfaces::msg::Handangle>("rm_driver/set_hand_angle_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Hand_Angle_Callback,this,std::placeholders::_1),
         sub_opt3);
     /*******************************************设置灵巧手速度************************************/
-    Set_Hand_Speed_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_hand_speed_result", 10);
-    Set_Hand_Speed_Cmd = this->create_subscription<rm_ros_interfaces::msg::Handspeed>("rm_driver/set_hand_speed_cmd",10,
+    Set_Hand_Speed_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_hand_speed_result", rclcpp::ParametersQoS());
+    Set_Hand_Speed_Cmd = this->create_subscription<rm_ros_interfaces::msg::Handspeed>("rm_driver/set_hand_speed_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Hand_Speed_Callback,this,std::placeholders::_1),
         sub_opt3);
     /*******************************************设置灵巧手角度************************************/
-    Set_Hand_Force_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_hand_force_result", 10);
-    Set_Hand_Force_Cmd = this->create_subscription<rm_ros_interfaces::msg::Handforce>("rm_driver/set_hand_force_cmd",10,
+    Set_Hand_Force_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_hand_force_result", rclcpp::ParametersQoS());
+    Set_Hand_Force_Cmd = this->create_subscription<rm_ros_interfaces::msg::Handforce>("rm_driver/set_hand_force_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Hand_Force_Callback,this,std::placeholders::_1),
         sub_opt3);
 /*******************************************************************************end*****************************************************************/
 
 /********************************************************************升降机构************************************************************/
     /****************************************设置升降机构速度**********************************/
-    Set_Lift_Speed_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_lift_speed_result", 10);
-    Set_Lift_Speed_Cmd = this->create_subscription<rm_ros_interfaces::msg::Liftspeed>("rm_driver/set_lift_speed_cmd",10,
+    Set_Lift_Speed_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_lift_speed_result", rclcpp::ParametersQoS());
+    Set_Lift_Speed_Cmd = this->create_subscription<rm_ros_interfaces::msg::Liftspeed>("rm_driver/set_lift_speed_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Lift_Speed_Callback,this,std::placeholders::_1),
         sub_opt3);
     /****************************************设置升降机构高度**********************************/
-    Set_Lift_Height_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_lift_height_result", 10);
-    Set_Lift_Height_Cmd = this->create_subscription<rm_ros_interfaces::msg::Liftheight>("rm_driver/set_lift_height_cmd",10,
+    Set_Lift_Height_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_lift_height_result", rclcpp::ParametersQoS());
+    Set_Lift_Height_Cmd = this->create_subscription<rm_ros_interfaces::msg::Liftheight>("rm_driver/set_lift_height_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Set_Lift_Height_Callback,this,std::placeholders::_1),
         sub_opt3);
     /****************************************获取升降机构状态**********************************/
-    Get_Lift_State_Result = this->create_publisher<rm_ros_interfaces::msg::Liftstate>("rm_driver/get_lift_state_result", 10);
-    Get_Lift_State_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_lift_state_cmd",10,
+    Get_Lift_State_Result = this->create_publisher<rm_ros_interfaces::msg::Liftstate>("rm_driver/get_lift_state_result", rclcpp::ParametersQoS());
+    Get_Lift_State_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_lift_state_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Get_Lift_State_Callback,this,std::placeholders::_1),
         sub_opt3);
 /*******************************************************************************end*****************************************************************/
 
     /***************************************************获取机械臂当前状态********************************************/
-    Get_Current_Arm_Original_State_Result = this->create_publisher<rm_ros_interfaces::msg::Armoriginalstate>("rm_driver/get_current_arm_original_state_result", 10);
-    Get_Current_Arm_State_Result = this->create_publisher<rm_ros_interfaces::msg::Armstate>("rm_driver/get_current_arm_state_result", 10);
-    Get_Current_Arm_State_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_current_arm_state_cmd",10,
+    Get_Current_Arm_Original_State_Result = this->create_publisher<rm_ros_interfaces::msg::Armoriginalstate>("rm_driver/get_current_arm_original_state_result", rclcpp::ParametersQoS());
+    Get_Current_Arm_State_Result = this->create_publisher<rm_ros_interfaces::msg::Armstate>("rm_driver/get_current_arm_state_result", rclcpp::ParametersQoS());
+    Get_Current_Arm_State_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_current_arm_state_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Get_Current_Arm_State_Callback,this,std::placeholders::_1),
         sub_opt2);
     /*****************************************************六维力数据清零**********************************************/
-    Clear_Force_Data_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/clear_force_data_result", 10);
-    Clear_Force_Data_Cmd = this->create_subscription<std_msgs::msg::Bool>("rm_driver/clear_force_data_cmd",10,
+    Clear_Force_Data_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/clear_force_data_result", rclcpp::ParametersQoS());
+    Clear_Force_Data_Cmd = this->create_subscription<std_msgs::msg::Bool>("rm_driver/clear_force_data_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Clear_Force_Data_Callback,this,std::placeholders::_1),
         sub_opt2);
 }   

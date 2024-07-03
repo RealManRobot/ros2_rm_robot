@@ -20,7 +20,8 @@ Revision History:
 |No. | Date | Comment |
 | :---: | :---- | :---: |
 |V1.0 | 2024-2-18 | Draft |
-		
+|V1.1 | 7/3 /2024 | Amend |
+
 </div>
 
 ## Content
@@ -292,22 +293,22 @@ The RealMan robotic arm is equipped with an Inspire Robots EG2-4C2 gripper. The 
 #### Setting_the_Gripper_Pick
 | Function description | Setting the gripper pick |
 | :---: | :---- |
-| Parameter description | Gripperpick.msg<br>uint16 speed：1～1000,representing the opening and closing speed of the gripper, dimensionless.<br>uint16 force:representing the gripping force of the gripper, maximum 1.5 kg.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_gripper_pick_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true" |
+| Parameter description | Gripperpick.msg<br>uint16 speed：1～1000,representing the opening and closing speed of the gripper, dimensionless.<br>uint16 force:representing the gripping force of the gripper, maximum 1.5 kg.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking.<br>uint16 timeout:Set the return timeout time, and the blocking mode takes effect (in seconds). |
+| Command example | ros2 topic pub --once /rm_driver/set_gripper_pick_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true<br>timeout: 1" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_gripper_pick_result |
 #### Setting_the_gripper_pick-on
 | Function description | Setting the gripper pick-on |
 | :---: | :---- |
-| Parameter description | Gripperpick.msg<br>uint16 speed：1～1000, representing the opening and closing speed of the gripper, dimensionless.<br>uint16 force：1～1000,representing the gripping force of the gripper, maximum 1.5 kg.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_gripper_pick_on_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true" |
+| Parameter description | Gripperpick.msg<br>uint16 speed：1～1000, representing the opening and closing speed of the gripper, dimensionless.<br>uint16 force：1～1000,representing the gripping force of the gripper, maximum 1.5 kg.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking.<br>uint16 timeout:Set the return timeout time, and the blocking mode takes effect (in seconds). |
+| Command example | ros2 topic pub --once /rm_driver/set_gripper_pick_on_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true<br>timeout: 1" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_gripper_pick_on_result |
 #### Setting_the_gripper_to_the_given_position
 | Function description | Setting the gripper to the given position |
 | :---: | :---- |
-| Parameter description | Gripperset.msg<br>uint16 position：target position of the gripper, range: 1-1000, representing the opening degree of the gripper: 0-70 mm.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_gripper_position_cmd rm_ros_interfaces/msg/Gripperset "position: 500<br>block: true" |
+| Parameter description | Gripperset.msg<br>uint16 position：target position of the gripper, range: 1-1000, representing the opening degree of the gripper: 0-70 mm.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. <br>uint16 timeout:Set the return timeout time, and the blocking mode takes effect (in seconds).|
+| Command example | ros2 topic pub --once /rm_driver/set_gripper_position_cmd rm_ros_interfaces/msg/Gripperset "position: 500<br>block: true<br>timeout: 1" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_gripper_position_result |
 ### Functions_related_to_the_drag_teach_and_trajectory_reproduction
