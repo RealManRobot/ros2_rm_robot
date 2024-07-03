@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robotic Arm rm_moveit2_config User Manual V1.0
+# RealMan Robotic Arm rm_moveit2_config User Manual V1.1
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 

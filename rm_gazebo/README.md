@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robotic Arm rm_gazebo User Manual V1.0
+# RealMan Robotic Arm rm_gazebo User Manual V1.1
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 

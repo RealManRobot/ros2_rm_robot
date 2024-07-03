@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_description使用说明书V1.0
+# 睿尔曼机器人rm_description使用说明书V1.1
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：

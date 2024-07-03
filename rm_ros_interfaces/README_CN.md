@@ -7,7 +7,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_ros_interface使用说明书V1.0
+# 睿尔曼机器人rm_ros_interface使用说明书V1.1
 
 
  

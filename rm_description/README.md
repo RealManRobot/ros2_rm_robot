@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robot rm_description User Manual V1.0
+# RealMan Robot rm_description User Manual V1.1
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 

@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robot rm_ros_interface User Manual V1.0
+# RealMan Robot rm_ros_interface User Manual V1.1
 
 
  
