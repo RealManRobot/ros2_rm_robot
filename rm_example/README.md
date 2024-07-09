@@ -15,7 +15,7 @@ Revision History:
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
 |V1.0	  | 2/19/2024 | Draft |
-|V1.1	  | 7/3 /2024 | Amend |
+|V1.1	  | 7/3 /2024 | Amend(Add GEN72 adapter files) |
 
 </div>
 

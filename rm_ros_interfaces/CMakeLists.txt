@@ -19,6 +19,9 @@ set(msg_files
   msg/Movejp.msg
   msg/Movel.msg
   msg/Movec.msg
+  msg/Jointteach.msg
+  msg/Posteach.msg
+  msg/Ortteach.msg
   msg/Setrealtimepush.msg
   msg/Armsoftversion.msg
   msg/Sixforce.msg

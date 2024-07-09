@@ -37,6 +37,9 @@
 #include "rm_ros_interfaces/msg/movel.hpp"
 #include "rm_ros_interfaces/msg/movec.hpp"
 #include "rm_ros_interfaces/msg/movejp.hpp"
+#include "rm_ros_interfaces/msg/jointteach.hpp"
+#include "rm_ros_interfaces/msg/ortteach.hpp"
+#include "rm_ros_interfaces/msg/posteach.hpp"
 #include "rm_ros_interfaces/msg/setrealtimepush.hpp"
 #include "rm_ros_interfaces/msg/armsoftversion.hpp"
 #include "rm_ros_interfaces/msg/sixforce.hpp"
@@ -89,6 +92,7 @@ int udp_cycle_g = 5;
 int arm_dof_g = 6;
 //ctrl+c触发信号
 bool ctrl_flag = false;
+int count_number;
 //api类
 RM_Service Rm_Api;
 //机械臂TCp网络通信套接字
@@ -149,6 +153,12 @@ public:
     void Arm_Movep_CANFD_Callback(rm_ros_interfaces::msg::Cartepos::SharedPtr msg);                         //位姿透传控制
     void Arm_MoveJ_P_Callback(rm_ros_interfaces::msg::Movejp::SharedPtr msg);                               //位姿运动控制
     void Arm_Move_Stop_Callback(std_msgs::msg::Bool::SharedPtr msg);                                        //轨迹急停控制
+    /**************************************************************************/
+    void Set_Joint_Teach_Callback(rm_ros_interfaces::msg::Jointteach::SharedPtr msg);                       //关节示教
+    void Set_Pos_Teach_Callback(rm_ros_interfaces::msg::Posteach::SharedPtr msg);                           //位置示教
+    void Set_Ort_Teach_Callback(rm_ros_interfaces::msg::Ortteach::SharedPtr msg);                           //姿态示教
+    void Set_Stop_Teach_Callback(const std_msgs::msg::Bool::SharedPtr msg);                                //停止示教
+
     /*******************************主动上报回调函数******************************/
     void Arm_Get_Realtime_Push_Callback(const std_msgs::msg::Empty::SharedPtr msg);                         //获取主动上报配置
     void Arm_Set_Realtime_Push_Callback(const rm_ros_interfaces::msg::Setrealtimepush::SharedPtr msg);      //设置主动上报配置参数
@@ -249,6 +259,25 @@ private:
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Move_Stop_Cmd_Result;
     /***********************************************轨迹急停控制订阅器*************************************/
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr Move_Stop_Cmd;
+    /********************************************************end******************************************************/
+
+    /*******************************************************关节示教***************************************************/
+    /****************************************关节示教结果发布器*************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Joint_Teach_Cmd_Result;
+    /*******************************************关节示教订阅器*************************************/
+    rclcpp::Subscription<rm_ros_interfaces::msg::Jointteach>::SharedPtr Set_Joint_Teach_Cmd;
+    /****************************************位置示教结果发布器*************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Pos_Teach_Cmd_Result;
+    /*******************************************位置示教订阅器*************************************/
+    rclcpp::Subscription<rm_ros_interfaces::msg::Posteach>::SharedPtr Set_Pos_Teach_Cmd;
+    /****************************************姿态示教结果发布器*************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Ort_Teach_Cmd_Result;
+    /*******************************************姿态示教订阅器*************************************/
+    rclcpp::Subscription<rm_ros_interfaces::msg::Ortteach>::SharedPtr Set_Ort_Teach_Cmd;
+    /****************************************停止示教结果发布器*************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Stop_Teach_Cmd_Result;
+    /*******************************************停止示教订阅器*************************************/
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr Set_Stop_Teach_Cmd;
     /********************************************************end******************************************************/
 
     /********************************************************固件版本***************************************************/
@@ -405,6 +434,7 @@ public:
     UdpPublisherNode();
     /*******************************主动上报定时器数据处理回调函数**************************/
     void udp_timer_callback();
+    void heart_timer_callback();
     bool read_data();
 //   : Node("UdpPublisherNode"), count_(0)
 //   {
@@ -426,7 +456,11 @@ public:
 //   }
 
 private:
-    rclcpp::TimerBase::SharedPtr Udp_Timer;                             //UDP定时器
+    rclcpp::CallbackGroup::SharedPtr callback_group_time1_;
+    rclcpp::CallbackGroup::SharedPtr callback_group_time2_;
+    rclcpp::CallbackGroup::SharedPtr callback_group_time3_;
+    rclcpp::TimerBase::SharedPtr Udp_Timer;                  //UDP定时器
+    rclcpp::TimerBase::SharedPtr Heart_Timer;                         
     /*****************************************************UDP数据发布话题************************************************/
     rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr Joint_Position_Result;                                //关节当前状态发布器
     rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr Arm_Position_Result;                                      //末端位姿当前状态发布器
@@ -443,5 +477,6 @@ private:
     struct sockaddr_in clientAddr;
     socklen_t clientAddrLen = sizeof(clientAddr);
     char udp_socket_buffer[800];
+
 };
 

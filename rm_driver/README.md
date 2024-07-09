@@ -15,7 +15,8 @@ Revision History:
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
 |V1.0	  | 2/7/2024 | Draft |
-|V1.1	  | 7/3/2024 | Amend |
+|V1.1	  | 7/8/2024 | Amend（Add GEN72 adapter files） |
+
 </div>
 
  
@@ -101,7 +102,15 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_63_config.yaml         # 63 configuration file
 │   ├── rm_65_config.yaml         # 65 configuration file
 │   ├── rm_75_config.yaml         # 75 configuration file
-│   └── rm_eco65_config.yaml      # eco65 configuration file
+│   ├── rm_eco65_config.yaml      # eco65 configuration file
+│   └── rm_gen72_config.yaml      # gen72 configuration file
+├── doc
+│   ├── RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2).md
+│   ├── rm_driver1.png
+│   ├── rm_driver2.png
+│   ├── rm_driver3.png
+│   ├── rm_driver4.png
+│   └── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
 ├── include                       # dependency header file folder
 │   └── rm_driver
 │       ├── cJSON.h                # API header file
@@ -120,13 +129,18 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_63_driver.launch.py     # 63 launch file
 │   ├── rm_65_driver.launch.py     # 65 launch file
 │   ├── rm_75_driver.launch.py     # 75 launch file
-│   └── rm_eco65_driver.launch.py  # eco65 launch file
+│   ├── rm_eco65_driver.launch.py  # eco65 launch file
+│   └── rm_gen72_driver.launch.py  # gen72 launch file
 ├── lib
 │   ├── libRM_Service.so -> libRM_Service.so.1.0.0        # API library file
 │   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      # API library file
 │   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    # API library file
-│   └── libRM_Service.so.1.0.0                            # API library file
+│   ├── libRM_Service.so.1.0.0                            # API library file
+│   ├── linux_arm_service_release_v4.3.2.t1.tar.bz2       # API library file
+│   └── linux_x86_service_release_v4.3.2.t1.tar.bz2       # API library file
 ├── package.xml                                           # dependency declaration file
+├── README_CN.md
+├── README.md
 └── src
     └── rm_driver.cpp                                     # driver code source file
 ```

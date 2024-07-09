@@ -373,6 +373,120 @@ void RmArm::Arm_Move_Stop_Callback(std_msgs::msg::Bool::SharedPtr msg)
     }
 }
 
+void RmArm::Set_Joint_Teach_Callback(rm_ros_interfaces::msg::Jointteach::SharedPtr msg)
+{
+    byte num;
+    byte direction;
+    byte v;
+    bool block;
+    u_int32_t res;
+    std_msgs::msg::UInt32 joint_teach_data;
+    std_msgs::msg::Bool joint_teach_result;
+
+    num = msg->num;
+    direction = msg->direction;
+    v = msg->speed;
+    block = msg->block;
+
+    res = Rm_Api.Service_Joint_Teach_Cmd(m_sockhand, num, direction, v , block);
+    joint_teach_data.data = res;
+    if(joint_teach_data.data == 0)
+    {
+        joint_teach_result.data = true;
+        this->Set_Joint_Teach_Cmd_Result->publish(joint_teach_result);
+    }
+    else
+    {
+        joint_teach_result.data = false;
+        this->Set_Joint_Teach_Cmd_Result->publish(joint_teach_result);
+        RCLCPP_INFO (this->get_logger(),"Joint_Teach error code is %d\n",joint_teach_data.data);
+    }
+}
+
+void RmArm::Set_Pos_Teach_Callback(rm_ros_interfaces::msg::Posteach::SharedPtr msg)
+{
+    byte type;
+    byte direction;
+    byte v;
+    bool block;
+    u_int32_t res;
+    std_msgs::msg::UInt32 pos_teach_data;
+    std_msgs::msg::Bool pos_teach_result;
+
+    type = msg->type;
+    direction = msg->direction;
+    v = msg->speed;
+    block = msg->block;
+
+    res = Rm_Api.Service_Pos_Teach_Cmd(m_sockhand, (POS_TEACH_MODES)type, direction, v , block);
+    pos_teach_data.data = res;
+    if(pos_teach_data.data == 0)
+    {
+        pos_teach_result.data = true;
+        this->Set_Pos_Teach_Cmd_Result->publish(pos_teach_result);
+    }
+    else
+    {
+        pos_teach_result.data = false;
+        this->Set_Pos_Teach_Cmd_Result->publish(pos_teach_result);
+        RCLCPP_INFO (this->get_logger(),"Pos_Teach error code is %d\n",pos_teach_data.data);
+    }
+}
+
+void RmArm::Set_Ort_Teach_Callback(rm_ros_interfaces::msg::Ortteach::SharedPtr msg)
+{
+    byte type;
+    byte direction;
+    byte v;
+    bool block;
+    u_int32_t res;
+    std_msgs::msg::UInt32 ort_teach_data;
+    std_msgs::msg::Bool ort_teach_result;
+
+    type = msg->type;
+    direction = msg->direction;
+    v = msg->speed;
+    block = msg->block;
+
+    res = Rm_Api.Service_Ort_Teach_Cmd(m_sockhand, (ORT_TEACH_MODES)type, direction, v , block);
+    ort_teach_data.data = res;
+    if(ort_teach_data.data == 0)
+    {
+        ort_teach_result.data = true;
+        this->Set_Ort_Teach_Cmd_Result->publish(ort_teach_result);
+    }
+    else
+    {
+        ort_teach_result.data = false;
+        this->Set_Ort_Teach_Cmd_Result->publish(ort_teach_result);
+        RCLCPP_INFO (this->get_logger(),"Ort_Teach error code is %d\n",ort_teach_data.data);
+    }
+}
+
+void RmArm::Set_Stop_Teach_Callback(std_msgs::msg::Bool::SharedPtr msg)
+{
+    bool block;
+    u_int32_t res;
+    std_msgs::msg::UInt32 stop_teach_data;
+    std_msgs::msg::Bool stop_teach_result;
+
+    block = msg->data;
+
+    res = Rm_Api.Service_Teach_Stop_Cmd(m_sockhand, block);
+    stop_teach_data.data = res;
+    if(stop_teach_data.data == 0)
+    {
+        stop_teach_result.data = true;
+        this->Set_Stop_Teach_Cmd_Result->publish(stop_teach_result);
+    }
+    else
+    {
+        stop_teach_result.data = false;
+        this->Set_Stop_Teach_Cmd_Result->publish(stop_teach_result);
+        RCLCPP_INFO (this->get_logger(),"Stop_Teach error code is %d\n",stop_teach_data.data);
+    }
+}
+
 void RmArm::Arm_Get_Realtime_Push_Callback(const std_msgs::msg::Empty::SharedPtr msg)
 {
     int cycle;
@@ -908,8 +1022,8 @@ void RmArm::Arm_Set_Gripper_Position_Callback(const rm_ros_interfaces::msg::Grip
 {
     int position;
     bool block;
-    u_int32_t res;
     int timeout;
+    u_int32_t res;
     std_msgs::msg::Bool set_gripper_position_result;
     position = msg->position;
     block = msg->block;
@@ -1245,11 +1359,11 @@ void Udp_RobotStatuscallback(RobotStatus Udp_RM_Callback)
 
 void UdpPublisherNode::udp_timer_callback() 
 {
-    connect_state = Rm_Api.Service_Arm_Socket_State(m_sockhand);
     if(connect_state == 0)
     {
         Rm_Api.Service_Realtime_Arm_Joint_State(Udp_RobotStatuscallback);
         udp_joint_error_code_.dof = 6;
+        count_number++;
         for(int i = 0;i<6;i++)
         {
             udp_real_joint_.position[i] = Udp_RM_Joint.joint[i] * DEGREE_RAD;
@@ -1327,10 +1441,21 @@ void UdpPublisherNode::udp_timer_callback()
         }
         Arm_Start();
         come_time = 0;
+        connect_state = 0;
         RCLCPP_INFO (this->get_logger(),"Connect success\n");
     }
 }
-
+void UdpPublisherNode::heart_timer_callback()
+{
+    if(connect_state == 0)
+    {
+        connect_state = Rm_Api.Service_Arm_Socket_State(m_sockhand);
+    }
+    else
+    {
+        ;
+    }
+}
 bool UdpPublisherNode::read_data()
 {
     memset(udp_socket_buffer, 0, sizeof(udp_socket_buffer));
@@ -1360,9 +1485,16 @@ bool UdpPublisherNode::read_data()
 
 UdpPublisherNode::UdpPublisherNode():
     rclcpp::Node("udp_publish_node"){
+        /*************************************************多线程********************************************/
+        callback_group_time1_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+        callback_group_time2_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+        callback_group_time3_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
         /*****************************************************UDP定时器*****************************************************************/
         Udp_Timer = this->create_wall_timer(std::chrono::milliseconds(udp_cycle_g), 
-        std::bind(&UdpPublisherNode::udp_timer_callback,this));
+        std::bind(&UdpPublisherNode::udp_timer_callback,this), callback_group_time1_);
+        /*****************************************************定时器*****************************************************************/
+        Heart_Timer = this->create_wall_timer(std::chrono::milliseconds(100), 
+        std::bind(&UdpPublisherNode::heart_timer_callback,this), callback_group_time2_);
         /********************************************************************UDP传输数据**********************************************************/
         Joint_Position_Result = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);                                 //发布当前的关节角度
         Arm_Position_Result = this->create_publisher<geometry_msgs::msg::Pose>("rm_driver/udp_arm_position", 10);                          //发布当前的关节姿态
@@ -1491,22 +1623,21 @@ RmArm::RmArm():
     /***************************************************end**********************************************/
 
     /*************************************************多线程********************************************/
-    callback_group_sub1_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
+    callback_group_sub1_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     auto sub_opt1 = rclcpp::SubscriptionOptions();
     sub_opt1.callback_group = callback_group_sub1_;
-    callback_group_sub2_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
+    callback_group_sub2_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     auto sub_opt2 = rclcpp::SubscriptionOptions();
     sub_opt2.callback_group = callback_group_sub2_;
-    callback_group_sub3_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
+    callback_group_sub3_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     auto sub_opt3 = rclcpp::SubscriptionOptions();
     sub_opt3.callback_group = callback_group_sub3_;
-    callback_group_sub4_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
+    callback_group_sub4_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     auto sub_opt4 = rclcpp::SubscriptionOptions();
     sub_opt3.callback_group = callback_group_sub4_;
 
     Get_Arm_Version();//获取机械臂版本
     Set_UDP_Configuration(udp_cycle_, udp_port_, udp_force_coordinate_, udp_ip_);
-
     /******************************************************获取udp配置********************************************************************/
     Get_Realtime_Push_Result = this->create_publisher<rm_ros_interfaces::msg::Setrealtimepush>("rm_driver/get_realtime_push_result", rclcpp::ParametersQoS());
     Get_Realtime_Push_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_realtime_push_cmd",rclcpp::ParametersQoS(),
@@ -1554,6 +1685,29 @@ RmArm::RmArm():
         std::bind(&RmArm::Arm_Move_Stop_Callback,this,std::placeholders::_1),
         sub_opt2);
 /******************************************************************************end*******************************************************************/
+
+/******************************************************************************示教指令*****************************************************************/
+    /*********************************************************关节示教*****************************************************************/
+    Set_Joint_Teach_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_joint_teach_result", rclcpp::ParametersQoS());
+    Set_Joint_Teach_Cmd = this->create_subscription<rm_ros_interfaces::msg::Jointteach>("rm_driver/set_joint_teach_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Set_Joint_Teach_Callback,this,std::placeholders::_1),
+        sub_opt4);
+    /*********************************************************位置示教*****************************************************************/
+    Set_Pos_Teach_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_pos_teach_result", rclcpp::ParametersQoS());
+    Set_Pos_Teach_Cmd = this->create_subscription<rm_ros_interfaces::msg::Posteach>("rm_driver/set_pos_teach_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Set_Pos_Teach_Callback,this,std::placeholders::_1),
+        sub_opt4);
+    /*********************************************************姿态示教*****************************************************************/
+    Set_Ort_Teach_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_ort_teach_result", rclcpp::ParametersQoS());
+    Set_Ort_Teach_Cmd = this->create_subscription<rm_ros_interfaces::msg::Ortteach>("rm_driver/set_ort_teach_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Set_Ort_Teach_Callback,this,std::placeholders::_1),
+        sub_opt4);
+    /*********************************************************示教停止*****************************************************************/
+    Set_Stop_Teach_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_stop_teach_result", rclcpp::ParametersQoS());
+    Set_Stop_Teach_Cmd = this->create_subscription<std_msgs::msg::Bool>("rm_driver/set_stop_teach_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Set_Stop_Teach_Callback,this,std::placeholders::_1),
+        sub_opt2);
+/******************************************************************************end*****************************************************************/
 
     /************************************************************************查询机械臂固件版本***************************************************************/
     Get_Arm_Software_Version_Result = this->create_publisher<rm_ros_interfaces::msg::Armsoftversion>("rm_driver/get_arm_software_version_result", rclcpp::ParametersQoS());

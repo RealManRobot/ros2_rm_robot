@@ -55,8 +55,8 @@ void GetArmState::get_arm_state()
 /***********************************构造函数，初始化发布器订阅器****************************************/
 GetArmState::GetArmState():rclcpp::Node("get_state")
 {
-  subscription_ = this->create_subscription<rm_ros_interfaces::msg::Armoriginalstate>("/rm_driver/get_current_arm_original_state_result", 10, std::bind(&GetArmState::GetArmState_Callback, this,_1));
-  publisher_ = this->create_publisher<std_msgs::msg::Empty>("/rm_driver/get_current_arm_state_cmd", 10);
+  subscription_ = this->create_subscription<rm_ros_interfaces::msg::Armoriginalstate>("/rm_driver/get_current_arm_original_state_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::GetArmState_Callback, this,_1));
+  publisher_ = this->create_publisher<std_msgs::msg::Empty>("/rm_driver/get_current_arm_state_cmd", rclcpp::ParametersQoS());
   std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   get_arm_state();
 }
