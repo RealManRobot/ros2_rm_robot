@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_driver使用说明书V1.0
+# 睿尔曼机器人rm_driver使用说明书V1.1
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -14,6 +14,7 @@
 | 版本号| 时间   | 备注  | 
 | :---: | :-----: | :---: |
 |V1.0    |2024-2-7  |拟制 |
+|V1.1    |2024-7-8  |修订(添加GEN72适配文件) |
 
 </div>
 
@@ -41,7 +42,7 @@ rm_driver功能包在机械臂ROS2功能包中是十分重要的，该功能包�
 首先配置好环境完成连接后我们可以通过以下命令直接启动节点，控制机械臂。  
 当前的控制基于我们没有改变过机械臂的IP即当前机械臂的IP仍为192.168.1.18。  
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py  
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75、gen72。  
 底层驱动启动成功后，将显示以下画面。  
 ![image](doc/rm_driver1.png)  
 ### 功能包进阶使用
@@ -69,7 +70,7 @@ rm_driver:
 其中主要有以下几个参数。
 * arm_ip：改参数代表机械臂当前的IP
 * tcp_port：设置TCP连接时的端口。
-* arm_type：该参数代表机械臂当前的型号，可以选择的参数有RM_65（65系列）、RM_eco65（ECO65系列）、RML_63（63系列）、RM_75（75系列）。
+* arm_type：该参数代表机械臂当前的型号，可以选择的参数有RM_65（65系列）、RM_eco65（ECO65系列）、RML_63（63系列）、RM_75（75系列）、GEN_72（GEN72系列）。
 * arm_dof: 机械臂自由度设置。6为6自由度，7为7自由度。
 * udp_ip: 设置udp主动上报目标IP。
 * udp_cycle：udp主动上报周期，需要是5的倍数。
@@ -93,7 +94,15 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_63_config.yaml          #63配置文件
 │   ├── rm_65_config.yaml          #65配置文件
 │   ├── rm_75_config.yaml          #75配置文件
-│   └── rm_eco65_config.yaml       #eco65配置文件
+│   ├── rm_eco65_config.yaml       #eco65配置文件
+│   └── rm_gen72_config.yaml       #gen725配置文件
+├── doc
+│   ├── RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2).md
+│   ├── rm_driver1.png
+│   ├── rm_driver2.png
+│   ├── rm_driver3.png
+│   ├── rm_driver4.png
+│   └── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
 ├── include                        #依赖头文件文件夹
 │   └── rm_driver
 │       ├── cJSON.h                #API头文件
@@ -112,13 +121,18 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_63_driver.launch.py     #63启动文件
 │   ├── rm_65_driver.launch.py     #65启动文件
 │   ├── rm_75_driver.launch.py     #75启动文件
-│   └── rm_eco65_driver.launch.py  #eco65启动文件
+│   ├── rm_eco65_driver.launch.py  #eco65启动文件
+│   └── rm_gen72_driver.launch.py  #gen72启动文件
 ├── lib
 │   ├── libRM_Service.so -> libRM_Service.so.1.0.0        #API库文件
 │   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      #API库文件
 │   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    #API库文件
-│   └── libRM_Service.so.1.0.0                            #API库文件
+│   ├── libRM_Service.so.1.0.0                            #API库文件
+│   ├── linux_arm_service_release_v4.3.2.t1.tar.bz2       #API库文件
+│   └── linux_x86_service_release_v4.3.2.t1.tar.bz2       #API库文件
 ├── package.xml                                           #依赖声明文件
+├── README_CN.md
+├── README.md
 └── src
     └── rm_driver.cpp                                     #驱动代码源文件
 ```

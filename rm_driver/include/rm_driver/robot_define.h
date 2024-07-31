@@ -17,6 +17,27 @@
 #include "constant_define.h"
 #include "rman_int.h"
 
+typedef float MAT3X2[3][2];
+typedef float MAT3X3[3][3];
+typedef float MAT3X6[3][6];
+typedef float MAT4X4[4][4];
+typedef float MAT8X3[8][3];
+typedef float MAT16X3[16][3];
+typedef float MAT20X3[20][3];
+typedef float MAT6X6[6][6];
+typedef float MAT6X7[6][7];
+typedef float MAT7X6[7][6];
+typedef float VEC3[3];
+typedef float VEC4[4];
+typedef float VEC6[6];
+typedef float VEC7[7];
+typedef float VEC8[8];
+typedef float VEC16[16];
+typedef float VEC20[20];
+typedef int VEC8_int[8];
+typedef int VEC16_int[16];
+typedef int VEC20_int[20];
+
 typedef struct
 {
     short irow;
@@ -38,7 +59,18 @@ typedef struct
 	float y;
 	float z;
 } Pos;
-
+typedef struct
+{
+	float x;
+	float y;
+	float z;
+	float distance;
+}dAndP;//点到直线的距离和交点(即垂足)
+typedef struct
+{
+	int isCself;        //机械臂自身是否发生碰撞
+	int isCcube;        //机械臂是否与正方体发生碰撞
+}Collis_self_cube;      //碰撞检测结果
 typedef struct
 {
 	float rx; //* unit: rad
@@ -53,6 +85,17 @@ typedef struct
 	Euler euler;
 } Pose;
 
+typedef struct
+{
+    Pose pose;
+    float joint[7];
+} Position_data;        //机械臂位姿数据(Pose形式和矩阵形式)
+
+typedef struct
+{
+    Pose pose;
+    Matrix T_BT;
+} Pose_data;        //机械臂位姿数据(Pose形式和矩阵形式)
 typedef struct
 {
     float x;  //* unit: m
@@ -89,10 +132,104 @@ typedef struct
 
 typedef enum
 {
-    B,
-    ZF,
-    SF
-} SensorType;
+    _not_avoid_singularity = 0,         //不规避奇异点（movej_p用）
+    _avoid_singularity = 1             //规避奇异点
+} Singular_flag;
+
+typedef enum
+{
+    _selfcollision = 0,         //发生自碰撞
+    _no_selfcollision = 1     //未发生自碰撞
+} Is_self_collision;             //是否发生自碰撞
+
+typedef enum
+{
+    _virtual_wallcollision = 0,    //撞墙
+    _no_virtual_wallcollision = 1  //不撞墙
+} Is_wall_collision;                 //是否撞墙标志      
+
+typedef enum
+{
+    CUBOID_WALL = 0,        //长方体or正方体墙（长宽高）
+    SPHERE_WALL = 1,        //球体墙（球心和半径）
+    CYLINDER_WALL = 2,      //圆柱墙（圆柱轴线，母线长，半径）
+    CONE_WALL = 3           //圆锥墙（底面半径，高or母线长）
+} VirtualWallType;
+
+typedef struct ToolSpherePara
+{
+    float radius;     // 球体半径（单位：m）
+    VEC3 centrePoint; // 球体中心位置（单位：m，以法兰坐标系为参考坐标系）
+} ToolSpherePara;     // 工具包络球参数
+
+typedef struct ToolEnvelopeData
+{
+    ToolSpherePara toolEnvelope[5]; // 支持使用最多5个球体包络
+} ToolEnvelopeData;                 // 工具包络数据
+
+typedef struct
+{
+    int tLinkNum;       //工具包络球连杆数
+    float linkRadius[5];  //工具包络球连杆半径
+}ToolLinkPara;      //工具连杆数据
+
+typedef enum
+{
+    _fence_collision = 0,    //撞墙
+    _no_fence_collision = 1  //不撞墙
+} Is_fence_collision;                 //是否撞墙标志
+
+typedef enum
+{
+    CUBOID_FENCE = 0,        //长方体or正方体围栏
+    SINGLE_FENCE = 1,        //单面围栏
+} SafeFenceType;
+
+typedef enum
+{
+    _inside_fence = 0,    //在围栏内
+    _outside_fence = 1    //在围栏外
+} IsInsideFence;          //是否在围栏内
+
+typedef enum
+{
+    _whole_robot = 0,    //整臂
+    _only_tcp = 1        //仅末端
+} IsRobotOrTCP;                 //整臂or末端
+
+typedef enum
+{
+    INSIDE_WALL = 0, // 墙内
+    OUTSIDE_WALL = 1 // 墙外
+} VirtualWallDragScope; // 虚拟墙拖动区域
+
+typedef enum
+{
+    WHOLE_ROBOT_MODE = 0, // 机械臂后四个关节+末端+工具
+    FLANGE_TOOL_MODE = 1  // 末端+工具
+} VirtualWallCrashObject;// 虚拟墙作用部位
+
+typedef enum
+{
+    fence_succeed = 0,     //电子围栏设置成功
+    fence_failed = 1       //电子围栏设置失败
+} IsFenceSucceed;
+typedef struct 
+{
+    MAT3X2 cuboid_data;      //data[0][0],data[0][1]:-x,+x;data[1][0],data[1][1]:-y,+y;data[2][0],data[2][1]:-z,+z
+    Pos plane_point[3];
+}FenceData;     
+
+
+typedef struct 
+{
+    SafeFenceType _fence_type;      // 围栏类型  
+    MAT3X2 cuboid_data;              // 立方体数据cuboid_data[0][0-1]:xmin xmax,cuboid_data[1][0-1]:ymin ymax,cuboid_data[2][0-1]:zmin zmax
+    Pos single_Pdata[3];            // 单面围栏数据 [0][1][2]为平面上任意3点坐标
+    IsInsideFence _is_insidefence;  // 机械臂是否在围栏内（0：在围栏内，1：在围栏外）
+    int _is_robot_or_tcp;           // 整臂or末端
+    float current_joint_angle[ROBOT_DOF]; //当前关节角度
+}SafeFencePara;
 
 typedef enum
 {
@@ -101,16 +238,26 @@ typedef enum
     RML63I,
     RML63II,
     RML63III,
-    NANO,
-    ECO65
+    ECO65,
+    ECO62,
+    GEN72,
+    UNIVERSAL
 } RobotType;
+
+
+typedef enum
+{
+    _B,
+    _ZF,
+    _SF
+} SensorType;
 
 typedef struct
 {
     float mass;       //* unit:kg
     float com[3];     //* center of mass [x y z], unit:m
     float inertia[6]; //* [Ixx Iyy Izz Ixy Ixz Iyz], unit: kg/(m^2)
-
+    float radius;     //* radius of the tool
 } PayloadCfg;
 
 typedef struct
@@ -179,6 +326,8 @@ typedef struct
     float k_l[ROBOT_DOF];                            //* parameters of joint payload-friction-constant, unit: 1
     float k_i[ROBOT_DOF];                            //* parameters of joint torque constant, unit: Nm/A
     float joint_param[ROBOT_DOF][FRIC_PARMS_NUM];    //* parameters of joints friction dynamics
+    float link_dyn_param[ROBOT_DOF*10];              //* parameters of link dynamics, unit: kg*m^2, kg*m, kg
+                                                     //* Ixx Ixy Ixz Iyy Iyz Izz mx my mz m
 } DynParam;
 
 typedef struct
@@ -193,6 +342,7 @@ typedef struct
     RobotFrame frame;
     DynParam  dyn_params;
 
+    float joint_direction[ROBOT_DOF];
     float collision_threshold[ROBOT_DOF][3];
 
     float joint_cmd[ROBOT_DOF];		 //* Joint position cmd, unit: rad
@@ -202,6 +352,11 @@ typedef struct
     float cycle_period;                  //* Control cycle period of the controller, unit:sec, default:CYCLE_PERIOD
     float gravity[3];                    //* Acceleration of gravity, unit: m/(s^2), default:[0, 0, -9.81];
     short safety_level;                  //* Safety level of collision detection   
+
+    int all_joint_num;                   //* All DOF of robot and external axis, all_joint_num = rbt_dof + external_axis_dof
+    int is_avoid_singularity;            //* 是否规避奇异点标志位，1:规避奇异点,0:不规避奇异点
+
+    int dynamics_model_type;             //* Dynamics model type, 1:old model, 2: new model
 } Robot;
 
 //六维力拖动示教用
@@ -227,7 +382,7 @@ typedef enum
 //施加力模式
 typedef enum 
 {
-    BASE_MODE = 0,
+    WORK_MODE = 0,
     TOOL_MODE = 1
 } COORDINATE_SYSTERM_MODE;
 
@@ -250,7 +405,7 @@ typedef struct
 	float ry;//质心y坐标，单位：米
 	float rz;//质心z坐标，单位：米
 	float f0[6];//零位数据，单位：N、N、N、NM、NM、NM
-	Matrix G_b;//重力在基坐标系下的向量，单位N
+	Matrix G_b;//重力在世界坐标系下的向量，单位N
 }Algo_Center_G;
 
 //多组力的数据

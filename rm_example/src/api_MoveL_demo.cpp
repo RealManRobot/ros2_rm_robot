@@ -97,10 +97,10 @@ void MoveLDemo::movejp_demo()
 MoveLDemo::MoveLDemo():rclcpp::Node("Movel_demo_node")
 {
 
-  subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movej_p_result", 10, std::bind(&MoveLDemo::MoveJPDemo_Callback, this,_1));
-  publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movejp>("/rm_driver/movej_p_cmd", 10);
-  movel_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movel_result", 10, std::bind(&MoveLDemo::MoveLDemo_Callback, this,_1));
-  movel_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movel>("/rm_driver/movel_cmd", 10);
+  subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movej_p_result", rclcpp::ParametersQoS(), std::bind(&MoveLDemo::MoveJPDemo_Callback, this,_1));
+  publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movejp>("/rm_driver/movej_p_cmd", rclcpp::ParametersQoS());
+  movel_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movel_result", rclcpp::ParametersQoS(), std::bind(&MoveLDemo::MoveLDemo_Callback, this,_1));
+  movel_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movel>("/rm_driver/movel_cmd", rclcpp::ParametersQoS());
   std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   movejp_demo();
 }

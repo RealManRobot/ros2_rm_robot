@@ -10,6 +10,7 @@
 The package is mainly used for providing ROS2 support for the robotic arm, and the following is the use environment.
 
 * Currently supported robotic arms are RM65 series, RM75 series, ECO65 series, RML63 series, and the details can be referred to the website [RealMan robots](http://www.realman-robotics.com/).
+* Version V1.1.0.
 * The supported robotic arm controller version is 1.4.3 or above.
 * The Ubuntu version is 20.04.
 * The ROS2 version is foxy.
@@ -102,7 +103,7 @@ Package introduction
 
 * This package is the message file package of the robotic arm. It is used to provide all control messages and state messages for the robotic arm to adapt to ROS2.
 
-8. Moveit2 configuration [(rm_moveit2_config](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_moveit2_config))
+8. Moveit2 configuration ([rm_moveit2_config](https://github.com/RealManRobot/ros2_rm_robot/tree/main/rm_moveit2_config))
 
 * This package is the moveit2 adaptation package of the robotic arm. It is used to adapt and realize the moveit2 planning and control functions of various series of robotic arms, mainly including the control functions of virtual robotic arm control and real robotic arm control.
 

@@ -37,6 +37,9 @@
 #include "rm_ros_interfaces/msg/movel.hpp"
 #include "rm_ros_interfaces/msg/movec.hpp"
 #include "rm_ros_interfaces/msg/movejp.hpp"
+#include "rm_ros_interfaces/msg/jointteach.hpp"
+#include "rm_ros_interfaces/msg/ortteach.hpp"
+#include "rm_ros_interfaces/msg/posteach.hpp"
 #include "rm_ros_interfaces/msg/setrealtimepush.hpp"
 #include "rm_ros_interfaces/msg/armsoftversion.hpp"
 #include "rm_ros_interfaces/msg/sixforce.hpp"
@@ -60,7 +63,6 @@
 #include "rm_ros_interfaces/msg/liftspeed.hpp"
 #include "rm_ros_interfaces/msg/liftstate.hpp"
 #include "rm_ros_interfaces/msg/liftheight.hpp"
-
 #include <std_msgs/msg/u_int32.hpp>
 #include <std_msgs/msg/int32.hpp>
 #include <std_msgs/msg/empty.hpp>
@@ -149,6 +151,12 @@ public:
     void Arm_Movep_CANFD_Callback(rm_ros_interfaces::msg::Cartepos::SharedPtr msg);                         //位姿透传控制
     void Arm_MoveJ_P_Callback(rm_ros_interfaces::msg::Movejp::SharedPtr msg);                               //位姿运动控制
     void Arm_Move_Stop_Callback(std_msgs::msg::Bool::SharedPtr msg);                                        //轨迹急停控制
+    /**************************************************************************/
+    void Set_Joint_Teach_Callback(rm_ros_interfaces::msg::Jointteach::SharedPtr msg);                       //关节示教
+    void Set_Pos_Teach_Callback(rm_ros_interfaces::msg::Posteach::SharedPtr msg);                           //位置示教
+    void Set_Ort_Teach_Callback(rm_ros_interfaces::msg::Ortteach::SharedPtr msg);                           //姿态示教
+    void Set_Stop_Teach_Callback(const std_msgs::msg::Bool::SharedPtr msg);                                //停止示教
+
     /*******************************主动上报回调函数******************************/
     void Arm_Get_Realtime_Push_Callback(const std_msgs::msg::Empty::SharedPtr msg);                         //获取主动上报配置
     void Arm_Set_Realtime_Push_Callback(const rm_ros_interfaces::msg::Setrealtimepush::SharedPtr msg);      //设置主动上报配置参数
@@ -189,6 +197,8 @@ public:
     void Arm_Get_Current_Arm_State_Callback(const std_msgs::msg::Empty::SharedPtr msg);
     /*********************************六维力数据清零******************************/
     void Arm_Clear_Force_Data_Callback(const std_msgs::msg::Bool::SharedPtr msg);
+    /*********************************六维力数据获取******************************/
+    void Arm_Get_Force_Data_Callback(const std_msgs::msg::Empty::SharedPtr msg);
     
 /***************************************************************end******************************************************/
 private:
@@ -249,6 +259,25 @@ private:
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Move_Stop_Cmd_Result;
     /***********************************************轨迹急停控制订阅器*************************************/
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr Move_Stop_Cmd;
+    /********************************************************end******************************************************/
+
+    /*******************************************************关节示教***************************************************/
+    /****************************************关节示教结果发布器*************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Joint_Teach_Cmd_Result;
+    /*******************************************关节示教订阅器*************************************/
+    rclcpp::Subscription<rm_ros_interfaces::msg::Jointteach>::SharedPtr Set_Joint_Teach_Cmd;
+    /****************************************位置示教结果发布器*************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Pos_Teach_Cmd_Result;
+    /*******************************************位置示教订阅器*************************************/
+    rclcpp::Subscription<rm_ros_interfaces::msg::Posteach>::SharedPtr Set_Pos_Teach_Cmd;
+    /****************************************姿态示教结果发布器*************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Ort_Teach_Cmd_Result;
+    /*******************************************姿态示教订阅器*************************************/
+    rclcpp::Subscription<rm_ros_interfaces::msg::Ortteach>::SharedPtr Set_Ort_Teach_Cmd;
+    /****************************************停止示教结果发布器*************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Stop_Teach_Cmd_Result;
+    /*******************************************停止示教订阅器*************************************/
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr Set_Stop_Teach_Cmd;
     /********************************************************end******************************************************/
 
     /********************************************************固件版本***************************************************/
@@ -377,10 +406,19 @@ private:
     /***************************************获取机械臂当前状态订阅器************************************/
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Current_Arm_State_Cmd;
 
+/********************************************************************六维力***********************************************************/
     /****************************************六维力数据清零发布器***************************************/
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Clear_Force_Data_Result;
     /******************************************六维力数据清零订阅器*************************************/
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr Clear_Force_Data_Cmd;
+    /********************************************六维力数据获取发布器****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr Get_Force_Data_Result;
+    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr Get_Zero_Force_Result;
+    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr Get_Work_Zero_Result;
+    rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr Get_Tool_Zero_Result;
+    /******************************************六维力数据获取订阅器*************************************/
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Force_Data_Cmd;
+/********************************************************************end***********************************************************/
 
     std::string arm_ip_ = "192.168.1.18";    
     std::string udp_ip_ = "192.168.1.10";
@@ -405,28 +443,15 @@ public:
     UdpPublisherNode();
     /*******************************主动上报定时器数据处理回调函数**************************/
     void udp_timer_callback();
+    void heart_timer_callback();
     bool read_data();
-//   : Node("UdpPublisherNode"), count_(0)
-//   {
-//     publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
-//     auto timer_callback =
-//       [this]() -> void {
-//         auto message = std_msgs::msg::String();
-//         message.data = "Hello World! " + std::to_string(this->count_++);
-
-//         // Extract current thread
-//         auto curr_thread = string_thread_id();
-
-//         // Prep display message
-//         auto info_message = "\n<<THREAD " + curr_thread + ">> Publishing '%s'";
-//         RCLCPP_INFO(this->get_logger(), info_message, message.data.c_str());
-//         this->publisher_->publish(message);
-//       };
-//     timer_ = this->create_wall_timer(500ms, timer_callback);
-//   }
 
 private:
+    rclcpp::CallbackGroup::SharedPtr callback_group_time1_;
+    rclcpp::CallbackGroup::SharedPtr callback_group_time2_;
+    rclcpp::CallbackGroup::SharedPtr callback_group_time3_;
     rclcpp::TimerBase::SharedPtr Udp_Timer;                             //UDP定时器
+    rclcpp::TimerBase::SharedPtr Heart_Timer;                           //心跳定时器，检查断开情况
     /*****************************************************UDP数据发布话题************************************************/
     rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr Joint_Position_Result;                                //关节当前状态发布器
     rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr Arm_Position_Result;                                      //末端位姿当前状态发布器

@@ -9,8 +9,8 @@ import xacro
 
 def generate_launch_description():
 
-    realman_xacro_file = os.path.join(get_package_share_directory('rm_75_moveit_config'), 'config',
-                                        'rm_75.urdf.xacro')
+    realman_xacro_file = os.path.join(get_package_share_directory('rm_description'), 'urdf',
+                                        'rm_75.urdf')
     robot_description = Command(
         [FindExecutable(name='xacro'), ' ', realman_xacro_file])
 

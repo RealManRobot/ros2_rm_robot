@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robotrm_controlUser Manual V1.0
+# RealMan Robotrm_controlUser Manual V1.1
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -15,6 +15,7 @@ Revision History:
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
 |V1.0	  | 2/19/2024 | Draft |
+|V1.1	  | 7/8 /2024 | Amend(Add GEN72 adapter files) |
 
 </div>
 
@@ -43,7 +44,7 @@ First, after configuring the environment and completing the connection, we can d
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_<arm_type>_control.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, and 75.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, gen72, and 75.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_65_control.launch.py
@@ -56,7 +57,7 @@ Some parameters can be configured in the rm_control package. Because there are n
 ![image](doc/rm_control2.png)
 As shown in the figure above, the position of the first red box is the file path, and the position of the second box is the current configurable parameter.  
 Parameter follows: represents the following mode used by the current transmission, where true is high following and false is low following. The high following indicates that the robotic arm's movement mode is consistent with the transmission. It must do detailed calculations based on its transmission rate, speed, and acceleration. The threshold is set too high, but the control is fine. The low following indicates that the robotic arm moves to the transmission point based on its transmission rate, speed, and acceleration. If there are points that cannot be reached in time, there may be abandonment. The threshold is set low, and the control is not very fine but meets the use.  
-Parameter arm_type: represents the current model of the robotic arm. The parameters that can be selected are 65 (65 series), 651 (eco65), 632 (63 series), and 75 (75 series).  
+Parameter arm_type: represents the current model of the robotic arm. The parameters that can be selected are 65 (65 series), 651 (eco65), 632 (63 series), gen72 (gen72 series), and 75 (75 series).  
 In practice, we choose the corresponding launch file to start, which will automatically select the correct model. If there are special requirements, you can modify the corresponding parameters here. After modification, recompile the configuration in the workspace directory, and then the modified configuration will take effect.  
 Run colcon build command in the workspace directory.  
 ```
@@ -68,6 +69,9 @@ After successful compilation, follow the above commands to start the package.
 The current rm_driver package is composed of the following files.
 ```
 ├── CMakeLists.txt                     # compilation rule file
+├── doc
+│   ├── rm_control1.png
+│   └── rm_control2.png
 ├── include                            # dependency header file folder
 │   ├── cubicSpline.h                  # cubic spline interpolation header file
 │   └── rm_control.h                   #rm_control header file
@@ -75,8 +79,11 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_63_control.launch.py        # 63 launch file
 │   ├── rm_65_control.launch.py        # 65 launch file
 │   ├── rm_75_control.launch.py        # 75 launch file
-│   └── rm_eco65_control.launch.py     # eco65 launch file
+│   ├── rm_eco65_control.launch.py     # eco65 launch file
+│   └── rm_gen72_control.launch.py     # gen72 launch file
 ├── package.xml                        # dependency declaration file
+├── README_CN.md
+├── README.md
 └── src
     └── rm_control.cpp                 # code source file
 ```

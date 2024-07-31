@@ -83,8 +83,8 @@ MoveJDemo::MoveJDemo():rclcpp::Node("Movej_demo")
   {movej_way.joint.resize(6);}
   else if(arm_dof_ == 7)
   {movej_way.joint.resize(7);}
-  subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movej_result", 10, std::bind(&MoveJDemo::MovejDemo_Callback, this,_1));
-  publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movej>("/rm_driver/movej_cmd", 10);
+  subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movej_result", rclcpp::ParametersQoS(), std::bind(&MoveJDemo::MovejDemo_Callback, this,_1));
+  publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movej>("/rm_driver/movej_cmd", rclcpp::ParametersQoS());
   std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   movej_demo();
 }

@@ -15,6 +15,7 @@ Revision History:
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
 |V1.0	  | 2/19/2024 | Draft |
+|V1.1	  | 7/8 /2024 | Amend(Add GEN72 adapter files) |
 
 </div>
 
@@ -40,7 +41,7 @@ First, after configuring the environment and completing the connection, we can d
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, and 75.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, gen72, and 75.  
 For example, the launch command of 65 robotic arm:  
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_65_display.launch.py
@@ -70,7 +71,8 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_63_display.launch.py     # 63 launch file
 │   ├── rm_65_display.launch.py     # 65 launch file
 │   ├── rm_75_display.launch.py     # 75 launch file
-│   └── rm_eco65_display.launch.py  # eco65 launch file
+│   ├── rm_eco65_display.launch.py  # eco65 launch file
+│   └── rm_gen72_display.launch.py  # gen72 launch file
 ├── meshes                       # model file storage folder
 │   ├── rm_63_arm                 #63 robotic arm model file storage folder
 │   │   ├── base_link.STL
@@ -98,19 +100,31 @@ The current rm_driver package is composed of the following files.
 │   │   ├── link6.STL
 │   │   └── link7.STL
 │   └── rm_eco65_arm                 #eco65 robotic arm model file storage folder
-│       ├── baselink.STL
+│   │   ├── baselink.STL
+│   │   ├── Link1.STL
+│   │   ├── Link2.STL
+│   │   ├── Link3.STL
+│   │   ├── Link4.STL
+│   │   ├── Link5.STL
+│   │   └── Link6.STL
+│   └── rm_gen72_arm                 #gen72 robotic arm model file storage folder
+│       ├── base_link.STL
 │       ├── Link1.STL
 │       ├── Link2.STL
 │       ├── Link3.STL
 │       ├── Link4.STL
 │       ├── Link5.STL
-│       └── Link6.STL
+│       ├── Link6.STL
+│       └── Link7.STL
 ├── package.xml
+├── README_CN.md
+├── README.md
 ├── rviz                               #rviz2 configuration file storage folder
 │   ├── rm_63.rviz
 │   ├── rm_65.rviz
 │   ├── rm_75.rviz
 │   └── rm_eco65.rviz
+│   └── rm_gen72.rviz
 ├── textures
 └── urdf
     ├── display_arm.rviz
@@ -121,8 +135,11 @@ The current rm_driver package is composed of the following files.
     ├── rm_75_gazebo.urdf               #75gazebo simulation urdf description file
     ├── rm_75.urdf                      #75 urdf description file
     ├── rm_eco65.csv
-    ├── rm_eco65_gazebo.urdf           #eco65gazebo simulation urdf description file
+    ├── rm_eco65_gazebo.urdf            #eco65gazebo simulation urdf description file
     ├── rm_eco65.urdf                   #eco65 urdf description file
+    ├── rm_gen72.csv
+    ├── rm_gen72_gazebo.urdf            #gen72gazebo simulation urdf description file
+    ├── rm_gen72.urdf                   #gen72 urdf description file
     ├── rml_63_description.csv
     ├── rml_63_gazebo.urdf               #63gazebo simulation urdf description file
     └── rml_63.urdf                      #63 urdf description file
