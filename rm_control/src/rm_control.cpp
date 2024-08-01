@@ -261,7 +261,7 @@ Rm_Control::Rm_Control(std::string name) : Node(name)
     this->declare_parameter<bool>("follow", follow_);
     this->get_parameter("follow", follow_);
 
-    if(arm_type_ == 75)
+    if((arm_type_ == 75)||(arm_type_ == 72))
     {
         joint_msg.joint.resize(7);
         joint_msg.dof = 7;

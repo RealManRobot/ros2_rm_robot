@@ -1,12 +1,12 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_moveit2_config/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_moveit2_config/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_moveit2_config/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_moveit2_config/README.md)
  
 </div>
 
 <div align="center">
 
-# RealMan Robotic Arm rm_moveit2_config User Manual V1.0
+# RealMan Robotic Arm rm_moveit2_config User Manual V1.1
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -15,6 +15,7 @@ Revision History:
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
 |V1.0	  | 2/19/2024 | Draft |
+|V1.1	  | 7/3 /2024 | Amend(Add GEN72 adapter files) |
 
 </div>
 
@@ -43,7 +44,7 @@ Source code address: https://github.com/RealManRobot/ros2_rm_robot.git。
 ### moveit2_Controlling_Virtual_Robotic_Arm
 First, after configuring the environment and completing the connection, we can directly launch the node through the following command.
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo.launch.py
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, and 75.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, 75, and gen72.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_65_config demo.launch.py
@@ -72,13 +73,25 @@ Finally, launch the moveit2 node that controls the real robotic arm.
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo.launch.py
 ```
-Note that the above commands need to replace <arm_type> with the corresponding robotic arm model, which can be selected as 65, 63, eco65, and 75.  
+Note that the above commands need to replace <arm_type> with the corresponding robotic arm model, which can be selected as 65, 63, eco65, 75, and gen72.  
 After completing the above operations, the following interface appears, and we can control the movement of the robotic arm by dragging the control ball.  
 ![image](doc/rm_moveit2_config4.png)
 ## rm_moveit2_config_Architecture_Description
 ### Overview_of_package_files
 The current rm_driver package is composed of the following files.
 ```
+├── doc
+│   ├── rm_moveit2_config1.png
+│   ├── rm_moveit2_config2.png
+│   ├── rm_moveit2_config3.png
+│   ├── rm_moveit2_config4.png
+│   ├── rm_moveit2_config5.png
+│   ├── rm_moveit2_config6.png
+│   ├── rm_moveit2_config7.png
+│   ├── rm_moveit2_config8.png
+│   └── rm_moveit2_config9.png
+├── README_CN.md
+├── README.md
 ├── rm_63_config                                   #63 robotic arm moveit2 package
 │   ├── CMakeLists.txt                             #63 robotic arm moveit2 package compilation rules
 │   ├── config                                     #63 robotic arm moveit2 package parameter folder
@@ -154,7 +167,31 @@ The current rm_driver package is composed of the following files.
 │   │   ├── static_virtual_joint_tfs.launch.py
 │   │   └── warehouse_db.launch.py
 │   └── package.xml
-└── rm_eco65_config              #eco65 robotic arm moveit2 package (file explanation reference 63)
+├── rm_eco65_config              #eco65 robotic arm moveit2 package (file explanation reference 63)
+│   ├── CMakeLists.txt
+│   ├── config
+│   │   ├── initial_positions.yaml
+│   │   ├── joint_limits.yaml
+│   │   ├── kinematics.yaml
+│   │   ├── moveit_controllers.yaml
+│   │   ├── moveit.rviz
+│   │   ├── pilz_cartesian_limits.yaml
+│   │   ├── rm_eco65_description.ros2_control.xacro
+│   │   ├── rm_eco65_description.srdf
+│   │   ├── rm_eco65_description.urdf.xacro
+│   │   └── ros2_controllers.yaml
+│   ├── launch
+│   │   ├── demo.launch.py
+│   │   ├── gazebo_moveit_demo.launch.py
+│   │   ├── move_group.launch.py
+│   │   ├── moveit_rviz.launch.py
+│   │   ├── real_moveit_demo.launch.py
+│   │   ├── rsp.launch.py
+│   │   ├── setup_assistant.launch.py
+│   │   ├── spawn_controllers.launch.py
+│   │   ├── static_virtual_joint_tfs.launch.py
+│   │   └── warehouse_db.launch.py
+└── rm_gen72_config             #gen72 robotic arm moveit2 package (file explanation reference 63)
     ├── CMakeLists.txt
     ├── config
     │   ├── initial_positions.yaml
@@ -163,9 +200,9 @@ The current rm_driver package is composed of the following files.
     │   ├── moveit_controllers.yaml
     │   ├── moveit.rviz
     │   ├── pilz_cartesian_limits.yaml
-    │   ├── rm_eco65_description.ros2_control.xacro
-    │   ├── rm_eco65_description.srdf
-    │   ├── rm_eco65_description.urdf.xacro
+    │   ├── rm_gen72_description.ros2_control.xacro
+    │   ├── rm_gen72_description.srdf
+    │   ├── rm_gen72_description.urdf.xacro
     │   └── ros2_controllers.yaml
     ├── launch
     │   ├── demo.launch.py

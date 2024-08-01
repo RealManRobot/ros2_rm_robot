@@ -1,13 +1,13 @@
 <div align="right">
   
-[中文简体](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)|
-[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)
+[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)|
+[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机械臂接口函数说明(ROS2)V1.0.0
+# 睿尔曼机械臂接口函数说明(ROS2)V1.1.0
 
 
  
@@ -20,7 +20,8 @@
 |版本号 | 时间 | 备注 |
 | :---: | :---- | :---: |
 |V1.0 | 2024-2-18 | 拟制|
-		
+|V1.1 | 2024-7-8  | 修订（添加示教指令3.6） |
+
 </div>
 
 ## 目录
@@ -50,38 +51,44 @@
 * 3.5.5[位姿CANFD透传](#位姿CANFD透传)
 * 3.5.6[关节空间规划到目标位姿](#关节空间规划到目标位姿)
 * 3.5.7[轨迹急停](#轨迹急停)
-* 3.6[控制器配置](#控制器配置)
-* 3.6.1[获取控制器版本](#获取控制器版本)
-* 3.7[末端工具IO配置](#末端工具IO配置)
-* 3.7.1[设置工具端电源输出](#设置工具端电源输出)
-* 3.8[末端手爪控制](#末端手爪控制)
-* 3.8.1[设置夹爪力控夹取](#设置夹爪力控夹取)
-* 3.8.2[设置夹爪持续力控夹取](#设置夹爪持续力控夹取)
-* 3.8.3[夹爪到达指定位置](#夹爪到达指定位置)
-* 3.9[拖动示教及轨迹复现](#拖动示教及轨迹复现)
-* 3.9.1[设置力位混合控制](#设置力位混合控制)
-* 3.9.2[结束力位混合控制](#结束力位混合控制)
-* 3.10[末端六维力传感器的使用](#末端六维力传感器的使用)
-* 3.10.1[清空六维力数据](#清空六维力数据)
-* 3.11[末端五指灵巧手控制](#末端五指灵巧手控制)
-* 3.11.1[设置灵巧手手势序号](#设置灵巧手手势序号)
-* 3.11.2[设置灵巧手动作序列](#设置灵巧手动作序列)
-* 3.11.3[设置灵巧手各自由度角度](#设置灵巧手各自由度角度)
-* 3.11.4[设置灵巧手速度](#设置灵巧手速度)
-* 3.11.5[设置灵巧手力阈值](#设置灵巧手力阈值)
-* 3.12[升降机构](#升降机构)
-* 3.12.1[升降机构速度开环控制](#升降机构速度开环控制)
-* 3.12.2[升降机构位置闭环控制](#升降机构位置闭环控制)
-* 3.12.3[获取升降机构状态](#获取升降机构状态)
-* 3.13[透传力位混合控制补偿](#透传力位混合控制补偿)
-* 3.13.1[开启透传力位混合控制补偿模式](#开启透传力位混合控制补偿模式)
-* 3.13.2[关闭透传力位混合控制补偿模式](#关闭透传力位混合控制补偿模式)
-* 3.13.3[透传力位混合补偿-关节](#透传力位混合补偿-关节)
-* 3.13.4[透传力位混合补偿-位姿](#透传力位混合补偿-位姿)
-* 3.14[机械臂状态主动上报](#机械臂状态主动上报)
-* 3.14.1[设置UDP机械臂状态主动上报配置](#设置UDP机械臂状态主动上报配置)
-* 3.14.2[查询UDP机械臂状态主动上报配置](#查询UDP机械臂状态主动上报配置)
-* 3.14.3[UDP机械臂状态主动上报](#UDP机械臂状态主动上报)
+* 3.6[示教指令](#示教指令)
+* 3.6.1[关节示教](#关节示教)
+* 3.6.2[位置示教](#位置示教)
+* 3.6.3[姿态示教](#姿态示教)
+* 3.6.4[示教停止](#示教停止)
+* 3.7[控制器配置](#控制器配置)
+* 3.7.1[获取控制器版本](#获取控制器版本)
+* 3.8[末端工具IO配置](#末端工具IO配置)
+* 3.8.1[设置工具端电源输出](#设置工具端电源输出)
+* 3.9[末端手爪控制](#末端手爪控制)
+* 3.9.1[设置夹爪力控夹取](#设置夹爪力控夹取)
+* 3.9.2[设置夹爪持续力控夹取](#设置夹爪持续力控夹取)
+* 3.9.3[夹爪到达指定位置](#夹爪到达指定位置)
+* 3.10[拖动示教及轨迹复现](#拖动示教及轨迹复现)
+* 3.10.1[设置力位混合控制](#设置力位混合控制)
+* 3.10.2[结束力位混合控制](#结束力位混合控制)
+* 3.11[末端六维力传感器的使用](#末端六维力传感器的使用)
+* 3.11.1[清空六维力数据](#清空六维力数据)
+* 3.12[末端五指灵巧手控制](#末端五指灵巧手控制)
+* 3.12.1[设置灵巧手手势序号](#设置灵巧手手势序号)
+* 3.12.2[设置灵巧手动作序列](#设置灵巧手动作序列)
+* 3.12.3[设置灵巧手各自由度角度](#设置灵巧手各自由度角度)
+* 3.12.4[设置灵巧手速度](#设置灵巧手速度)
+* 3.12.5[设置灵巧手力阈值](#设置灵巧手力阈值)
+* 3.13[升降机构](#升降机构)
+* 3.13.1[升降机构速度开环控制](#升降机构速度开环控制)
+* 3.13.2[升降机构位置闭环控制](#升降机构位置闭环控制)
+* 3.13.3[获取升降机构状态](#获取升降机构状态)
+* 3.14[透传力位混合控制补偿](#透传力位混合控制补偿)
+* 3.14.1[开启透传力位混合控制补偿模式](#开启透传力位混合控制补偿模式)
+* 3.14.2[关闭透传力位混合控制补偿模式](#关闭透传力位混合控制补偿模式)
+* 3.14.3[透传力位混合补偿-关节](#透传力位混合补偿-关节)
+* 3.14.4[透传力位混合补偿-位姿](#透传力位混合补偿-位姿)
+* 3.15[机械臂状态主动上报](#机械臂状态主动上报)
+* 3.15.1[设置UDP机械臂状态主动上报配置](#设置UDP机械臂状态主动上报配置)
+* 3.15.2[查询UDP机械臂状态主动上报配置](#查询UDP机械臂状态主动上报配置)
+* 3.15.3[UDP机械臂状态主动上报](#UDP机械臂状态主动上报)
+
 
  
 ## 简介
@@ -227,21 +234,21 @@
 | 功能描述 | 关节空间运动MOVEJ |
 | :---: | :---- |
 | 参数说明 | Movej.msg<br>float32[6] joint：关节角度，单位：弧度。<br>uint8 speed：速度百分比例系数，0~100。<br>bool block：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 |
-| 命令示例 | 六自由度<br>ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0]<br>speed: 20<br>block: true <br>dof: 6"<br>七自由度<br>ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0, 0]<br>speed: 20<br>block: true <br>dof: 7" |
+| 命令示例 | 六自由度<br>ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0]<br>speed: 20<br>block: true <br>dof: 6"<br>七自由度<br>ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0, 0]<br>speed: 20<br>block: true<br>trajectory_connect: 0<br>dof: 7" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/movej_result |
 #### 笛卡尔空间直线运动
 | 功能描述 | 笛卡尔空间直线运动MOVEL |
 | :---: | :---- |
 | 参数说明 | Movel.msg<br>geometry_msgs/Pose pose：机械臂位姿，geometry_msgs/Pose类型，x、y、z坐标(float类型，单位：m)+四元数。<br>uint8 speed：速度百分比例系数，0~100。<br>bool block：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 |
-| 命令示例 | 先使用MoveJP<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:<br>  position:<br>    x: -0.317239<br>    y: 0.120903<br>    z: 0.255765<br>  orientation:<br>    x: -0.983404<br>    y: -0.178432<br>    z: 0.032271<br>    w: 0.006129<br>speed: 20<br>block: true"<br>后使用MoveL<br>ros2 topic pub --once /rm_driver/movel_cmd rm_ros_interfaces/msg/Movel "pose:<br>  position:<br>    x: -0.317239<br>    y: 0.120903<br>    z: 0.295765<br>  orientation:<br>    x: -0.983404<br>    y: -0.178432<br>    z: 0.032271<br>    w: 0.006129<br>speed: 20<br>block: true" |
+| 命令示例 | 先使用MoveJP<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:<br>  position:<br>    x: -0.317239<br>    y: 0.120903<br>    z: 0.255765<br>  orientation:<br>    x: -0.983404<br>    y: -0.178432<br>    z: 0.032271<br>    w: 0.006129<br>speed: 20<br>block: true"<br>后使用MoveL<br>ros2 topic pub --once /rm_driver/movel_cmd rm_ros_interfaces/msg/Movel "pose:<br>  position:<br>    x: -0.317239<br>    y: 0.120903<br>    z: 0.295765<br>  orientation:<br>    x: -0.983404<br>    y: -0.178432<br>    z: 0.032271<br>    w: 0.006129<br>speed: 20<br>trajectory_connect: 0<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/movel_result |
 #### 笛卡尔空间圆弧运动
 | 功能描述 | 笛卡尔空间圆弧运动MOVEC |
 | :---: | :---- |
 | 参数说明 | Movec.msg<br>geometry_msgs/Pose pose_mid：中间位姿，geometry_msgs/Pose类型，x、y、z坐标(float类型，单位：m)+四元数。<br>geometry_msgs/Pose pose_end：终点位姿，geometry_msgs/Pose类型，x、y、z坐标(float类型，单位：m)+四元数。<br>uint8 speed：速度百分比例系数，0~100。<br>bool block：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 |
-| 命令示例 | 首先使用movej_p到达指定位置<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:<br>  position:<br>    x: 0.274946<br>    y: -0.058786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>w: 0.0<br>speed: 0<br>block: true"<br>使用movec到达指定位置<br>ros2 topic pub --once /rm_driver/movec_cmd rm_ros_interfaces/msg/Movec "pose_mid:<br>  position:<br>    x: 0.324946<br>    y: -0.008786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>pose_end:<br>  position:<br>    x: 0.274946<br>    y: 0.041214<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>speed: 20<br>block: false" |
+| 命令示例 | 首先使用movej_p到达指定位置<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:<br>  position:<br>    x: 0.274946<br>    y: -0.058786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>w: 0.0<br>speed: 0<br>block: true"<br>使用movec到达指定位置<br>ros2 topic pub --once /rm_driver/movec_cmd rm_ros_interfaces/msg/Movec "pose_mid:<br>  position:<br>    x: 0.324946<br>    y: -0.008786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>pose_end:<br>  position:<br>    x: 0.274946<br>    y: 0.041214<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>speed: 20<br>trajectory_connect: 0<br>block: false<br>loop: 0" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/movec_result |
 #### 关节角度CANFD透传
@@ -271,6 +278,35 @@
 | 命令示例 | ros2 topic pub /rm_driver/move_stop_cmd std_msgs/msg/Bool "data: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/move_stop_result |
+### 示教指令
+#### 关节示教
+| 功能描述 | 关节示教 |
+| :---: | :---- |
+| 参数说明 | Jointteach.msg<br>uint8 num:示教关节的序号，1~7<br>uint8 direction:示教方向，0-负方向，1-正方向<br>uint8 speed:速度百分比例系数，0~100<br>bool block：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub /rm_driver/set_joint_teach_cmd rm_ros_interfaces/msg/Jointteach "num: 1<br>direction: 0<br>speed: 10<br>block: true" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/set_joint_teach_result |
+#### 位置示教
+| 功能描述 | 位置示教 |
+| :---: | :---- |
+| 参数说明 | Posteach.msg<br>uint8 type：示教类型 输入0X轴方向、1Y轴方向、2Z轴方向<br>uint8 direction:示教方向，0-负方向，1-正方向<br>uint8 speed:速度百分比例系数，0~100。<br>bool block：：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。|
+| 命令示例 | ros2 topic pub /rm_driver/set_pos_teach_cmd rm_ros_interfaces/msg/Posteach "type: 2<br>direction: 0<br>speed: 10<br>block: true" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/set_pos_teach_result |
+#### 姿态示教
+| 功能描述 | 姿态示教 |
+| :---: | :---- |
+| 参数说明 | Ortteach.msg.msg<br>uint8 type：示教类型 输入0RX轴方向、1RY轴方向、2RZ轴方向<br>uint8 direction:示教方向，0-负方向，1-正方向<br>uint8 speed:速度百分比例系数，0~100。<br>bool block：：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。|
+| 命令示例 | ros2 topic pub /rm_driver/set_ort_teach_cmd rm_ros_interfaces/msg/Ortteach "type: 2<br>direction: 0<br>speed: 10<br>block: true" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/set_ort_teach_result |
+#### 示教停止
+| 功能描述 | 示教停止 |
+| :---: | :---- |
+| 参数说明 | ROS官方msg std_msgs::msg::Bool<br>bool data：是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。|
+| 命令示例 | ros2 topic pub /rm_driver/set_stop_teach_cmd std_msgs/msg/Bool "data: true" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/set_stop_teach_result |
 ### 控制器配置
 #### 获取控制器版本
 | 功能描述 | 获取控制器版本 |
@@ -292,22 +328,22 @@
 #### 设置夹爪力控夹取
 | 功能描述 | 设置夹爪力控夹取 |
 | :---: | :---- |
-| 参数说明 | Gripperpick.msg<br>uint16 speed：1～1000,代表手爪开合速度，无量纲。<br>uint16 force：1～1000,代表手爪夹持力，最大1.5kg。<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true" |
+| 参数说明 | Gripperpick.msg<br>uint16 speed：1～1000,代表手爪开合速度，无量纲。<br>uint16 force：1～1000,代表手爪夹持力，最大1.5kg。<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。<br>uint16 timeout：设置返回超时时间，阻塞模式生效（以秒为单位） |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true<br>block: true<br>timeout: 100" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_gripper_pick_result |
 #### 设置夹爪持续力控夹取
 | 功能描述 | 设置夹爪持续力控夹取 |
 | :---: | :---- |
-| 参数说明 | Gripperpick.msg<br>uint16 speed：1～1000,代表手爪开合速度，无量纲。<br>uint16 force：1～1000,代表手爪夹持力，最大1.5kg。<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_on_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true" |
+| 参数说明 | Gripperpick.msg<br>uint16 speed：1～1000,代表手爪开合速度，无量纲。<br>uint16 force：1～1000,代表手爪夹持力，最大1.5kg。<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。<br>uint16 timeout：设置返回超时时间，阻塞模式生效（以秒为单位） |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_on_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true<br>timeout: 100" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_gripper_pick_on_result |
 #### 夹爪到达指定位置
 | 功能描述 | 夹爪到达指定位置 |
 | :---: | :---- |
-| 参数说明 | Gripperset.msg<br>uint16 position：手爪目标位置，范围：1～1000,代表手爪开口度：0～70mm<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_position_cmd rm_ros_interfaces/msg/Gripperset "position: 500<br>block: true" |
+| 参数说明 | Gripperset.msg<br>uint16 position：手爪目标位置，范围：1～1000,代表手爪开口度：0～70mm<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。<br>uint16 timeout：设置返回超时时间，阻塞模式生效（以秒为单位） |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_position_cmd rm_ros_interfaces/msg/Gripperset "position: 500<br>block: true<br>timeout: 100" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_gripper_position_result |
 ### 拖动示教及轨迹复现
@@ -385,7 +421,7 @@ block: true" |
 | 功能描述 | 升降机构位置闭环控制 |
 | :---: | :---- |
 | 参数说明 | Liftheight.msg<br>uint16 height：目标高度，单位 mm，范围：0-2600。<br>uint16 speed：速度百分比，1-100。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_lift_speed_cmd rm_ros_interfaces/msg/Liftspeed "speed: 100" |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_lift_height_cmd rm_ros_interfaces/msg/Liftheight "height: 10<br>speed: 10<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_lift_height_result |
 #### 获取升降机构状态

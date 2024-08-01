@@ -1,12 +1,12 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_example/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_example/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_example/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_example/README.md)
  
 </div>
 
 <div align="center">
 
-# RealMan Robotrm_exampleUser Manual V1.0
+# RealMan Robotrm_exampleUser Manual V1.1
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -15,6 +15,7 @@ Revision History:
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
 |V1.0	  | 2/19/2024 | Draft |
+|V1.1	  | 7/3 /2024 | Amend(Add GEN72 adapter files) |
 
 </div>
 
@@ -126,6 +127,10 @@ After successfully launching the node, execute the following commands to control
 ```
 rm@rm-desktop:~$ ros2 run rm_example movejp_demo
 ```
+Arm version is GEN72, execute the following commands to control the movement of the robotic arm.
+```
+rm@rm-desktop:~$ ros2 run rm_example movejp_gen72_demo
+```
 After successful execution, the interface appears as follows, and the robotic arm will move to the specified pose.
 ![image](doc/rm_example4.png)
 ### MoveL_motion_of_the_robotic_arm
@@ -143,6 +148,10 @@ After successfully launching the node, execute the following commands to control
 ```
 rm@rm-desktop:~$ ros2 run rm_example movel_demo
 ```
+Arm version is GEN72, execute the following commands to control the movement of the robotic arm.
+```
+rm@rm-desktop:~$ ros2 run rm_example movel_gen72_demo
+```
 After successful execution, the interface appears as follows, and the robotic arm performs two motions. Firstly, it moves to the specified pose through MoveJP, and then performs joint motion through MoveL.
 ![image](doc/rm_example5.png)
 
@@ -151,6 +160,18 @@ After successful execution, the interface appears as follows, and the robotic ar
 The current rm_driver package is composed of the following files.
 ```
 ├── CMakeLists.txt                           # compilation rule file
+├── doc
+│   ├── rm_example10.png
+│   ├── rm_example11.png
+│   ├── rm_example1.png
+│   ├── rm_example2.png
+│   ├── rm_example3.png
+│   ├── rm_example4.png
+│   ├── rm_example5.png
+│   ├── rm_example6.png
+│   ├── rm_example7.png
+│   ├── rm_example8.png
+│   └── rm_example9.png
 ├── include
 │   └── rm_example
 ├── launch
@@ -162,7 +183,9 @@ The current rm_driver package is composed of the following files.
     ├── api_Get_Arm_State_demo.cpp           # source file to get the robotic arm's state
     ├── api_MoveJ_demo.cpp                   # MoveJ motion source file
     ├── api_MoveJP_demo.cpp                  # MoveJP motion source file
-    └── api_MoveL_demo.cpp                   # MoveL motion source file
+    ├── api_MoveJP_Gen72_demo.cpp            # GEN72 MoveJP motion source file
+    ├── api_MoveL_demo.cpp                   # MoveL motion source file
+    └── api_MoveL_Gen72_demo.cpp             # GEN72 MoveL motion source file
 ```
 ## rm_example_Topic_Description
 ### rm_change_work_frame_topic_description

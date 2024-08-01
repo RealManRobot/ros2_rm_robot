@@ -1,13 +1,13 @@
 <div align="right">
   
-[中文简体](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)|
-[English](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)
+[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)|
+[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)
 
 </div>
 
 <div align="center">
 
-# RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2) V1.0
+# RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2) V1.1
 
 
  
@@ -20,7 +20,8 @@ Revision History:
 |No. | Date | Comment |
 | :---: | :---- | :---: |
 |V1.0 | 2024-2-18 | Draft |
-		
+|V1.1 | 2024-7-8  | Amend(Add teaching instructions3.6) |
+
 </div>
 
 ## Content
@@ -50,39 +51,43 @@ Revision History:
 * 3.5.5[Pose CANFD transmission](#Pose_CANFD_transmission)
 * 3.5.6[Joint space planning to target pose](#Joint_space_planning_to_target_pose)
 * 3.5.7[Trajectory emergency stop](#Trajectory_emergency_stop)
-* 3.6[Functions related to controller configuration](#Functions_related_to_controller_configuration)
-* 3.6.1[Get the controller's version](#Get_the_controller's_version)
-* 3.7[Functions related to the IO configuration of the end tool](#Functions_related_to_the_IO_configuration_of_the_end_tool)
-* 3.7.1[Setting the tool voltage output](#Setting_the_tool_voltage_output)
-* 3.8[Functions related to the control of the end gripper - optional](#Functions_related_to_the_control_of_the_end_gripper)
-* 3.8.1[Setting the Gripper Pick](#Setting_the_Gripper_Pick)
-* 3.8.2[Setting the gripper pick-on](#Setting_the_gripper_pick-on)
-* 3.8.3[Setting the gripper to the given position](#Setting_the_gripper_to_the_given_position)
-* 3.9[Functions related to the drag teach and trajectory reproduction](#Functions_related_to_the_drag_teach_and_trajectory_reproduction)
-* 3.9.1[Set the force-position mixing control](#Set_the_force-position_mixing_control)
-* 3.9.2[Stop the force-position mixing control](#Stop_the_force-position_mixing_control)
-* 3.10[Functions related to the use of six-axis force sensors at the end - optional](#Functions_related_to_the_use_of_six-axis_force_sensors_at_the_end)
-* 3.10.1[Clearing the six-axis force Data](#Clearing_the_six-axis_force_Data)
-* 3.11[Functions related to the control of the five-finger dexterous hand - optional](#Functions_related_to_the_control_of_the_five-finger_dexterous_hand)
-* 3.11.1[Setting the serial number of the dexterous hand posture](#Setting_the_serial_number_of_the_dexterous_hand_posture)
-* 3.11.2[Set the dexterous hand action sequence number](#Set_the_dexterous_hand_action_sequence_number)
-* 3.11.3[Setting the angles of various degrees of freedom for the dexterous hand](#Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand)
-* 3.11.4[Setting the dexterous hand speed](#Setting_the_dexterous_hand_speed)
-* 3.11.5[Setting the force threshold of the dexterous hand](#Setting_the_force_threshold_of_the_dexterous_hand)
-* 3.12[Lifting mechanism](#Lifting_mechanism)
-* 3.12.1[Speed open-loop control of the lifting mechanism](#Speed_open-loop_control_of_the_lifting_mechanism)
-* 3.12.2[Position closed-loop control of the lifting mechanism](#Position_closed-loop_control_of_the_lifting_mechanism)
-* 3.12.3[Get the lifting mechanism state](#Get_the_lifting_mechanism_state)
-* 3.13[Functions related to the transmissive force-position compensation Mode](#Functions_related_to_the_transmissive_force-position_compensation_Mode)
-* 3.13.1[Starting the transmissive force-position mixing control compensation mode](#Starting_the_transmissive_force-position_mixing_control_compensation_mode)
-* 3.13.2[Stopping the transmissive force-position mixing control compensation mode](#Stopping_the_transmissive_force-position_mixing_control_compensation_mode)
-* 3.13.3[Transmissive force-position mixing control compensation - joint](#Transmissive_force-position_mixing_control_compensation-joint)
-* 3.13.4[Transmissive force-position mixing control compensation - pose](#Transmissive_force-position_mixing_control_compensation-pose)
-* 3.14[Robotic arm state active reporting](#Robotic_arm_state_active_reporting)
-* 3.14.1[Setting UDP robotic arm state active reporting configuration](#Setting_UDP_robotic_arm_state_active_reporting_configuration)
-* 3.14.2[Getting UDP robotic arm state active reporting configuration](#Getting_UDP_robotic_arm_state_active_reporting_configuration)
-* 3.14.3[UDP robotic arm state active reporting](#UDP_robotic_arm_state_active_reporting)
-
+* 3.6[Teaching instructions](#Teaching_instructions)
+* 3.6.1[Joint teaching](#Joint_teaching)
+* 3.6.2[Position teaching](#Position_teaching)
+* 3.6.3[Attitude teaching](#Attitude_teaching)
+* 3.6.4[Stop teaching](#Stop_teaching)
+* 3.7[Functions related to controller configuration](#Functions_related_to_controller_configuration)
+* 3.7.1[Get the controller's version](#Get_the_controller's_version)
+* 3.8[Functions related to the IO configuration of the end tool](#Functions_related_to_the_IO_configuration_of_the_end_tool)
+* 3.8.1[Setting the tool voltage output](#Setting_the_tool_voltage_output)
+* 3.9[Functions related to the control of the end gripper - optional](#Functions_related_to_the_control_of_the_end_gripper)
+* 3.9.1[Setting the Gripper Pick](#Setting_the_Gripper_Pick)
+* 3.9.2[Setting the gripper pick-on](#Setting_the_gripper_pick-on)
+* 3.9.3[Setting the gripper to the given position](#Setting_the_gripper_to_the_given_position)
+* 3.10[Functions related to the drag teach and trajectory reproduction](#Functions_related_to_the_drag_teach_and_trajectory_reproduction)
+* 3.10.1[Set the force-position mixing control](#Set_the_force-position_mixing_control)
+* 3.10.2[Stop the force-position mixing control](#Stop_the_force-position_mixing_control)
+* 3.11[Functions related to the use of six-axis force sensors at the end - optional](#Functions_related_to_the_use_of_six-axis_force_sensors_at_the_end)
+* 3.11.1[Clearing the six-axis force Data](#Clearing_the_six-axis_force_Data)
+* 3.12[Functions related to the control of the five-finger dexterous hand - optional](#Functions_related_to_the_control_of_the_five-finger_dexterous_hand)
+* 3.12.1[Setting the serial number of the dexterous hand posture](#Setting_the_serial_number_of_the_dexterous_hand_posture)
+* 3.12.2[Set the dexterous hand action sequence number](#Set_the_dexterous_hand_action_sequence_number)
+* 3.12.3[Setting the angles of various degrees of freedom for the dexterous hand](#Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand)
+* 3.12.4[Setting the dexterous hand speed](#Setting_the_dexterous_hand_speed)
+* 3.12.5[Setting the force threshold of the dexterous hand](#Setting_the_force_threshold_of_the_dexterous_hand)
+* 3.13[Lifting mechanism](#Lifting_mechanism)
+* 3.13.1[Speed open-loop control of the lifting mechanism](#Speed_open-loop_control_of_the_lifting_mechanism)
+* 3.13.2[Position closed-loop control of the lifting mechanism](#Position_closed-loop_control_of_the_lifting_mechanism)
+* 3.13.3[Get the lifting mechanism state](#Get_the_lifting_mechanism_state)
+* 3.14[Functions related to the transmissive force-position compensation Mode](#Functions_related_to_the_transmissive_force-position_compensation_Mode)
+* 3.14.1[Starting the transmissive force-position mixing control compensation mode](#Starting_the_transmissive_force-position_mixing_control_compensation_mode)
+* 3.14.2[Stopping the transmissive force-position mixing control compensation mode](#Stopping_the_transmissive_force-position_mixing_control_compensation_mode)
+* 3.14.3[Transmissive force-position mixing control compensation - joint](#Transmissive_force-position_mixing_control_compensation-joint)
+* 3.14.4[Transmissive force-position mixing control compensation - pose](#Transmissive_force-position_mixing_control_compensation-pose)
+* 3.15[Robotic arm state active reporting](#Robotic_arm_state_active_reporting)
+* 3.15.1[Setting UDP robotic arm state active reporting configuration](#Setting_UDP_robotic_arm_state_active_reporting_configuration)
+* 3.15.2[Getting UDP robotic arm state active reporting configuration](#Getting_UDP_robotic_arm_state_active_reporting_configuration)
+* 3.15.3[UDP robotic arm state active reporting](#UDP_robotic_arm_state_active_reporting)
  
 ## Introduction
 RealMan provides ROS2 function packages based on API to help users control the robotic arm using ROS2. If you want to learn more about controlling the robotic arm, you can refer to the API documentation and instructions. In practical use, the user can establish communication with the robotic arm through the Ethernet port and control the robotic arm.
@@ -227,21 +232,21 @@ This section describes how to query and control the robotic arm through the topi
 | Function description | Joint space move MOVEJ |
 | :---: | :---- |
 | Parameter description | Movej.msg<br>float32[6] joint：joint angle, unit: radians.<br>uint8 speed：speed percentage ratio coefficient, 0~100.<br>bool block：whether it is a blocking mode，bool type，true:blocking，false:non-blocking. |
-| Command example | 6-degree of freedom<br>ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0]<br>speed: 20<br>block: true <br>dof: 6"<br>7-degree of freedom<br>ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0, 0]<br>speed: 20<br>block: true <br>dof: 7" |
+| Command example | 6-degree of freedom<br>ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0]<br>speed: 20<br>block: true <br>dof: 6"<br>7-degree of freedom<br>ros2 topic pub --once /rm_driver/movej_cmd rm_ros_interfaces/msg/Movej "joint: [0, 0, 0, 0, 0, 0, 0]<br>speed: 20<br>block: true<br>trajectory_connect: 0<br>dof: 7" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/movej_result |
 #### Linear_motion_in_Cartesian_space
 | Function description | Linear motion in Cartesian space MOVEL |
 | :---: | :---- |
-| Parameter description | Movel.msg<br>geometry_msgs/Pose pose：robotic arm pose，geometry_msgs/Pose type，x, y, z coordinates (float type, unit: m) + quaternion.<br>uint8 speed：speed percentage ratio coefficient, 0~100。<br>bool block： whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | First, use MoveJP<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:<br>  position:<br>    x: -0.317239<br>    y: 0.120903<br>    z: 0.255765<br>  orientation:<br>    x: -0.983404<br>    y: -0.178432<br>    z: 0.032271<br>    w: 0.006129<br>speed: 20<br>block: true"<br>Then use MoveL<br>ros2 topic pub --once /rm_driver/movel_cmd rm_ros_interfaces/msg/Movel "pose:<br>  position:<br>    x: -0.317239<br>    y: 0.120903<br>    z: 0.295765<br>  orientation:<br>    x: -0.983404<br>    y: -0.178432<br>    z: 0.032271<br>    w: 0.006129<br>speed: 20<br>block: true" |
+| Parameter description | Movel.msg<br>geometry_msgs/Pose pose：robotic arm pose，geometry_msgs/Pose type，x, y, z coordinates (float type, unit: m) + quaternion.<br>uint8 speed：speed percentage ratio coefficient, 0~100。<br>bool : whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
+| Command example | First, use MoveJP<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:<br>  position:<br>    x: -0.317239<br>    y: 0.120903<br>    z: 0.255765<br>  orientation:<br>    x: -0.983404<br>    y: -0.178432<br>    z: 0.032271<br>    w: 0.006129<br>speed: 20<br>block: true"<br>Then use MoveL<br>ros2 topic pub --once /rm_driver/movel_cmd rm_ros_interfaces/msg/Movel "pose:<br>  position:<br>    x: -0.317239<br>    y: 0.120903<br>    z: 0.295765<br>  orientation:<br>    x: -0.983404<br>    y: -0.178432<br>    z: 0.032271<br>    w: 0.006129<br>speed: 20<br>trajectory_connect: 0<br>block: true" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/movel_result |
 #### Circular_motion_in_Cartesian_space
 | Function description | Circular motion in Cartesian space MOVEC |
 | :---: | :---- |
-| Parameter description | Movec.msg<br>geometry_msgs/Pose pose_mid：middle pose，geometry_msgs/Pose type，x, y, z coordinates (float type, unit: m) + quaternion.<br>geometry_msgs/Pose pose_end：end pose，geometry_msgs/Posetype, x, y, z coordinates (float type, unit: m) + quaternion.<br>uint8 speed：speed percentage ratio coefficient, 0-100.<br>bool block： whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | First, use movej_p to reach the specified position<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:<br>  position:<br>    x: 0.274946<br>    y: -0.058786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>w: 0.0<br>speed: 0<br>block: true"<br>Use movec to reach the specified position<br>ros2 topic pub --once /rm_driver/movec_cmd rm_ros_interfaces/msg/Movec "pose_mid:<br>  position:<br>    x: 0.324946<br>    y: -0.008786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>pose_end:<br>  position:<br>    x: 0.274946<br>    y: 0.041214<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>speed: 20<br>block: false" |
+| Parameter description | Movec.msg<br>geometry_msgs/Pose pose_mid：middle pose，geometry_msgs/Pose type，x, y, z coordinates (float type, unit: m) + quaternion.<br>geometry_msgs/Pose pose_end：end pose，geometry_msgs/Posetype, x, y, z coordinates (float type, unit: m) + quaternion.<br>uint8 speed：speed percentage ratio coefficient, 0-100.<br>bool : whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
+| Command example | First, use movej_p to reach the specified position<br>ros2 topic pub --once /rm_driver/movej_p_cmd rm_ros_interfaces/msg/Movejp "pose:<br>  position:<br>    x: 0.274946<br>    y: -0.058786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>w: 0.0<br>speed: 0<br>block: true"<br>Use movec to reach the specified position<br>ros2 topic pub --once /rm_driver/movec_cmd rm_ros_interfaces/msg/Movec "pose_mid:<br>  position:<br>    x: 0.324946<br>    y: -0.008786<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>pose_end:<br>  position:<br>    x: 0.274946<br>    y: 0.041214<br>    z: 0.299028<br>  orientation:<br>    x: 0.7071<br>    y: -0.7071<br>    z: 0.0<br>    w: 0.0<br>speed: 20<br>trajectory_connect: 0<br>block: false<br>loop: 0" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/movec_result |
 #### Joint_angle_CANFD_transmission
@@ -271,6 +276,27 @@ This section describes how to query and control the robotic arm through the topi
 | Command example | ros2 topic pub /rm_driver/move_stop_cmd std_msgs/msg/Bool "data: true" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/move_stop_result |
+### Teaching_instructions
+#### Joint_teaching
+| Function description | Joint teaching |
+| :---: | :---- |
+| Parameter description | Jointteach.msg<br>uint8 num:Joint num，1~7<br>uint8 direction:teach direction，0-negative direction，1-positive direction<br>uint8 speed:speed percentage ratio coefficient, 0-100.<br>bool block：whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
+| Command example | ros2 topic pub /rm_driver/set_joint_teach_cmd rm_ros_interfaces/msg/Jointteach "num: 1<br>direction: 0<br>speed: 10<br>block: true" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/set_joint_teach_result |
+#### Position_teaching
+| Function description | Position teaching |
+| :---: | :---- |
+| Parameter description | Posteach.msg<br>uint8 type：Teaching demonstration type: input0:X-axis direction、1:Y-axis direction、2:Z-axis direction<br>uint8 direction:teach direction，0-negative direction，1-positive direction<br>uint8 speed:speed percentage ratio coefficient, 0-100.<br>bool block：whether it is a blocking mode, bool type, true: blocking, false: non-blocking.|
+| Command example | ros2 topic pub /rm_driver/set_pos_teach_cmd rm_ros_interfaces/msg/Posteach "type: 2<br>direction: 0<br>speed: 10<br>block: true" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/set_pos_teach_result |
+#### Attitude_teaching
+| Function description | Attitude teaching |
+| :---: | :---- |
+| Parameter description | Ortteach.msg.msg<br>uint8 type：Teaching demonstration type: input0:RX-axis direction、1:RY-axis direction、2:RZ-axis direction<br>uint8 direction:teach direction，0-negative direction，1-positive direction<br>uint8 speed:speed percentage ratio coefficient, 0-100.<br>bool block：whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/set_ort_teach_result |
 ### Functions_related_to_controller_configuration
 #### Get_the_controller's_version
 | Function description | Get the controller's version |
@@ -292,22 +318,22 @@ The RealMan robotic arm is equipped with an Inspire Robots EG2-4C2 gripper. The 
 #### Setting_the_Gripper_Pick
 | Function description | Setting the gripper pick |
 | :---: | :---- |
-| Parameter description | Gripperpick.msg<br>uint16 speed：1～1000,representing the opening and closing speed of the gripper, dimensionless.<br>uint16 force:representing the gripping force of the gripper, maximum 1.5 kg.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_gripper_pick_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true" |
+| Parameter description | Gripperpick.msg<br>uint16 speed：1～1000,representing the opening and closing speed of the gripper, dimensionless.<br>uint16 force:representing the gripping force of the gripper, maximum 1.5 kg.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking.<br>uint16 timeout:Set the return timeout time, and the blocking mode takes effect (in seconds). |
+| Command example | ros2 topic pub --once /rm_driver/set_gripper_pick_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true<br>timeout: 100" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_gripper_pick_result |
 #### Setting_the_gripper_pick-on
 | Function description | Setting the gripper pick-on |
 | :---: | :---- |
-| Parameter description | Gripperpick.msg<br>uint16 speed：1～1000, representing the opening and closing speed of the gripper, dimensionless.<br>uint16 force：1～1000,representing the gripping force of the gripper, maximum 1.5 kg.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_gripper_pick_on_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true" |
+| Parameter description | Gripperpick.msg<br>uint16 speed：1～1000, representing the opening and closing speed of the gripper, dimensionless.<br>uint16 force：1～1000,representing the gripping force of the gripper, maximum 1.5 kg.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking.<br>uint16 timeout:Set the return timeout time, and the blocking mode takes effect (in seconds). |
+| Command example | ros2 topic pub --once /rm_driver/set_gripper_pick_on_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true<br>timeout: 100" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_gripper_pick_on_result |
 #### Setting_the_gripper_to_the_given_position
 | Function description | Setting the gripper to the given position |
 | :---: | :---- |
-| Parameter description | Gripperset.msg<br>uint16 position：target position of the gripper, range: 1-1000, representing the opening degree of the gripper: 0-70 mm.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_gripper_position_cmd rm_ros_interfaces/msg/Gripperset "position: 500<br>block: true" |
+| Parameter description | Gripperset.msg<br>uint16 position：target position of the gripper, range: 1-1000, representing the opening degree of the gripper: 0-70 mm.<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. <br>uint16 timeout:Set the return timeout time, and the blocking mode takes effect (in seconds).|
+| Command example | ros2 topic pub --once /rm_driver/set_gripper_position_cmd rm_ros_interfaces/msg/Gripperset "position: 500<br>block: true<br>timeout: 100" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_gripper_position_result |
 ### Functions_related_to_the_drag_teach_and_trajectory_reproduction

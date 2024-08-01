@@ -1,12 +1,12 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_description/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_description/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_description/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_description/README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_description使用说明书V1.0
+# 睿尔曼机器人rm_description使用说明书V1.1
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -14,6 +14,7 @@
 | 版本号| 时间   | 备注  | 
 | :---: | :-----: | :---: |
 |V1.0    |2024-2-19  |拟制 |
+|V1.1    |2024-7-3   |修订(添加GEN72适配文件) |
 
 </div>
 
@@ -38,7 +39,7 @@ rm_description功能包为显示机器人模型和TF变换的功能包，通过�
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75、gen72。  
 例如65机械臂的启动命令：  
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_65_display.launch.py
@@ -68,7 +69,8 @@ rm@rm-desktop:~$ rviz2
 │   ├── rm_63_display.launch.py     #63启动文件
 │   ├── rm_65_display.launch.py     #65启动文件
 │   ├── rm_75_display.launch.py     #75启动文件
-│   └── rm_eco65_display.launch.py  #eco65启动文件
+│   ├── rm_eco65_display.launch.py  #eco65启动文件
+│   └── rm_gen72_display.launch.py  #gen72启动文件
 ├── meshes                       #模型文件存放文件夹
 │   ├── rm_63_arm                 #63机械臂模型文件存放文件夹
 │   │   ├── base_link.STL
@@ -95,20 +97,30 @@ rm@rm-desktop:~$ rviz2
 │   │   ├── link5.STL
 │   │   ├── link6.STL
 │   │   └── link7.STL
-│   └── rm_eco65_arm                 #eco65机械臂模型文件存放文件夹
-│       ├── baselink.STL
+│   └── rm_eco65_arm              #eco65机械臂模型文件存放文件夹
+│   │   ├── baselink.STL
+│   │   ├── Link1.STL
+│   │   ├── Link2.STL
+│   │   ├── Link3.STL
+│   │   ├── Link4.STL
+│   │   ├── Link5.STL
+│   │   └── Link6.STL
+│   └── rm_gen72_arm              #gen72机械臂模型文件存放文件夹
+│       ├── base_link.STL
 │       ├── Link1.STL
 │       ├── Link2.STL
 │       ├── Link3.STL
 │       ├── Link4.STL
 │       ├── Link5.STL
-│       └── Link6.STL
+│       ├── Link6.STL
+│       └── Link7.STL
 ├── package.xml
-├── rviz                               #rviz2配置文件存放文件夹
+├── rviz                          #rviz2配置文件存放文件夹
 │   ├── rm_63.rviz
 │   ├── rm_65.rviz
 │   ├── rm_75.rviz
-│   └── rm_eco65.rviz
+│   ├── rm_eco65.rviz
+│   └── rm_gen72.rviz
 ├── textures
 └── urdf
     ├── display_arm.rviz
@@ -119,8 +131,11 @@ rm@rm-desktop:~$ rviz2
     ├── rm_75_gazebo.urdf               #75gazebo仿真urdf描述文件
     ├── rm_75.urdf                      #75 urdf描述文件
     ├── rm_eco65.csv
-    ├── rm_eco65_gazebo.urdf           #eco65gazebo仿真urdf描述文件
+    ├── rm_eco65_gazebo.urdf            #eco65gazebo仿真urdf描述文件
     ├── rm_eco65.urdf                   #eco65 urdf描述文件
+    ├── rm_gen72.csv
+    ├── rm_gen72_gazebo.urdf            #gen72gazebo仿真urdf描述文件
+    ├── rm_gen72.urdf                   #gen72 urdf描述文件
     ├── rml_63_description.csv
     ├── rml_63_gazebo.urdf               #63gazebo仿真urdf描述文件
     └── rml_63.urdf                      #63 urdf描述文件

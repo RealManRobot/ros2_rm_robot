@@ -1,13 +1,12 @@
 <div align="right">
   
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_ros_interfaces/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_ros_interfaces/README.md)
-
+[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_ros_interfaces/README_CN.md)|
+[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_ros_interfaces/README.md)
 </div>
 
 <div align="center">
 
-# RealMan Robot rm_ros_interface User Manual V1.0
+# RealMan Robot rm_ros_interface User Manual V1.1
 
 
  
@@ -20,7 +19,8 @@ Revision History-
 | No. | Date| Comment |
 | -----| -----| -----|
 |V1.0 | 2-18-2024 | Draft |
-		
+|V1.1 | 7-8-2024  | Amend(Add teaching message) |
+
 </div>
 
 ## 目录
@@ -36,27 +36,30 @@ Revision History-
 * 4.5[Linear motion-Movel_msg](#Linear_motion-Movel_msg)
 * 4.6[Circular motion-Movec_msg](#Circular_motion-Movec_msg)
 * 4.7[Joint space planning to target pose-Movejp_msg](#Joint_space_planning_to_target_pose-Movejp_msg)
-* 4.8[Joint transmission-Jointpos_msg](#Joint_transmission-Jointpos_msg)
-* 4.9[Pose transmission-Cartepos_msg](#Pose_transmission-Cartepos_msg)
-* 4.10[Current robotic arm state Angle and Euler angle-Armoriginalstate_msg](#Current_robotic_arm_state_Angle_and_Euler_angle-Armoriginalstate_msg)
-* 4.11[Current arm state radians and quaternion-Armstate_msg](#Current_arm_state_radians_and_quaternion-Armstate_msg)
-* 4.12[Getting the software version-Armsoftversion_msg](#Getting_the_software_version-Armsoftversion_msg)
-* 4.13[Gripper's pick-Gripperpick_msg](#Gripper's_pick-Gripperpick_msg)
-* 4.14[Gripper's pick gripper's pick-on-Gripperpick_msg](#Gripper's_pick_gripper's_pick-on-Gripperpick_msg)
-* 4.15[Gripper reaching the given position-Gripperset_msg](#Gripper_reaching_the_given_position-Gripperset_msg)
-* 4.16[Force-position mixing control-Setforceposition_msg](#Force-position_mixing_control-Setforceposition_msg)
-* 4.17[Six-axis force data-Sixforce_msg](#Six-axis_force_data-Sixforce_msg)
-* 4.18[Setting the dexterous hand posture-Hand posture_msg](#Setting_the_dexterous_hand_posture-Hand_posture_msg)
-* 4.19[Setting the dexterous hand action sequence-Handseq_msg](#Setting_the_dexterous_hand_action_sequence-Handseq_msg)
-* 4.20[Setting the angles of various degrees of freedom for the dexterous hand-Handangle_msg](#Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand-Handangle_msg)
-* 4.21[Setting the dexterous hand action sequence-Handspeed_msg](#Setting_the_dexterous_hand_action_sequence-Handspeed_msg)
-* 4.22[Setting the force threshold for the dexterous hand-Handforce_msg](#Setting_the_force_threshold_for_the_dexterous_hand-Handforce_msg)
-* 4.23[Transmissive force-position mixing control compensation-angle-Forcepositionmovejoint_msg](#Transmissive_force-position_mixing_control_compensation-angle-Forcepositionmovejoint_msg)
-* 4.24[Transmissive force-position mixing control compensation-pose-Forcepositionmovejoint_msg](#Transmissive_force-position_mixing_control_compensation-pose-Forcepositionmovejoint_msg)
-* 4.25[Speed open loop control-lifting mechanism-Liftspeed_msg](#Speed_open_loop_control-lifting_mechanism-Liftspeed_msg)
-* 4.26[Position closed-loop control-lifting mechanism-Lift height_msg](#Position_closed-loop_control-lifting_mechanism-Lift_height_msg)
-* 4.27[Getting the state of the lifting mechanism-Liftstate_msg](#Getting_the_state_of_the_lifting_mechanism-Liftstate_msg)
-* 4.28[Getting or setting UDP active reporting configuration-Setrealtimepush_msg](#Getting_or_setting_UDP_active_reporting_configuration-Setrealtimepush_msg)
+* 4.8[Joint teaching-Jointteach_msg-Jointteach_msg](#Joint_teaching-Jointteach_msg)
+* 4.9[Position teaching-Posteach_msg](#Position_teaching-Posteach_msg)
+* 4.10[Attitude teaching-Ortteach_msg](#Attitude_teaching-Ortteach_msg)
+* 4.11[Joint transmission-Jointpos_msg](#Joint_transmission-Jointpos_msg)
+* 4.12[Pose transmission-Cartepos_msg](#Pose_transmission-Cartepos_msg)
+* 4.13[Current robotic arm state Angle and Euler angle-Armoriginalstate_msg](#Current_robotic_arm_state_Angle_and_Euler_angle-Armoriginalstate_msg)
+* 4.14[Current arm state radians and quaternion-Armstate_msg](#Current_arm_state_radians_and_quaternion-Armstate_msg)
+* 4.15[Getting the software version-Armsoftversion_msg](#Getting_the_software_version-Armsoftversion_msg)
+* 4.16[Gripper's pick-Gripperpick_msg](#Gripper's_pick-Gripperpick_msg)
+* 4.17[Gripper's pick gripper's pick-on-Gripperpick_msg](#Gripper's_pick_gripper's_pick-on-Gripperpick_msg)
+* 4.18[Gripper reaching the given position-Gripperset_msg](#Gripper_reaching_the_given_position-Gripperset_msg)
+* 4.19[Force-position mixing control-Setforceposition_msg](#Force-position_mixing_control-Setforceposition_msg)
+* 4.20[Six-axis force data-Sixforce_msg](#Six-axis_force_data-Sixforce_msg)
+* 4.21[Setting the dexterous hand posture-Hand posture_msg](#Setting_the_dexterous_hand_posture-Hand_posture_msg)
+* 4.22[Setting the dexterous hand action sequence-Handseq_msg](#Setting_the_dexterous_hand_action_sequence-Handseq_msg)
+* 4.23[Setting the angles of various degrees of freedom for the dexterous hand-Handangle_msg](#Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand-Handangle_msg)
+* 4.24[Setting the dexterous hand action sequence-Handspeed_msg](#Setting_the_dexterous_hand_action_sequence-Handspeed_msg)
+* 4.25[Setting the force threshold for the dexterous hand-Handforce_msg](#Setting_the_force_threshold_for_the_dexterous_hand-Handforce_msg)
+* 4.26[Transmissive force-position mixing control compensation-angle-Forcepositionmovejoint_msg](#Transmissive_force-position_mixing_control_compensation-angle-Forcepositionmovejoint_msg)
+* 4.27[Transmissive force-position mixing control compensation-pose-Forcepositionmovejoint_msg](#Transmissive_force-position_mixing_control_compensation-pose-Forcepositionmovejoint_msg)
+* 4.28[Speed open loop control-lifting mechanism-Liftspeed_msg](#Speed_open_loop_control-lifting_mechanism-Liftspeed_msg)
+* 4.29[Position closed-loop control-lifting mechanism-Lift height_msg](#Position_closed-loop_control-lifting_mechanism-Lift_height_msg)
+* 4.30[Getting the state of the lifting mechanism-Liftstate_msg](#Getting_the_state_of_the_lifting_mechanism-Liftstate_msg)
+* 4.31[Getting or setting UDP active reporting configuration-Setrealtimepush_msg](#Getting_or_setting_UDP_active_reporting_configuration-Setrealtimepush_msg)
 
 
 ## rm_ros_interface_Package_Description
@@ -147,6 +150,7 @@ The array of work coordinate system names returned
 float32[] joint  
 uint8 speed  
 bool block  
+uint8 trajectory_connect
 uint8 dof  
 ```
 __msg member__  
@@ -154,6 +158,8 @@ __joint__
 Joint angle, float type, unit-radians.  
 __speed__  
 Speed percentage ratio coefficient, 0-100.  
+__trajectory_connect__
+Is the trajectory plan now. 1.wait 0.plan now.
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
 __dof__  
@@ -162,6 +168,7 @@ Degree of freedom message of the robotic arm.
 ```
 geometry_msgs/Pose pose  
 uint8 speed  
+uint8 trajectory_connect  
 bool block  
 ```
 __msg member__  
@@ -169,6 +176,8 @@ __pose__
 Robotic arm pose-geometry_msgs/Pose type, x, y, z coordinates (float type, unit-m) + quaternion (float type).  
 __speed__  
 Speed percentage ratio coefficient, 0-100.  
+__trajectory_connect__
+Is the trajectory plan now. 1.wait 0.plan now.
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
 ### Circular_motion-Movec_msg
@@ -176,7 +185,9 @@ whether it is a blocking mode, bool type, true-blocking, false-non-blocking.
 geometry_msgs/Pose pose_mid  
 geometry_msgs/Pose pose_end  
 uint8 speed  
+uint8 trajectory_connect  
 bool block  
+uint8 loop
 ```
 __msg member__  
 __pose_mid__  
@@ -185,12 +196,17 @@ __pose_end__
 Target pose: geometry_msgs/Pose type, x, y, z coordinates (float type, unit: m) + quaternion.  
 __speed__  
 Speed percentage ratio coefficient, 0-100.  
+__trajectory_connect__
+Is the trajectory plan now. 1.wait 0.plan now.
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+__loop__
+Number of cycles
 ### Joint_space_planning_to_target_pose-Movejp_msg
 ```
 geometry_msgs/Pose pose  
 uint8 speed  
+uint8 trajectory_connect  
 bool block 
 ```  
 __msg member__ 
@@ -198,14 +214,64 @@ __pose__
 Target pose: geometry_msgs/Pose type, x, y, z coordinates (float type, unit: m) + quaternion.  
 __speed__  
 Speed percentage ratio coefficient, 0-100.  
+__trajectory_connect__
+Is the trajectory plan now. 1.wait 0.plan now.
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+### Joint_teaching-Jointteach_msg
+```
+uint8 num
+uint8 direction
+uint8 speed
+bool block
+```  
+__msg member__  
+__num__  
+joint num，1~7.
+__direction__  
+teach direction，0-negative direction，1-positive direction.
+__speed__
+speed:speed percentage ratio coefficient, 0-100. 
+__block__  
+whether it is a blocking mode, bool type, true: blocking, false: non-blocking. 
+### Position_teaching-Posteach_msg
+```
+uint8 type
+uint8 direction
+uint8 speed
+bool block
+```  
+__msg member__  
+__type__  
+Teaching demonstration type: input0:X-axis direction、1:Y-axis direction、2:Z-axis direction.
+__direction__  
+teach direction，0-negative direction，1-positive direction.
+__speed__
+speed:speed percentage ratio coefficient, 0-100.   
+__block__  
+whether it is a blocking mode, bool type, true: blocking, false: non-blocking. 
+### Attitude_teaching-Ortteach_msg
+```
+uint8 type
+uint8 direction
+uint8 speed
+bool block
+```  
+__msg member__  
+__type__  
+Teaching demonstration type: input0:RX-axis direction、1:RY-axis direction、2:RZ-axis direction
+__direction__  
+teach direction，0-negative direction，1-positive direction.
+__speed__
+speed:speed percentage ratio coefficient, 0-100.  
+__block__  
+whether it is a blocking mode, bool type, true: blocking, false: non-blocking.
 ### Joint_transmission-Jointpos_msg
 ```
 float32[] joint  
 bool follow  
 float32 expand  
-uint8 dof  
+uint8 dof
 ```
 __msg member__  
 __joint__
@@ -283,11 +349,12 @@ __kernal2__
 The version number of sub-core 2 of the real-time kernel, string type.  
 __productversion__  
 Robotic arm model, string type.  
-### Gripper's_pick-Gripperpick_msg
+### Gripper_pick-Gripperpick_msg
 ```
 uint16 speed  
 uint16 force  
-bool block  
+bool block 
+uint16 timeout 
 ```
 __msg member__  
 __speed__  
@@ -296,11 +363,14 @@ __force__
 Gripper pick torque threshold, unsigned int type, range: 50-1000.  
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
-### Gripper's_pick_gripper's_pick-on-Gripperpick_msg
+__timeout__ 
+Set the timeout for the return, and the blocking mode will take effect (in seconds).
+### Gripper_pick_gripper_pick-on-Gripperpick_msg
 ```
 uint16 speed  
 uint16 force  
 bool block  
+uint16 timeout 
 ```
 __msg member__  
 __speed__  
@@ -309,16 +379,21 @@ __force__
 Gripper picks torque threshold, unsigned int type, range: 50-1000.  
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+__timeout__ 
+Set the timeout for the return, and the blocking mode will take effect (in seconds).
 ### Gripper_reaching_the_given_position-Gripperset_msg
 ```
 uint16 position  
 bool block 
+uint16 timeout 
 ``` 
 __msg member__  
 __position__  
 Gripper target position, unsigned int type, range: 1-1000, representing the degree of opening of the gripper: 0-70 mm.  
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+__timeout__ 
+Set the timeout for the return, and the blocking mode will take effect (in seconds).
 ### Force-position_mixing_control-Setforceposition_msg
 ```
 uint8 sensor  
@@ -508,4 +583,4 @@ Coordinate system for external force data of the system, where 0 is the sensor c
 __ip__  
 Customized reporting target IP address.  
 
-It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".
+It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/RealManRobot/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".

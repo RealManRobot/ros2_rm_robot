@@ -1,13 +1,14 @@
 <div align="right">
   
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/README.md)
+[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/README_CN.md)|
+[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/README.md)
 
 </div>
 
 # ros2_rm_robot
 该功能包的主要作用为提供机械臂的ROS2支持，以下为使用环境。
-* 当前支持的机械臂有RM65系列、RM75系列、ECO65系列、RML63系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
+* 当前支持的机械臂有RM65系列、RM75系列、ECO65系列、RML63系列、GEN72系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
+* 版本1.1.0.
 * 支持的机械臂控制器版本1.4.3以上。
 * 基于的Ubuntu版本为22.04。
 * ROS2版本为humble。
@@ -86,7 +87,7 @@ colcon build
 source ~/ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_gazebo.launch.py
 ```
-<arm_type>需要使用65、75、eco65、63字符进行代替，如使用RM65机械臂时，命令如下。
+<arm_type>需要使用65、75、eco65、63、gen72字符进行代替，如使用RM65机械臂时，命令如下。
 ```
 ros2 launch rm_bringup rm_65_gazebo.launch.py
 ```
@@ -98,7 +99,7 @@ ros2 launch rm_bringup rm_65_gazebo.launch.py
 source ~/ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ```
-<arm_type>需要使用65、75、eco65、63字符进行代替，如使用RM65机械臂时，命令如下。
+<arm_type>需要使用65、75、eco65、63、gen72字符进行代替，如使用RM65机械臂时，命令如下。
 ```
 ros2 launch rm_bringup rm_65_bringup.launch.py
 ```
