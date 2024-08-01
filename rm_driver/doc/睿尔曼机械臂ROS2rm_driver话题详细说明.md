@@ -329,21 +329,21 @@
 | 功能描述 | 设置夹爪力控夹取 |
 | :---: | :---- |
 | 参数说明 | Gripperpick.msg<br>uint16 speed：1～1000,代表手爪开合速度，无量纲。<br>uint16 force：1～1000,代表手爪夹持力，最大1.5kg。<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。<br>uint16 timeout：设置返回超时时间，阻塞模式生效（以秒为单位） |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true<br>block: true<br>timeout: 1" |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true<br>block: true<br>timeout: 100" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_gripper_pick_result |
 #### 设置夹爪持续力控夹取
 | 功能描述 | 设置夹爪持续力控夹取 |
 | :---: | :---- |
 | 参数说明 | Gripperpick.msg<br>uint16 speed：1～1000,代表手爪开合速度，无量纲。<br>uint16 force：1～1000,代表手爪夹持力，最大1.5kg。<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。<br>uint16 timeout：设置返回超时时间，阻塞模式生效（以秒为单位） |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_on_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true<br>timeout: 1" |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_pick_on_cmd rm_ros_interfaces/msg/Gripperpick "speed: 200<br>force: 200<br>block: true<br>timeout: 100" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_gripper_pick_on_result |
 #### 夹爪到达指定位置
 | 功能描述 | 夹爪到达指定位置 |
 | :---: | :---- |
 | 参数说明 | Gripperset.msg<br>uint16 position：手爪目标位置，范围：1～1000,代表手爪开口度：0～70mm<br>bool block：是否为阻塞模式，true:阻塞，false:非阻塞。<br>uint16 timeout：设置返回超时时间，阻塞模式生效（以秒为单位） |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_position_cmd rm_ros_interfaces/msg/Gripperset "position: 500<br>block: true<br>timeout: 1" |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_gripper_position_cmd rm_ros_interfaces/msg/Gripperset "position: 500<br>block: true<br>timeout: 100" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_gripper_position_result |
 ### 拖动示教及轨迹复现
@@ -421,7 +421,7 @@ block: true" |
 | 功能描述 | 升降机构位置闭环控制 |
 | :---: | :---- |
 | 参数说明 | Liftheight.msg<br>uint16 height：目标高度，单位 mm，范围：0-2600。<br>uint16 speed：速度百分比，1-100。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_lift_speed_cmd rm_ros_interfaces/msg/Liftspeed "speed: 100" |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_lift_height_cmd rm_ros_interfaces/msg/Liftheight "height: 10<br>speed: 10<br>block: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_lift_height_result |
 #### 获取升降机构状态

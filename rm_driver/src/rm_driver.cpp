@@ -1256,7 +1256,7 @@ void RmArm::Arm_Get_Current_Arm_State_Callback(const std_msgs::msg::Empty::Share
             Arm_original_state.joint[i] = joint[i];
             Arm_state.joint[i] = joint[i] * DEGREE_RAD;
         }
-        if(realman_arm == 75)
+        if(arm_dof_g == 7)
         {
             Arm_original_state.joint[6] = joint[6];
             Arm_state.joint[6] = joint[6] * DEGREE_RAD;
@@ -1323,7 +1323,7 @@ void Udp_RobotStatuscallback(RobotStatus Udp_RM_Callback)
         Udp_RM_Joint.joint[i] = Udp_RM_Callback.joint_status.joint_position[i];
         Udp_RM_Joint.err_flag[i] = Udp_RM_Callback.joint_status.joint_err_code[i];
     }
-    if(realman_arm == 75)
+    if(arm_dof_g == 7)
     {
         Udp_RM_Joint.joint[6] = Udp_RM_Callback.joint_status.joint_position[6];
         Udp_RM_Joint.err_flag[6] = Udp_RM_Callback.joint_status.joint_err_code[6];

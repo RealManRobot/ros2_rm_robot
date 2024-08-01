@@ -22,7 +22,7 @@ if [ $(uname -m) = "x86_64" ]; then
     sudo rm libRM_Service.so*
     sudo tar -jxvf linux_x86_service_release*
 
-    if [ -f "/usr/local/lib/libRM_Service.so" ];then
+    if [ -f "/usr/local/lib/linux_x86_service_release*" ];then
         echo "find file"
         sudo rm /usr/local/lib/libRM_Service.so*
         sudo rm /usr/local/lib/linux_x86_service_release*
@@ -34,9 +34,9 @@ else
     sudo rm libRM_Service.so*
     sudo tar -jxvf linux_arm_service_release*
 
-    if [ -f "/usr/local/lib/libRM_Service.so" ];then
+    if [ -f "/usr/local/lib/linux_arm_service_release*" ];then
         sudo rm /usr/local/lib/libRM_Service.so*
-        sudo rm /usr/local/lib/linux_arm_service_release*
+        sudo rm /usr/local/lib/inux_arm_service_release*
     fi
     sudo cp linux_arm_service_release* /usr/local/lib
     cd /usr/local/lib
@@ -72,4 +72,3 @@ echo ""
 echo ""
 echo ""
 echo ""
-
