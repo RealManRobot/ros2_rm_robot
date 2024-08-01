@@ -52,8 +52,8 @@ void ChangeWorkFrame::change_work_frame_programe()
 /***********************************构造函数，初始化发布器订阅器****************************************/
 ChangeWorkFrame::ChangeWorkFrame():rclcpp::Node("changeframe")
 {
-  subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/change_work_frame_result", 10, std::bind(&ChangeWorkFrame::ChangeWorkState_Callback, this,_1));
-  publisher_ = this->create_publisher<std_msgs::msg::String>("/rm_driver/change_work_frame_cmd", 10);
+  subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/change_work_frame_result", rclcpp::ParametersQoS(), std::bind(&ChangeWorkFrame::ChangeWorkState_Callback, this,_1));
+  publisher_ = this->create_publisher<std_msgs::msg::String>("/rm_driver/change_work_frame_cmd", rclcpp::ParametersQoS());
   std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   change_work_frame_programe();
 }

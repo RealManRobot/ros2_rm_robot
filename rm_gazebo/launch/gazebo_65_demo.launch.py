@@ -29,14 +29,9 @@ def generate_launch_description():
     print("urdf", doc.toxml())
 
     # 启动gazebo
-    gazebo = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
-             )
-    
-    # gazebo =  ExecuteProcess(
-    #     cmd=['gazebo', '--verbose','-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so'],
-    #     output='screen')
+    gazebo =  ExecuteProcess(
+        cmd=['gazebo', '--verbose','-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so'],
+        output='screen')
 
     # 启动了robot_state_publisher节点后，该节点会发布 robot_description 话题，话题内容是模型文件urdf的内容
     # 并且会订阅 /joint_states 话题，获取关节的数据，然后发布tf和tf_static话题.

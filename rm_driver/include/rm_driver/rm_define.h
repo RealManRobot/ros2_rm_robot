@@ -47,7 +47,7 @@ typedef SOCKET  SOCKHANDLE;
 typedef int SOCKHANDLE;
 #endif
 
-#define  SDK_VERSION (char*)"4.2.8"
+#define  SDK_VERSION (char*)"4.3.2.t1"
 
 typedef unsigned char byte;
 typedef unsigned short u16;
@@ -109,6 +109,8 @@ typedef enum
     Line_Mode = 2,     //笛卡尔空间直线规划
     Circle_Mode = 3,   //笛卡尔空间圆弧规划
     Replay_Mode = 4,    //拖动示教轨迹复现
+    Moves_Mode = 5      //样条曲线运动
+
 }ARM_CTRL_MODES;
 
 //机械臂位置示教模式
@@ -250,6 +252,7 @@ typedef struct{
 typedef struct{
     int run_state;  // 0 未开始 1运行中 2暂停中
     int id;         // 运行轨迹编号，已存储轨迹 的id，没有存储则为0 ，未运行则不返回
+    int edit_id;    // 上次编辑的在线编程编号 ID，未运行时返回，没有存储则为0
     int plan_num;   // 运行到的行数，未运行则不返回
     int loop_num[10];   // 存在循环指令的行数，未运行则不返回
     int loop_cont[10];  // 循环指令行数对应的运行次数，未运行则不返回
@@ -297,27 +300,34 @@ typedef struct {
 } RobotStatus;
 
 
-//电子围栏名称列表
+//几何模型名称列表
 typedef struct
 {
-    char name[12];    // 电子围栏名称,不超过10个字符
+    char name[12];    // 几何模型名称,不超过10个字符
 }ElectronicFenceNames;
 
-//所有电子围栏信息
+//几何模型参数
 typedef struct
 {
-    int form;           // 形状，1表示立方体
-    char name[12];      // 电子围栏名称，不超过10个字节，支持字母、数字、下划线
+    int32_t form;       // 形状，1 表示立方体，2 表示点面矢量平面，3 表示球体
+    char name[12];      // 几何模型名称，不超过10个字节，支持字母、数字、下划线
     // 立方体
-    int32_t x_min_limit;    // 立方体基于世界坐标系 X 方向最小位置，单位 0.001m
-    int32_t x_max_limit;    // 立方体基于世界坐标系 X 方向最大位置，单位 0.001m
-    int32_t y_min_limit;    // 立方体基于世界坐标系 Y 方向最小位置，单位 0.001m
-    int32_t y_max_limit;    // 立方体基于世界坐标系 Y 方向最大位置，单位 0.001m
-    int32_t z_min_limit;    // 立方体基于世界坐标系 Z 方向最小位置，单位 0.001m
-    int32_t z_max_limit;    // 立方体基于世界坐标系 Z 方向最大位置，单位 0.001m
+    float x_min_limit;    // 立方体基于世界坐标系 X 方向最小位置，单位 m
+    float x_max_limit;    // 立方体基于世界坐标系 X 方向最大位置，单位 m
+    float y_min_limit;    // 立方体基于世界坐标系 Y 方向最小位置，单位 m
+    float y_max_limit;    // 立方体基于世界坐标系 Y 方向最大位置，单位 m
+    float z_min_limit;    // 立方体基于世界坐标系 Z 方向最小位置，单位 m
+    float z_max_limit;    // 立方体基于世界坐标系 Z 方向最大位置，单位 m
+    // 点线矢量平面
+    float x1, y1, z1;     // 表示点面矢量平面三点法中的第一个点坐标，单位 m
+    float x2, y2, z2;     // 表示点面矢量平面三点法中的第二个点坐标，单位 m
+    float x3, y3, z3;     // 表示点面矢量平面三点法中的第三个点坐标，单位 m
+    // 球体
+    float radius;     // 表示半径，单位 0.001m
+    float x, y, z;    // 表示球心在世界坐标系 X 轴、Y轴、Z轴的坐标，单位 m
 }ElectronicFenceConfig;
 
-// 电子围栏参数列表-适配matlab
+// 几何模型参数列表-适配matlab
 typedef struct
 {
     ElectronicFenceConfig config[10];
@@ -350,7 +360,7 @@ typedef struct{
 }PlanInfo;
 
 typedef struct {
-    char version[10];
+    char version[20];
 }AlgorithmInfo;
 
 // 机械臂软件信息
@@ -362,6 +372,60 @@ typedef struct
     DynamicInfo dynamic_info;
     PlanInfo plan_info;
 }ArmSoftwareInfo;
+
+// 定义包络参数结构体
+typedef struct
+{
+    char name[12];      // 工具包络球体的名称，1-10 个字节，支持字母数字下划线
+    float radius;     // 工具包络球体的半径，单位 0.001m
+    float x;      // 工具包络球体球心基于末端法兰坐标系的 X 轴坐标，单位 m
+    float y;      // 工具包络球体球心基于末端法兰坐标系的 Y 轴坐标，单位 m
+    float z;      // 工具包络球体球心基于末端法兰坐标系的 Z 轴坐标，单位 m
+}ToolEnvelope;
+
+// 定义包络参数列表结构体
+typedef struct{
+    char tool_name[12];     // 控制器中已存在的工具坐标系名称，如果不存在该字段，则为临时设置当前包络参数
+    ToolEnvelope list[5];       // 包络参数列表，每个工具最多支持 5 个包络球，可以没有包络
+    int count;      // 包络球数量
+}ToolEnvelopeList;
+
+// 全局路点结构体
+typedef struct
+{
+    char point_name[16];    // 全局路点的名称
+    float joint[ARM_DOF];   // 全局路点的关节角度
+    Pose pose;              // 全局路点的位置姿态
+    char work_frame[12];    // 工作坐标系名称
+    char tool_frame[12];    // 工具坐标系名称
+    char time[20];          // 路点新增或修改时间
+}Waypoint;
+
+// 全局路点列表
+typedef struct{
+    int page_num;       // 页码（全部查询时此参数传NULL）
+    int page_size;      // 每页大小（全部查询时此参数传NULL）
+    int total_size;     // 列表长度
+    char vague_search[32];  // 模糊搜索 （传递此参数可进行模糊查询）
+    Waypoint points_list[100];   // 返回符合的全局路点列表
+}WaypointsList;
+
+typedef struct {
+    const float* q_in;        // 上一时刻关节角度 单位°
+    const Pose* q_pose;       // 目标位姿
+    float q_out[7];       // 输出的关节角度 单位°
+    uint8_t flag;       // 姿态参数类别：0-四元数；1-欧拉角
+} IK_Params;
+
+typedef struct {
+    char project_path[300];      ///< 下发文件路径文件名
+    int project_path_len;   ///< 名称长度
+    int plan_speed;     ///< 规划速度比例系数
+    int only_save;      ///< 0-运行文件，1-仅保存文件，不运行
+    int save_id;        ///< 保存到控制器中的编号
+    int step_flag;      ///< 设置单步运行方式模式，1-设置单步模式 0-设置正常运动模式
+    int auto_start;     ///< 设置默认在线编程文件，1-设置默认  0-设置非默认
+} Send_Project_Params;
 
 typedef void (*RobotStatusListener)(RobotStatus data);
 typedef void (*RM_Callback)(CallbackData data);
@@ -380,6 +444,8 @@ typedef void (*RM_Callback)(CallbackData data);
 #define ARM_63_2    632
 #define ARM_ECO65   651
 #define ARM_75      75
+#define ARM_ECO62   62
+#define ARM_GEN72   72
 
 // 是否打印日志
 #define RM_DISPLAY_LOG 0  // 0 不打印, 1打印

@@ -395,6 +395,49 @@ public:
     RM_SERVICESHARED_EXPORT int Service_Delete_Tool_Frame(SOCKHANDLE ArmSocket, const char *name, bool block);
 
     ///
+    /// \brief Service_Update_Tool_Frame  修改指定工具坐标系
+    /// \param ArmSocket    socket句柄
+    /// \param name 要修改的工具坐标系名称
+    /// \param pose 更新执行末端相对于机械臂法兰中心的位姿
+    /// \param payload  末端负载 单位kg
+    /// \param x    质心位置x 单位m
+    /// \param y    质心位置y 单位m
+    /// \param z    质心位置z 单位m
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Update_Tool_Frame(SOCKHANDLE ArmSocket, const char *name, Pose pose,
+                                                          float payload,float x,float y,float z);
+
+    ///
+    /// \brief Service_Set_Tool_Envelope    设置工具坐标系的包络参数（适配MATLAB）
+    /// \param ArmSocket    socket句柄
+    /// \param toolName     指定工具坐标系名称
+    /// \param count        设置第几个包络球，count<=当前存在的包络参数数量+1,即可修改当前存在的包络参数，或者新增一个包络参数，每个工具最多支持 5 个包络球，该参数设置0即清空所有包络
+    /// \param envelopeName 包络球名称
+    /// \param envelope     包络参数
+    /// \return              0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Set_Tool_Envelope(SOCKHANDLE ArmSocket, const char* toolName, int count, const char* envelopeNames, ToolEnvelope envelope);
+
+    ///
+    /// \brief Service_Set_Tool_Envelope    设置工具坐标系的包络参数
+    /// \param ArmSocket    socket句柄
+    /// \param list     包络参数列表，每个工具最多支持 5 个包络球，可以没有包络
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Set_Tool_Envelope(SOCKHANDLE ArmSocket, ToolEnvelopeList list);
+
+    ///
+    /// \brief Service_Get_Tool_Envelope    获取工具坐标系的包络参数
+    /// \param ArmSocket    socket句柄
+    /// \param name     控制器中已存在的工具坐标系名称
+    /// \param list     包络参数列表，每个工具最多支持 5 个包络球，可以没有包络
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Tool_Envelope(SOCKHANDLE ArmSocket, const char *name, std::shared_ptr<ToolEnvelopeList>& list);
+    RM_SERVICESHARED_EXPORT int Service_Get_Tool_Envelope(SOCKHANDLE ArmSocket, const char *name, ToolEnvelopeList *list);
+
+    ///
     /// \brief Service_Set_Payload 设置末端负载质量和质心
     /// \param ArmSocket socket句柄
     /// \param payload 负载质量，单位：g，最高不超过5000g
@@ -480,6 +523,15 @@ public:
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     /// 备注：删除坐标系后，机械臂将切换到机械臂基坐标系
     RM_SERVICESHARED_EXPORT int Service_Delete_Work_Frame(SOCKHANDLE ArmSocket, const char *name, bool block);
+
+    ///
+    /// \brief Service_Update_Work_Frame    修改指定工作坐标系
+    /// \param ArmSocket    socket句柄
+    /// \param name  指定工具坐标系名称
+    /// \param pose  更新工作坐标系相对于基坐标系的位姿
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Update_Work_Frame(SOCKHANDLE ArmSocket, const char *name, Pose pose);
 
     ////
     /// \brief Service_Get_Current_Work_Frame 获取当前工作坐标系
@@ -647,6 +699,7 @@ public:
 
     ///
     /// \brief cartesian_tool           沿工具端位姿移动
+    /// \param ArmSocket                socket句柄
     /// \param Joint_Cur                当前关节角度
     /// \param movelengthx:             沿X轴移动长度，米为单位
     /// \param movelengthy:             沿Y轴移动长度，米为单位
@@ -673,6 +726,18 @@ public:
     RM_SERVICESHARED_EXPORT int Service_Movel_Cmd(SOCKHANDLE ArmSocket, Pose pose, byte v, float r, int trajectory_connect, bool block);
 
     ///
+    /// \brief Service_Moves_Cmd 样条曲线运动
+    /// \param ArmSocket socket句柄
+    /// \param pose 目标位姿,位置单位：米，姿态单位：弧度
+    /// \param v 速度比例1~100，即规划速度和加速度占机械臂末端最大线速度和线加速度的百分比
+    /// \param r 轨迹交融半径，目前默认0。
+    /// \param trajectory_connect：代表是否和下一条运动一起规划，0代表立即规划，1代表和下一条轨迹一起规划，当为1时，轨迹不会立即执行，样条曲线运动需至少连续下发三个点位，否则运动轨迹为直线
+    /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待机械臂到达位置或者规划失败
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Moves_Cmd(SOCKHANDLE ArmSocket, Pose pose, byte v, float r, int trajectory_connect, bool block);
+
+    ///
     /// \brief Service_Movec_Cmd 笛卡尔空间圆弧运动
     /// \param ArmSocket socket句柄
     /// \param pose_via 中间点位姿，位置单位：米，姿态单位：弧度
@@ -696,7 +761,7 @@ public:
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     /// 只要控制器运行正常并且目标角度在可达范围内，机械臂立即返回成功指令，此时机械臂可能仍在运行；
     /// 若有错误，立即返回失败指令。
-    RM_SERVICESHARED_EXPORT int Service_Movej_CANFD(SOCKHANDLE ArmSocket, const float *joint, bool follow, int expand);
+    RM_SERVICESHARED_EXPORT int Service_Movej_CANFD(SOCKHANDLE ArmSocket, const float *joint, bool follow, float expand);
 
     ///
     /// \brief Movep_CANFD 位姿不经规划，直接通过CANFD透传给机械臂
@@ -1100,9 +1165,10 @@ public:
     /// \param ArmSocket socket句柄
     /// \param speed 手爪松开速度 ，范围 1~1000，无单位量纲
     /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
+    /// \param timeout 设置返回超时时间，阻塞模式生效
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Set_Gripper_Release(SOCKHANDLE ArmSocket, int speed, bool block);
+    RM_SERVICESHARED_EXPORT int Service_Set_Gripper_Release(SOCKHANDLE ArmSocket, int speed, bool block, int timeout);
 
     ///
     /// \brief Service_Set_Gripper_Pick 手爪力控夹取
@@ -1110,9 +1176,10 @@ public:
     /// \param speed 手爪夹取速度 ，范围 1~1000，无单位量纲 无
     /// \param force 力控阈值 ，范围 ：50~1000，无单位量纲 无
     /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
+    /// \param timeout 设置返回超时时间，阻塞模式生效
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Set_Gripper_Pick(SOCKHANDLE ArmSocket, int speed, int force, bool block);
+    RM_SERVICESHARED_EXPORT int Service_Set_Gripper_Pick(SOCKHANDLE ArmSocket, int speed, int force, bool block, int timeout);
 
     ///
     /// \brief Service_Set_Gripper_Pick_On 手爪力控持续夹取
@@ -1120,18 +1187,20 @@ public:
     /// \param speed 手爪夹取速度 ，范围 1~1000，无单位量纲 无
     /// \param force 力控阈值 ，范围 ：50~1000，无单位量纲 无
     /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
+    /// \param timeout 设置返回超时时间，阻塞模式生效
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Set_Gripper_Pick_On(SOCKHANDLE ArmSocket, int speed, int force, bool block);
+    RM_SERVICESHARED_EXPORT int Service_Set_Gripper_Pick_On(SOCKHANDLE ArmSocket, int speed, int force, bool block, int timeout);
 
     ///
     /// \brief Service_Set_Gripper_Position 设置手爪开口度
     /// \param ArmSocket socket句柄
     /// \param position 手爪开口位置 ，范围 ：1~1000，无单位量纲 无
     /// \param block RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
+    /// \param timeout 设置返回超时时间，阻塞模式生效
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Set_Gripper_Position(SOCKHANDLE ArmSocket, int position, bool block);
+    RM_SERVICESHARED_EXPORT int Service_Set_Gripper_Position(SOCKHANDLE ArmSocket, int position, bool block, int timeout);
 
     ///
     /// \brief Service_Get_Gripper_State 获取夹爪状态
@@ -1522,7 +1591,22 @@ public:
                                                         byte *single_data, int device, bool block);
 
     ///
-    /// \brief Get_Multi_Holding_Registers  读多个保存寄存器
+    /// \brief Read_Multi_Holding_Registers  读多个保存寄存器
+    /// \param ArmSocket                    socket句柄
+    /// \param port                         通讯端口,0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
+    /// \param address                      寄存器起始地址
+    /// \param num                          要读的寄存器数量[2 < num < 13]
+    /// \param device                       外设设备地址
+    /// \param coils_data                   寄存器数据
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Read_Multiple_Holding_Registers(SOCKHANDLE ArmSocket, int port, int address,
+                                                                        int num, int device, int *coils_data, int len);
+    RM_SERVICESHARED_EXPORT int Service_Read_Multiple_Holding_Registers(SOCKHANDLE ArmSocket, int port, int address,
+                                                                        int num, int device, int *coils_data);
+
+    ///
+    /// \brief Read_Multi_Input_Registers  读多个输入寄存器
     /// \param ArmSocket                    socket句柄
     /// \param port                         通讯端口,0-控制器 RS485 端口，1-末端接口板 RS485 接口，3-控制器 ModbusTCP 设备
     /// \param address                      寄存器起始地址
@@ -1531,9 +1615,9 @@ public:
     /// \param coils_data                   寄存器数据
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Read_Multiple_Holding_Registers(SOCKHANDLE ArmSocket, int port, int address,
+    RM_SERVICESHARED_EXPORT int Service_Read_Multiple_Input_Registers(SOCKHANDLE ArmSocket, int port, int address,
                                                                         int num, int device, int *coils_data, int len);
-    RM_SERVICESHARED_EXPORT int Service_Read_Multiple_Holding_Registers(SOCKHANDLE ArmSocket, int port, int address,
+    RM_SERVICESHARED_EXPORT int Service_Read_Multiple_Input_Registers(SOCKHANDLE ArmSocket, int port, int address,
                                                                         int num, int device, int *coils_data);
 
     ///
@@ -1560,10 +1644,11 @@ public:
     /// \param height                   当前升降机构高度，单位：mm，精度：1mm，范围：0~2300
     /// \param current                  当前升降驱动电流，单位：mA，精度：1mA
     /// \param err_flag                 升降驱动错误代码，错误代码类型参考关节错误代码
+    /// \param mode                     当前升降状态，0-空闲，1-正方向速度运动，2-正方向位置运动，3-负方向速度运动，4-负方向位置运动
     /// \param block                    RM_NONBLOCK-非阻塞，发送后立即返回；RM_BLOCK-阻塞，等待控制器返回设置成功指令
     /// \return                         0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Get_Lift_State(SOCKHANDLE ArmSocket, int* height,int* current,int* err_flag);
+    RM_SERVICESHARED_EXPORT int Service_Get_Lift_State(SOCKHANDLE ArmSocket, int* height,int* current,int* err_flag, int *mode);
 
     ///
     /// \brief Service_Expand_Set_Version   扩展关节模式设置
@@ -1696,17 +1781,12 @@ public:
     ///
     /// \brief Service_Send_TrajectoryFile      轨迹文件下发
     /// \param ArmSocket                    socket句柄
-    /// \param file_name                    轨迹文件完整路径 例: c:/rm_file.txt
-    /// \param file_name_len                file_name 字段的长度
-    /// \param plan_speed                   规划速度比例(0-100)
-    /// \param auto_start                   设置默认在线编程文件 1-设置默认  0-设置非默认[-I]
-    /// \param step_flag                    设置单步运行方式模式 1-设置单步模式  0-设置正常运动模式[-I]
+    /// \param params                       文件下发参数
     /// \param err_line                     有问题的工程行数
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
     ///
-    RM_SERVICESHARED_EXPORT int Service_Send_TrajectoryFile(SOCKHANDLE ArmSocket, const char * file_name,
-                                                            int file_name_len, int plan_speed,
-                                                            byte auto_start, byte step_flag, int * err_line);
+    RM_SERVICESHARED_EXPORT int Service_Send_TrajectoryFile(SOCKHANDLE ArmSocket, const char *project_path, Send_Project_Params params, int * err_line);
+    RM_SERVICESHARED_EXPORT int Service_Send_TrajectoryFile(SOCKHANDLE ArmSocket,Send_Project_Params params, int * err_line);
 
     /***************************************新加接口***************************************/
 
@@ -1765,6 +1845,77 @@ public:
     /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
     ///
     RM_SERVICESHARED_EXPORT int Service_Delete_Program_Trajectory(SOCKHANDLE ArmSocket, int id);
+
+    ///
+    /// \brief Service_Update_Program_Trajectory    修改指定编号轨迹的信息
+    /// \param ArmSocket                    socket句柄
+    /// \param id                           指定在线编程轨迹编号
+    /// \param plan_speed                   更新后的规划速度比例 1-100
+    /// \param project_name                 更新后的文件名称（最大 10 个字节）
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Update_Program_Trajectory(SOCKHANDLE ArmSocket, int id, int plan_speed, const char *project_name);
+
+    ///
+    /// \brief Service_Set_Default_Run_Program      设置 IO 默认运行的在线编程文件编号
+    /// \param ArmSocket                    socket句柄
+    /// \param id                           设置 IO 默认运行的在线编程文件编号，支持 0-100，0 代表取消设置
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Set_Default_Run_Program(SOCKHANDLE ArmSocket, int id);
+
+    ///
+    /// \brief Service_Get_Default_Run_Program      获取 IO 默认运行编号
+    /// \param ArmSocket                    socket句柄
+    /// \param id                           IO 默认运行的在线编程文件编号，支持 0-100，0 代表无默认
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Default_Run_Program(SOCKHANDLE ArmSocket, int *id);
+
+    ///
+    /// \brief Service_Add_Global_Waypoint          新增全局路点
+    /// \param ArmSocket                    socket句柄
+    /// \param waypoint                     新增全局路点参数（无需输入新增全局路点时间）
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Add_Global_Waypoint(SOCKHANDLE ArmSocket,const char* point_name, const char* wframe_name, const char* tframe_name, float *joint, Pose pose);
+    RM_SERVICESHARED_EXPORT int Service_Add_Global_Waypoint(SOCKHANDLE ArmSocket, Waypoint waypoint);
+
+    ///
+    /// \brief Service_Update_Global_Waypoint       更新全局路点
+    /// \param ArmSocket                    socket句柄
+    /// \param waypoint                     更新全局路点参数（无需输入更新全局路点时间）
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Update_Global_Waypoint(SOCKHANDLE ArmSocket,const char* point_name, const char* wframe_name, const char* tframe_name, float *joint, Pose pose);
+    RM_SERVICESHARED_EXPORT int Service_Update_Global_Waypoint(SOCKHANDLE ArmSocket, Waypoint waypoint);
+
+    ///
+    /// \brief Service_Delete_Global_Waypoint       删除全局路点
+    /// \param ArmSocket                    socket句柄
+    /// \param name                         全局路点名称
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Delete_Global_Waypoint(SOCKHANDLE ArmSocket, const char* name);
+
+    ///
+    /// \brief Service_Get_Global_Point_List        查询多个全局路点
+    /// \param ArmSocket                    socket句柄
+    /// \param point_list                   全局路点列表查询结构体
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///Service_Get_Global_Point_List
+    RM_SERVICESHARED_EXPORT int Service_Get_Global_Point_List(SOCKHANDLE ArmSocket, int page_num, int page_size, char *vague_search, std::shared_ptr<WaypointsList>& point_list);
+    RM_SERVICESHARED_EXPORT int Service_Get_Global_Point_List(SOCKHANDLE ArmSocket, WaypointsList* point_list);
+
+    ///
+    /// \brief Service_Given_Global_Waypoint        查询指定全局路点
+    /// \param ArmSocket                    socket句柄
+    /// \param name                         指定全局路点名称
+    /// \param point                        指定的全局路点参数
+    /// \return                             0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Given_Global_Waypoint(SOCKHANDLE ArmSocket,const char *name, std::shared_ptr<Waypoint>& point);
+    RM_SERVICESHARED_EXPORT int Service_Given_Global_Waypoint(SOCKHANDLE ArmSocket,  const char *name, Waypoint* point);
 
     ///
     /// \brief Service_Set_High_Ethernet            设置高速网口网络配置[配置通讯内容]（基础系列）
@@ -1959,13 +2110,69 @@ public:
 
 
     ///
+    /// \brief Service_Add_Electronic_Fence_Config 新增几何模型参数
+    /// \param ArmSocket socket句柄
+    /// \param config   几何模型参数
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    /// 备注：目前控制器支持保存的参数要求不超过10 个
+    RM_SERVICESHARED_EXPORT int Service_Add_Electronic_Fence_Config(SOCKHANDLE ArmSocket,const char* name, ElectronicFenceConfig config);
+    RM_SERVICESHARED_EXPORT int Service_Add_Electronic_Fence_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig config);
+
+    ///
+    /// \brief Service_Update_Electronic_Fence_Config 更新几何模型参数
+    /// \param ArmSocket socket句柄
+    /// \param config   几何模型参数
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Update_Electronic_Fence_Config(SOCKHANDLE ArmSocket,const char* name, ElectronicFenceConfig config);
+    RM_SERVICESHARED_EXPORT int Service_Update_Electronic_Fence_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig config);
+
+    ///
+    /// \brief Service_Delete_Electronic_Fence_Config 删除指定几何模型
+    /// \param ArmSocket socket句柄
+    /// \param name   指定几何模型栏名称
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Delete_Electronic_Fence_Config(SOCKHANDLE ArmSocket, const char* name);
+
+    ///
+    /// \brief Service_Get_Electronic_Fence_List_Names 查询所有几何模型名称
+    /// \param ArmSocket socket句柄
+    /// \param names   几何模型名称列表，长度为实际存在几何模型
+    /// \param len  几何模型名称列表长度
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Names(SOCKHANDLE ArmSocket, std::shared_ptr<NAMES> &names, int *len);
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Names(SOCKHANDLE ArmSocket, ElectronicFenceNames* names, int *len);
+
+    ///
+    /// \brief Service_Given_Electronic_Fence_Config 查询指定几何模型参数
+    /// \param ArmSocket socket句柄
+    /// \param name   指定几何模型名称
+    /// \param config  返回几何模型参数
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Given_Electronic_Fence_Config(SOCKHANDLE ArmSocket,  const char *name, std::shared_ptr<ElectronicFenceConfig> &config);
+    RM_SERVICESHARED_EXPORT int Service_Given_Electronic_Fence_Config(SOCKHANDLE ArmSocket,  const char *name, ElectronicFenceConfig* config);
+
+    ///
+    /// \brief Service_Get_Electronic_Fence_List_Info 查询所有几何模型信息
+    /// \param ArmSocket socket句柄
+    /// \param config  几何模型信息列表，长度为实际存在几何模型
+    /// \param len  几何模型信息列表长度
+    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Info(SOCKHANDLE ArmSocket, std::shared_ptr<ElectronicFenceConfigList> &config, int *len);
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Info(SOCKHANDLE ArmSocket, ElectronicFenceConfig* config, int *len);
+
+    ///
     /// \brief Service_Set_Electronic_Fence_Enable 设置电子围栏使能状态
     /// \param ArmSocket socket句柄
     /// \param enable_state：true代表使能，false代表禁使能
     /// \param in_out_side：0-机器人在电子围栏内部，1-机器人在电子围栏外部
     /// \param effective_region：0-针对整臂区域生效
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    /// 备注：电子围栏目前仅支持长方体和点面矢量平面这两种形状，并且其仅在仿真模式下生效，为用户提供一个预演轨迹与进行轨迹优化的安全环境
     RM_SERVICESHARED_EXPORT int Service_Set_Electronic_Fence_Enable(SOCKHANDLE ArmSocket, bool enable_state, int in_out_side, int effective_region);
 
     ///
@@ -1975,15 +2182,15 @@ public:
     /// \param in_out_side  0-机器人在电子围栏内部，1-机器人在电子围栏外部
     /// \param effective_region  0-针对整臂区域生效
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
-    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_Enable(SOCKHANDLE ArmSocket, bool* enable, int* in_out_side, int* effective_region);
+    /// 备注：电子围栏目前仅支持长方体和点面矢量平面这两种形状，并且其仅在仿真模式下生效，为用户提供一个预演轨迹与进行轨迹优化的安全环境
+    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_Enable(SOCKHANDLE ArmSocket, bool* enable_state, int* in_out_side, int* effective_region);
 
     ///
     /// \brief Service_Set_Electronic_Fence_Config 设置当前电子围栏参数
     /// \param ArmSocket socket句柄
     /// \param config   当前电子围栏参数（无需设置电子围栏名称）
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    /// 备注：电子围栏目前仅支持长方体和点面矢量平面这两种形状，并且其仅在仿真模式下生效，为用户提供一个预演轨迹与进行轨迹优化的安全环境
     RM_SERVICESHARED_EXPORT int Service_Set_Electronic_Fence_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig config);
 
     ///
@@ -1991,65 +2198,46 @@ public:
     /// \param ArmSocket socket句柄
     /// \param config   当前电子围栏参数（返回参数中不包含电子围栏名称）
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
+    /// 备注：电子围栏目前仅支持长方体和点面矢量平面这两种形状，并且其仅在仿真模式下生效，为用户提供一个预演轨迹与进行轨迹优化的安全环境
     RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_Config(SOCKHANDLE ArmSocket, std::shared_ptr<ElectronicFenceConfig> &config);
     RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig* config);
 
     ///
-    /// \brief Service_Add_Electronic_Fence_Config 新增电子围栏参数（最多支持 10 个电子围栏）
+    /// \brief Service_Set_Virtual_Wall_Enable 设置虚拟墙使能状态
     /// \param ArmSocket socket句柄
-    /// \param config   电子围栏参数
+    /// \param enable_state：true代表使能，false代表禁使能
+    /// \param in_out_side：0-机器人在虚拟墙内部
+    /// \param effective_region：1-针对末端生效
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
-    RM_SERVICESHARED_EXPORT int Service_Add_Electronic_Fence_Config(SOCKHANDLE ArmSocket,const char* name, ElectronicFenceConfig config);
-    RM_SERVICESHARED_EXPORT int Service_Add_Electronic_Fence_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig config);
+    /// 备注：虚拟墙功能目前支持长方体和球体两种形状，并仅在电流环拖动示教与力控拖动示教两种示教模式下有效
+    RM_SERVICESHARED_EXPORT int Service_Set_Virtual_Wall_Enable(SOCKHANDLE ArmSocket, bool enable_state, int in_out_side, int effective_region);
 
     ///
-    /// \brief Service_Update_Electronic_Fence_Config 更新电子围栏参数（最多支持 10 个电子围栏）
+    /// \brief Service_Get_Virtual_Wall_Enable 获取虚拟墙使能状态
     /// \param ArmSocket socket句柄
-    /// \param config   电子围栏参数
+    /// \param enable_state  true代表使能，false代表禁使能
+    /// \param in_out_side  0-机器人在虚拟墙内部
+    /// \param effective_region  0-针对整臂区域生效
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
-    RM_SERVICESHARED_EXPORT int Service_Update_Electronic_Fence_Config(SOCKHANDLE ArmSocket,const char* name, ElectronicFenceConfig config);
-    RM_SERVICESHARED_EXPORT int Service_Update_Electronic_Fence_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig config);
+    /// 备注：虚拟墙功能目前支持长方体和球体两种形状，并仅在电流环拖动示教与力控拖动示教两种示教模式下有效
+    RM_SERVICESHARED_EXPORT int Service_Get_Virtual_Wall_Enable(SOCKHANDLE ArmSocket, bool* enable_state, int* in_out_side, int* effective_region);
 
     ///
-    /// \brief Service_Delete_Electronic_Fence_Config 删除电子围栏参数（最多支持 10 个电子围栏）
+    /// \brief Service_Set_Virtual_Wall_Config 设置当前虚拟墙参数
     /// \param ArmSocket socket句柄
-    /// \param name   指定电子围栏名称
+    /// \param config   当前虚拟墙参数（无需设置虚拟墙名称）
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
-    RM_SERVICESHARED_EXPORT int Service_Delete_Electronic_Fence_Config(SOCKHANDLE ArmSocket, const char* name);
+    /// 备注：虚拟墙功能目前支持长方体和球体两种形状，并仅在电流环拖动示教与力控拖动示教两种示教模式下有效
+    RM_SERVICESHARED_EXPORT int Service_Set_Virtual_Wall_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig config);
 
     ///
-    /// \brief Service_Get_Electronic_Fence_List_Names 查询所有电子围栏名称（最多支持 10 个电子围栏）
+    /// \brief Service_Get_Virtual_Wall_Config 获取当前虚拟墙参数
     /// \param ArmSocket socket句柄
-    /// \param names   电子围栏名称列表，长度为实际存在电子围栏
-    /// \param len  电子围栏名称列表长度
+    /// \param config   当前虚拟墙参数（返回参数中不包含虚拟墙名称）
     /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
-    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Names(SOCKHANDLE ArmSocket, std::shared_ptr<NAMES> &names, int *len);
-    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Names(SOCKHANDLE ArmSocket, ElectronicFenceNames* names, int *len);
-
-    ///
-    /// \brief Service_Given_Electronic_Fence_Config 查询指定电子围栏参数（最多支持 10 个电子围栏）
-    /// \param ArmSocket socket句柄
-    /// \param name   指定电子围栏
-    /// \param config  返回电子围栏参数
-    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
-    RM_SERVICESHARED_EXPORT int Service_Given_Electronic_Fence_Config(SOCKHANDLE ArmSocket,  const char *name, std::shared_ptr<ElectronicFenceConfig> &config);
-    RM_SERVICESHARED_EXPORT int Service_Given_Electronic_Fence_Config(SOCKHANDLE ArmSocket,  const char *name, ElectronicFenceConfig* config);
-
-    ///
-    /// \brief Service_Get_Electronic_Fence_List_Info 查询所有电子围栏信息（最多支持 10 个电子围栏）
-    /// \param ArmSocket socket句柄
-    /// \param config  电子围栏信息列表，长度为实际存在电子围栏
-    /// \param len  电子围栏信息列表长度
-    /// \return 0-成功，失败返回:错误码, rm_define.h查询.
-    /// 备注：电子围栏的安全防护功能目前只在仿真模式下生效，用于进行预演轨迹与轨迹优化
-    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Info(SOCKHANDLE ArmSocket, std::shared_ptr<ElectronicFenceConfigList> &config, int *len);
-    RM_SERVICESHARED_EXPORT int Service_Get_Electronic_Fence_List_Info(SOCKHANDLE ArmSocket, ElectronicFenceConfig* config, int *len);
+    /// 备注：虚拟墙功能目前支持长方体和球体两种形状，并仅在电流环拖动示教与力控拖动示教两种示教模式下有效
+    RM_SERVICESHARED_EXPORT int Service_Get_Virtual_Wall_Config(SOCKHANDLE ArmSocket, std::shared_ptr<ElectronicFenceConfig> &config);
+    RM_SERVICESHARED_EXPORT int Service_Get_Virtual_Wall_Config(SOCKHANDLE ArmSocket, ElectronicFenceConfig* config);
 
     ///
     /// \brief Service_Set_Self_Collision_Enable 设置自碰撞安全检测使能状态
@@ -2218,6 +2406,13 @@ public:
                                                                 float* q_out, uint8_t flag);
 
     ///
+    /// \brief Service_Algo_Inverse_Kinematics_Wrap 逆解函数
+    /// \param params                       逆解输入输出参数结构体
+    /// \note 该接口与Algo_Inverse_Kinematics算法接口作用相同，不同的是将Algo_Inverse_Kinematics的参数封装成结构体，以使它更易用.
+    ///
+    RM_SERVICESHARED_EXPORT int Service_Algo_Inverse_Kinematics_Wrap(const IK_Params* params);
+
+    ///
     /// \brief  Algo_RotateMove         计算环绕运动位姿
     /// \param  curr_joint              当前关节角度 单位°
     /// \param  rotate_axis             旋转轴: 1:x轴, 2:y轴, 3:z轴
@@ -2260,6 +2455,7 @@ public:
     /// \param  eu                      欧拉角
     /// \return Matrix                  旋转矩阵
     ///
+    RM_SERVICESHARED_EXPORT Matrix Service_Algo_Euler2Matrix(Euler eu,float data[4][4]);
     RM_SERVICESHARED_EXPORT Matrix Service_Algo_Euler2Matrix(Euler eu);
 
     ///
@@ -2267,6 +2463,7 @@ public:
     /// \param  state                   位姿
     /// \return Matrix                  旋转矩阵
     ///
+    RM_SERVICESHARED_EXPORT Matrix Service_Algo_Pos2Matrix(Pose state,float data[4][4]);
     RM_SERVICESHARED_EXPORT Matrix Service_Algo_Pos2Matrix(Pose state);
 
     ///
@@ -2274,6 +2471,7 @@ public:
     /// \param  matrix                  旋转矩阵
     /// \return Pose                    位姿
     ///
+    RM_SERVICESHARED_EXPORT Pose Service_Algo_Matrix2Pos(Matrix matrix,float data[4][4]);
     RM_SERVICESHARED_EXPORT Pose Service_Algo_Matrix2Pos(Matrix matrix);
 
     ///
@@ -2282,6 +2480,7 @@ public:
     /// \param  state                   工具端坐标在基坐标系下位姿
     /// \return Pose                    基坐标系在工作坐标系下的位姿
     ///
+    RM_SERVICESHARED_EXPORT Pose Service_Algo_Base2WorkFrame(Matrix matrix,float data[4][4], Pose state);
     RM_SERVICESHARED_EXPORT Pose Service_Algo_Base2WorkFrame(Matrix matrix, Pose state);
 
     ///
@@ -2290,6 +2489,7 @@ public:
     /// \param  state                   工具端坐标在工作坐标系下位姿
     /// \return Pose                    工作坐标系在基坐标系下的位姿
     ///
+    RM_SERVICESHARED_EXPORT Pose Service_Algo_WorkFrame2Base(Matrix matrix,float data[4][4], Pose state);
     RM_SERVICESHARED_EXPORT Pose Service_Algo_WorkFrame2Base(Matrix matrix, Pose state);
 
     ///

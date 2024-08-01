@@ -1,4 +1,4 @@
-#ifndef RM_QUEUE_H
+﻿#ifndef RM_QUEUE_H
 #define RM_QUEUE_H
 //////////////////////////////////////////////////////////////////////////////////
 //睿尔曼智能科技有限公司        Author:Dong Qinpeng
@@ -16,7 +16,7 @@ extern "C" {
 typedef struct
 {
     int len;                     //该次发送字节数量
-    char data[300];              //发送数据
+    char data[500];              //发送数据
     int sockHandle;
     int questMode;
     int flg;

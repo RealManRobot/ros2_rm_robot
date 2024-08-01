@@ -1,12 +1,12 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_bringup/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_bringup/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_bringup/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_bringup/README.md)
  
 </div>
 
 <div align="center">
 
-# RealMan Robotrm_controlUser Manual V1.0
+# RealMan Robot rm_bringup User Manual V1.1
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -15,6 +15,7 @@ Revision History:
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
 |V1.0	  | 2/19/2024 | Draft |
+|V1.1	  | 7/8 /2024 | Amend(Add GEN72 adapter files) |
 
 </div>
 
@@ -43,20 +44,20 @@ First, after configuring the environment and completing the connection, we can d
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, and 75.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, 75 and gen72.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_65_bringup.launch.py
 ```
 The following screen appears in the interface after a successful node launch.
 ![image](doc/rm_bringup1.png)  
-The launch file launches the function of moveit2 to control the real robotic arm. Then, you can control the robotic arm movement by dragging the control ball. For details, please refer to "[rm_moveit2_config Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_moveit2_config/README.md)".
+The launch file launches the function of moveit2 to control the real robotic arm. Then, you can control the robotic arm movement by dragging the control ball. For details, please refer to "[rm_moveit2_config Detailed Description](https://github.com/RealManRobot/ros2_rm_robot/blob/main/rm_moveit2_config/README.md)".
 ### Gazebo_control_of_robotic_arm
 We can run the launch.py file in the rm_bringup package through the following command, and directly launch the gzaebo simulation node.
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_gazebo.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, and 75.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, 75, and gen72.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_65_gazebo.launch.py
@@ -70,8 +71,10 @@ Then, we use the following command to launch moveit2 to control the simulation r
 The current rm_driver package is composed of the following files.
 ```
 ├── CMakeLists.txt                     # compilation rule file
-├── include
-│   └── rm_bringup
+├── doc                                # Supporting documents,pictures
+│   ├── rm_bringup1.png                # pictures1
+│   ├── rm_bringup2.png                # pictures2
+│   └── rm_bringup3.png                # pictures3
 ├── launch
 │   ├── rm_63_bringup.launch.py        # 63 arm moveit2 launch file
 │   ├── rm_63_gazebo.launch.py         # 63 arm gazebo launch file
@@ -80,9 +83,12 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_75_bringup.launch.py        # 75 arm moveit2 launch file
 │   ├── rm_75_gazebo.launch.py         # 75 arm gazebo launch file
 │   ├── rm_eco65_bringup.launch.py     # eco65 arm moveit2 launch file
-│   └── rm_eco65_gazebo.launch.py      # eco65 arm gazebo launch file
+│   ├── rm_eco65_gazebo.launch.py      # eco65 arm gazebo launch file
+│   ├── rm_gen72_bringup.launch.py     # gen72 arm moveit2 launch file
+│   └── rm_gen72_gazebo.launch.py      # gen72 arm gazebo launch file
 ├── package.xml
-└── src
+├── README_CN.md                  
+└── README.md                           
 ```
 ## rm_bringup_Topic_Description
-This package currently does not have its topic. It is mainly to call other packages. For the topics related to moveit2, please refer to "[rm_moveit2_config Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_moveit2_config/README.md)".
+This package currently does not have its topic. It is mainly to call other packages. For the topics related to moveit2, please refer to "[rm_moveit2_config Detailed Description](https://github.com/RealManRobot/ros2_rm_robot/blob/main/rm_moveit2_config/README.md)".

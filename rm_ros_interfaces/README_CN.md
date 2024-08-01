@@ -1,13 +1,13 @@
 <div align="right">
   
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_ros_interfaces/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_ros_interfaces/README.md)
+[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_ros_interfaces/README_CN.md)|
+[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_ros_interfaces/README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_ros_interface使用说明书V1.0
+# 睿尔曼机器人rm_ros_interface使用说明书V1.1
 
 
  
@@ -19,8 +19,9 @@
 
 |版本号 | 时间 | 备注 |
 | :---: | :---- | :---: |
-|V1.0 | 2024-2-18 | 拟制|
-		
+|V1.0 | 2024-2-18 | 拟制 |
+|V1.1 | 2024-7-8  | 修订(添加示教消息) |
+
 </div>
 
 ## 目录
@@ -36,27 +37,30 @@
 * 4.5[直线运动Movel_msg](#直线运动Movel_msg)
 * 4.6[圆弧运动Movec_msg](#圆弧运动Movec_msg)
 * 4.7[关节空间规划到目标位姿Movejp_msg](#关节空间规划到目标位姿Movejp_msg)
-* 4.8[角度透传Jointpos_msg](#角度透传Jointpos_msg)
-* 4.9[位姿透传Cartepos_msg](#位姿透传Cartepos_msg)
-* 4.10[机械臂当前状态-角度和欧拉角Armoriginalstate_msg](#机械臂当前状态-角度和欧拉角Armoriginalstate_msg)
-* 4.11[机械臂当前状态-弧度和四元数Armstate_msg](#机械臂当前状态-弧度和四元数Armstate_msg)
-* 4.12[读取软件版本号Armsoftversion_msg](#读取软件版本号Armsoftversion_msg)
-* 4.13[手爪力控夹取Gripperpick_msg](#手爪力控夹取Gripperpick_msg)
-* 4.14[手爪力控夹取-持续力控夹取Gripperpick_msg](#手爪力控夹取-持续力控夹取Gripperpick_msg)
-* 4.15[手爪到达指定位置Gripperset_msg](#手爪到达指定位置Gripperset_msg)
-* 4.16[力位混合控制Setforceposition_msg](#力位混合控制Setforceposition_msg)
-* 4.17[六维力数据Sixforce_msg](#六维力数据Sixforce_msg)
-* 4.18[设置灵巧手手势Handposture_msg](#设置灵巧手手势Handposture_msg)
-* 4.19[设置灵巧手动作序列Handseq_msg](#设置灵巧手动作序列Handseq_msg)
-* 4.20[设置灵巧手各自由度角度Handangle_msg](#设置灵巧手各自由度角度Handangle_msg)
-* 4.21[设置灵巧手速度Handspeed_msg](#设置灵巧手速度Handspeed_msg)
-* 4.22[设置灵巧手力阈值Handforce_msg](#设置灵巧手力阈值Handforce_msg)
-* 4.23[透传力位混合补偿-角度Forcepositionmovejoint_msg](#透传力位混合补偿-角度Forcepositionmovejoint_msg)
-* 4.24[透传力位混合补偿-位姿Forcepositionmovejoint_msg](#透传力位混合补偿-位姿Forcepositionmovejoint_msg)
-* 4.25[速度开环控制-升降机构Liftspeed_msg](#速度开环控制-升降机构Liftspeed_msg)
-* 4.26[位置闭环控制-升降机构Liftheight_msg](#位置闭环控制-升降机构Liftheight_msg)
-* 4.27[获取升降机构状态-升降机构Liftstate_msg](#获取升降机构状态-升降机构Liftstate_msg)
-* 4.28[查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg](#查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg)
+* 4.8[关节示教Jointteach.msg](#关节示教Jointteach_msg)
+* 4.9[位置示教Posteach.msg](#位置示教Posteach_msg)
+* 4.10[姿态示教Ortteach.msg](#姿态示教Ortteach_msg)
+* 4.11[角度透传Jointpos_msg](#角度透传Jointpos_msg)
+* 4.12[位姿透传Cartepos_msg](#位姿透传Cartepos_msg)
+* 4.13[机械臂当前状态-角度和欧拉角Armoriginalstate_msg](#机械臂当前状态-角度和欧拉角Armoriginalstate_msg)
+* 4.14[机械臂当前状态-弧度和四元数Armstate_msg](#机械臂当前状态-弧度和四元数Armstate_msg)
+* 4.15[读取软件版本号Armsoftversion_msg](#读取软件版本号Armsoftversion_msg)
+* 4.16[手爪力控夹取Gripperpick_msg](#手爪力控夹取Gripperpick_msg)
+* 4.17[手爪力控夹取-持续力控夹取Gripperpick_msg](#手爪力控夹取-持续力控夹取Gripperpick_msg)
+* 4.18[手爪到达指定位置Gripperset_msg](#手爪到达指定位置Gripperset_msg)
+* 4.19[力位混合控制Setforceposition_msg](#力位混合控制Setforceposition_msg)
+* 4.20[六维力数据Sixforce_msg](#六维力数据Sixforce_msg)
+* 4.21[设置灵巧手手势Handposture_msg](#设置灵巧手手势Handposture_msg)
+* 4.22[设置灵巧手动作序列Handseq_msg](#设置灵巧手动作序列Handseq_msg)
+* 4.23[设置灵巧手各自由度角度Handangle_msg](#设置灵巧手各自由度角度Handangle_msg)
+* 4.24[设置灵巧手速度Handspeed_msg](#设置灵巧手速度Handspeed_msg)
+* 4.25[设置灵巧手力阈值Handforce_msg](#设置灵巧手力阈值Handforce_msg)
+* 4.26[透传力位混合补偿-角度Forcepositionmovejoint_msg](#透传力位混合补偿-角度Forcepositionmovejoint_msg)
+* 4.27[透传力位混合补偿-位姿Forcepositionmovejoint_msg](#透传力位混合补偿-位姿Forcepositionmovejoint_msg)
+* 4.28[速度开环控制-升降机构Liftspeed_msg](#速度开环控制-升降机构Liftspeed_msg)
+* 4.29[位置闭环控制-升降机构Liftheight_msg](#位置闭环控制-升降机构Liftheight_msg)
+* 4.30[获取升降机构状态-升降机构Liftstate_msg](#获取升降机构状态-升降机构Liftstate_msg)
+* 4.31[查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg](#查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg)
 
 ## rm_ros_interface功能包说明
 rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行提供必要的 消息文件，在下文中将通过以下几个方面详细介绍该功能包。
@@ -215,6 +219,54 @@ __trajectory_connect__
 #0 代表立即规划，1 代表和下一条轨迹一起规划，当为 1 时，轨迹不会立即执行  
 __block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+### 关节示教Jointteach_msg
+```
+uint8 num
+uint8 direction
+uint8 speed
+bool block
+```  
+__msg成员__  
+__num__  
+示教关节的序号，1~7。
+__direction__  
+示教方向，0-负方向，1-正方向。
+__speed__
+速度比例1~100，即规划速度和加速度占关节最大线转速和加速度的百分比。  
+__block__  
+是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 
+### 位置示教Posteach_msg
+```
+uint8 type
+uint8 direction
+uint8 speed
+bool block
+```  
+__msg成员__  
+__type__  
+示教类型 输入0：X轴方向 | 1：Y轴方向 | 2：Z轴方向。
+__direction__  
+示教方向，0-负方向，1-正方向。
+__speed__
+速度比例1~100，即规划速度和加速度占关节最大线转速和加速度的百分比。  
+__block__  
+是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 
+### 姿态示教Ortteach_msg
+```
+uint8 type
+uint8 direction
+uint8 speed
+bool block
+```  
+__msg成员__  
+__type__  
+示教类型 输入0：RX轴方向 | 1：RY轴方向 | 2：RZ轴方向。
+__direction__  
+示教方向，0-负方向，1-正方向。
+__speed__
+速度比例1~100，即规划速度和加速度占关节最大线转速和加速度的百分比。  
+__block__  
+是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 
 ### 角度透传Jointpos_msg
 ```
 float32[] joint  
@@ -303,6 +355,7 @@ __productversion__
 uint16 speed  
 uint16 force  
 bool block
+uint16 timeout
 ```  
 __msg成员__  
 __speed__  
@@ -311,11 +364,14 @@ __force__
 手爪夹取力矩阈值，unsigned int类型，范围 ：50-1000。  
 __block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+__timeout__
+设置返回超时时间，阻塞模式生效（以秒为单位）。
 ### 手爪力控夹取-持续力控夹取Gripperpick_msg
 ```
 uint16 speed  
 uint16 force  
 bool block
+uint16 timeout
 ```  
 __msg成员__  
 __speed__  
@@ -324,16 +380,21 @@ __force__
 手爪夹取力矩阈值，unsigned int类型，范围 ：50-1000。  
 __block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+__timeout__
+设置返回超时时间，阻塞模式生效（以秒为单位）。
 ### 手爪到达指定位置Gripperset_msg
 ```
 uint16 position  
 bool block
+uint16 timeout
 ```  
 __msg成员__  
 __position__  
 手爪目标位置，unsigned int类型，范围：1-1000,代表手爪开口度：0-70mm。  
 __block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+__timeout__
+设置返回超时时间，阻塞模式生效（以秒为单位）。
 ### 力位混合控制Setforceposition_msg
 ```
 uint8 sensor  
@@ -523,4 +584,4 @@ __force_coordinate__
 __ip__  
 自定义的上报目标IP 地址。  
 
-主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。
+主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/RealManRobot/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。

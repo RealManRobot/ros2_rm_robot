@@ -1,12 +1,12 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_moveit2_config/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_moveit2_config/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_moveit2_config/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_moveit2_config/README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_moveit2_config使用说明书V1.0
+# 睿尔曼机器人rm_moveit2_config使用说明书V1.1
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -14,6 +14,7 @@
 | 版本号| 时间   | 备注  | 
 | :---: | :-----: | :---: |
 |V1.0    |2024-2-19  |拟制 |
+|V1.1    |2024-7-8   |修订（添加GEN72适配） |
 
 </div>
 
@@ -41,7 +42,7 @@ rm_moveit2_config文件夹为实现moveit2控制真实机械臂的功能包，�
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75、gen72。  
 例如65机械臂的启动命令：  
 ```
 rm@rm-desktop:~$ ros2 launch rm_65_config demo.launch.py
@@ -70,13 +71,25 @@ rm@rm-desktop:~$ ros2 launch rm_control rm_<arm_type>_control.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo.launch.py
 ```
-注意以上指令均需要将<arm_type>更换为对应的机械臂型号，可选择的型号有65、63、eco65、75。  
+注意以上指令均需要将<arm_type>更换为对应的机械臂型号，可选择的型号有65、63、eco65、75、gen72。  
 完成以上操作后将会出现以下界面，我们可以通过拖动控制球的方式控制机械臂运动。  
 ![image](doc/rm_moveit2_config4.png)
 ## rm_moveit2_config架构说明
 ### 功能包文件总览
 当前rm_driver功能包的文件构成如下。  
 ```
+├── doc
+│   ├── rm_moveit2_config1.png
+│   ├── rm_moveit2_config2.png
+│   ├── rm_moveit2_config3.png
+│   ├── rm_moveit2_config4.png
+│   ├── rm_moveit2_config5.png
+│   ├── rm_moveit2_config6.png
+│   ├── rm_moveit2_config7.png
+│   ├── rm_moveit2_config8.png
+│   └── rm_moveit2_config9.png
+├── README_CN.md
+├── README.md
 ├── rm_63_config                                    #63机械臂moveit2功能包
 │   ├── CMakeLists.txt                              #63机械臂moveit2功能包编译规则
 │   ├── config                                      #63机械臂moveit2功能包参数文件夹
@@ -152,7 +165,31 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo.launch.py
 │   │   ├── static_virtual_joint_tfs.launch.py
 │   │   └── warehouse_db.launch.py
 │   └── package.xml
-└── rm_eco65_config              #eco65机械臂moveit2功能包（文件解释参考63）
+├── rm_eco65_config              #eco65机械臂moveit2功能包（文件解释参考63）
+│   ├── CMakeLists.txt
+│   ├── config
+│   │   ├── initial_positions.yaml
+│   │   ├── joint_limits.yaml
+│   │   ├── kinematics.yaml
+│   │   ├── moveit_controllers.yaml
+│   │   ├── moveit.rviz
+│   │   ├── pilz_cartesian_limits.yaml
+│   │   ├── rm_eco65_description.ros2_control.xacro
+│   │   ├── rm_eco65_description.srdf
+│   │   ├── rm_eco65_description.urdf.xacro
+│   │   └── ros2_controllers.yaml
+│   ├── launch
+│   │   ├── demo.launch.py
+│   │   ├── gazebo_moveit_demo.launch.py
+│   │   ├── move_group.launch.py
+│   │   ├── moveit_rviz.launch.py
+│   │   ├── real_moveit_demo.launch.py
+│   │   ├── rsp.launch.py
+│   │   ├── setup_assistant.launch.py
+│   │   ├── spawn_controllers.launch.py
+│   │   ├── static_virtual_joint_tfs.launch.py
+│   │   └── warehouse_db.launch.py
+└── rm_gen72_config             #gen72机械臂moveit2功能包（文件解释参考63）
     ├── CMakeLists.txt
     ├── config
     │   ├── initial_positions.yaml
@@ -161,9 +198,9 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo.launch.py
     │   ├── moveit_controllers.yaml
     │   ├── moveit.rviz
     │   ├── pilz_cartesian_limits.yaml
-    │   ├── rm_eco65_description.ros2_control.xacro
-    │   ├── rm_eco65_description.srdf
-    │   ├── rm_eco65_description.urdf.xacro
+    │   ├── rm_gen72_description.ros2_control.xacro
+    │   ├── rm_gen72_description.srdf
+    │   ├── rm_gen72_description.urdf.xacro
     │   └── ros2_controllers.yaml
     ├── launch
     │   ├── demo.launch.py

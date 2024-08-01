@@ -1,12 +1,12 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_example/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.0.1/rm_example/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_example/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble1.1.0/rm_example/README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_example使用说明书V1.0
+# 睿尔曼机器人rm_example使用说明书V1.1
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -14,6 +14,7 @@
 | 版本号| 时间   | 备注  | 
 | :---: | :-----: | :---: |
 |V1.0    |2024-2-19  |拟制 |
+|V1.1    |2024-7-8   |修订（添加GEN72适配文件） |
 
 </div>
 
@@ -115,7 +116,7 @@ rm@rm-desktop:~$ ros2 launch rm_example rm_7dof_movej.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75、gen72。  
 例如65机械臂的启动命令：
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -123,6 +124,10 @@ rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
 节点启动成功后，需要执行如下指令控制机械臂进行运动。
 ```
 rm@rm-desktop:~$ ros2 run rm_example movejp_demo
+```
+若机械臂型号为GEN72则使用如下指令。
+```
+rm@rm-desktop:~$ ros2 run rm_example movejp_gen72_demo
 ```
 执行成功后界面将出现如下提示，并且机械臂运动到指定位姿。
 ![image](doc/rm_example4.png)
@@ -132,7 +137,7 @@ rm@rm-desktop:~$ ros2 run rm_example movejp_demo
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、75、gen72。  
 例如65机械臂的启动命令：
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -141,6 +146,10 @@ rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
 ```
 rm@rm-desktop:~$ ros2 run rm_example movel_demo
 ```
+若机械臂型号为GEN72则使用如下指令。
+```
+rm@rm-desktop:~$ ros2 run rm_example movel_gen72_demo
+```
 执行成功后界面将出现如下提示，并且机械臂将进行两次运动，首先通过MoveJP运动到指定位姿，之后通过MoveL进行关节运动。
 ![image](doc/rm_example5.png)
 
@@ -148,18 +157,31 @@ rm@rm-desktop:~$ ros2 run rm_example movel_demo
 ### 功能包文件总览
 当前rm_driver功能包的文件构成如下。
 ├── CMakeLists.txt                             #编译规则文件
-├── include
-│   └── rm_example
+├── doc
+│   ├── rm_example10.png
+│   ├── rm_example11.png
+│   ├── rm_example1.png
+│   ├── rm_example2.png
+│   ├── rm_example3.png
+│   ├── rm_example4.png
+│   ├── rm_example5.png
+│   ├── rm_example6.png
+│   ├── rm_example7.png
+│   ├── rm_example8.png
+│   └── rm_example9.png
 ├── launch
 │   ├── rm_6dof_movej.launch.py                 #6自由度MoveJ运动启动文件
 │   └── rm_7dof_movej.launch.py                 #7自由度MoveJ运动启动文件
 ├── package.xml
 └── src
     ├── api_ChangeWorkFrame_demo.cpp        #更换工作坐标系源文件
-    ├── api_Get_Arm_State_demo.cpp            #获得机械臂状态源文件
-    ├── api_MoveJ_demo.cpp                    #MoveJ运动源文件
-    ├── api_MoveJP_demo.cpp                  #MoveJP运动源文件
-    └── api_MoveL_demo.cpp                   #MoveL运动源文件
+    ├── api_Get_Arm_State_demo.cpp          #获得机械臂状态源文件
+    ├── api_MoveJ_demo.cpp                  #MoveJ运动源文件
+    ├── api_MoveJP_demo.cpp                 #MoveJP运动源文件
+    ├── api_MoveJP_Gen72_demo.cpp           #适用于Gen72的MoveJP运动源文件
+    └── api_MoveL_demo.cpp                  #MoveL运动源文件
+    └── api_MoveL_Gen72_demo.cpp            #适用于Gen72的MoveL运动源文件
+
 ## rm_example话题说明
 ### rm_change_work_frame话题说明
 以下为该节点的数据通信图：
