@@ -25,6 +25,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 
 #include <sys/ioctl.h>          // 设置非阻塞需要用到的头文件
@@ -42,7 +43,7 @@
 #include "rm_ros_interfaces/msg/ortteach.hpp"
 #include "rm_ros_interfaces/msg/posteach.hpp"
 #include "rm_ros_interfaces/msg/setrealtimepush.hpp"
-#include "rm_ros_interfaces/msg/armsoftversion.hpp"
+// #include "rm_ros_interfaces/msg/armsoftversion.hpp"
 #include "rm_ros_interfaces/msg/sixforce.hpp"
 #include "rm_ros_interfaces/msg/jointerrorcode.hpp"
 #include "rm_ros_interfaces/msg/forcepositionmovejoint.hpp"
@@ -74,6 +75,9 @@
 #include "rm_ros_interfaces/msg/jointvoltage.hpp"
 #include "rm_ros_interfaces/msg/jointposcustom.hpp"
 #include "rm_ros_interfaces/msg/carteposcustom.hpp"
+#include "rm_ros_interfaces/msg/rmplusbase.hpp"
+#include "rm_ros_interfaces/msg/rmplusstate.hpp"
+#include "rm_ros_interfaces/msg/rmerr.hpp"
 #include <std_msgs/msg/u_int32.hpp>
 #include <std_msgs/msg/int32.hpp>
 #include <std_msgs/msg/empty.hpp>
@@ -87,7 +91,8 @@
 #define DEGREE_RAD 0.01745
 using namespace std::chrono_literals;
 //udp数据处理函数
-void Udp_RobotStatuscallback(RobotStatus Udp_RM_Callback);
+// void Udp_RobotStatuscallback(RobotStatus Udp_RM_Callback);
+void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data);
 //ctrl+c执行程序
 static void my_handler(int sig);
 //机械臂型号信息
@@ -104,39 +109,100 @@ int arm_dof_g = 6;
 bool ctrl_flag = false;
 // 灵巧手数据发布
 bool udp_hand_g = false;
+// 末端设备基础信息发布
+bool rm_plus_base_g = false;
+// 末端设备实时信息
+bool rm_plus_state_g = false;
 //api类
 RM_Service Rm_Api;
 //机械臂TCp网络通信套接字
-SOCKHANDLE m_sockhand = -1;
+// SOCKHANDLE m_sockhand = -1;
+//机械臂控制句柄
+rm_robot_handle *robot_handle;
+
+//末端设备基础信息
+typedef struct{
+    char manu[10];          // 设备厂家
+    int type;               // 设备类型 1：两指夹爪 2：五指灵巧手 3：三指夹爪
+    char hv[10];            // 硬件版本
+    char sv[10];            // 软件版本
+    char bv[10];            // boot版本
+    int id;                 // 设备ID
+    int dof;                // 自由度
+    int check;              // 自检开关
+    int bee;                // 蜂鸣器开关
+    bool force;             // 力控支持
+    bool touch;             // 触觉支持
+    int touch_num;          // 触觉个数
+    int touch_sw;           // 触觉开关
+    int hand;               // 手方向 1 ：左手 2： 右手
+    int pos_up[12];         // 位置上限,单位：无量纲
+    int pos_low[12];        // 位置下限,单位：无量纲
+    int angle_up[12];       // 角度上限,单位：0.01度
+    int angle_low[12];      // 角度下限,单位：0.01度
+    int speed_up[12];       // 速度上限,单位：无量纲
+    int speed_low[12];      // 速度下限,单位：无量纲
+    int force_up[12];       // 力上限,单位：0.001N 
+    int force_low[12];      // 力下限,单位：0.001N 
+} RM_PLUS_BASE_INFO;
+
+//末端设备实时信息(末端生态协议支持)
+typedef struct
+{
+    int sys_state;                   //系统状态
+    int dof_state[12];               //各自由度当前状态
+    int dof_err[12];                 //各自由度错误信息
+    int pos[12];                     //各自由度当前位置
+    int speed[12];                   //各自由度当前速度
+    int angle[12];                   //各自由度当前角度
+    int current[12];                 //各自由度当前电流
+    int normal_force[18];            //自由度触觉三维力的法向力
+    int tangential_force[18];        //自由度触觉三维力的切向力
+    int tangential_force_dir[18];    //自由度触觉三维力的切向力方向
+    uint32_t tsa[12];                //自由度触觉自接近
+    uint32_t tma[12];                //自由度触觉互接近
+    int touch_data[18];              //触觉传感器原始数据
+    int force[12];                   //自由度力矩
+} RM_PLUS_STATE_INFO;
+
+typedef struct
+{
+    uint8_t err_len;
+    std::vector<uint32_t> err;
+} RM_ERR;
+
 //机械臂状态参数
 typedef struct
 {
-    float    joint[7];                 //关节角度
-    uint16_t err_flag[7];              //关节错误代码
-    uint16_t sys_err;                  //系统错误代码
-    uint16_t arm_err;                  //机械臂错误代码
-    float    one_force;                //一维力传感器原始数据0.001N或0.001Nm
-    float    six_force[6];             //六维力数据
-    float    joint_current[7];         //机械臂电流数据
-    bool     en_flag[7];               //当前关节使能状态 ，1为上使能，0为掉使能
-    float    joint_position[3];        //当前末端关节位置，精度0.001°
-    float    joint_temperature[7];     //当前关节温度，精度0.001℃
-    float    joint_voltage[7];         //当前关节电压，精度0.001V
-    float    joint_euler[3];           //欧拉角
-    float    joint_quat[4];            //四元数
-    float    zero_force[6];            //当前力传感器系统外受力数据0.001N或0.001Nm
-    float    work_zero_force[6];       //当前工作坐标系下系统受到的外力数据
-    float    tool_zero_force[6];       //当前该工具坐标系下系统受到的外力数据
-    float    one_zero_force;           //一维力基准坐标系下系统受力数据
-    uint16_t control_version;          //版本信息
-    uint16_t coordinate;               //当前六维力传感器的基准坐标
-    uint16_t hand_angle[6];            //手指角度数组，范围：0~2000.
-    uint16_t hand_pos[6];              //手指位置数组，范围：0~1000.
-    uint16_t hand_state[6];            //手指状态,0正在松开，1正在抓取，2位置到位停止，3力到位停止，5电流保护停止，6电缸堵转停止，7电缸故障停止
-    uint16_t hand_force[6];            //灵巧手自由度电流，单位mN
-    uint16_t hand_err;                 //灵巧手系统错误，1表示有错误，0表示无错误
-    uint16_t arm_current_status;    //当前机械臂状态上报，
-    float    joint_speed[7];           //当前关节速度，精度0.02RPM。
+    float    joint[7];                          //关节角度
+    uint16_t err_flag[7];                       //关节错误代码
+    uint16_t sys_err;                           //系统错误代码
+    uint16_t arm_err;                           //机械臂错误代码
+    float    one_force;                         //一维力传感器原始数据0.001N或0.001Nm
+    float    six_force[6];                      //六维力数据
+    float    joint_current[7];                  //机械臂电流数据
+    bool     en_flag[7];                        //当前关节使能状态 ，1为上使能，0为掉使能
+    float    joint_position[3];                 //当前末端关节位置，精度0.001°
+    float    joint_temperature[7];              //当前关节温度，精度0.001℃
+    float    joint_voltage[7];                  //当前关节电压，精度0.001V
+    float    joint_euler[3];                    //欧拉角
+    float    joint_quat[4];                     //四元数
+    float    zero_force[6];                     //当前力传感器系统外受力数据0.001N或0.001Nm
+    float    work_zero_force[6];                //当前工作坐标系下系统受到的外力数据
+    float    tool_zero_force[6];                //当前该工具坐标系下系统受到的外力数据
+    float    one_zero_force;                    //一维力基准坐标系下系统受力数据
+    uint16_t control_version;                   //版本信息
+    uint16_t coordinate;                        //当前六维力传感器的基准坐标
+    uint16_t hand_angle[6];                     //手指角度数组，范围：0~2000.
+    uint16_t hand_pos[6];                       //手指位置数组，范围：0~1000.
+    uint16_t hand_state[6];                     //手指状态,0正在松开，1正在抓取，2位置到位停止，3力到位停止，5电流保护停止，6电缸堵转停止，7电缸故障停止
+    uint16_t hand_force[6];                     //灵巧手自由度电流，单位mN
+    uint16_t hand_err;                          //灵巧手系统错误，1表示有错误，0表示无错误
+    uint16_t arm_current_status;                //当前机械臂状态上报，
+    float    joint_speed[7];                    //当前关节速度，精度0.02RPM。
+    RM_PLUS_STATE_INFO udp_rm_plus_state_info;  //末端设备实时信息
+    RM_PLUS_BASE_INFO udp_rm_plus_base_info;    //末端设备实时信息
+    RM_ERR udp_rm_err;
 } JOINT_STATE_VALUE;
 JOINT_STATE_VALUE Udp_RM_Joint;
 
@@ -160,6 +226,9 @@ rm_ros_interfaces::msg::Jointposeeuler udp_joint_pose_euler_;
 rm_ros_interfaces::msg::Jointspeed udp_joint_speed_;
 rm_ros_interfaces::msg::Jointtemperature udp_joint_temperature_; 
 rm_ros_interfaces::msg::Jointvoltage udp_joint_voltage_;
+rm_ros_interfaces::msg::Rmplusbase udp_rm_plus_base_;                   //末端设备基础信息
+rm_ros_interfaces::msg::Rmplusstate udp_rm_plus_state_;                 //末端设备实时信息
+rm_ros_interfaces::msg::Rmerr udp_rm_err_;                              //udp报错信息
 
 class RmArm: public rclcpp::Node
 {
@@ -169,7 +238,7 @@ public:
 
 /**********************************************初始化需要用到的回调函数***********************************************/
     void Get_Arm_Version();                                                                                 //获取版本信息
-    void Set_UDP_Configuration(int udp_cycle, int udp_port, int udp_force_coordinate, std::string udp_ip,bool hand);  //设置udp主动上报配置
+    void Set_UDP_Configuration(int udp_cycle, int udp_port, int udp_force_coordinate, std::string udp_ip,bool hand, bool rm_plus_base, bool rm_plus_state);  //设置udp主动上报配置
     /*******************************运动控制回调函数******************************/
     // void Arm_MoveJ_75_Callback(rm_ros_interfaces::msg::Movej75::SharedPtr msg);                          //75角度控制
     void Arm_MoveJ_Callback(rm_ros_interfaces::msg::Movej::SharedPtr msg);                                  //角度控制
@@ -180,12 +249,12 @@ public:
     void Arm_Movep_CANFD_Callback(rm_ros_interfaces::msg::Cartepos::SharedPtr msg);                         //位姿透传控制
     void Arm_Movep_CANFD_Custom_Callback(rm_ros_interfaces::msg::Carteposcustom::SharedPtr msg);    //位姿透传控制高跟随下可自定义模式
     void Arm_MoveJ_P_Callback(rm_ros_interfaces::msg::Movejp::SharedPtr msg);                               //位姿运动控制
-    void Arm_Move_Stop_Callback(std_msgs::msg::Bool::SharedPtr msg);                                        //轨迹急停控制
+    void Arm_Move_Stop_Callback(const std_msgs::msg::Empty::SharedPtr msg);                                        //轨迹急停控制
     /**************************************************************************/
     void Set_Joint_Teach_Callback(rm_ros_interfaces::msg::Jointteach::SharedPtr msg);                       //关节示教
     void Set_Pos_Teach_Callback(rm_ros_interfaces::msg::Posteach::SharedPtr msg);                           //位置示教
     void Set_Ort_Teach_Callback(rm_ros_interfaces::msg::Ortteach::SharedPtr msg);                           //姿态示教
-    void Set_Stop_Teach_Callback(const std_msgs::msg::Bool::SharedPtr msg);                                //停止示教
+    void Set_Stop_Teach_Callback(const std_msgs::msg::Empty::SharedPtr msg);                                //停止示教
 
     /*******************************主动上报回调函数******************************/
     void Arm_Get_Realtime_Push_Callback(const std_msgs::msg::Empty::SharedPtr msg);                         //获取主动上报配置
@@ -198,7 +267,7 @@ public:
     void Arm_Force_Position_Move_Joint_Callback(const rm_ros_interfaces::msg::Forcepositionmovejoint::SharedPtr msg);       //力位混合透传（角度）
     void Arm_Force_Position_Move_Pose_Callback(const rm_ros_interfaces::msg::Forcepositionmovepose::SharedPtr msg);         //力位混合透传（位姿）
     void Arm_Set_Force_Postion_Callback(const rm_ros_interfaces::msg::Setforceposition::SharedPtr msg);                     //使能力位混合透传
-    void Arm_Stop_Force_Postion_Callback(const std_msgs::msg::Bool::SharedPtr msg);                                         //结束力位混合透传
+    void Arm_Stop_Force_Postion_Callback(const std_msgs::msg::Empty::SharedPtr msg);                                         //结束力位混合透传
     /*******************************坐标系回调函数******************************/
     void Arm_Change_Work_Frame_Callback(const std_msgs::msg::String::SharedPtr msg);                        //更改工作坐标系
     void Arm_Get_Curr_WorkFrame_Callback(const std_msgs::msg::Empty::SharedPtr msg);                        //查询工作坐标系
@@ -228,17 +297,24 @@ public:
     /*******************************机械臂状态回调函数****************************/
     void Arm_Get_Current_Arm_State_Callback(const std_msgs::msg::Empty::SharedPtr msg);
     /*********************************六维力数据清零******************************/
-    void Arm_Clear_Force_Data_Callback(const std_msgs::msg::Bool::SharedPtr msg);
+    void Arm_Clear_Force_Data_Callback(const std_msgs::msg::Empty::SharedPtr msg);
     /*********************************六维力数据获取******************************/
     void Arm_Get_Force_Data_Callback(const std_msgs::msg::Empty::SharedPtr msg);
-    
+    /*********************************设置末端生态协议模式**************************/
+    void Arm_Set_Rm_Plus_Mode_Callback(const std_msgs::msg::Int32::SharedPtr msg);
+    /**********************************查询末端生态协议模式***************************/
+    void Arm_Get_Rm_Plus_Mode_Callback(const std_msgs::msg::Empty::SharedPtr msg);
+    /************************************设置触觉传感器模式************************/
+    void Arm_Set_Rm_Plus_Touch_Callback(const std_msgs::msg::Int32::SharedPtr msg);
+    /************************************获取触觉传感器模式************************/
+    void Arm_Get_Rm_Plus_Touch_Callback(const std_msgs::msg::Empty::SharedPtr msg);
 /***************************************************************end******************************************************/
 private:
     // int Arm_Start(void);        //TCP连接函数
     // void Arm_Close();           //TCP断连函数
 
 /************************************************************变量信息******************************************************/
-    std_msgs::msg::Empty::SharedPtr copy;                               //闲置
+    std_msgs::msg::Empty::SharedPtr copy;                                  //闲置
     // std_msgs::msg::UInt16 sys_err_;                                     //系统错误信息
     // std_msgs::msg::UInt16 arm_err_;                                     //机械臂错误信息
     // std_msgs::msg::UInt16 arm_coordinate_;                              //六维力基准坐标系
@@ -292,7 +368,7 @@ private:
     /********************************************轨迹急停结果发布器*****************************************/
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Move_Stop_Cmd_Result;
     /***********************************************轨迹急停控制订阅器*************************************/
-    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr Move_Stop_Cmd;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Move_Stop_Cmd;
     /********************************************************end******************************************************/
 
     /*******************************************************关节示教***************************************************/
@@ -311,12 +387,12 @@ private:
     /****************************************停止示教结果发布器*************************************/
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Stop_Teach_Cmd_Result;
     /*******************************************停止示教订阅器*************************************/
-    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr Set_Stop_Teach_Cmd;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Set_Stop_Teach_Cmd;
     /********************************************************end******************************************************/
 
     /********************************************************固件版本***************************************************/
     /*************************************************查询固件版本发布器****************************************/
-    rclcpp::Publisher<rm_ros_interfaces::msg::Armsoftversion>::SharedPtr Get_Arm_Software_Version_Result;
+    // rclcpp::Publisher<rm_ros_interfaces::msg::Armsoftversion>::SharedPtr Get_Arm_Software_Version_Result;
     /*************************************************查询固件版本订阅器****************************************/
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Arm_Software_Version_Cmd;
     /********************************************************end******************************************************/
@@ -337,7 +413,7 @@ private:
     /********************************************结束力位混合控制结果发布器*******************************************/
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Stop_Force_Postion_Result;
     /************************************************结束力位混合控制************************************************/
-    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr Stop_Force_Postion_Cmd;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Stop_Force_Postion_Cmd;
     
     /**************************************************75力位混合角度透传订阅器***************************************/
     // rclcpp::Subscription<rm_ros_interfaces::msg::Forcepositionmovejoint75>::SharedPtr Force_Position_Move_Joint_75_Cmd;
@@ -452,7 +528,7 @@ private:
     /****************************************六维力数据清零发布器***************************************/
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Clear_Force_Data_Result;
     /******************************************六维力数据清零订阅器*************************************/
-    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr Clear_Force_Data_Cmd;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Clear_Force_Data_Cmd;
     /********************************************六维力数据获取发布器****************************************/
     rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr Get_Force_Data_Result;
     rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr Get_Zero_Force_Result;
@@ -462,19 +538,38 @@ private:
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Force_Data_Cmd;
 /********************************************************************end***********************************************************/
 
-    std::string arm_ip_ = "192.168.1.18";    
+/**********************************************************末端生态协议*******************************************************************/
+    /*********************************设置末端生态协议模式***************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Rm_Plus_Mode_Result;
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr Set_Rm_Plus_Mode_Cmd;
+    /************************************查询末端生态协议模式**********************************/
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr Get_Rm_Plus_Mode_Result; 
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Rm_Plus_Mode_Cmd;
+    /************************************设置触觉传感器模式**********************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Rm_Plus_Touch_Result;
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr Set_Rm_Plus_Touch_Cmd;
+    /************************************获取触觉传感器模式**********************************/
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr Get_Rm_Plus_Touch_Result;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Rm_Plus_Touch_Cmd; 
+/**************************************************************end*************************************************************************/
+
+
+    std::string arm_ip_ = "192.168.1.188";    
     std::string udp_ip_ = "192.168.1.10";
     std::string  arm_type_ = "RM_75";  
     
     
-    int tcp_port_ = 8080;  
-    int udp_port_ = 8089; 
+    int tcp_port_ = 8081;  
+    int udp_port_ = 9501; 
     int arm_dof_ = 7;                                  //机械臂自由度
     int udp_cycle_ = 5;                                //udp主动上报周期（ms）
     int udp_force_coordinate_ = 0;                     //udp主动上报系统六维力参考坐标系
     bool udp_hand_ = false;
+    bool udp_rm_plus_base_ = false;                    //末端设备基础信息udp发布
+    bool udp_rm_plus_state_ = false;                   //末端设备状态信息udp发布
     int trajectory_mode_ = 0;
     int radio_ = 50; 
+    std::vector<std::string> arm_joints;
 
     rclcpp::CallbackGroup::SharedPtr callback_group_sub1_;
     rclcpp::CallbackGroup::SharedPtr callback_group_sub2_;
@@ -505,10 +600,12 @@ private:
     rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr One_Force_Result;                                 //一维力发布器
     rclcpp::Publisher<rm_ros_interfaces::msg::Sixforce>::SharedPtr One_Zero_Force_Result;                            //一维力目标坐标系下系统受力发布器
     rclcpp::Publisher<rm_ros_interfaces::msg::Jointerrorcode>::SharedPtr Joint_Error_Code_Result;                    //关节报错信息发布器
-    rclcpp::Publisher<std_msgs::msg::UInt16>::SharedPtr Sys_Err_Result;                                              //系统报错发布器
-    rclcpp::Publisher<std_msgs::msg::UInt16>::SharedPtr Arm_Err_Result;                                              //机械臂报错发布器
+    // rclcpp::Publisher<std_msgs::msg::UInt16>::SharedPtr Sys_Err_Result;                                              //系统报错发布器
+    rclcpp::Publisher<rm_ros_interfaces::msg::Rmerr>::SharedPtr Rm_Err_Result;                                              //机械臂报错发布器
     rclcpp::Publisher<std_msgs::msg::UInt16>::SharedPtr Arm_Coordinate_Result;                                       //力传感器基准坐标发布器
     rclcpp::Publisher<rm_ros_interfaces::msg::Handstatus>::SharedPtr Hand_Status_Result;                             //灵巧手数据发布器
+    rclcpp::Publisher<rm_ros_interfaces::msg::Rmplusbase>::SharedPtr Rm_Plus_Base_Result;                            //末端设备基础信息udp主动上报发布器
+    rclcpp::Publisher<rm_ros_interfaces::msg::Rmplusstate>::SharedPtr Rm_Plus_State_Result;                           //末端设备实时信息udp主动上报发布器
     rclcpp::Publisher<rm_ros_interfaces::msg::Armcurrentstatus>::SharedPtr Arm_Current_Status_Result;                //机械臂当前状态发布器
     rclcpp::Publisher<rm_ros_interfaces::msg::Jointcurrent>::SharedPtr Joint_Current_Result;                         //关节当前电流发布器
     rclcpp::Publisher<rm_ros_interfaces::msg::Jointenflag>::SharedPtr Joint_En_Flag_Result;                          //关节使能状态布器
@@ -520,7 +617,7 @@ private:
     int come_time = 0;
     struct sockaddr_in clientAddr;
     socklen_t clientAddrLen = sizeof(clientAddr);
-    char udp_socket_buffer[800];
+    char udp_socket_buffer[1000];
 
 };
 

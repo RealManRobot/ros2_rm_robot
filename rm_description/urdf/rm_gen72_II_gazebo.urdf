@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot
+  name="rm_gen72_description">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.000712087165808114 0.000118093249492777 0.0414067848053686"
+        rpy="0 0 0" />
+      <mass
+        value="0.620373115484278" />
+      <inertia
+        ixx="0.00079889770688379"
+        ixy="3.8775095880542E-06"
+        ixz="3.23421606393105E-05"
+        iyy="0.000777470500786011"
+        iyz="-2.32809910225287E-06"
+        izz="0.000713374333260858" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="Link1">
+    <inertial>
+      <origin
+        xyz="4.68738708666153E-07 -5.61515321378703E-05 -0.0517918499656395"
+        rpy="0 0 0" />
+      <mass
+        value="0.54994312997524" />
+      <inertia
+        ixx="0.00111167293667467"
+        ixy="-1.7809620802246E-09"
+        ixz="-8.45267903175353E-09"
+        iyy="0.00117264804659634"
+        iyz="1.59989313798593E-06"
+        izz="0.000419695190171004" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="0 0 0.2052"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.0014"
+      upper="3.0014"
+      effort="21"
+      velocity="3.141" />
+  </joint>
+  <link
+    name="Link2">
+    <inertial>
+      <origin
+        xyz="-2.88545974623732E-07 -0.0579134089220325 3.75915161120642E-06"
+        rpy="0 0 0" />
+      <mass
+        value="0.550586463383527" />
+      <inertia
+        ixx="0.00141428130939839"
+        ixy="-5.05132406195906E-08"
+        ixz="-4.32548551993774E-08"
+        iyy="0.000521773824108223"
+        iyz="-9.09462967590962E-09"
+        izz="0.00126884568146693" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="Link1" />
+    <child
+      link="Link2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.8323"
+      upper="1.8323"
+      effort="21"
+      velocity="3.141" />
+  </joint>
+  <link
+    name="Link3">
+    <inertial>
+      <origin
+        xyz="0.0107298626179935 9.62004722863946E-07 -0.0695594229370219"
+        rpy="0 0 0" />
+      <mass
+        value="0.82968557502544" />
+      <inertia
+        ixx="0.00280001568966415"
+        ixy="-1.44008311104275E-08"
+        ixz="-0.000595023175409376"
+        iyy="0.00283701746914158"
+        iyz="-2.19949205300414E-08"
+        izz="0.00105779244171461" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="revolute">
+    <origin
+      xyz="0 -0.28 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="Link2" />
+    <child
+      link="Link3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.0014"
+      upper="3.0014"
+      effort="21"
+      velocity="3.141" />
+  </joint>
+  <link
+    name="Link4">
+    <inertial>
+      <origin
+        xyz="-0.013111895152949 0.0451503357451828 -2.31513926694886E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.290621238098372" />
+      <inertia
+        ixx="0.000529647096878416"
+        ixy="8.2565173990464E-05"
+        ixz="6.55720933001501E-10"
+        iyy="0.000194605004006168"
+        iyz="8.64015145346353E-10"
+        izz="0.000590168359619798" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="0.040000186844245 0 0"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="Link3" />
+    <child
+      link="Link4" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.8792"
+      upper="0.9597"
+      effort="21"
+      velocity="3.141" />
+  </joint>
+  <link
+    name="Link5">
+    <inertial>
+      <origin
+        xyz="-1.18843087107065E-06 -8.54985729573327E-05 -0.0632725760574326"
+        rpy="0 0 0" />
+      <mass
+        value="0.451198262168411" />
+      <inertia
+        ixx="0.00129051318495878"
+        ixy="3.48651894301762E-09"
+        ixz="-2.37821560469814E-10"
+        iyy="0.00115953902595173"
+        iyz="2.42057250676721E-06"
+        izz="0.000327049806404794" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="revolute">
+    <origin
+      xyz="-0.018999 0.2525 0"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="Link4" />
+    <child
+      link="Link5" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.0014"
+      upper="3.0014"
+      effort="5"
+      velocity="3.926" />
+  </joint>
+  <link
+    name="Link6">
+    <inertial>
+      <origin
+        xyz="0.0242920438561028 0.00255443844699678 -6.53849925857914E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.20756793295766" />
+      <inertia
+        ixx="7.4545186661251E-05"
+        ixy="-2.26966452986669E-05"
+        ixz="-2.99738463100114E-07"
+        iyy="0.000286536832716846"
+        iyz="-3.37463552033454E-08"
+        izz="0.000286928462037518" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint6"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="Link5" />
+    <child
+      link="Link6" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.707"
+      upper="1.783"
+      effort="5"
+      velocity="3.926" />
+  </joint>
+  <link
+    name="Link7">
+    <inertial>
+      <origin
+        xyz="0.000136937499703005 0.000200934349526612 -0.0365053550059413"
+        rpy="0 0 0" />
+      <mass
+        value="0.227931410572715" />
+      <inertia
+        ixx="0.00015773346282352"
+        ixy="5.68055708624683E-07"
+        ixz="-3.66992709847985E-07"
+        iyy="0.000158192859217757"
+        iyz="-5.42990345033046E-07"
+        izz="0.000109722972250852" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/rm_gen72_II_arm/Link7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint7"
+    type="continuous">
+    <origin
+      xyz="0.067 -0.0787 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="Link6" />
+    <child
+      link="Link7" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.0014"
+      upper="3.0014"
+      effort="5"
+      velocity="3.926" />
+  </joint>
+</robot>

@@ -157,7 +157,7 @@ After successful execution, the interface appears as follows, and the robotic ar
 
 ## rm_example_Package_Architecture_Description
 ### Overview_of_Package_Files
-The current rm_driver package is composed of the following files.
+The current rm_example package is composed of the following files.
 ```
 ├── CMakeLists.txt                           # compilation rule file
 ├── doc

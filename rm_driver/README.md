@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robot rm_driver User Manual V1.3
+# RealMan Robot rm_driver User Manual V1.4
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -18,7 +18,8 @@ Revision History:
 |V1.1	  | 7/8/2024  | Amend（Add GEN72 adapter files） |
 |V1.2	  | 9/10/2024 | Amend（Add ECO63 adapter files） |
 |V1.2.1 | 10/31/2024| Amend（Add dexterous hand udp topic） |
-|V1.3 | 12/25/2024| Amend（Add UDP reporting adaptation） |
+|V1.3   | 12/25/2024| Amend（Add UDP reporting adaptation） |
+|V1.4   | 4/7/2025 | Amend（Add UDP reporting adaptation） |
 
 </div>
 
@@ -76,9 +77,13 @@ rm_driver:
     udp_cycle: 5                  # the active reporting cycle of UDP, which needs to be a multiple of 5.  
     udp_port: 8089                # Set the udp active reporting port   
     udp_force_coordinate: 0       # Set the base coordinate of the six-axis force when the system is forced, where 0 is the sensor coordinate system, 1 is the current work coordinate system, and 2 is the current tool coordinate system
+    udp_hand: false               # Set the udp hand reporting enable
+    udp_plus_base: false          # Set the udp plus base reporting enable
+    udp_plus_state: false         # Set the udp plus state reporting enable
 
     trajectory_mode: 0            #When the high following mode is set, multiple modes are supported, including 0- complete transparent transmission mode, 1- curve fitting mode and 2- filtering mode.
     radio: 0                     #Set the smoothing coefficient in curve fitting mode (range 0-100) or the filter parameter in filtering mode (range 0-1000). The higher the value, the better the smoothing effect.
+    arm_joints: ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6"]
 ```
 
 There are mainly the following parameters.

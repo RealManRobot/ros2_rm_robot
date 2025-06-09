@@ -143,7 +143,7 @@ void ForcePositionControlDemoPub::looppub_timer_callback()
     forceposition_data.mode = 0;
     forceposition_data.direction = 2;
     forceposition_data.n = 5;
-    forceposition_data.block = true;
+    // forceposition_data.block = true;
     this->set_force_postion_publisher_->publish(forceposition_data);
     movej_p_state = false;
     std::this_thread::sleep_for(std::chrono::milliseconds(100));

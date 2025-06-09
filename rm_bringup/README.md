@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robot rm_bringup User Manual V1.3
+# RealMan Robot rm_bringup User Manual V1.4
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -18,6 +18,7 @@ Revision History:
 |V1.1	  | 7/8 /2024 | Amend(Add GEN72 adapter files) |
 |V1.2 	  | 9/10 /2024| Amend(Add ECO63 adapter files) |
 |V1.3 	  | 25/12/2024| Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
+|V1.4 	  | 25/12/2024| Amend(Add GEN72_II adapter files) |
 
 </div>
 
@@ -63,7 +64,7 @@ The following screen appears in the interface after a successful node launch.
 The launch file launches the function of moveit2 to control the real robotic arm. Then, you can control the robotic arm movement by dragging the control ball. For details, please refer to "[rm_moveit2_config Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_moveit2_config/README.md)".
 ## rm_bringup_Package_Architecture_Description
 ### Overview_of_Package_Files
-The current rm_driver package is composed of the following files.
+The current rm_bringup package is composed of the following files.
 ```
 ├── CMakeLists.txt                     # compilation rule file
 ├── include
@@ -83,8 +84,10 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_eco65_6f_bringup.launch.py  # eco65 arm six-axis force moveit2 launch file
 │   ├── rm_eco65_6fb_bringup.launch.py # eco65 arm integrated six-axis force moveit2 launch file
 │   ├── rm_eco65_bringup.launch.py     # eco65 arm moveit2 launch file
-
-│   └── rm_gen72_bringup.launch.py     # gen72 arm moveit2 launch file
+│   ├── rm_gen72_bringup.launch.py     # gen72 arm moveit2 launch file
+│   └── rm_gen72_gazebo.launch.py      # gen72 arm gazebo launch file
+│   ├── rm_gen72_II_bringup.launch.py  # gen72_II arm moveit2 launch file
+│   └── rm_gen72_II_gazebo.launch.py   # gen72_II arm gazebo launch file
 ├── package.xml
 ├── README_CN.md                  
 └── README.md                           

@@ -8,3 +8,5 @@ bool expand_state_enable
 bool hand_enable
 bool joint_speed_enable
 bool lift_state_enable
+bool plus_base_enable
+bool plus_state_enable

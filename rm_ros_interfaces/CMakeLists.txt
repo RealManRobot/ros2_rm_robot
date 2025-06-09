@@ -57,6 +57,9 @@ set(msg_files
   msg/Jointvoltage.msg
   msg/Carteposcustom.msg
   msg/Jointposcustom.msg
+  msg/Rmplusbase.msg
+  msg/Rmplusstate.msg
+  msg/Rmerr.msg
 )
 
 # uncomment the following section in order to fill in
