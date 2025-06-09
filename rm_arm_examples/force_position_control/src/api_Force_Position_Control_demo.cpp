@@ -143,7 +143,7 @@ void ForcePositionControlDemoPub::looppub_timer_callback()
     forceposition_data.mode = 0;
     forceposition_data.direction = 2;
     forceposition_data.n = 5;
-    forceposition_data.block = true;
+    // forceposition_data.block = true;
     this->set_force_postion_publisher_->publish(forceposition_data);
     movej_p_state = false;
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -191,7 +191,7 @@ ForcePositionControlDemoPub::ForcePositionControlDemoPub():rclcpp::Node("Force_P
   stop_force_postion_publisher_ = this->create_publisher<std_msgs::msg::Bool>("/rm_driver/stop_force_postion_cmd", rclcpp::ParametersQoS());
   loop_pub_Timer = this->create_wall_timer(std::chrono::milliseconds(100), 
         std::bind(&ForcePositionControlDemoPub::looppub_timer_callback,this));
-  std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+  std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 }
 /***********************************************end**************************************************/
 
@@ -202,7 +202,7 @@ ForcePositionControlDemoSub::ForcePositionControlDemoSub():rclcpp::Node("Force_P
   movel_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movel_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::MoveLDemo_Callback, this,_1));
   set_force_postion_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/set_force_postion_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::SetForcePostionDemo_Callback, this,_1));
   stop_force_postion_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/stop_force_postion_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::StopForcePostionDemo_Callback, this,_1));
-  std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+  std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 }
 /***********************************************end**************************************************/
 

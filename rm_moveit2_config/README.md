@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robotic Arm rm_moveit2_config User Manual V1.3
+# RealMan Robotic Arm rm_moveit2_config User Manual V1.4
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -17,7 +17,8 @@ Revision History:
 |V1.0	  | 2/19/2024 | Draft |
 |V1.1	  | 7/3 /2024 | Amend(Add GEN72 adapter files) |
 |V1.2	  | 10/9/2024 | Amend(Add ECO63 adapter files) |
-| V1.3   | 25/12/2024 | Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
+|V1.3   | 25/12/2024 | Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
+|V1.4    |2025-4-3 | Amend(AddGen72_IIadapter files) |
 
 </div>
 
@@ -56,7 +57,7 @@ The command to start the integrated six-axis force version of the manipulator is
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6fb.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63,  eco65, eco63, 75, and gen72.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63,  eco65, eco63, 75, and gen72、gen72_II.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_65_config demo.launch.py
@@ -101,12 +102,12 @@ The command to start the integrated six-axis force version of the manipulator is
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 ```
-Note that the above commands need to replace <arm_type> with the corresponding robotic arm model, which can be selected as 65, 63, eco65, eco63, 75, and gen72.  
+Note that the above commands need to replace <arm_type> with the corresponding robotic arm model, which can be selected as 65, 63, eco65, eco63, 75, and gen72、gen72_II.  
 After completing the above operations, the following interface appears, and we can control the movement of the robotic arm by dragging the control ball.  
 ![image](doc/rm_moveit2_config4.png)
 ## rm_moveit2_config_Architecture_Description
 ### Overview_of_package_files
-The current rm_driver package is composed of the following files.
+The current rm_moveit2_config package is composed of the following files.
 ```
 ├── doc
 │   ├── rm_moveit2_config1.png
@@ -129,10 +130,10 @@ The current rm_driver package is composed of the following files.
 │   │   ├── moveit_controllers.yaml                #63 robotic arm moveit2 controller
 │   │   ├── moveit.rviz                            #63 robotic arm rviz2 display configuration file
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rml_63_6fb_description.urdf.xacro      #63 integrated six-axis force  robotic arm xacro description file
 │   │   ├── rml_63_description.ros2_control.xacro  #63 robotic arm xacro description file
 │   │   ├── rml_63_description.srdf                #63 robotic arm moveit2 control configuration file
 │   │   ├── rml_63_description.urdf.xacro          #63 robotic arm xacro description file
+│   │   ├── rml_63.urdf.xacro
 │   │   └── ros2_controllers.yaml                  #63 robotic arm move controller
 │   ├── launch
 │   │   ├── demo_6f.launch.py                      #63 six-axis force virtual robotic arm moveit2 launch file
@@ -161,10 +162,10 @@ The current rm_driver package is composed of the following files.
 │   │   ├── moveit_controllers.yaml
 │   │   ├── moveit.rviz
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rm_65_6fb_description.urdf.xacro
 │   │   ├── rm_65_description.ros2_control.xacro
 │   │   ├── rm_65_description.srdf
 │   │   ├── rm_65_description.urdf.xacro
+│   │   ├── rm_65.urdf.xacro
 │   │   └── ros2_controllers.yaml
 │   ├── launch
 │   │   ├── demo_6f.launch.py
@@ -193,10 +194,10 @@ The current rm_driver package is composed of the following files.
 │   │   ├── moveit_controllers.yaml
 │   │   ├── moveit.rviz
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rm_75_6fb_description.urdf.xacro
 │   │   ├── rm_75_description.ros2_control.xacro
 │   │   ├── rm_75_description.srdf
 │   │   ├── rm_75_description.urdf.xacro
+│   │   ├── rm_75.urdf.xacro
 │   │   └── ros2_controllers.yaml
 │   ├── launch
 │   │   ├── demo_6f.launch.py
@@ -225,10 +226,10 @@ The current rm_driver package is composed of the following files.
 │   │   ├── moveit_controllers.yaml
 │   │   ├── moveit.rviz
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rm_eco65_6fb_description.urdf.xacro
 │   │   ├── rm_eco65_description.ros2_control.xacro
 │   │   ├── rm_eco65_description.srdf
 │   │   ├── rm_eco65_description.urdf.xacro
+│   │   ├── rm_eco65.urdf.xacro
 │   │   └── ros2_controllers.yaml
 │   ├── launch
 │   │   ├── demo_6f.launch.py
@@ -257,10 +258,10 @@ The current rm_driver package is composed of the following files.
 │   │   ├── moveit_controllers.yaml
 │   │   ├── moveit.rviz
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rm_eco63_6fb_description.urdf.xacro
 │   │   ├── rm_eco63_description.ros2_control.xacro
 │   │   ├── rm_eco63_description.srdf
 │   │   ├── rm_eco63_description.urdf.xacro
+│   │   ├── rm_eco63.urdf.xacro
 │   │   └── ros2_controllers.yaml
 │   ├── launch
 │   │   ├── demo_6fb.launch.py
@@ -289,13 +290,17 @@ The current rm_driver package is composed of the following files.
     │   ├── rm_gen72_description.ros2_control.xacro
     │   ├── rm_gen72_description.srdf
     │   ├── rm_gen72_description.urdf.xacro
+    │   ├── rm_gen72_II_description.urdf.xacro
     │   └── ros2_controllers.yaml
     ├── launch
     │   ├── demo.launch.py
+    │   ├── demo_II.launch.py
     │   ├── gazebo_moveit_demo.launch.py
+    │   ├── gazebo_moveit_demo_II.launch.py
     │   ├── move_group.launch.py
     │   ├── moveit_rviz.launch.py
     │   ├── real_moveit_demo.launch.py
+    │   ├── real_moveit_demo_II.launch.py
     │   ├── rsp.launch.py
     │   ├── setup_assistant.launch.py
     │   ├── spawn_controllers.launch.py

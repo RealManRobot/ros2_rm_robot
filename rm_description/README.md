@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robot rm_description User Manual V1.3
+# RealMan Robot rm_description User Manual V1.4
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -18,6 +18,7 @@ Revision History:
 |V1.1	  | 7/8 /2024 | Amend(Add GEN72 adapter files) |
 |V1.2	  | 9/11 /2024| Amend(Add ECO63 adapter files) |
 |V1.3 	| 25/12/2024| Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
+|V1.4   |2025-4-7 |Amend(AddGEN72_II adapter files) |
 </div>
 
 ## Content
@@ -74,7 +75,7 @@ After loading, you can see the current state of the robotic arm in the interface
 ![image](doc/rm_description1.png)
 ## rm_description_Package_Architecture_Description
 ### Overview_of_package_files
-The current rm_driver package is composed of the following files.  
+The current rm_description package is composed of the following files.  
 ```
 ├── CMakeLists.txt                # compilation rule file
 ├── launch

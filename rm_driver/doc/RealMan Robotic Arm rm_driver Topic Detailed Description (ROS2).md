@@ -7,7 +7,7 @@
 
 <div align="center">
 
-# RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2) V1.1.4
+# RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2) V1.1.5
 
 
  
@@ -25,6 +25,7 @@ Revision History:
 |V1.1.2| 2024-9-25| Amend(revise coordinate topic description)|
 |V1.1.3| 2024-10-31|Amend(Add Agile Hand UDP Adaptation,Follow Adaptation)|
 |V1.1.4| 2024-12-25|Amend(Modify UDP report content)|
+|V1.1.5| 2025-02-19|Amend(API2 Adaptation; add end ecosystem protocol interface; update UDP interface) |
 
 </div>
 
@@ -62,32 +63,35 @@ Revision History:
 * 3.6.2[Position teaching](#Position_teaching)
 * 3.6.3[Attitude teaching](#Attitude_teaching)
 * 3.6.4[Stop teaching](#Stop_teaching)
-* 3.7[Functions related to controller configuration](#Functions_related_to_controller_configuration)
-* 3.7.1[Get the controller's version](#Get_the_controller's_version)
-* 3.8[Functions related to the IO configuration of the end tool](#Functions_related_to_the_IO_configuration_of_the_end_tool)
-* 3.8.1[Setting the tool voltage output](#Setting_the_tool_voltage_output)
-* 3.9[Functions related to the control of the end gripper - optional](#Functions_related_to_the_control_of_the_end_gripper)
-* 3.9.1[Setting the Gripper Pick](#Setting_the_Gripper_Pick)
-* 3.9.2[Setting the gripper pick-on](#Setting_the_gripper_pick-on)
-* 3.9.3[Setting the gripper to the given position](#Setting_the_gripper_to_the_given_position)
-* 3.10[Functions related to the drag teach and trajectory reproduction](#Functions_related_to_the_drag_teach_and_trajectory_reproduction)
-* 3.10.1[Set the force-position mixing control](#Set_the_force-position_mixing_control)
-* 3.10.2[Stop the force-position mixing control](#Stop_the_force-position_mixing_control)
-* 3.11[Functions related to the use of six-axis force sensors at the end - optional](#Functions_related_to_the_use_of_six-axis_force_sensors_at_the_end)
-* 3.11.1[Query the six-axis force data](#Query_the_six-axis_force_data)
-* 3.11.2[Clearing the six-axis force Data](#Clearing_the_six-axis_force_Data)
-* 3.12[Functions related to the control of the five-finger dexterous hand - optional](#Functions_related_to_the_control_of_the_five-finger_dexterous_hand)
-* 3.12.1[Setting the serial number of the dexterous hand posture](#Setting_the_serial_number_of_the_dexterous_hand_posture)
-* 3.12.2[Set the dexterous hand action sequence number](#Set_the_dexterous_hand_action_sequence_number)
-* 3.12.3[Setting the angles of various degrees of freedom for the dexterous hand](#Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand)
-* 3.12.4[Setting the dexterous hand speed](#Setting_the_dexterous_hand_speed)
-* 3.12.5[Setting the force threshold of the dexterous hand](#Setting_the_force_threshold_of_the_dexterous_hand)
-* 3.12.6[Setting the angle following of the dexterous hand](#Setting_the_angle_following_of_the_dexterous_hand)
-* 3.12.7[Setting the posture following of the dexterous hand](#Setting_the_posture_following_of_the_dexterous_hand)
-* 3.13[Lifting mechanism](#Lifting_mechanism)
-* 3.13.1[Speed open-loop control of the lifting mechanism](#Speed_open-loop_control_of_the_lifting_mechanism)
-* 3.13.2[Position closed-loop control of the lifting mechanism](#Position_closed-loop_control_of_the_lifting_mechanism)
-* 3.13.3[Get the lifting mechanism state](#Get_the_lifting_mechanism_state)
+* 3.7[Functions related to the IO configuration of the end tool](#Functions_related_to_the_IO_configuration_of_the_end_tool)
+* 3.7.1[Setting the tool voltage output](#Setting_the_tool_voltage_output)
+* 3.8[Functions related to the control of the end gripper - optional](#Functions_related_to_the_control_of_the_end_gripper)
+* 3.8.1[Setting the Gripper Pick](#Setting_the_Gripper_Pick)
+* 3.8.2[Setting the gripper pick-on](#Setting_the_gripper_pick-on)
+* 3.8.3[Setting the gripper to the given position](#Setting_the_gripper_to_the_given_position)
+* 3.9[Functions related to the drag teach and trajectory reproduction](#Functions_related_to_the_drag_teach_and_trajectory_reproduction)
+* 3.9.1[Set the force-position mixing control](#Set_the_force-position_mixing_control)
+* 3.9.2[Stop the force-position mixing control](#Stop_the_force-position_mixing_control)
+* 3.10[Functions related to the use of six-axis force sensors at the end - optional](#Functions_related_to_the_use_of_six-axis_force_sensors_at_the_end)
+* 3.10.1[Query the six-axis force data](#Query_the_six-axis_force_data)
+* 3.10.2[Clearing the six-axis force Data](#Clearing_the_six-axis_force_Data)
+* 3.11[Functions related to the control of the five-finger dexterous hand - optional](#Functions_related_to_the_control_of_the_five-finger_dexterous_hand)
+* 3.11.1[Setting the serial number of the dexterous hand posture](#Setting_the_serial_number_of_the_dexterous_hand_posture)
+* 3.11.2[Set the dexterous hand action sequence number](#Set_the_dexterous_hand_action_sequence_number)
+* 3.11.3[Setting the angles of various degrees of freedom for the dexterous hand](#Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand)
+* 3.11.4[Setting the dexterous hand speed](#Setting_the_dexterous_hand_speed)
+* 3.11.5[Setting the force threshold of the dexterous hand](#Setting_the_force_threshold_of_the_dexterous_hand)
+* 3.11.6[Setting the angle following of the dexterous hand](#Setting_the_angle_following_of_the_dexterous_hand)
+* 3.11.7[Setting the posture following of the dexterous hand](#Setting_the_posture_following_of_the_dexterous_hand)
+* 3.12[Lifting mechanism](#Lifting_mechanism)
+* 3.12.1[Speed open-loop control of the lifting mechanism](#Speed_open-loop_control_of_the_lifting_mechanism)
+* 3.12.2[Position closed-loop control of the lifting mechanism](#Position_closed-loop_control_of_the_lifting_mechanism)
+* 3.12.3[Get the lifting mechanism state](#Get_the_lifting_mechanism_state)
+* 3.13[End-Effector Ecosystem Command Set](#End_Effector_Ecosystem_Command_Set)
+* 3.13.1[Setting End-Effector Ecosystem Protocol Mode](#Setting_End_Effector_Ecosystem_Protocol_Mode)
+* 3.13.2[Querying End-Effector Ecosystem Protocol Mode](#Querying_End_Effector_Ecosystem_Protocol_Mode)
+* 3.13.3[Setting Tactile Sensor Mode](#Setting_Tactile_Sensor_Mode)
+* 3.13.4[Querying Tactile Sensor Mode](#Querying_Tactile_Sensor_Mode)
 * 3.14[Functions related to the transmissive force-position compensation Mode](#Functions_related_to_the_transmissive_force-position_compensation_Mode)
 * 3.14.1[Starting the transmissive force-position mixing control compensation mode](#Starting_the_transmissive_force-position_mixing_control_compensation_mode)
 * 3.14.2[Stopping the transmissive force-position mixing control compensation mode](#Stopping_the_transmissive_force-position_mixing_control_compensation_mode)
@@ -180,8 +184,8 @@ This section describes how to query and control the robotic arm through the topi
 
 | Function description | Clear_the_joint's_error_code |
 | :---: | :---- |
-| Parameter description | Jointerrclear.msg<br>uint8 joint_num：the corresponding joint number, from the base to the robotic arm gripper, the number is 1-6.<br>bool block：whether it is a blocking mode，bool type，true:blocking，false:non-blocking |
-| Command example | ros2 topic pub /rm_driver/set_joint_err_clear_cmd rm_ros_interfaces/msg/Jointerrclear "joint_num: 1 <br>block: true" |
+| Parameter description | Jointerrclear.msg<br>uint8 joint_num：the corresponding joint number, from the base to the robotic arm gripper, the number is 1-6. |
+| Command example | ros2 topic pub /rm_driver/set_joint_err_clear_cmd rm_ros_interfaces/msg/Jointerrclear "joint_num: 1 " |
 | Return value | true-set successfully，false-set failed |
 | Return example | ros2 topic echo /rm_driver/set_joint_err_clear_result |
 
@@ -294,46 +298,39 @@ This section describes how to query and control the robotic arm through the topi
 #### Trajectory_emergency_stop
 | Function description | Motion planning trajectory emergency stop |
 | :---: | :---- |
-| Parameter description | ROS msg std_msgs::msg::Bool<br>bool data：whether the trajectory is emergency stop, true: emergency stop, false: not emergency stop. |
-| Command example | ros2 topic pub /rm_driver/move_stop_cmd std_msgs/msg/Bool "data: true" |
+| Parameter description | ROS msg std_msgs::msg::Empty |
+| Command example | ros2 topic pub /rm_driver/move_stop_cmd std_msgs/msg/Empty "{}"|
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/move_stop_result |
 ### Teaching_instructions
 #### Joint_teaching
 | Function description | Joint teaching |
 | :---: | :---- |
-| Parameter description | Jointteach.msg<br>uint8 num:Joint num，1~7<br>uint8 direction:teach direction，0-negative direction，1-positive direction<br>uint8 speed:speed percentage ratio coefficient, 0-100.<br>bool block：whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub /rm_driver/set_joint_teach_cmd rm_ros_interfaces/msg/Jointteach "num: 1<br>direction: 0<br>speed: 10<br>block: true" |
+| Parameter description | Jointteach.msg<br>uint8 num:Joint num，1~7<br>uint8 direction:teach direction，0-negative direction，1-positive direction<br>uint8 speed:speed percentage ratio coefficient, 0-100. |
+| Command example | ros2 topic pub /rm_driver/set_joint_teach_cmd rm_ros_interfaces/msg/Jointteach "num: 1<br>direction: 0<br>speed: 10" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_joint_teach_result |
 #### Position_teaching
 | Function description | Position teaching |
 | :---: | :---- |
-| Parameter description | Posteach.msg<br>uint8 type：Teaching demonstration type: input0:X-axis direction、1:Y-axis direction、2:Z-axis direction<br>uint8 direction:teach direction，0-negative direction，1-positive direction<br>uint8 speed:speed percentage ratio coefficient, 0-100.<br>bool block：whether it is a blocking mode, bool type, true: blocking, false: non-blocking.|
-| Command example | ros2 topic pub /rm_driver/set_pos_teach_cmd rm_ros_interfaces/msg/Posteach "type: 2<br>direction: 0<br>speed: 10<br>block: true" |
+| Parameter description | Posteach.msg<br>uint8 type：Teaching demonstration type: input0:X-axis direction、1:Y-axis direction、2:Z-axis direction<br>uint8 direction:teach direction，0-negative direction，1-positive direction<br>uint8 speed:speed percentage ratio coefficient, 0-100.|
+| Command example | ros2 topic pub /rm_driver/set_pos_teach_cmd rm_ros_interfaces/msg/Posteach "type: 2<br>direction: 0<br>speed: 10" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_pos_teach_result |
 #### Attitude_teaching
 | Function description | Attitude teaching |
 | :---: | :---- |
-| Parameter description | Ortteach.msg.msg<br>uint8 type：Teaching demonstration type: input0:RX-axis direction、1:RY-axis direction、2:RZ-axis direction<br>uint8 direction:teach direction，0-negative direction，1-positive direction<br>uint8 speed:speed percentage ratio coefficient, 0-100.<br>bool block：whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
+| Parameter description | Ortteach.msg.msg<br>uint8 type：Teaching demonstration type: input0:RX-axis direction、1:RY-axis direction、2:RZ-axis direction<br>uint8 direction:teach direction，0-negative direction，1-positive direction<br>uint8 speed:speed percentage ratio coefficient, 0-100. |
+| Command example | ros2 topic pub /rm_driver/set_ort_teach_cmd rm_ros_interfaces/msg/Ortteach "type: 2<br>direction: 0<br>speed: 10" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_ort_teach_result |
 #### Stop_teaching
 | Function description | Stop teaching |
 | :---: | :---- |
-| Parameter description | ROS msg std_msgs::msg::Bool<br>bool data：whether the trajectory is blocking mode, true: blocking, false: not blocking.|
-| Command example | ros2 topic pub /rm_driver/set_stop_teach_cmd std_msgs/msg/Bool "data: true" |
+| Parameter description | ROS msg std_msgs::msg::Empty|
+| Command example | ros2 topic pub /rm_driver/set_stop_teach_cmd std_msgs/msg/Empty "{}" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_stop_teach_result |
-### Functions_related_to_controller_configuration
-#### Get_the_controller's_version
-| Function description | Get the controller's version |
-| :---: | :---- |
-| Parameter description | Armsoftversion.msg<br>string plan version: the read user interface kernel version number.<br>string ctrlversion: real-time kernel version number.<br>string kernal1: the version number of sub-core 1 of the real-time kernel.<br>string kernal2: the version number of sub-core 2 of the real-time kernel.<br>string product version: robotic arm model. |
-| Command example | ros2 topic pub /rm_driver/get_arm_software_version_cmd std_msgs/msg/Empty "{}" |
-| Return value | Successful return: version information; Failure return: the driver terminal returns an error code. |
-| Return example | ros2 topic echo /rm_driver/get_arm_software_version_result |
 ### Functions_related_to_the_IO_configuration_of_the_end_tool
 #### Setting_the_tool_voltage_output
 | Function description | Setting the tool voltage output |
@@ -369,15 +366,15 @@ The RealMan robotic arm is equipped with an Inspire Robots EG2-4C2 gripper. The 
 #### Set_the_force-position_mixing_control
 | Function description | Set the force-position mixing control |
 | :---: | :---- |
-| Parameter description | Setforceposition.msg<br>uint8 sensor: 0 - One-axis force; 1 - Six-axis force<br>uint8 mode: 0 - Base coordinate system force control; 1 - Tool coordinate system force control<br>uint8 direction:Force control direction; 0 - Along the X-axis; 1 - Along the Y-axis; 2 - Along the Z-axis; 3 - Along the RX posture direction; 4 - Along the RY posture direction; 5 - Along the RZ posture direction<br>int16 n: The value of force, unit: N, accuracy: 0.1N<br>bool block: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_force_postion_cmd rm_ros_interfaces/msg/Setforceposition "sensor: 1<br>mode: 0<br>direction: 2<br>n: 3<br>block: false" |
+| Parameter description | Setforceposition.msg<br>uint8 sensor: 0 - One-axis force; 1 - Six-axis force<br>uint8 mode: 0 - Base coordinate system force control; 1 - Tool coordinate system force control<br>uint8 direction:Force control direction; 0 - Along the X-axis; 1 - Along the Y-axis; 2 - Along the Z-axis; 3 - Along the RX posture direction; 4 - Along the RY posture direction; 5 - Along the RZ posture direction<br>int16 n: The value of force, unit: N, accuracy: 0.1N |
+| Command example | ros2 topic pub --once /rm_driver/set_force_postion_cmd rm_ros_interfaces/msg/Setforceposition "sensor: 1<br>mode: 0<br>direction: 2<br>n: 3" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_force_postion_result |
 #### Stop_the_force-position_mixing_control
 | Function description | Stop the force-position mixing control |
 | :---: | :---- |
-| Parameter description | std_msgs::msg::Bool<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub /rm_driver/stop_force_postion_cmd std_msgs/msg/Bool "data: true" |
+| Parameter description | std_msgs::msg::Empty |
+| Command example | ros2 topic pub /rm_driver/stop_force_postion_cmd std_msgs/msg/Empty "{}" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/clear_force_data_result |
 ### Functions_related_to_the_use_of_six-axis_force_sensors_at_the_end
@@ -392,8 +389,8 @@ The RealMan RM-65F robotic arm has an integrated six-axis force sensor at the en
 #### Clearing_the_six-axis_force_Data
 | Function description | Clearing the six-axis force data |
 | :---: | :---- |
-| Parameter description | std_msgs::msg::Bool<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub /rm_driver/clear_force_data_cmd std_msgs/msg/Bool "data: true" |
+| Parameter description | std_msgs::msg::Empty|
+| Command example | ros2 topic pub /rm_driver/clear_force_data_cmd std_msgs/msg/Empty "{}" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/clear_force_data_result |
 ### Functions_related_to_the_control_of_the_five-finger_dexterous_hand
@@ -401,15 +398,15 @@ The RealMan RM-65 robotic arm has been equipped with a five-finger dexterous han
 #### Setting_the_serial_number_of_the_dexterous_hand_posture
 | Function description | Setting the serial number of the dexterous hand posture |
 | :---: | :---- |
-| Parameter description | Handposture.msg<br>uint16 posture_num：the serial number of the posture pre-saved in the dexterous hand, ranging from 1 to 40.<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_hand_posture_cmd rm_ros_interfaces/msg/Handposture "posture_num: 1<br>block: true" |
+| Parameter description | Handposture.msg<br>uint16 posture_num：the serial number of the posture pre-saved in the dexterous hand, ranging from 1 to 40.<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking.<br>uint16 timeout:  The timeout setting for blocking mode, unit: seconds. |
+| Command example | ros2 topic pub --once /rm_driver/set_hand_posture_cmd rm_ros_interfaces/msg/Handposture "posture_num: 1<br>block: true<br>timeout: 1000" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_hand_posture_result |
 #### Set_the_dexterous_hand_action_sequence_number
 | Function description | Set the dexterous hand action sequence number |
 | :---: | :---- |
-| Parameter description | Handseq.msg<br>uint16 seq_num：the serial number of the action sequence pre-saved in the dexterous hand, ranging from 1 to 40.<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_hand_seq_cmd rm_ros_interfaces/msg/Handseq "seq_num: 1<br>block: true" |
+| Parameter description | Handseq.msg<br>uint16 seq_num：the serial number of the action sequence pre-saved in the dexterous hand, ranging from 1 to 40.<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking.<br>uint16 timeout: The timeout setting for blocking mode, unit: seconds. |
+| Command example | ros2 topic pub --once /rm_driver/set_hand_seq_cmd rm_ros_interfaces/msg/Handseq "seq_num: 1<br>block: true<br>timeout:1000" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_hand_seq_result |
 #### Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand
@@ -422,15 +419,15 @@ The RealMan RM-65 robotic arm has been equipped with a five-finger dexterous han
 #### Setting_the_dexterous_hand_speed
 | Function description | Setting the dexterous hand speed |
 | :---: | :---- |
-| Parameter description | Handspeed.msg<br>uint16 hand_speed：hand speed, range: 1-1000.<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_hand_speed_cmd rm_ros_interfaces/msg/Handspeed "hand_speed: 200<br>block: true" |
+| Parameter description | Handspeed.msg<br>uint16 hand_speed：hand speed, range: 1-1000. |
+| Command example | ros2 topic pub --once /rm_driver/set_hand_speed_cmd rm_ros_interfaces/msg/Handspeed "hand_speed: 200" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_hand_speed_result |
 #### Setting_the_force_threshold_of_the_dexterous_hand
 | Function description | Setting the force threshold of the dexterous hand |
 | :---: | :---- |
-| Parameter description | Handforce.msg<br>uint16 hand_force：hand force, range: 1-1000.<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
-| Command example | ros2 topic pub --once /rm_driver/set_hand_force_cmd rm_ros_interfaces/msg/Handforce "hand_force: 200<br>block: true" |
+| Parameter description | Handforce.msg<br>uint16 hand_force：hand force, range: 1-1000. |
+| Command example | ros2 topic pub --once /rm_driver/set_hand_force_cmd rm_ros_interfaces/msg/Handforce "hand_force: 200" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_hand_force_result |
 #### Setting_the_angle_following_of_the_dexterous_hand
@@ -470,6 +467,36 @@ The RealMan robotic arm can be integrated with the self-developed lifting mechan
 | Command example | ros2 topic pub /rm_driver/get_lift_state_cmd std_msgs/msg/Empty "{}" |
 | Return value | Successful return: current state of the lifting mechanism; Failure return: the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/get_lift_state_result |
+### End_Effector_Ecosystem_Command_Set
+Reading of basic and real-time information of end-effector devices supported by the end-effector ecosystem protocol.
+#### Setting_End_Effector_Ecosystem_Protocol_Mode
+| Function description | Set End-Effector Ecosystem Protocol Mode |
+| :---: | :---- |
+| Parameter description | std_msgs::msg::Int32 <br>0 - Disable protocol;<br>9600 - Enable protocol (baud rate 9600);<br>115200 - Enable protocol (baud rate 115200);<br>256000 - Enable protocol (baud rate 256000);<br>460800 - Enable protocol (baud rate 460800). |
+| Command example | ros2 topic pub /rm_driver/set_rm_plus_mode_cmd std_msgs/msg/Int32 "data: 0" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/set_rm_plus_mode_result |
+#### Querying_End_Effector_Ecosystem_Protocol_Mode
+| Function description | Querying End-Effector Ecosystem Protocol Mode |
+| :---: | :---- |
+| Parameter description | std_msgs::msg::Empty |
+| Command example | ros2 topic pub /rm_driver/get_rm_plus_mode_cmd std_msgs/msg/Empty "{}" |
+| Return value | std_msgs::msg::Int32 <br>0 - Disable protocol;<br>9600 - Enable protocol (baud rate 9600);<br>115200 - Enable protocol (baud rate 115200);<br>256000 - Enable protocol (baud rate 256000);<br>460800 - Enable protocol (baud rate 460800). |
+| Return example | ros2 topic echo /rm_driver/get_rm_plus_mode_result |
+#### Setting Tactile Sensor Mode
+| Function description | Setting Tactile Sensor Mode |
+| :---: | :---- |
+| Parameter description | std_msgs::msg::Int32 <br>0 - Disable tactile sensor;<br>1 - Enable tactile sensor (returns processed data);<br>2 - Enable tactile sensor (returns raw data). |
+| Command example | ros2 topic pub /rm_driver/set_rm_plus_touch_cmd std_msgs::msg::Int32 "data: 0" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/set_rm_plus_touch_result |
+#### Querying_Tactile_Sensor_Mode
+| Function description | Querying_Tactile_Sensor_Mode |
+| :---: | :---- |
+| Parameter description | std_msgs::msg::Empty |
+| Command example | ros2 topic pub /rm_driver/get_rm_plus_mode_cmd std_msgs/msg/Empty "{}" |
+| Return value | std_msgs::msg::Int32 <br>0 - Disable protocol;<br>9600 - Enable protocol (baud rate 9600);<br>115200 - Enable protocol (baud rate 115200);<br>256000 - Enable protocol (baud rate 256000);<br>460800 - Enable protocol (baud rate 460800). |
+| Return example | ros2 topic echo /rm_driver/get_rm_plus_mode_result |
 ### Functions_related_to_the_transmissive_force-position_compensation_Mode
 For the RealMan robotic arm with one-axis force and six-axis force versions, the user can not only directly use the teaching device to call the underlying force-position mixing control module but also combine the custom trajectory with the underlying force-position mixing control algorithm in the form of periodic transmission to compensate.
 If force data calibration has not been completed before the force operations, the zero position can be calibrated using the one-axis force and six-axis force data clear interfaces.
@@ -503,14 +530,14 @@ If force data calibration has not been completed before the force operations, th
 #### Setting_UDP_robotic_arm_state_active_reporting_configuration
 | Function description | Set UDP robotic arm state active reporting configuration |
 | :---: | :---- |
-| Parameter description | Setrealtimepush.msg<br>uint16 cycle：set the broadcast cycle, which is a multiple of 5ms (default 1 i.e. 1 * 5 = 5 ms, 200 Hz).<br>uint16 port：set the broadcast port number (default 8089).<br>uint16 force_coordinate：set the coordinate system of force data outside the system (only supported by the arm with force sensors).<br>string ip：set the custom reporting target IP address (default 192.168.1.10). <br>bool hand_enable: whether dexterous hand status reporting is enabled, true is enabled, and false is not enabled. <br>aloha_state_enable: whether to enable aloha main arm status reporting, true to enable, false not to enable. <br>arm_current_status_enable: whether to enable the status report of the robot arm, true to enable, false not to enable. <br>expand_state_enable: whether to enable the report of extended joint related data, true is enabled, false is not enabled. <br>joint_speed_enable: whether joint speed reporting is enabled, true is enabled, and false is not enabled. <br>lift_state_enable: whether lifting joint data reporting is enabled, true is enabled, and false is not enabled.|
+| Parameter description | Setrealtimepush.msg<br>uint16 cycle：set the broadcast cycle, which is a multiple of 5ms (default 1 i.e. 1 * 5 = 5 ms, 200 Hz).<br>uint16 port：set the broadcast port number (default 8089).<br>uint16 force_coordinate：set the coordinate system of force data outside the system (only supported by the arm with force sensors).<br>string ip：set the custom reporting target IP address (default 192.168.1.10). <br>bool hand_enable: whether dexterous hand status reporting is enabled, true is enabled, and false is not enabled. <br>aloha_state_enable: whether to enable aloha main arm status reporting, true to enable, false not to enable. <br>arm_current_status_enable: whether to enable the status report of the robot arm, true to enable, false not to enable. <br>expand_state_enable: whether to enable the report of extended joint related data, true is enabled, false is not enabled. <br>joint_speed_enable: whether joint speed reporting is enabled, true is enabled, and false is not enabled. <br>lift_state_enable: whether lifting joint data reporting is enabled, true is enabled, and false is not enabled.<br>plus_base_enable: Basic information of the end-effector device，true is enabled, and false is not enabled<br>plus_state_enable: Real-time information of the end-effector device，true is enabled, and false is not enabled. |
 | Command example | ros2 topic pub --once /rm_driver/set_realtime_push_cmd rm_ros_interfaces/msg/Setrealtimepush "cycle: 1<br>port: 8089<br>force_coordinate: 0<br>ip: '192.168.1.10'<br>hand_enable: false<br>aloha_state_enable: false<br>arm_current_status_enable: false<br>expand_state_enable: false<br>joint_speed_enable: false<br>lift_state_enable: false" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_realtime_push_result |
 #### Getting_UDP_robotic_arm_state_active_reporting_configuration
 | Function description | Get UDP robotic arm state active reporting configuration |
 | :---: | :---- |
-| Parameter description | Setrealtimepush.msg<br>uint16 cycle：set the broadcast cycle, which is a multiple of 5ms (default 1 i.e. 1 * 5 = 5 ms, 200 Hz).<br>uint16 port：set the broadcast port number (default 8089).<br>uint16 force_coordinate：force_coordinate: set the coordinate system of force data outside the system (only supported by the arm with force sensors).<br>string ip：set the custom reporting target IP address (default 192.168.1.10). |
+| Parameter description | Setrealtimepush.msg<br>uint16 cycle：set the broadcast cycle, which is a multiple of 5ms (default 1 i.e. 1 * 5 = 5 ms, 200 Hz).<br>uint16 port：set the broadcast port number (default 8089).<br>uint16 force_coordinate：set the coordinate system of force data outside the system (only supported by the arm with force sensors).<br>string ip：set the custom reporting target IP address (default 192.168.1.10). <br>bool hand_enable: whether dexterous hand status reporting is enabled, true is enabled, and false is not enabled. <br>aloha_state_enable: whether to enable aloha main arm status reporting, true to enable, false not to enable. <br>arm_current_status_enable: whether to enable the status report of the robot arm, true to enable, false not to enable. <br>expand_state_enable: whether to enable the report of extended joint related data, true is enabled, false is not enabled. <br>joint_speed_enable: whether joint speed reporting is enabled, true is enabled, and false is not enabled. <br>lift_state_enable: whether lifting joint data reporting is enabled, true is enabled, and false is not enabled.<br>plus_base_enable: Basic information of the end-effector device，true is enabled, and false is not enabled<br>plus_state_enable: Real-time information of the end-effector device，true is enabled, and false is not enabled. |
 | Command example | ros2 topic pub --once /rm_driver/get_realtime_push_cmd std_msgs/msg/Empty "{}" |
 | Return value | Successfully set information; Failure return: the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/get_realtime_push_result |
@@ -639,3 +666,15 @@ If force data calibration has not been completed before the force operations, th
 | :----: | :---- |
 | parameter description | rm_ros_interfaces:: msg:: Jointvoltage.msg <br> float 32 [] joint _ voltage: current joint voltage with accuracy of 0.001V|
 | query example | ros2 topic echo /rm_ driver/udp _ joint _ voltage |
+* Reading Basic Information of End-Effector Device
+
+| Function Description | Reading Basic Information of End-Effector Device |
+| :----: | :---- |
+| parameter description | rm_ros_interfaces::msg::Rmplusbase.msg<br>string manu:Device manufacturer.<br>int8 type:Device type, including 1 - Two-finger gripper, 2 - Five-finger dexterous hand, 3 - Three-finger gripper<br>string hv:Hardware version<br>string sv:Software version<br>string bv:Bootloader version<br>int32 id:Device ID<br>int8 dof:Degrees of freedom<br>int8 check:Self-check switch<br>int8 bee:Beeper switch<br>bool force:Force control support<br>bool touch:Tactile support<br>int8 touch_num:Number of tactile sensors<br>int8 touch_sw:Tactile switch<br>int8 hand:Hand orientation, including 1 - Left hand, 2 - Right hand<br>int32[12] pos_up:Position upper limit<br>int32[12] pos_low:Position lower limit<br>int32[12] angle_up:Angle upper limit<br>int32[12] angle_low:Angle lower limit<br>int32[12] speed_up:Speed upper limit<br>int32[12] speed_low:Speed lower limit<br>int32[12] force_up:Force upper limit<br>int32[12] force_low:Force lower limit|
+| query example | ros2 topic echo /rm_driver/udp_rm_plus_base |
+* Reading Real-Time Information of End-Effector Device
+
+| Function Description | Reading Real-Time Information of End-Effector Device |
+| :----: | :---- |
+| parameter description | rm_ros_interfaces::msg::Rmplusstate.msg<br>int32 sys_state:System status.<br>int32[12] dof_state:Current status of each degree of freedom (DoF)<br>int32[12] dof_err:Error information of each DoF<br>int32[12] pos: Current position of each DoF<br>int32[12] speed:Current speed of each DoF<br>int32[12] angle:各自由度当前角度<br>int32[12] current:Current of each DoF<br>int32[18] normal_force:Normal force of the tactile three-dimensional force of each DoF<br>int32[18] tangential_force:Tangential force of the tactile three-dimensional force of each DoF<br>int32[18] tangential_force_dir:Direction of the tangential force of the tactile three-dimensional force of each DoF<br>uint32[12] tsa:Tactile self-approach of each DoF<br>uint32[12] tma:Tactile mutual approach of each DoF<br>int32[18] touch_data:Raw data from the tactile sensor<br>int32[12] force:Torque of each DoF|
+| query example | ros2 topic echo /rm_driver/udp_rm_plus_state | 

@@ -50,10 +50,7 @@ set(RM_STATIC_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 link_directories(${RM_STATIC_LIBRARY})
 
 target_link_libraries(${PROJECT_NAME}
-  ${PROJECT_SOURCE_DIR}/lib/libRM_Service.so
-  ${PROJECT_SOURCE_DIR}/lib/libRM_Service.so.1
-  ${PROJECT_SOURCE_DIR}/lib/libRM_Service.so.1.0
-  ${PROJECT_SOURCE_DIR}/lib/libRM_Service.so.1.0.0
+  ${PROJECT_SOURCE_DIR}/lib/libapi_cpp.so
 )
 
 ament_target_dependencies(rm_driver rclcpp std_msgs sensor_msgs rm_ros_interfaces)

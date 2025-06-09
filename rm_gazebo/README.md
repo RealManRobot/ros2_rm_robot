@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robotic Arm rm_gazebo User Manual V1.3
+# RealMan Robotic Arm rm_gazebo User Manual V1.4
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -19,6 +19,7 @@ Revision History:
 |V1.1.1   | 8/13/2024 | Amend(Add arm type description)|
 |V1.2     | 9/10/2024 | Amend(Add ECO63 adapter files) |
 |V1.3     | 25/12/2024 | Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
+|V1.4    |2025-4-3 | Amend(AddGen72_IIadapter files) |
 
 </div>
 
@@ -52,7 +53,7 @@ The command to start the integrated six-axis force version of the manipulator is
 ```
 rm@rm-desktop:~$ ros2 launch rm_gazebo gazebo_<arm_type>_6fb_demo.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, 75, and gen72. The interface displays as follows after successful running.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, 75, and gen72、gen72_II. The interface displays as follows after successful running.  
 ![image](doc/rm_gazebo1.png)
 Then, we use the following command to launch moveit2 to control the simulation robot arm in Gazebo.
 ```
@@ -66,7 +67,7 @@ The command to start the integrated six-axis force version of the manipulator is
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config gazebo_moveit_demo_6fb.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, 75, and gen72.   
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, 75, and gen72、gen72_II.   
 After the control interface of rviz2 pops up, you can perform the simulation control of moveit2 and Gazebo.
 ![image](doc/rm_gazebo2.png)
 ## rm_gazebo_Package_Architecture_Description
@@ -85,6 +86,7 @@ The current rm_gazebo package is composed of the following files.
 │   ├── gazebo_75_description.urdf.xacro     #75gazebo model description file
 │   ├── gazebo_eco65_description.urdf.xacro  #eco65gazebo model description file
 │   ├── gazebo_eco63_description.urdf.xacro  #eco63gazebo model description file
+│   ├── gazebo_gen72_II_description.urdf.xacro #gen72_IIgazebo model description file
 │   └── gazebo_gen72_description.urdf.xacro  #gen72gazebo model description file
 ├── doc
 │   ├── rm_gazebo1.png
@@ -104,6 +106,7 @@ The current rm_gazebo package is composed of the following files.
 │   ├── gazebo_eco65_6fb_demo.launch.py    #ECO65 integrated six-axis force gazebo launch file
 │   ├── gazebo_eco65_6f_demo.launch.py     #ECO65 six-axis force gazebo launch file
 │   ├── gazebo_eco65_demo.launch.py        #ECO65 gazebo launch file
+│   ├── gazebo_gen72_II_demo.launch.py     #gen72_IIgazebo launch file
 │   └── gazebo_gen72_demo.launch.py        #gen72gazebo launch file
 ├── package.xml
 ├── README_CN.md

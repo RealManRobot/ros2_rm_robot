@@ -66,7 +66,7 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 After successful compilation, follow the above commands to start the package.
 ## rm_control_Package_Architecture_Description
 ### Overview_of_package_files
-The current rm_driver package is composed of the following files.
+The current rm_control package is composed of the following files.
 ```
 ├── CMakeLists.txt                     # compilation rule file
 ├── doc

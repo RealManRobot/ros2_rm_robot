@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_description使用说明书V1.3
+# 睿尔曼机器人rm_description使用说明书V1.4
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -17,6 +17,7 @@
 |V1.1    |2024-7-3   |修订(添加GEN72适配文件) |
 |V1.2    |2024-9-11  |修订(添加ECO63适配文件) |
 |V1.3    |2024-12-25 |修订(添加了63、65、75、ECO65的六维力适配文件，以及63、65、75、ECO63、ECO65的一体化六维力适配文件) |
+|V1.4    |2025-4-7 |修订(添加了GEN72_II适配文件) |
 
 </div>
 
@@ -72,7 +73,7 @@ rm@rm-desktop:~$ rviz2
 ![image](doc/rm_description1.png)
 ## rm_description功能包架构说明
 ## 功能包文件总览
-当前rm_driver功能包的文件构成如下。  
+当前rm_description功能包的文件构成如下。  
 ```
 ├── CMakeLists.txt                #编译规则文件
 ├── launch

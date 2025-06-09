@@ -7,7 +7,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_ros_interface使用说明书V1.2
+# 睿尔曼机器人rm_ros_interface使用说明书V1.2.1
 
 
  
@@ -22,6 +22,7 @@
 |V1.0 | 2024-2-18 | 拟制 |
 |V1.1 | 2024-7-8  | 修订(添加示教消息) |
 |V1.2 | 2024-12-25  | 修订(添加UDP上报消息) |
+|V1.3 | 2025-04-03 | 修订(适配API2) |
 
 </div>
 
@@ -45,32 +46,35 @@
 * 4.12[位姿透传Cartepos_msg](#位姿透传Cartepos_msg)
 * 4.13[机械臂当前状态-角度和欧拉角Armoriginalstate_msg](#机械臂当前状态-角度和欧拉角Armoriginalstate_msg)
 * 4.14[机械臂当前状态-弧度和四元数Armstate_msg](#机械臂当前状态-弧度和四元数Armstate_msg)
-* 4.15[读取软件版本号Armsoftversion_msg](#读取软件版本号Armsoftversion_msg)
-* 4.16[手爪力控夹取Gripperpick_msg](#手爪力控夹取Gripperpick_msg)
-* 4.17[手爪力控夹取-持续力控夹取Gripperpick_msg](#手爪力控夹取-持续力控夹取Gripperpick_msg)
-* 4.18[手爪到达指定位置Gripperset_msg](#手爪到达指定位置Gripperset_msg)
-* 4.19[力位混合控制Setforceposition_msg](#力位混合控制Setforceposition_msg)
-* 4.20[六维力数据Sixforce_msg](#六维力数据Sixforce_msg)
-* 4.21[设置灵巧手手势Handposture_msg](#设置灵巧手手势Handposture_msg)
-* 4.22[设置灵巧手动作序列Handseq_msg](#设置灵巧手动作序列Handseq_msg)
-* 4.23[设置灵巧手各自由度角度Handangle_msg](#设置灵巧手各自由度角度Handangle_msg)
-* 4.24[设置灵巧手速度Handspeed_msg](#设置灵巧手速度Handspeed_msg)
-* 4.25[设置灵巧手力阈值Handforce_msg](#设置灵巧手力阈值Handforce_msg)
-* 4.26[透传力位混合补偿-角度Forcepositionmovejoint_msg](#透传力位混合补偿-角度Forcepositionmovejoint_msg)
-* 4.27[透传力位混合补偿-位姿Forcepositionmovejoint_msg](#透传力位混合补偿-位姿Forcepositionmovejoint_msg)
-* 4.28[速度开环控制-升降机构Liftspeed_msg](#速度开环控制-升降机构Liftspeed_msg)
-* 4.29[位置闭环控制-升降机构Liftheight_msg](#位置闭环控制-升降机构Liftheight_msg)
-* 4.30[获取升降机构状态-升降机构Liftstate_msg](#获取升降机构状态-升降机构Liftstate_msg)
-* 4.31[查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg](#查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg)
-* 4.32[UDP机械臂状态上报Armcurrentstatus_msg](#UDP机械臂状态上报Armcurrentstatus_msg)
-* 4.33[UDP关节电流上报Jointcurrent_msg](#UDP关节电流上报Jointcurrent_msg)
-* 4.34[UDP关节使能状态上报Jointenflag_msg](#UUDP关节使能状态上报Jointenflag_msg)
-* 4.35[UDP机械臂欧拉角位姿上报Jointposeeuler_msg](#UDP机械臂欧拉角位姿上报Jointposeeuler_msg)
-* 4.36[UDP关节速度上报Jointspeed_msg](#UDP关节速度上报Jointspeed_msg)
-* 4.37[UDP关节温度上报Jointtemperature_msg](#UDP关节温度上报Jointtemperature_msg)
-* 4.38[UDP关节电压上报Jointvoltage_msg](#UUDP关节电压上报Jointvoltage_msg)
-* 4.39[自定义高跟随模式角度透传Jointposcustom_msg](#角度透传Jointposcustom_msg)
-* 4.40[自定义高跟随模式位姿透传Carteposcustom_msg](#位姿透传Carteposcustom_msg)
+* 4.15[手爪力控夹取Gripperpick_msg](#手爪力控夹取Gripperpick_msg)
+* 4.16[手爪力控夹取-持续力控夹取Gripperpick_msg](#手爪力控夹取-持续力控夹取Gripperpick_msg)
+* 4.17[手爪到达指定位置Gripperset_msg](#手爪到达指定位置Gripperset_msg)
+* 4.18[力位混合控制Setforceposition_msg](#力位混合控制Setforceposition_msg)
+* 4.19[六维力数据Sixforce_msg](#六维力数据Sixforce_msg)
+* 4.20[设置灵巧手手势Handposture_msg](#设置灵巧手手势Handposture_msg)
+* 4.21[设置灵巧手动作序列Handseq_msg](#设置灵巧手动作序列Handseq_msg)
+* 4.22[设置灵巧手各自由度角度Handangle_msg](#设置灵巧手各自由度角度Handangle_msg)
+* 4.23[设置灵巧手速度Handspeed_msg](#设置灵巧手速度Handspeed_msg)
+* 4.24[设置灵巧手力阈值Handforce_msg](#设置灵巧手力阈值Handforce_msg)
+* 4.25[透传力位混合补偿-角度Forcepositionmovejoint_msg](#透传力位混合补偿-角度Forcepositionmovejoint_msg)
+* 4.26[透传力位混合补偿-位姿Forcepositionmovejoint_msg](#透传力位混合补偿-位姿Forcepositionmovejoint_msg)
+* 4.27[速度开环控制-升降机构Liftspeed_msg](#速度开环控制-升降机构Liftspeed_msg)
+* 4.28[位置闭环控制-升降机构Liftheight_msg](#位置闭环控制-升降机构Liftheight_msg)
+* 4.29[获取升降机构状态-升降机构Liftstate_msg](#获取升降机构状态-升降机构Liftstate_msg)
+* 4.30[查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg](#查询或设置UDP机械臂状态主动上报配置Setrealtimepush_msg)
+* 4.31[UDP机械臂状态上报Armcurrentstatus_msg](#UDP机械臂状态上报Armcurrentstatus_msg)
+* 4.32[UDP关节电流上报Jointcurrent_msg](#UDP关节电流上报Jointcurrent_msg)
+* 4.33[UDP关节使能状态上报Jointenflag_msg](#UUDP关节使能状态上报Jointenflag_msg)
+* 4.34[UDP机械臂欧拉角位姿上报Jointposeeuler_msg](#UDP机械臂欧拉角位姿上报Jointposeeuler_msg)
+* 4.35[UDP关节速度上报Jointspeed_msg](#UDP关节速度上报Jointspeed_msg)
+* 4.36[UDP关节温度上报Jointtemperature_msg](#UDP关节温度上报Jointtemperature_msg)
+* 4.37[UDP关节电压上报Jointvoltage_msg](#UDP关节电压上报Jointvoltage_msg)
+* 4.38[机械臂UDP报错Rmerr_msg](#机械臂UDP报错Rmerr_msg)
+* 4.39[末端设备基础信息Rmplusbase_msg](#末端设备基础信息Rmplusbase_msg)
+* 4.40[末端设备实时信息Rmplusstate.msg](#末端设备实时信息Rmplusstate.msg)
+* 4.41[自定义高跟随模式角度透传Jointposcustom_msg](#角度透传Jointposcustom_msg)
+* 4.42[自定义高跟随模式位姿透传Carteposcustom_msg](#位姿透传Carteposcustom_msg)
+
 
 ## rm_ros_interface功能包说明
 rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行提供必要的 消息文件，在下文中将通过以下几个方面详细介绍该功能包。
@@ -93,7 +97,6 @@ rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行
 ├── msg                          #当前的消息文件（详细请看下方介绍）
 │   ├── Armcurrentstatus.msg
 │   ├── Armoriginalstate.msg
-│   ├── Armsoftversion.msg
 │   ├── Armstate.msg
 │   ├── Cartepos.msg
 │   ├── Carteposcustom.msg
@@ -130,6 +133,9 @@ rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行
 │   ├── Movel.msg
 │   ├── Ortteach.msg
 │   ├── Posteach.msg
+│   ├── Rmerr.msg
+│   ├── Rmplusbase.msg
+│   ├── Rmplusstate.msg
 │   ├── Setforceposition.msg
 │   ├── Setrealtimepush.msg
 │   ├── Sixforce.msg
@@ -151,13 +157,10 @@ __uint8 dof__
 ### 清除关节错误代码Jointerrclear_msg
 ```
 uint8 joint_num  
-bool block
 ```  
 __msg成员__  
 __joint_num__  
-对应关节序号，从基座到机械臂手爪端，序号依次为1-6或1-7。  
-__block__  
-是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+对应关节序号，从基座到机械臂手爪端，序号依次为1-6或1-7。    
 ### 所有坐标系名称Getallframe_msg
 ```
 string[10] frame_name
@@ -243,7 +246,6 @@ __block__
 uint8 num
 uint8 direction
 uint8 speed
-bool block
 ```  
 __msg成员__  
 __num__  
@@ -251,15 +253,12 @@ __num__
 __direction__  
 示教方向，0-负方向，1-正方向。
 __speed__
-速度比例1~100，即规划速度和加速度占关节最大线转速和加速度的百分比。  
-__block__  
-是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 
+速度比例1~100，即规划速度和加速度占关节最大线转速和加速度的百分比。   
 ### 位置示教Posteach_msg
 ```
 uint8 type
 uint8 direction
 uint8 speed
-bool block
 ```  
 __msg成员__  
 __type__  
@@ -267,15 +266,12 @@ __type__
 __direction__  
 示教方向，0-负方向，1-正方向。
 __speed__
-速度比例1~100，即规划速度和加速度占关节最大线转速和加速度的百分比。  
-__block__  
-是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 
+速度比例1~100，即规划速度和加速度占关节最大线转速和加速度的百分比。   
 ### 姿态示教Ortteach_msg
 ```
 uint8 type
 uint8 direction
 uint8 speed
-bool block
 ```  
 __msg成员__  
 __type__  
@@ -283,9 +279,7 @@ __type__
 __direction__  
 示教方向，0-负方向，1-正方向。
 __speed__
-速度比例1~100，即规划速度和加速度占关节最大线转速和加速度的百分比。  
-__block__  
-是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。 
+速度比例1~100，即规划速度和加速度占关节最大线转速和加速度的百分比。   
 ### 角度透传Jointpos_msg
 ```
 float32[] joint  
@@ -350,25 +344,6 @@ __arm_err__
 控制器错误代码，unsigned int类型。  
 __dof__  
 机械臂自由度信息。  
-### 读取软件版本号Armsoftversion_msg
-```
-string planversion  
-string ctrlversion  
-string kernal1  
-string kernal2  
-string productversion
-```  
-__msg成员__  
-__planversion__  
-读取到的用户接口内核版本号，string类型。  
-__ctrlversion__  
-实时内核版本号，string类型。  
-__kernal1__  
-实时内核子核心 1 版本号，string类型。  
-__kernal2__  
-实时内核子核心 2 版本号，string类型。  
-__productversion__  
-机械臂型号，string类型。  
 ### 手爪力控夹取Gripperpick_msg
 ```
 uint16 speed  
@@ -420,7 +395,6 @@ uint8 sensor
 uint8 mode  
 uint8 direction  
 int16 n  
-bool block
 ```  
 __msg成员__  
 __sensor__  
@@ -430,9 +404,7 @@ Mode：0-工作坐标系力控； 1-工具坐标系力控。
 __Direction__  
 力控方向；0-沿X 轴；1-沿Y 轴；2-沿 Z 轴；3-沿RX 姿态方向；4-沿 RY 姿态方向；5-沿 RZ 姿态方向。  
 __n__  
-力的大小，单位 0.1N。  
-__block__  
-是否阻塞，true:阻塞，false:非阻塞。  
+力的大小，单位 0.1N。    
 ### 六维力数据Sixforce_msg
 ```
 float32 force_fx  
@@ -459,22 +431,28 @@ __force_mz__
 ```
 uint16 posture_num  
 bool block
+uint16 timeout
 ```  
 __msg成员__  
 __posture_num__  
 预先保存在灵巧手内的手势序号，范围：1-40。  
 __block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+__timeout__  
+阻塞模式下超时时间设置，单位：秒。    
 ### 设置灵巧手动作序列Handseq_msg
 ```
 uint16 seq_num  
 bool block
+uint16 timeout  
 ```  
 __msg成员__  
 __seq_num__	  
 预先保存在灵巧手内的序列序号，范围：1-40。  
 __block__  
 是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+__timeout__  
+阻塞模式下超时时间设置，单位：秒。   
 ### 设置灵巧手各自由度角度Handangle_msg
 ```
 int16[6] hand_angle   
@@ -488,23 +466,17 @@ __block__
 ### 设置灵巧手速度Handspeed_msg
 ```
 uint16 hand_speed  
-bool block
 ```  
 __msg成员__  
 __hand_speed__
-手指速度，范围：1-1000。  
-__block__  
-是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
+手指速度，范围：1-1000。      
 ### 设置灵巧手力阈值Handforce_msg
 ```
 uint16 hand_force  
-bool block
 ```  
 __msg成员__  
 __hand_force__  
 手指力，范围：1-1000。  
-__block__  
-是否为阻塞模式，bool类型，true:阻塞，false:非阻塞。  
 ### 透传力位混合补偿-角度Forcepositionmovejoint_msg
 ```
 float32[] joint  
@@ -592,6 +564,14 @@ uint16 cycle
 uint16 port  
 uint16 force_coordinate  
 string ip
+bool aloha_state_enable
+bool arm_current_status_enable
+bool expand_state_enable
+bool hand_enable
+bool joint_speed_enable
+bool lift_state_enable
+bool plus_base_enable
+bool plus_state_enable
 ```  
 __msg成员__  
 __cycle__  
@@ -602,6 +582,22 @@ __force_coordinate__
 系统外受力数据的坐标系，0 为传感器坐标系 1 为当前工作坐标系 2 为当前工具坐标系。  
 __ip__  
 自定义的上报目标IP 地址。  
+__aloha_state_enable__
+aloha状态信息主动上报使能。
+__arm_current_status_enable__
+机械臂当前状态主动上报使能。
+__expand_state_enable__
+拓展关节主动上报使能
+__hand_enable__
+灵巧手数据主动上报使能
+__joint_speed_enable__
+关节速度主动上报使能
+__lift_state_enable__
+升降机主动上报使能
+__plus_base_enable__
+末端设备基础信息主动上报使能
+__plus_state_enable__
+末端设备实时信息主动上报使能
 ### UDP机械臂状态上报Armcurrentstatus_msg
 ```
 uint16 arm_current_status
@@ -670,6 +666,60 @@ __msg成员__
 __joint_voltage__  
 当前关节电压，精度 0.001V。
 
+### UDP错误上报Rmerr_msg
+```
+uint8 err_len
+int32[] err
+```  
+__msg成员__  
+__err_len__  
+当前报错数量，uint8。
+__err__  
+当前报错代码，int32。
+
+### 末端设备基础信息Rmplusbase_msg
+```
+string manu              # 设备厂家
+int8 type                # 设备类型 1：两指夹爪 2：五指灵巧手 3：三指夹爪
+string hv                # 硬件版本
+string sv                # 软件版本
+string bv                # boot版本
+int32 id                 # 设备ID
+int8 dof                 # 自由度
+int8 check               # 自检开关
+int8 bee                 # 蜂鸣器开关
+bool force               # 力控支持
+bool touch               # 触觉支持
+int8 touch_num           # 触觉个数
+int8 touch_sw            # 触觉开关
+int8 hand                # 手方向 1 ：左手 2： 右手
+int32[12] pos_up         # 位置上限,单位：无量纲
+int32[12] pos_low        # 位置下限,单位：无量纲
+int32[12] angle_up       # 角度上限,单位：0.01度
+int32[12] angle_low      # 角度下限,单位：0.01度
+int32[12] speed_up       # 速度上限,单位：无量纲
+int32[12] speed_low      # 速度下限,单位：无量纲
+int32[12] force_up       # 力上限,单位：0.001N 
+int32[12] force_low      # 力下限,单位：0.001N 
+```  
+### 末端设备基础信息Rmplusstate_msg
+```
+int32 sys_state                   #系统状态
+int32[12] dof_state               #各自由度当前状态
+int32[12] dof_err                 #各自由度错误信息
+int32[12] pos                     #各自由度当前位置
+int32[12] speed                   #各自由度当前速度
+int32[12] angle                   #各自由度当前角度
+int32[12] current                 #各自由度当前电流
+int32[18] normal_force            #自由度触觉三维力的法向力
+int32[18] tangential_force        #自由度触觉三维力的切向力
+int32[18] tangential_force_dir    #自由度触觉三维力的切向力方向
+uint32[12] tsa                    #自由度触觉自接近
+uint32[12] tma                    #自由度触觉互接近
+int32[18] touch_data              #触觉传感器原始数据
+int32[12] force                   #自由度力矩
+```  
+
 ### 自定义高跟随模式角度透传Jointposcustom_msg
 ```
 float32[] joint  
@@ -710,4 +760,4 @@ __radio__
 设置曲线拟合模式下平滑系数（范围0-100）或者滤波模式下的滤波参数（范围0-1000），数值越大表示平滑效果越好。
 
 
-主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/RealManRobot/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。
+主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。

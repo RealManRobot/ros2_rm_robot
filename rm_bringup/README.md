@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robot rm_bringup User Manual V1.3
+# RealMan Robot rm_bringup User Manual V1.4
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -18,6 +18,7 @@ Revision History:
 |V1.1	  | 7/8 /2024 | Amend(Add GEN72 adapter files) |
 |V1.2 	  | 9/10 /2024| Amend(Add ECO63 adapter files) |
 |V1.3 	  | 25/12/2024| Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
+|V1.4 	  | 25/12/2024| Amend(Add GEN72_II adapter files) |
 
 </div>
 
@@ -125,6 +126,8 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_eco65_gazebo.launch.py      # eco65 arm gazebo launch file
 │   ├── rm_gen72_bringup.launch.py     # gen72 arm moveit2 launch file
 │   └── rm_gen72_gazebo.launch.py      # gen72 arm gazebo launch file
+│   ├── rm_gen72_II_bringup.launch.py  # gen72_II arm moveit2 launch file
+│   └── rm_gen72_II_gazebo.launch.py   # gen72_II arm gazebo launch file
 ├── package.xml
 ├── README_CN.md                  
 └── README.md                           

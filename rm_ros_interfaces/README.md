@@ -2,6 +2,7 @@
   
 [中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_ros_interfaces/README_CN.md)|
 [English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_ros_interfaces/README.md)
+
 </div>
 
 <div align="center">
@@ -21,6 +22,7 @@ Revision History-
 |V1.0 | 2-18-2024 | Draft |
 |V1.1 | 7-8-2024  | Amend(Add teaching message) |
 |V1.2 | 12-25-2024  | Amend(Add UDP report message) |
+|V1.3 | 04-07-2025  | Amend(API2 Adaptation) |
 
 
 </div>
@@ -45,32 +47,34 @@ Revision History-
 * 4.12[Pose transmission-Cartepos_msg](#Pose_transmission-Cartepos_msg)
 * 4.13[Current robotic arm state Angle and Euler angle-Armoriginalstate_msg](#Current_robotic_arm_state_Angle_and_Euler_angle-Armoriginalstate_msg)
 * 4.14[Current arm state radians and quaternion-Armstate_msg](#Current_arm_state_radians_and_quaternion-Armstate_msg)
-* 4.15[Getting the software version-Armsoftversion_msg](#Getting_the_software_version-Armsoftversion_msg)
-* 4.16[Gripper's pick-Gripperpick_msg](#Gripper's_pick-Gripperpick_msg)
-* 4.17[Gripper's pick gripper's pick-on-Gripperpick_msg](#Gripper's_pick_gripper's_pick-on-Gripperpick_msg)
-* 4.18[Gripper reaching the given position-Gripperset_msg](#Gripper_reaching_the_given_position-Gripperset_msg)
-* 4.19[Force-position mixing control-Setforceposition_msg](#Force-position_mixing_control-Setforceposition_msg)
-* 4.20[Six-axis force data-Sixforce_msg](#Six-axis_force_data-Sixforce_msg)
-* 4.21[Setting the dexterous hand posture-Hand posture_msg](#Setting_the_dexterous_hand_posture-Hand_posture_msg)
-* 4.22[Setting the dexterous hand action sequence-Handseq_msg](#Setting_the_dexterous_hand_action_sequence-Handseq_msg)
-* 4.23[Setting the angles of various degrees of freedom for the dexterous hand-Handangle_msg](#Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand-Handangle_msg)
-* 4.24[Setting the dexterous hand action sequence-Handspeed_msg](#Setting_the_dexterous_hand_action_sequence-Handspeed_msg)
-* 4.25[Setting the force threshold for the dexterous hand-Handforce_msg](#Setting_the_force_threshold_for_the_dexterous_hand-Handforce_msg)
-* 4.26[Transmissive force-position mixing control compensation-angle-Forcepositionmovejoint_msg](#Transmissive_force-position_mixing_control_compensation-angle-Forcepositionmovejoint_msg)
-* 4.27[Transmissive force-position mixing control compensation-pose-Forcepositionmovejoint_msg](#Transmissive_force-position_mixing_control_compensation-pose-Forcepositionmovejoint_msg)
-* 4.28[Speed open loop control-lifting mechanism-Liftspeed_msg](#Speed_open_loop_control-lifting_mechanism-Liftspeed_msg)
-* 4.29[Position closed-loop control-lifting mechanism-Lift height_msg](#Position_closed-loop_control-lifting_mechanism-Lift_height_msg)
-* 4.30[Getting the state of the lifting mechanism-Liftstate_msg](#Getting_the_state_of_the_lifting_mechanism-Liftstate_msg)
-* 4.31[Getting or setting UDP active reporting configuration-Setrealtimepush_msg](#Getting_or_setting_UDP_active_reporting_configuration-Setrealtimepush_msg)
-* 4.32[UDP manipulator status report Armcurrentstatus_msg](#UDP_manipulator_status_report-Armcurrentstatus_msg)
-* 4.33[UDP joint current report Jointcurrent_msg](#UDP_joint_current_report-Jointcurrent_msg)
-* 4.34[UDP joint enabling status report Jointenflag_msg](#UDP_joint_enabling_status_report-Jointenflag_msg)
-* 4.35[UDP manipulator Euler's angular pose is reported to Jointposeeuler_msg](#UDP_manipulator_Euler's_angular_pose_is_reported_to-Jointposeeuler_msg)
-* 4.36[UDP joint speed report Jointspeed_msg](#UDP_joint_speed_report_Jointspeed_msg)
-* 4.37[UDP joint temperature report Jointtemperature_msg](#UDP_joint_temperature_report_Jointtemperature_msg)
-* 4.38[UDP joint voltage report Jointvoltage_msg](#UUDP_joint_voltage_report_Jointvoltage_msg)
-* 4.39[Customize high following mode joint transmission-Jointposcustom_msg](#Customize_high_following_mode_joint_transmission-Jointposcustom_msg)
-* 4.40[Customize high following mode pose transmission-Carteposcustom_msg](#Customize_high_following_mode_pose_transmission-Carteposcustom_msg)
+* 4.15[Gripper's pick-Gripperpick_msg](#Gripper's_pick-Gripperpick_msg)
+* 4.16[Gripper's pick gripper's pick-on-Gripperpick_msg](#Gripper's_pick_gripper's_pick-on-Gripperpick_msg)
+* 4.17[Gripper reaching the given position-Gripperset_msg](#Gripper_reaching_the_given_position-Gripperset_msg)
+* 4.18[Force-position mixing control-Setforceposition_msg](#Force-position_mixing_control-Setforceposition_msg)
+* 4.19[Six-axis force data-Sixforce_msg](#Six-axis_force_data-Sixforce_msg)
+* 4.20[Setting the dexterous hand posture-Handposture_msg](#Setting_the_dexterous_hand_posture-Handposture_msg)
+* 4.21[Setting the dexterous hand action sequence-Handseq_msg](#Seting_the_dexterous_hand_action_sequence-Handseq_msg)
+* 4.22[Setting the angles of various degrees of freedom for the dexterous hand-Handangle_msg](#Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand-Handangle_msg)
+* 4.23[Setting the dexterous hand action sequence-Handspeed_msg](#Setting_the_dexterous_hand_action_sequence-Handspeed_msg)
+* 4.24[Setting the force threshold for the dexterous hand-Handforce_msg](#Setting_the_force_threshold_for_the_dexterous_hand-Handforce_msg)
+* 4.25[Transmissive force-position mixing control compensation-angle-Forcepositionmovejoint_msg](#Transmissive_force-position_mixing_control_compensation-angle-Forcepositionmovejoint_msg)
+* 4.26[Transmissive force-position mixing control compensation-pose-Forcepositionmovejoint_msg](#Transmissive_force-position_mixing_control_compensation-pose-Forcepositionmovejoint_msg)
+* 4.27[Speed open loop control-lifting mechanism-Liftspeed_msg](#Speed_open_loop_control-lifting_mechanism-Liftspeed_msg)
+* 4.28[Position closed-loop control-lifting mechanism-Lift height_msg](#Position_closed-loop_control-lifting_mechanism-Lift_height_msg)
+* 4.29[Getting the state of the lifting mechanism-Liftstate_msg](#Getting_the_state_of_the_lifting_mechanism-Liftstate_msg)
+* 4.30[Getting or setting UDP active reporting configuration-Setrealtimepush_msg](#Getting_or_setting_UDP_active_reporting_configuration-Setrealtimepush_msg)
+* 4.31[UDP manipulator status report Armcurrentstatus_msg](#UDP_manipulator_status_report-Armcurrentstatus_msg)
+* 4.32[UDP joint current report Jointcurrent_msg](#UDP_joint_current_report-Jointcurrent_msg)
+* 4.33[UDP joint enabling status report Jointenflag_msg](#UDP_joint_enabling_status_report-Jointenflag_msg)
+* 4.34[UDP manipulator Euler's angular pose is reported to Jointposeeuler_msg](#UDP_manipulator_Eulers_angular_pose_is_reported_to-Jointposeeuler_msg)
+* 4.35[UDP joint speed report Jointspeed_msg](#UDP_joint_speed_report_Jointspeed_msg)
+* 4.36[UDP joint temperature report Jointtemperature_msg](#UDP_joint_temperature_report_Jointtemperature_msg)
+* 4.37[UDP joint voltage report Jointvoltage_msg](#UDP_joint_voltage_report_Jointvoltage_msg)
+* 4.38[System error code_Rmerr_msg](#System_error_code_Rmerr_msg)
+* 4.39[Basic information of the end-effector device_Rmplusbase_msg](#Basic_information_of_the_end_effector_device_Rmplusbase_msg)
+* 4.40[Real time information of the end_effector device-Rmplusstate_msg](#Real_time_information_of_the_end_effector_deviceRmplusstate_msg)
+* 4.41[Customize high following mode joint transmission-Jointposcustom_msg](#Customize_high_following_mode_joint_transmission_Jointposcustom_msg)
+* 4.42[Customize high following mode pose transmission-Carteposcustom_msg](#Customize_high_following_mode_pose_transmission_Carteposcustom_msg)
 
 ## rm_ros_interface_Package_Description
 The main function of the rm_ros_interface package is to provide necessary message files for the robotic arm to run under the framework of ROS2. In the following text, we will provide a detailed introduction to this package through the following aspects.
@@ -92,7 +96,6 @@ This package does not have any executable commands, but it is used to provide th
 ├── msg                          # current message file (see below for details)
 │   ├── Armcurrentstatus.msg
 │   ├── Armoriginalstate.msg
-│   ├── Armsoftversion.msg
 │   ├── Armstate.msg
 │   ├── Cartepos.msg
 │   ├── Carteposcustom.msg
@@ -149,14 +152,11 @@ __uint8 dof__
 Degree of freedom message of the robotic arm.  
 ### Clearing_the_joint's_error_code-Jointerrclear_msg
 ```
-uint8 joint_num  
-bool block  
+uint8 joint_num    
 ```
 __msg member__  
 __joint_num__  
-the corresponding joint number, from the base to the robotic arm gripper, the number is 1-6 or 1-7.  
-__block__  
-whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+the corresponding joint number, from the base to the robotic arm gripper, the number is 1-6 or 1-7.    
 ### All_coordinate_system_names-Getallframe_msg
 ```
 string[10] frame_name  
@@ -242,7 +242,6 @@ whether it is a blocking mode, bool type, true-blocking, false-non-blocking.
 uint8 num
 uint8 direction
 uint8 speed
-bool block
 ```  
 __msg member__  
 __num__  
@@ -250,15 +249,12 @@ joint num，1~7.
 __direction__  
 teach direction，0-negative direction，1-positive direction.
 __speed__
-speed:speed percentage ratio coefficient, 0-100. 
-__block__  
-whether it is a blocking mode, bool type, true: blocking, false: non-blocking. 
+speed:speed percentage ratio coefficient, 0-100.  
 ### Position_teaching-Posteach_msg
 ```
 uint8 type
 uint8 direction
 uint8 speed
-bool block
 ```  
 __msg member__  
 __type__  
@@ -266,15 +262,12 @@ Teaching demonstration type: input0:X-axis direction、1:Y-axis direction、2:Z-
 __direction__  
 teach direction，0-negative direction，1-positive direction.
 __speed__
-speed:speed percentage ratio coefficient, 0-100.   
-__block__  
-whether it is a blocking mode, bool type, true: blocking, false: non-blocking. 
+speed:speed percentage ratio coefficient, 0-100.    
 ### Attitude_teaching-Ortteach_msg
 ```
 uint8 type
 uint8 direction
 uint8 speed
-bool block
 ```  
 __msg member__  
 __type__  
@@ -283,8 +276,6 @@ __direction__
 teach direction，0-negative direction，1-positive direction.
 __speed__
 speed:speed percentage ratio coefficient, 0-100.  
-__block__  
-whether it is a blocking mode, bool type, true: blocking, false: non-blocking.
 ### Joint_transmission-Jointpos_msg
 ```
 float32[] joint  
@@ -349,25 +340,6 @@ __arm_err__
 Controller error code, unsigned int type.  
 __dof__  
 Degree of freedom message of the robotic arm.  
-### Getting_the_software_version-Armsoftversion_msg
-```
-string planversion  
-string ctrlversion  
-string kernal1  
-string kernal2  
-string productversion  
-```
-__msg member__  
-__planversion__  
-The read user interface kernel version number, string type.  
-__ctrlversion__  
-Real-time kernel version number, string type.  
-__kernal1__  
-The version number of sub-core 1 of the real-time kernel, string type.  
-__kernal2__  
-The version number of sub-core 2 of the real-time kernel, string type.  
-__productversion__  
-Robotic arm model, string type.  
 ### Gripper_pick-Gripperpick_msg
 ```
 uint16 speed  
@@ -419,7 +391,6 @@ uint8 sensor
 uint8 mode  
 uint8 direction  
 int16 n  
-bool block
 ```  
 __msg member__  
 __sensor__  
@@ -429,9 +400,7 @@ Mode: 0 - Base coordinate system force control; 1 - Tool coordinate system force
 __Direction__  
 Force control direction; 0 - Along the X-axis; 1 - Along the Y-axis; 2 - Along the Z-axis; 3 - Along the RX posture direction; 4 - Along the RY posture direction; 5 - Along the RZ posture direction.  
 __n__  
-Force value, unit: 0.1 N.  
-__block__  
-whether it is a blocking mode, true: blocking, false: non-blocking.  
+Force value, unit: 0.1 N.    
 ### Six-axis_force_data-Sixforce_msg
 ```
 float32 force_fx  
@@ -454,26 +423,32 @@ __force_my__
 the force when rotating along the y-axis direction.  
 __force_mz__  
 the force when rotating along the z-axis direction.  
-### Setting_the_dexterous_hand_posture-Hand_posture_msg
+### Setting_the_dexterous_hand_posture-Handposture_msg
 ```
 uint16 posture_num  
 bool block 
+uint16 timeout  
 ``` 
 __msg member__  
 __posture_num__  
 The serial number of the posture pre-saved in the dexterous hand, ranges from 1 to 40.  
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+__timeout__
+The timeout setting for blocking mode, unit: seconds.    
 ### Setting_the_dexterous_hand_action_sequence-Handseq_msg
 ```
 uint16 seq_num  
 bool block
+unint16 timeout  
 ```  
 __msg member__  
 __seq_num__	  
 The serial number of the sequence pre-saved in the dexterous hand, ranging from 1 to 40.  
 __block__  
 whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+__timeout__
+The timeout setting for blocking mode, unit: seconds.
 ### Setting_the_angles_of_various_degrees_of_freedom_for_the_dexterous_hand-Handangle_msg
 ```
 int16[6] hand_angle   
@@ -487,23 +462,17 @@ whether it is a blocking mode, bool type, true-blocking, false-non-blocking.
 ### Setting_the_dexterous_hand_action_sequence-Handspeed_msg
 ```
 uint16 hand_speed  
-bool block
 ```  
 __msg member__  
 __hand_speed__
-Hand speed, range: 1-1000.  
-__block__  
-whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+Hand speed, range: 1-1000.    
 ### Setting_the_force_threshold_for_the_dexterous_hand-Handforce_msg
 ```
 uint16 hand_force  
-bool block
 ```  
 __msg member__  
 __hand_force__  
-Hand force, range: 1-1000.  
-__block__  
-whether it is a blocking mode, bool type, true-blocking, false-non-blocking.  
+Hand force, range: 1-1000.    
 ### Transmissive_force-position_mixing_control_compensation-angle-Forcepositionmovejoint_msg
 ```
 float32[] joint  
@@ -591,6 +560,14 @@ uint16 cycle
 uint16 port  
 uint16 force_coordinate  
 string ip
+bool aloha_state_enable
+bool arm_current_status_enable
+bool expand_state_enable
+bool hand_enable
+bool joint_speed_enable
+bool lift_state_enable
+bool plus_base_enable
+bool plus_state_enable
 ```  
 __msg member__  
 __cycle__  
@@ -600,7 +577,23 @@ Set the port number for broadcasting.
 __force_coordinate__  
 Coordinate system for external force data of the system, where 0 is the sensor coordinate system, 1 is the current work coordinate system, and 2 is the current tool coordinate system.  
 __ip__  
-Customized reporting target IP address.  
+Customized reporting target IP address. 
+__aloha_state_enable__
+aloha master arm state enable.
+__arm_current_status_enable__
+arm_current_status enable.
+__expand_state_enable__
+Expansion joint-related data enable.
+__hand_enable__
+Dexterous hand state enable.
+__joint_speed_enable__
+Current joint speed, with an accuracy of 0.02 rpm.
+__lift_state_enable__
+Lifting joint data enable.
+__plus_base_enable__
+Basic information of the end-effector device enable.
+__plus_state_enable__
+Real-time information of the end-effector device enable. 
 
 ### UDP_manipulator_status_report-Armcurrentstatus_msg
 ```
@@ -631,14 +624,14 @@ float32[] joint_current
 __msg member__    
 __joint_current__   
 Current joint current with an accuracy of 0.001mA.
-### UDP_joint_enabling_status_report-Jointenflag_msg
+ ### UDP_joint_enabling_status_report-Jointenflag_msg
 ```
 bool[] joint_en_flag
 ```
 __msg member__   
 __joint_en_flag__   
 Current joint enabling state, 1 is up enabling and 0 is down enabling.
-### UDP_manipulator_Euler_angle_posture_report-Jointposeeuler_msg
+### UDP_manipulator_Eulers_angular_pose_is_reported_to-Jointposeeuler_msg
 ```
 float32[3] euler
 float32[3] position
@@ -648,21 +641,21 @@ __euler__
 Euler angle of current waypoint attitude, with an accuracy of 0.001rad.   
 __position__   
 The current waypoint position has an accuracy of 0.000001M.
-### UDP joint_speed_report-Jointspeed_msg
+### UDP_joint_speed_report_Jointspeed_msg
 ```
 float32[] joint_speed
 ```
 __msg member__    
 __joint_speed__    
 Current joint speed, accuracy 0.02RPM.
-### UDP_joint_temperature_report-Jointtemperature_msg
+### UDP_joint_temperature_report_Jointtemperature_msg
 ```
 float32[] joint_temperature
 ```
 __msg member__   
 __joint_temperature__   
 Current joint temperature, with an accuracy of 0.001℃.
-### UDP_joint_voltage_report-Jointvoltage_msg
+### UDP_joint_voltage_report_Jointvoltage_msg
 ```
 float32[] joint_voltage
 ```
@@ -670,7 +663,62 @@ __msg member__
 __joint_voltage__   
 Current joint voltage, with an accuracy of 0.001V V.
 
-### Customize_high_following_mode_joint_transmission-Jointpos_msg
+### System_error_code_Rmerr_msg
+```
+uint8 err_len
+int32[] err
+```  
+__msg成员__  
+__err_len__  
+uint8。
+__err__  
+int32。
+
+### Basic_information_of_the_end_effector_device_Rmplusbase_msg
+```
+string manu              # Device manufacturer;
+int8 type                # Device type, 1 - Two-finger gripper, 2 - Five-finger dexterous hand, 3 - Three-finger gripper;
+string hv                # Hardware version;
+string sv                # Software version;
+string bv                # Bootloader version;
+int32 id                 # Device ID;
+int8 dof                 # Degrees of freedom;
+int8 check               # Self-check switch;
+int8 bee                 # Beeper switch;
+bool force               # Force control support;
+bool touch               # Tactile support;
+int8 touch_num           # Number of tactile sensors;
+int8 touch_sw            # Tactile switch;
+int8 hand                # Hand orientation, 1 - Left hand, 2 - Right hand;
+int32[12] pos_up         # Position upper limit 
+int32[12] pos_low        # Position lower limit 
+int32[12] angle_up       # Angle upper limit 0.01°
+int32[12] angle_low      # Angle lower limit 0.01°
+int32[12] speed_up       # Speed upper limit 
+int32[12] speed_low      # Speed lower limit 
+int32[12] force_up       # Force upper limit 0.001N 
+int32[12] force_low      # Force lower limit 0.001N 
+```  
+### Real_time_information_of_the_end_effector_deviceRmplusstate_msg
+```
+int32 sys_state                   #System status
+int32[12] dof_state               #Current status of each degree of freedom (DoF)
+int32[12] dof_err                 #Error information of each DoF
+int32[12] pos                     #Current position of each DoF
+int32[12] speed                   #Current Speed of Each Degree of each DoF
+int32[12] angle                   #Current Angle of Each Degree of each DoF
+int32[12] current                 #Current Current of Each Degree of Freedom
+int32[18] normal_force            #Normal Force of Tactile Three-Dimensional Force of Each Degree of Freedom
+int32[18] tangential_force        #Tangential Force of Tactile Three-Dimensional Force of Each Degree of Freedom
+int32[18] tangential_force_dir    #Direction of Tangential Force of Tactile Three-Dimensional Force of Each Degree of Freedom
+uint32[12] tsa                    #Tactile Self-Approach of Each Degree of Freedom
+uint32[12] tma                    #Tactile Mutual Approach of Each Degree of Freedom
+int32[18] touch_data              #Raw Data of Tactile Sensors
+int32[12] force                   #Torque of Each Degree of Freedom
+```  
+
+
+### Customize_high_following_mode_joint_transmission_Jointposcustom_msg
 ```
 float32[] joint  
 bool follow  
@@ -693,7 +741,7 @@ When the high following mode is set, multiple modes are supported, including 0- 
 __radio__  
 Set the smoothing coefficient in curve fitting mode (range 0-100) or the filter parameter in filtering mode (range 0-1000). The higher the value, the better the smoothing effect.  
 
-### Customize_high_following_mode_pose_transmission-Cartepos_msg
+### Customize_high_following_mode_pose_transmission_Carteposcustom_msg
 ```
 geometry_msgs/Pose pose  
 bool follow  
@@ -710,4 +758,4 @@ When the high following mode is set, multiple modes are supported, including 0- 
 __radio__  
 Set the smoothing coefficient in curve fitting mode (range 0-100) or the filter parameter in filtering mode (range 0-1000). The higher the value, the better the smoothing effect.  
 
-It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/RealManRobot/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".
+It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".

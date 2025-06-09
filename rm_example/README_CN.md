@@ -154,7 +154,8 @@ rm@rm-desktop:~$ ros2 run rm_example movel_gen72_demo
 
 ## rm_example功能包架构说明
 ### 功能包文件总览
-当前rm_driver功能包的文件构成如下。
+当前rm_example功能包文件构成如下。
+```
 ├── CMakeLists.txt                             #编译规则文件
 ├── doc
 │   ├── rm_example10.png
@@ -180,7 +181,7 @@ rm@rm-desktop:~$ ros2 run rm_example movel_gen72_demo
     ├── api_MoveJP_Gen72_demo.cpp           #适用于Gen72的MoveJP运动源文件
     └── api_MoveL_demo.cpp                  #MoveL运动源文件
     └── api_MoveL_Gen72_demo.cpp            #适用于Gen72的MoveL运动源文件
-
+```
 ## rm_example话题说明
 ### rm_change_work_frame话题说明
 以下为该节点的数据通信图：

@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_moveit2_config使用说明书V1.3
+# 睿尔曼机器人rm_moveit2_config使用说明书V1.4
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -17,6 +17,7 @@
 |V1.1    |2024-7-8   |修订（添加GEN72适配） |
 |V1.2    |2024-9-10  |修订（添加ECO63适配） |
 |V1.3    |2024-12-25 |修订(添加了63、65、75、ECO65的六维力适配文件，以及63、65、75、ECO63、ECO65的一体化六维力适配文件) |
+|V1.4    |2025-4-3 |修订(添加了Gen72_II型适配文件) |
 
 </div>
 
@@ -98,12 +99,12 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6f.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 ```
-注意以上指令均需要将<arm_type>更换为对应的机械臂型号，可选择的型号有65、63、eco65、eco63、75、gen72。  
+注意以上指令均需要将<arm_type>更换为对应的机械臂型号，可选择的型号有65、63、eco65、eco63、75、gen72、gen72_II。  
 完成以上操作后将会出现以下界面，我们可以通过拖动控制球的方式控制机械臂运动。  
 ![image](doc/rm_moveit2_config4.png)
 ## rm_moveit2_config架构说明
 ### 功能包文件总览
-当前rm_driver功能包的文件构成如下。  
+当前rm_moveit2_config功能包的文件构成如下。  
 ```
 ├── doc
 │   ├── rm_moveit2_config1.png
@@ -126,10 +127,10 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 │   │   ├── moveit_controllers.yaml                 #63机械臂moveit2控制器
 │   │   ├── moveit.rviz                             #63机械臂rviz2显示配置文件
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rml_63_6fb_description.urdf.xacro       #63一体化六维力机械臂xacro描述文件
 │   │   ├── rml_63_description.ros2_control.xacro   #63机械臂xacro描述文件
 │   │   ├── rml_63_description.srdf                 #63机械臂moveit2控制配置文件
 │   │   ├── rml_63_description.urdf.xacro           #63机械臂xacro描述文件
+│   │   ├── rml_63.urdf.xacro
 │   │   └── ros2_controllers.yaml                   #63机械臂运动控制器
 │   ├── launch
 │   │   ├── demo_6f.launch.py                       #63六维力虚拟机械臂moveit2启动文件
@@ -158,10 +159,10 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 │   │   ├── moveit_controllers.yaml
 │   │   ├── moveit.rviz
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rm_65_6fb_description.urdf.xacro
 │   │   ├── rm_65_description.ros2_control.xacro
 │   │   ├── rm_65_description.srdf
 │   │   ├── rm_65_description.urdf.xacro
+│   │   ├── rm_65.urdf.xacro
 │   │   └── ros2_controllers.yaml
 │   ├── launch
 │   │   ├── demo_6f.launch.py
@@ -181,7 +182,7 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 │   │   ├── static_virtual_joint_tfs.launch.py
 │   │   └── warehouse_db.launch.py
 │   └── package.xml
-├── rm_75_config                #75机械臂moveit2功能包（文件解释参考63）
+├── rm_75_config                                      #75机械臂moveit2功能包（文件解释参考63）
 │   ├── CMakeLists.txt
 │   ├── config
 │   │   ├── initial_positions.yaml
@@ -190,10 +191,10 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 │   │   ├── moveit_controllers.yaml
 │   │   ├── moveit.rviz
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rm_75_6fb_description.urdf.xacro
 │   │   ├── rm_75_description.ros2_control.xacro
 │   │   ├── rm_75_description.srdf
 │   │   ├── rm_75_description.urdf.xacro
+│   │   ├── rm_75.urdf.xacro
 │   │   └── ros2_controllers.yaml
 │   ├── launch
 │   │   ├── demo_6f.launch.py
@@ -222,10 +223,10 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 │   │   ├── moveit_controllers.yaml
 │   │   ├── moveit.rviz
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rm_eco65_6fb_description.urdf.xacro
 │   │   ├── rm_eco65_description.ros2_control.xacro
 │   │   ├── rm_eco65_description.srdf
 │   │   ├── rm_eco65_description.urdf.xacro
+│   │   ├── rm_eco65.urdf.xacro
 │   │   └── ros2_controllers.yaml
 │   ├── launch
 │   │   ├── demo_6f.launch.py
@@ -254,10 +255,10 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 │   │   ├── moveit_controllers.yaml
 │   │   ├── moveit.rviz
 │   │   ├── pilz_cartesian_limits.yaml
-│   │   ├── rm_eco63_6fb_description.urdf.xacro
 │   │   ├── rm_eco63_description.ros2_control.xacro
 │   │   ├── rm_eco63_description.srdf
 │   │   ├── rm_eco63_description.urdf.xacro
+│   │   ├── rm_eco63.urdf.xacro
 │   │   └── ros2_controllers.yaml
 │   ├── launch
 │   │   ├── demo_6fb.launch.py
@@ -286,13 +287,17 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
     │   ├── rm_gen72_description.ros2_control.xacro
     │   ├── rm_gen72_description.srdf
     │   ├── rm_gen72_description.urdf.xacro
+    │   ├── rm_gen72_II_description.urdf.xacro
     │   └── ros2_controllers.yaml
     ├── launch
     │   ├── demo.launch.py
+    │   ├── demo_II.launch.py
     │   ├── gazebo_moveit_demo.launch.py
+    │   ├── gazebo_moveit_demo_II.launch.py
     │   ├── move_group.launch.py
     │   ├── moveit_rviz.launch.py
     │   ├── real_moveit_demo.launch.py
+    │   ├── real_moveit_demo_II.launch.py
     │   ├── rsp.launch.py
     │   ├── setup_assistant.launch.py
     │   ├── spawn_controllers.launch.py

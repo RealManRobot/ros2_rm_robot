@@ -5,7 +5,7 @@
     name="base_link">
     <inertial>
       <origin
-        xyz="0.00039308 -8.9311E-05 0.050351"
+        xyz="-0.0819699961303711 -0.0464753726622393 0.526722271495911"
         rpy="0 0 0" />
       <mass
         value="0.70684" />
@@ -45,7 +45,7 @@
     name="Link1">
     <inertial>
       <origin
-        xyz="-0.032161 -0.002588 -0.0071715"
+        xyz="-0.0309493055609114 -0.0012728567226139 -0.00524336672353307"
         rpy="0 0 0" />
       <mass
         value="0.7339" />
@@ -144,13 +144,13 @@
     type="revolute">
     <origin
       xyz="-0.086 0 0"
-      rpy="-1.5708 -1.5708 0" />
+      rpy="1.5708 -1.5708 0" />
     <parent
       link="Link1" />
     <child
       link="Link2" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 -1" />
     <limit
       lower="-3.1"
       upper="3.1"
@@ -202,13 +202,13 @@
     type="revolute">
     <origin
       xyz="0.41 0 0"
-      rpy="0 0 0" />
+      rpy="3.1416 -0.0087266 0" />
     <parent
       link="Link2" />
     <child
       link="Link3" />
     <axis
-      xyz="0 0 1" />
+      xyz="-0.0087265 0 0.99996" />
     <limit
       lower="-2.95"
       upper="2.76"

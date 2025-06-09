@@ -42,12 +42,12 @@ set(msg_files
   msg/Handposture.msg
   msg/Handseq.msg
   msg/Handspeed.msg
+  msg/Handstatus.msg
   msg/Armoriginalstate.msg
   msg/Armstate.msg
   msg/Liftspeed.msg
   msg/Liftheight.msg
   msg/Liftstate.msg
-  msg/Handstatus.msg
   msg/Armcurrentstatus.msg
   msg/Jointcurrent.msg
   msg/Jointenflag.msg
@@ -57,6 +57,9 @@ set(msg_files
   msg/Jointvoltage.msg
   msg/Carteposcustom.msg
   msg/Jointposcustom.msg
+  msg/Rmplusbase.msg
+  msg/Rmplusstate.msg
+  msg/Rmerr.msg
 )
 
 # uncomment the following section in order to fill in
