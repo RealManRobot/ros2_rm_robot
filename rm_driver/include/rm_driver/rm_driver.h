@@ -43,7 +43,8 @@
 #include "rm_ros_interfaces/msg/ortteach.hpp"
 #include "rm_ros_interfaces/msg/posteach.hpp"
 #include "rm_ros_interfaces/msg/setrealtimepush.hpp"
-// #include "rm_ros_interfaces/msg/armsoftversion.hpp"
+#include "rm_ros_interfaces/msg/softwarebuildinfo.hpp"
+#include "rm_ros_interfaces/msg/armsoftversion.hpp"
 #include "rm_ros_interfaces/msg/sixforce.hpp"
 #include "rm_ros_interfaces/msg/jointerrorcode.hpp"
 #include "rm_ros_interfaces/msg/forcepositionmovejoint.hpp"
@@ -86,6 +87,33 @@
 #include <std_msgs/msg/string.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <geometry_msgs/msg/pose.hpp>
+// 适配四代控制器新增
+#include "rm_ros_interfaces/msg/robot_info.hpp"
+// #include "rm_ros_interfaces/msg/rmversion.hpp"
+#include "rm_ros_interfaces/msg/flowchartrunstate.hpp"
+#include "rm_ros_interfaces/msg/trajectoryinfo.hpp"
+#include "rm_ros_interfaces/msg/trajectorylist.hpp"
+#include "rm_ros_interfaces/msg/modbustcpmasterinfo.hpp"
+#include "rm_ros_interfaces/msg/modbustcpmasterupdata.hpp"
+#include "rm_ros_interfaces/msg/modbustcpmasterlist.hpp"
+#include "rm_ros_interfaces/msg/modbustcpreadparams.hpp"
+#include "rm_ros_interfaces/msg/modbustcpwriteparams.hpp"
+#include "rm_ros_interfaces/msg/modbusrtureadparams.hpp"
+#include "rm_ros_interfaces/msg/modbusrtuwriteparams.hpp"
+#include "rm_ros_interfaces/msg/programrunstate.hpp"
+// #include "rm_ros_interfaces/msg/armsoftversionv3.hpp"
+// #include "rm_ros_interfaces/msg/armsoftversionv4.hpp"
+#include "rm_ros_interfaces/msg/moveloffset.hpp"
+#include "rm_ros_interfaces/msg/jointversion.hpp"
+#include "rm_ros_interfaces/msg/stop.hpp"
+#include "rm_ros_interfaces/msg/mastername.hpp"
+#include "rm_ros_interfaces/msg/getmodbustcpmasterlist.hpp"
+#include "rm_ros_interfaces/msg/rs485params.hpp"
+#include "rm_ros_interfaces/msg/modbusreaddata.hpp"
+#include "rm_ros_interfaces/msg/gettrajectorylist.hpp"
+#include "rm_ros_interfaces/msg/sendproject.hpp"
+#include "rm_ros_interfaces/msg/toolsoftwareversionv4.hpp"
+
 
 #define RAD_DEGREE 57.295791433
 #define DEGREE_RAD 0.01745
@@ -105,6 +133,8 @@ int tcp_port;
 int udp_cycle_g = 5;
 //arm dof
 int arm_dof_g = 6;
+// controller verison
+int controller_version = 3;
 //ctrl+c触发信号
 bool ctrl_flag = false;
 // 灵巧手数据发布
@@ -113,6 +143,8 @@ bool udp_hand_g = false;
 bool rm_plus_base_g = false;
 // 末端设备实时信息
 bool rm_plus_state_g = false;
+// 连接状态标志
+int connect_state_flag = 0;
 //api类
 RM_Service Rm_Api;
 //机械臂TCp网络通信套接字
@@ -228,7 +260,7 @@ rm_ros_interfaces::msg::Jointtemperature udp_joint_temperature_;
 rm_ros_interfaces::msg::Jointvoltage udp_joint_voltage_;
 rm_ros_interfaces::msg::Rmplusbase udp_rm_plus_base_;                   //末端设备基础信息
 rm_ros_interfaces::msg::Rmplusstate udp_rm_plus_state_;                 //末端设备实时信息
-rm_ros_interfaces::msg::Rmerr udp_rm_err_;                              //udp报错信息
+rm_ros_interfaces::msg::Rmerr udp_rm_err_;                       //末端设备实时信息
 
 class RmArm: public rclcpp::Node
 {
@@ -237,12 +269,14 @@ public:
     ~RmArm();
 
 /**********************************************初始化需要用到的回调函数***********************************************/
-    void Get_Arm_Version();                                                                                 //获取版本信息
+    void Get_Arm_Version();      
+    void Get_Controller_Version();                                                                           //获取版本信息
     void Set_UDP_Configuration(int udp_cycle, int udp_port, int udp_force_coordinate, std::string udp_ip,bool hand, bool rm_plus_base, bool rm_plus_state);  //设置udp主动上报配置
     /*******************************运动控制回调函数******************************/
     // void Arm_MoveJ_75_Callback(rm_ros_interfaces::msg::Movej75::SharedPtr msg);                          //75角度控制
     void Arm_MoveJ_Callback(rm_ros_interfaces::msg::Movej::SharedPtr msg);                                  //角度控制
-    void Arm_MoveL_Callback(rm_ros_interfaces::msg::Movel::SharedPtr msg);                                  //直线运动控制
+    void Arm_MoveL_Callback(rm_ros_interfaces::msg::Movel::SharedPtr msg);   
+    void Arm_MoveL_Offset_Callback(rm_ros_interfaces::msg::Moveloffset::SharedPtr msg);
     void Arm_MoveC_Callback(rm_ros_interfaces::msg::Movec::SharedPtr msg);                                  //圆弧运动控制
     void Arm_Movej_CANFD_Callback(rm_ros_interfaces::msg::Jointpos::SharedPtr msg);                         //角度透传控制
     void Arm_Movej_CANFD_Custom_Callback(rm_ros_interfaces::msg::Jointposcustom::SharedPtr msg);    //角度透传控制高跟随下可自定义模式
@@ -250,6 +284,7 @@ public:
     void Arm_Movep_CANFD_Custom_Callback(rm_ros_interfaces::msg::Carteposcustom::SharedPtr msg);    //位姿透传控制高跟随下可自定义模式
     void Arm_MoveJ_P_Callback(rm_ros_interfaces::msg::Movejp::SharedPtr msg);                               //位姿运动控制
     void Arm_Move_Stop_Callback(const std_msgs::msg::Empty::SharedPtr msg);                                        //轨迹急停控制
+    void Arm_Emergency_Stop_Callback(const rm_ros_interfaces::msg::Stop::SharedPtr msg);                                        //设置机械臂急停状态
     /**************************************************************************/
     void Set_Joint_Teach_Callback(rm_ros_interfaces::msg::Jointteach::SharedPtr msg);                       //关节示教
     void Set_Pos_Teach_Callback(rm_ros_interfaces::msg::Posteach::SharedPtr msg);                           //位置示教
@@ -259,8 +294,6 @@ public:
     /*******************************主动上报回调函数******************************/
     void Arm_Get_Realtime_Push_Callback(const std_msgs::msg::Empty::SharedPtr msg);                         //获取主动上报配置
     void Arm_Set_Realtime_Push_Callback(const rm_ros_interfaces::msg::Setrealtimepush::SharedPtr msg);      //设置主动上报配置参数
-    /*******************************固件版本回调函数******************************/
-    void Arm_Get_Arm_Software_Version_Callback(const std_msgs::msg::Empty::SharedPtr msg);                  //获取机械臂固件版本
     /*******************************力位混合回调函数******************************/
     void Arm_Start_Force_Position_Move_Callback(const std_msgs::msg::Empty::SharedPtr msg);                 //力位混合开始
     void Arm_Stop_Force_Position_Move_Callback(const std_msgs::msg::Empty::SharedPtr msg);                  //力位混合结束
@@ -294,27 +327,65 @@ public:
     void Arm_Set_Lift_Speed_Callback(const rm_ros_interfaces::msg::Liftspeed::SharedPtr msg);               //升降机构速度开环控制
     void Arm_Set_Lift_Height_Callback(const rm_ros_interfaces::msg::Liftheight::SharedPtr msg);             //升降机构位置闭环控制
     void Arm_Get_Lift_State_Callback(const std_msgs::msg::Empty::SharedPtr msg);                            //获取升降机构状态
+    /*********************************末端生态协议回调函数******************************/
+    void Set_Rm_Plus_Mode_Callback(const std_msgs::msg::UInt32::SharedPtr msg);
+    void Get_Rm_Plus_Mode_Callback(const std_msgs::msg::Empty::SharedPtr msg);
+    void Set_Rm_Plus_Touch_Callback(const std_msgs::msg::UInt32::SharedPtr msg);
+    void Get_Rm_Plus_Touch_Callback(const std_msgs::msg::Empty::SharedPtr msg);
+
     /*******************************机械臂状态回调函数****************************/
     void Arm_Get_Current_Arm_State_Callback(const std_msgs::msg::Empty::SharedPtr msg);
     /*********************************六维力数据清零******************************/
     void Arm_Clear_Force_Data_Callback(const std_msgs::msg::Empty::SharedPtr msg);
     /*********************************六维力数据获取******************************/
     void Arm_Get_Force_Data_Callback(const std_msgs::msg::Empty::SharedPtr msg);
-    /*********************************设置末端生态协议模式**************************/
-    void Arm_Set_Rm_Plus_Mode_Callback(const std_msgs::msg::Int32::SharedPtr msg);
-    /**********************************查询末端生态协议模式***************************/
-    void Arm_Get_Rm_Plus_Mode_Callback(const std_msgs::msg::Empty::SharedPtr msg);
-    /************************************设置触觉传感器模式************************/
-    void Arm_Set_Rm_Plus_Touch_Callback(const std_msgs::msg::Int32::SharedPtr msg);
-    /************************************获取触觉传感器模式************************/
-    void Arm_Get_Rm_Plus_Touch_Callback(const std_msgs::msg::Empty::SharedPtr msg);
+    /*********************************适配四代控制器******************************/
+    /*******************************固件版本回调函数******************************/
+    void Arm_Get_Robot_Info_Callback(const std_msgs::msg::Empty::SharedPtr msg);     //获取机械臂固件版本
+    void Arm_Get_Arm_Software_Info_Callback(const std_msgs::msg::Empty::SharedPtr msg);       //获取机械臂固件版本
+    void Arm_Get_Joint_Software_Version_Callback(const std_msgs::msg::Empty::SharedPtr msg);  //获取机械臂固件版本
+    void Arm_Get_Tool_Software_Version_Callback(const std_msgs::msg::Empty::SharedPtr msg);   //获取机械臂固件版本
+    
+    void Get_Trajectory_File_List_Callback(const rm_ros_interfaces::msg::Gettrajectorylist::SharedPtr msg);   //查询轨迹列表
+    void Set_Run_Trajectory_Callback(const std_msgs::msg::String::SharedPtr msg);   //开始运行指定轨迹
+    void Delete_Trajectory_File_Callback(const std_msgs::msg::String::SharedPtr msg);   //删除指定轨迹
+    void Save_Trajectory_File_Callback(const std_msgs::msg::String::SharedPtr msg);   //保存轨迹到控制机器
+
+    void Arm_Get_Flowchart_Program_Run_State_Callback(const std_msgs::msg::Empty::SharedPtr msg);             //获取机械臂固件版本
+    void Add_Modbus_Tcp_Master_Callback(const rm_ros_interfaces::msg::Modbustcpmasterinfo::SharedPtr msg);    //新增Modbus TCP主站
+    void Update_Modbus_Tcp_Master_Callback(const rm_ros_interfaces::msg::Modbustcpmasterupdata::SharedPtr msg); //更新Modbus TCP主站
+    void Delete_Modbus_Tcp_Master_Callback(const rm_ros_interfaces::msg::Mastername::SharedPtr msg);          //删除Modbus TCP主站 
+    void Get_Modbus_Tcp_Master_Callback(const rm_ros_interfaces::msg::Mastername::SharedPtr msg);             //查询指定modbus主站
+    void Get_Modbus_Tcp_Master_List_Callback(const rm_ros_interfaces::msg::Getmodbustcpmasterlist::SharedPtr msg);   //查询modbus主站列表
+    void Set_Controller_RS485_Mode_Callback(const rm_ros_interfaces::msg::RS485params::SharedPtr msg);   // 设置控制器RS485模式(四代控制器支持)
+    void Get_Controller_RS485_Mode_v4_Callback(const std_msgs::msg::Empty::SharedPtr msg);   // 查询控制器RS485模式(四代控制器支持)
+    void Set_Tool_RS485_Mode_Callback(const rm_ros_interfaces::msg::RS485params::SharedPtr msg);   // 设置工具端RS485模式(四代控制器支持)
+    void Get_Tool_RS485_Mode_v4_Callback(const std_msgs::msg::Empty::SharedPtr msg);   // 查询工具端RS485模式(四代控制器支持)
+    void Read_Modbus_RTU_Coils_Callback(const rm_ros_interfaces::msg::Modbusrtureadparams::SharedPtr msg);// Modbus RTU协议读线圈
+    void Write_Modbus_RTU_Coils_Callback(const rm_ros_interfaces::msg::Modbusrtuwriteparams::SharedPtr msg);// Modbus RTU协议写线圈
+    void Read_Modbus_RTU_Input_Status_Callback(const rm_ros_interfaces::msg::Modbusrtureadparams::SharedPtr msg);// Modbus RTU协议读离散量输入
+    void Read_Modbus_RTU_Holding_Registers_Callback(const rm_ros_interfaces::msg::Modbusrtureadparams::SharedPtr msg);// Modbus RTU协议读保持寄存器
+    void Write_Modbus_RTU_Registers_Callback(const rm_ros_interfaces::msg::Modbusrtuwriteparams::SharedPtr msg);// Modbus RTU协议写保持寄存器
+    void Read_Modbus_RTU_Input_Registers_Callback(const rm_ros_interfaces::msg::Modbusrtureadparams::SharedPtr msg);// Modbus RTU协议读输入寄存器
+    void Read_Modbus_TCP_Coils_Callback(const rm_ros_interfaces::msg::Modbustcpreadparams::SharedPtr msg);// Modbus TCP协议读线圈
+    void Write_Modbus_TCP_Coils_Callback(const rm_ros_interfaces::msg::Modbustcpwriteparams::SharedPtr msg);// Modbus TCP协议写线圈
+    void Read_Modbus_TCP_Input_Status_Callback(const rm_ros_interfaces::msg::Modbustcpreadparams::SharedPtr msg);// Modbus TCP协议读离散量输入
+    void Read_Modbus_TCP_Holding_Registers_Callback(const rm_ros_interfaces::msg::Modbustcpreadparams::SharedPtr msg);// Modbus TCP协议读保持寄存器
+    void Write_Modbus_TCP_Registers_Callback(const rm_ros_interfaces::msg::Modbustcpwriteparams::SharedPtr msg);// Modbus TCP协议写保持寄存器
+    void Read_Modbus_TCP_Input_Registers_Callback(const rm_ros_interfaces::msg::Modbustcpreadparams::SharedPtr msg);// Modbus TCP协议读输入寄存器
+    
+    void Send_Project_Callback(const rm_ros_interfaces::msg::Sendproject::SharedPtr msg);   //文件下发
+    void Get_Program_Run_State_Callback(const std_msgs::msg::Empty::SharedPtr msg);   //查询在线编程运行状态   
+    
+
+    
 /***************************************************************end******************************************************/
 private:
     // int Arm_Start(void);        //TCP连接函数
     // void Arm_Close();           //TCP断连函数
 
 /************************************************************变量信息******************************************************/
-    std_msgs::msg::Empty::SharedPtr copy;                                  //闲置
+    std_msgs::msg::Empty::SharedPtr copy;                               //闲置
     // std_msgs::msg::UInt16 sys_err_;                                     //系统错误信息
     // std_msgs::msg::UInt16 arm_err_;                                     //机械臂错误信息
     // std_msgs::msg::UInt16 arm_coordinate_;                              //六维力基准坐标系
@@ -347,8 +418,10 @@ private:
     rclcpp::Subscription<rm_ros_interfaces::msg::Movej>::SharedPtr MoveJ_Cmd;
     /****************************************MoveL运动控制结果发布器*************************************/
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr MoveL_Cmd_Result;
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr MoveL_offset_Cmd_Result;
     /*******************************************MoveL运动控制订阅器*************************************/
     rclcpp::Subscription<rm_ros_interfaces::msg::Movel>::SharedPtr MoveL_Cmd;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Moveloffset>::SharedPtr MoveL_offset_Cmd;
     /****************************************MoveC运动控制结果发布器*************************************/
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr MoveC_Cmd_Result;
     /*******************************************MoveC运动控制订阅器*************************************/
@@ -367,8 +440,10 @@ private:
     rclcpp::Subscription<rm_ros_interfaces::msg::Movejp>::SharedPtr MoveJ_P_Cmd;
     /********************************************轨迹急停结果发布器*****************************************/
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Move_Stop_Cmd_Result;
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Arm_Emergency_Stop_Cmd_Result;
     /***********************************************轨迹急停控制订阅器*************************************/
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Move_Stop_Cmd;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Stop>::SharedPtr Arm_Emergency_Stop_Cmd;
     /********************************************************end******************************************************/
 
     /*******************************************************关节示教***************************************************/
@@ -390,11 +465,107 @@ private:
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Set_Stop_Teach_Cmd;
     /********************************************************end******************************************************/
 
+    /********************************************************适配四代控制器新增***************************************************/
     /********************************************************固件版本***************************************************/
     /*************************************************查询固件版本发布器****************************************/
-    // rclcpp::Publisher<rm_ros_interfaces::msg::Armsoftversion>::SharedPtr Get_Arm_Software_Version_Result;
-    /*************************************************查询固件版本订阅器****************************************/
+    // rclcpp::Publisher<rm_ros_interfaces::msg::Armsoftversionv3>::SharedPtr Get_Arm_Software_Version_Result_v3;
+    // rclcpp::Publisher<rm_ros_interfaces::msg::Armsoftversionv4>::SharedPtr Get_Arm_Software_Version_Result_v4;
+    rclcpp::Publisher<rm_ros_interfaces::msg::Armsoftversion>::SharedPtr Get_Arm_Software_Version_Result;
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Arm_Software_Version_Cmd;
+    rclcpp::Publisher<rm_ros_interfaces::msg::RobotInfo>::SharedPtr Get_Robot_Info_Result;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Robot_Info_Cmd;
+    rclcpp::Publisher<rm_ros_interfaces::msg::Jointversion>::SharedPtr Get_Joint_Software_Version_Result;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Joint_Software_Version_Cmd;
+    rclcpp::Publisher<rm_ros_interfaces::msg::Toolsoftwareversionv4>::SharedPtr Get_Tool_Software_Version_Result;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Tool_Software_Version_Cmd;
+    rclcpp::Publisher<rm_ros_interfaces::msg::Flowchartrunstate>::SharedPtr Get_Flowchart_Program_Run_State_Result;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Flowchart_Program_Run_State_Cmd;
+    /*************************************************轨迹列表相关接口****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Trajectorylist>::SharedPtr Get_Trajectory_File_List_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Gettrajectorylist>::SharedPtr Get_Trajectory_File_List_Cmd;
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Run_Trajectory_Result;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr Set_Run_Trajectory_Cmd;
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Delete_Trajectory_File_Result;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr Delete_Trajectory_File_Cmd;
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Save_Trajectory_File_Result;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr Save_Trajectory_File_Cmd;
+
+    /*************************************************Modbus相关接口****************************************/
+    /*************************************************新增Modbus TCP主站****************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Add_Modbus_Tcp_Master_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbustcpmasterinfo>::SharedPtr Add_Modbus_Tcp_Master_Cmd;    
+    /*************************************************更新Modbus TCP主站****************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Update_Modbus_Tcp_Master_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbustcpmasterupdata>::SharedPtr Update_Modbus_Tcp_Master_Cmd;
+    /*************************************************删除Modbus TCP主站****************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Delete_Modbus_Tcp_Master_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Mastername>::SharedPtr Delete_Modbus_Tcp_Master_Cmd;    
+    /*************************************************查询指定modbus主站****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Modbustcpmasterinfo>::SharedPtr Get_Modbus_Tcp_Master_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Mastername>::SharedPtr Get_Modbus_Tcp_Master_Cmd;    
+    /*************************************************查询modbus主站列表****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Modbustcpmasterlist>::SharedPtr Get_Modbus_Tcp_Master_List_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Getmodbustcpmasterlist>::SharedPtr Get_Modbus_Tcp_Master_List_Cmd;
+    /*************************************************设置控制器RS485模式(四代控制器支持)****************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Controller_RS485_Mode_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::RS485params>::SharedPtr Set_Controller_RS485_Mode_Cmd;
+    /*************************************************查询控制器RS485模式(四代控制器支持)****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::RS485params>::SharedPtr Get_Controller_RS485_Mode_v4_Result;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Controller_RS485_Mode_v4_Cmd;
+    /*************************************************设置工具端RS485模式(四代控制器支持)****************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Tool_RS485_Mode_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::RS485params>::SharedPtr Set_Tool_RS485_Mode_Cmd;
+    /*************************************************查询工具端RS485模式(四代控制器支持)****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::RS485params>::SharedPtr Get_Tool_RS485_Mode_v4_Result;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Tool_RS485_Mode_v4_Cmd;
+
+
+    /*************************************************Modbus RTU协议读线圈****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Modbusreaddata>::SharedPtr Read_Modbus_RTU_Coils_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbusrtureadparams>::SharedPtr Read_Modbus_RTU_Coils_Cmd;
+    /*************************************************Modbus RTU协议写线圈****************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Write_Modbus_RTU_Coils_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbusrtuwriteparams>::SharedPtr Write_Modbus_RTU_Coils_Cmd;
+    /*************************************************Modbus RTU协议读离散量输入****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Modbusreaddata>::SharedPtr Read_Modbus_RTU_Input_Status_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbusrtureadparams>::SharedPtr Read_Modbus_RTU_Input_Status_Cmd;
+    /*************************************************Modbus RTU协议读保持寄存器****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Modbusreaddata>::SharedPtr Read_Modbus_RTU_Holding_Registers_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbusrtureadparams>::SharedPtr Read_Modbus_RTU_Holding_Registers_Cmd;
+    /*************************************************Modbus RTU协议写保持寄存器****************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Write_Modbus_RTU_Registers_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbusrtuwriteparams>::SharedPtr Write_Modbus_RTU_Registers_Cmd;
+    /*************************************************Modbus RTU协议读输入寄存器****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Modbusreaddata>::SharedPtr Read_Modbus_RTU_Input_Registers_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbusrtureadparams>::SharedPtr Read_Modbus_RTU_Input_Registers_Cmd;
+
+    /*************************************************Modbus TCP协议读线圈****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Modbusreaddata>::SharedPtr Read_Modbus_TCP_Coils_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbustcpreadparams>::SharedPtr Read_Modbus_TCP_Coils_Cmd;
+    /*************************************************Modbus TCP协议写线圈****************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Write_Modbus_TCP_Coils_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbustcpwriteparams>::SharedPtr Write_Modbus_TCP_Coils_Cmd;
+    /*************************************************Modbus TCP协议读离散量输入****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Modbusreaddata>::SharedPtr Read_Modbus_TCP_Input_Status_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbustcpreadparams>::SharedPtr Read_Modbus_TCP_Input_Status_Cmd;
+    /*************************************************Modbus TCP协议读保持寄存器****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Modbusreaddata>::SharedPtr Read_Modbus_TCP_Holding_Registers_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbustcpreadparams>::SharedPtr Read_Modbus_TCP_Holding_Registers_Cmd;
+    /*************************************************Modbus TCP协议写保持寄存器****************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Write_Modbus_TCP_Registers_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbustcpwriteparams>::SharedPtr Write_Modbus_TCP_Registers_Cmd;
+    /*************************************************Modbus TCP协议读输入寄存器****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Modbusreaddata>::SharedPtr Read_Modbus_TCP_Input_Registers_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Modbustcpreadparams>::SharedPtr Read_Modbus_TCP_Input_Registers_Cmd;
+
+    /*************************************************文件下发****************************************/
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Send_Project_Result;
+    rclcpp::Subscription<rm_ros_interfaces::msg::Sendproject>::SharedPtr Send_Project_Cmd;
+    /*************************************************查询在线编程运行状态****************************************/
+    rclcpp::Publisher<rm_ros_interfaces::msg::Programrunstate>::SharedPtr Get_Program_Run_State_Result;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Program_Run_State_Cmd;
+    
+    /*************************************************适配四代控制器新增 end****************************************/
     /********************************************************end******************************************************/
 
     /*************************************************************力位混合**************************************************/
@@ -503,7 +674,7 @@ private:
 /*****************************************************************end******************************************************************/
 
 /********************************************************************升降机构***********************************************************/
-    /******************************************设置升降机构速度发布器*********************************/
+    /******************************************设置升降机构速度发布器****************Publisher*****************/
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Lift_Speed_Result;
     /*******************************************设置升降机构速度订阅器********************************/
     rclcpp::Subscription<rm_ros_interfaces::msg::Liftspeed>::SharedPtr Set_Lift_Speed_Cmd;
@@ -517,6 +688,22 @@ private:
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Lift_State_Cmd;
 /********************************************************************end***********************************************************/
  
+/********************************************************************末端生态协议***********************************************************/
+    /******************************************设置末端生态协议模式*********************************/
+    rclcpp::Subscription<std_msgs::msg::UInt32>::SharedPtr Set_Rm_Plus_Mode_Cmd;
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Rm_Plus_Mode_Result;
+    /*******************************************查询末端生态协议模式(末端生态协议支持)********************************/
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Rm_Plus_Mode_Cmd;
+    rclcpp::Publisher<std_msgs::msg::UInt32>::SharedPtr Get_Rm_Plus_Mode_Result;
+    /****************************************设置触觉传感器模式(末端生态协议支持)*********************************/
+    rclcpp::Subscription<std_msgs::msg::UInt32>::SharedPtr Set_Rm_Plus_Touch_Cmd;
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Rm_Plus_Touch_Result;
+    /***************************************查询触觉传感器模式(末端生态协议支持)********************************/
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Rm_Plus_Touch_Cmd;
+    rclcpp::Publisher<std_msgs::msg::UInt32>::SharedPtr Get_Rm_Plus_Touch_Result;
+/********************************************************************end***********************************************************/
+ 
+
     /**************************************获取机械臂当前状态发布器*************************************/
     rclcpp::Publisher<rm_ros_interfaces::msg::Armoriginalstate>::SharedPtr Get_Current_Arm_Original_State_Result;
     /**************************************获取机械臂当前状态发布器*************************************/
@@ -537,22 +724,6 @@ private:
     /******************************************六维力数据获取订阅器*************************************/
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Force_Data_Cmd;
 /********************************************************************end***********************************************************/
-
-/**********************************************************末端生态协议*******************************************************************/
-    /*********************************设置末端生态协议模式***************************************/
-    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Rm_Plus_Mode_Result;
-    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr Set_Rm_Plus_Mode_Cmd;
-    /************************************查询末端生态协议模式**********************************/
-    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr Get_Rm_Plus_Mode_Result; 
-    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Rm_Plus_Mode_Cmd;
-    /************************************设置触觉传感器模式**********************************/
-    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Set_Rm_Plus_Touch_Result;
-    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr Set_Rm_Plus_Touch_Cmd;
-    /************************************获取触觉传感器模式**********************************/
-    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr Get_Rm_Plus_Touch_Result;
-    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr Get_Rm_Plus_Touch_Cmd; 
-/**************************************************************end*************************************************************************/
-
 
     std::string arm_ip_ = "192.168.1.188";    
     std::string udp_ip_ = "192.168.1.10";
@@ -575,6 +746,7 @@ private:
     rclcpp::CallbackGroup::SharedPtr callback_group_sub2_;
     rclcpp::CallbackGroup::SharedPtr callback_group_sub3_;
     rclcpp::CallbackGroup::SharedPtr callback_group_sub4_;
+    rclcpp::CallbackGroup::SharedPtr callback_group_sub5_;
 };
 
 class UdpPublisherNode : public rclcpp::Node

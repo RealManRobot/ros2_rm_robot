@@ -40,6 +40,7 @@ typedef enum{
     RM_MODEL_ECO_62_E,      ///< ECO_62
     RM_MODEL_GEN_72_E,       ///< GEN_72
     RM_MODEL_ECO_63_E,       ///< ECO63
+    RM_MODEL_UNIVERSAL_E
 }rm_robot_arm_model_e;
 
 /**
@@ -192,7 +193,7 @@ typedef struct
 
 typedef struct{
     char build_time[20];    ///< 编译时间
-    char version[10];       ///< 版本号
+    char version[20];       ///< 版本号
 }rm_ctrl_version_t;
 
 typedef struct{
@@ -201,24 +202,31 @@ typedef struct{
 
 typedef struct{
     char build_time[20];    ///<编译时间
-    char version[10];       ///< 版本号
+    char version[20];       ///< 版本号
 }rm_planinfo_t;
 
 typedef struct {
     char version[20];   ///< 算法库版本号
 }rm_algorithm_version_t;
 
+typedef struct {
+    char build_time[20];    ///<编译时间
+    char version[20];       ///< 版本号
+}rm_software_build_info_t;
 /**
  * @brief  机械臂软件信息
  * 
  */
 typedef struct
 {
-    char product_version[15];           ///< 机械臂型号
+    char product_version[20];           ///< 机械臂型号
+    char robot_controller_version[10];  ///< 机械臂控制器版本，若为四代控制器，则该字段为"4.0"
     rm_algorithm_version_t algorithm_info;      ///< 算法库信息
-    rm_ctrl_version_t ctrl_info;        ///< ctrl 层软件信息
-    rm_dynamic_version_t dynamic_info;      ///< 动力学版本
-    rm_planinfo_t plan_info;        ///< plan 层软件信息
+    rm_software_build_info_t ctrl_info;        ///< ctrl 层软件信息
+    rm_dynamic_version_t dynamic_info;      ///< 动力学版本（三代）
+    rm_software_build_info_t plan_info;        ///< plan 层软件信息（三代）
+    rm_software_build_info_t com_info;        ///< communication 模块软件信息（四代）
+    rm_software_build_info_t program_info;        ///< 流程图编程模块软件信息（四代）
 }rm_arm_software_version_t;
 
 /**
@@ -560,6 +568,19 @@ typedef struct
 }rm_program_run_state_t;
 
 /**
+ * @brief 流程图程序运行状态
+ */
+typedef struct
+{
+    int run_state;  ///< 运行状态 0 未开始 1运行中 2暂停中
+    int id;         ///< 当前使能的文件id。
+    char name[32];  ///< 当前使能的文件名称。
+    int plan_speed;     ///< 当前使能的文件全局规划速度比例 1-100。
+    int step_mode;    ///< 单步模式，0为空，1为正常, 2为单步。
+    char modal_id[50];   ///< 运行到的流程图块的id。未运行则不返回
+}rm_flowchart_run_state_t;
+
+/**
  * @brief 全局路点存储信息
  * @ingroup OnlineProgramming
  */
@@ -889,9 +910,10 @@ typedef void (*rm_realtime_arm_state_callback_ptr)(rm_realtime_arm_joint_state_t
  */
 typedef struct
 {
-    int arm_dof;    ///< 机械臂自由度
+    uint8_t arm_dof;    ///< 机械臂自由度
     rm_robot_arm_model_e arm_model;              ///< 机械臂型号
     rm_force_type_e force_type;                  ///< 末端力传感器版本
+    uint8_t robot_controller_version;                      ///< 机械臂控制器版本，4：四代控制器，3：三代控制器。
 }rm_robot_info_t;
 
 /**
@@ -910,6 +932,98 @@ typedef struct
     float alpha[8]; //* unit: °
     float offset[8];    //* unit: °
 } rm_dh_t;
+
+/**
+ * @brief 版本号结构体
+ * 不超过10个字符
+ * @ingroup ToolCoordinateConfig
+ * @ingroup WorkCoordinateConfig
+ */
+typedef struct {
+    char version[10];
+} rm_version_t;
+
+/**
+ * @brief 轨迹信息结构体
+ */
+typedef struct {
+    int point_num;           ///< 轨迹点数量
+    char name[20];      ///< 轨迹名称	
+    char create_time[20];    ///< 创建时间
+}rm_trajectory_info_t;
+/**
+ * @brief 轨迹列表结构体
+ * @ingroup OnlineProgramming
+ */
+typedef struct{
+    int page_num;       ///< 页码
+    int page_size;      ///< 每页大小
+    int total_size;     ///< 列表长度
+    char vague_search[32];  ///< 模糊搜索 
+    int list_len;       ///<返回符合的轨迹列表长度
+    rm_trajectory_info_t tra_list[100];   ///< 返回符合的轨迹列表
+}rm_trajectory_list_t;
+/**
+ * @brief Modbus TCP主站信息结构体
+ */
+typedef struct {
+    char master_name[20]; // Modbus 主站名称，最大长度15个字符，不超过15个字符
+    char ip[16];          // TCP主站 IP 地址
+    int port;             // TCP主站端口号	
+}rm_modbus_tcp_master_info_t;
+/**
+ * @brief Modbus TCP主站列表结构体
+ */
+typedef struct{
+    int page_num;       ///< 页码
+    int page_size;      ///< 每页大小
+    int total_size;     ///< 列表长度
+    char vague_search[32];  ///< 模糊搜索	
+    int list_len;       ///<返回符合的TCP主站列表长度
+    rm_modbus_tcp_master_info_t master_list[100];   ///< 返回符合的TCP主站列表
+}rm_modbus_tcp_master_list_t;
+
+/**
+ * @brief Modbus RTU读数据参数结构体
+ */
+typedef struct {
+    int address;    ///< 数据起始地址
+    int device;     ///< 外设设备地址	
+    int type;       ///< 0-控制器端modbus主机；1-工具端modbus主机。
+    int num;        ///< 要读的数据的数量，数据长度不超过109
+}rm_modbus_rtu_read_params_t;
+/**
+ * @brief Modbus RTU写数据结构体
+ */
+typedef struct {
+    int address;    ///< 数据起始地址
+    int device;     ///< 外设设备地址
+    int type;       ///< 0-控制器端modbus主机；1-工具端modbus主机。
+    int num;        ///< 要写的数据的数量，最大不超过100
+    int data[120];  ///< 要写的数据，数据长度不超过100
+}rm_modbus_rtu_write_params_t;
+
+/**
+ * @brief Modbus TCP读数据参数结构体
+ */
+typedef struct {
+    int address;          // 数据起始地址
+    char master_name[20]; // Modbus 主站名称，最大长度15个字符，不超过15个字符（master_name与IP二选一，若有IP和port优先使用IP和port）
+    char ip[16];          // 主机连接的 IP 地址（master_name与IP二选一，若有IP和port优先使用IP和port）
+    int port;             // 主机连接的端口号
+    int num;              // 读取数据数量，最大不超过100
+}rm_modbus_tcp_read_params_t;
+/**
+ * @brief Modbus TCP写数据结构体
+ */
+typedef struct {
+    int address;          // 数据起始地址
+    char master_name[20]; // Modbus 主站名称，最大长度15个字符，不超过15个字符（master_name与IP二选一，若有IP和port优先使用IP和port）
+    char ip[16];          // 主机连接的 IP 地址（master_name与IP二选一，若有IP和port优先使用IP和port）
+    int port;             // 主机连接的端口号
+    int num;              // 写入数据数量，最大不超过100
+    int data[120];        // 写入的数据，数据长度不超过100
+}rm_modbus_tcp_write_params_t;
 
 #ifdef __cplusplus
 }

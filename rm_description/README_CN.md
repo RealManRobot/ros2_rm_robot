@@ -73,7 +73,7 @@ rm@rm-desktop:~$ rviz2
 ![image](doc/rm_description1.png)
 ## rm_description功能包架构说明
 ## 功能包文件总览
-当前rm_description功能包的文件构成如下。  
+当前rm_driver功能包的文件构成如下。  
 ```
 ├── CMakeLists.txt                #编译规则文件
 ├── launch

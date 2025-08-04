@@ -64,7 +64,7 @@ The following screen appears in the interface after a successful node launch.
 The launch file launches the function of moveit2 to control the real robotic arm. Then, you can control the robotic arm movement by dragging the control ball. For details, please refer to "[rm_moveit2_config Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_moveit2_config/README.md)".
 ## rm_bringup_Package_Architecture_Description
 ### Overview_of_Package_Files
-The current rm_bringup package is composed of the following files.
+The current rm_driver package is composed of the following files.
 ```
 ├── CMakeLists.txt                     # compilation rule file
 ├── include

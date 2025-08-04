@@ -17,9 +17,9 @@ echo "Removing existing libapi_cpp.so..."
 sudo rm -f /usr/local/lib/libapi_cpp.so* 2>/dev/null || true
 
 if [ $(uname -m) = "x86_64" ]; then
-    if [ -f "./linux_x86_c++_v1.0.7/libapi_cpp.so" ];then
+    if [ -f "./linux_x86_c++_v1.1.1/libapi_cpp.so" ];then
         echo "find x86 file"
-        cd linux_x86_c++_v1.0.7
+        cd linux_x86_c++*
         sudo cp ./libapi_cpp.so /usr/local/lib/
         sudo cp ./libapi_cpp.so ..
         cd ..
@@ -28,9 +28,9 @@ if [ $(uname -m) = "x86_64" ]; then
         exit 1
     fi
 else
-    if [ -f "./linux_arm64_c++_v1.0.7/libapi_cpp.so" ];then
+    if [ -f "./linux_arm64_c++*/libapi_cpp.so" ];then
         echo "find arm file"
-        cd linux_arm64_c++_v1.0.7
+        cd linux_arm64_c++_v1.1.0
         sudo cp ./libapi_cpp.so /usr/local/lib/
         sudo cp ./libapi_cpp.so ..
         cd ..

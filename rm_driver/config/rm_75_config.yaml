@@ -9,7 +9,7 @@ rm_driver:
 
     udp_ip: "192.168.1.10"        #设置udp主动上报IP
     udp_cycle: 5                  #udp主动上报周期，需要是5的倍数。
-    udp_port: 8089                #设置udp主动上报端口
+    udp_port: 8089               #设置udp主动上报端口
     udp_force_coordinate: 0       #设置系统受力时六维力的基准坐标，0为传感器坐标系 1为当前工作坐标系 2为当前工具坐标系
     udp_hand: false               #设置灵巧手udp主动上报使能
     udp_plus_base: false          #设置末端设备基础信息udp主动上报使能

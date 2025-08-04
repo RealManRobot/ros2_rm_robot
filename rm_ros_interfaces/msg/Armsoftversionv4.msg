@@ -1,0 +1,6 @@
+string product_version
+string controller_version
+string algorithm_info
+Softwarebuildinfo ctrl_info
+Softwarebuildinfo com_info
+Softwarebuildinfo program_info
