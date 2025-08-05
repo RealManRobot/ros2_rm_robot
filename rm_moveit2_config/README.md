@@ -107,7 +107,7 @@ After completing the above operations, the following interface appears, and we c
 ![image](doc/rm_moveit2_config4.png)
 ## rm_moveit2_config_Architecture_Description
 ### Overview_of_package_files
-The current rm_moveit2_config package is composed of the following files.
+The current rm_driver package is composed of the following files.
 ```
 ├── doc
 │   ├── rm_moveit2_config1.png

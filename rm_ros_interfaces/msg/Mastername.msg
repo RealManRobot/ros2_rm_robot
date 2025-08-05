@@ -1,0 +1,1 @@
+string master_name     # 主站名称

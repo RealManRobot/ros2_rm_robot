@@ -76,7 +76,7 @@ After loading, you can see the current state of the robotic arm in the interface
 ![image](doc/rm_description1.png)
 ## rm_description_Package_Architecture_Description
 ### Overview_of_package_files
-The current rm_description package is composed of the following files.  
+The current rm_driver package is composed of the following files.  
 ```
 ├── CMakeLists.txt                # compilation rule file
 ├── launch

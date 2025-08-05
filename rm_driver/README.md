@@ -1,12 +1,12 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/README.md)
  
 </div>
 
 <div align="center">
 
-# RealMan Robot rm_driver User Manual V1.4
+# RealMan Robot rm_driver User Manual V1.5
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -18,8 +18,9 @@ Revision History:
 |V1.1	  | 7/8/2024  | Amend（Add GEN72 adapter files） |
 |V1.2	  | 9/10/2024 | Amend（Add ECO63 adapter files） |
 |V1.2.1 | 10/31/2024| Amend（Add dexterous hand udp topic） |
-|V1.3   | 12/25/2024| Amend（Add UDP reporting adaptation） |
-|V1.4   | 4/7/2025 | Amend（Add UDP reporting adaptation） |
+|V1.3   | 12/25/2024 | Amend（Add UDP reporting adaptation） |
+|V1.4   | 4/7/2025  | Amend（Add UDP reporting adaptation） |
+|V1.5   | 5/29/2025 | Revision (adapted to fourth generation controllers, added version query interface, added Cartesian space linear offset motion interface, added Modbus interface, added trajectory list interface. Please refer to the topic interface description document for details) |
 
 </div>
 
@@ -80,7 +81,6 @@ rm_driver:
     udp_hand: false               # Set the udp hand reporting enable
     udp_plus_base: false          # Set the udp plus base reporting enable
     udp_plus_state: false         # Set the udp plus state reporting enable
-
     trajectory_mode: 0            #When the high following mode is set, multiple modes are supported, including 0- complete transparent transmission mode, 1- curve fitting mode and 2- filtering mode.
     radio: 0                     #Set the smoothing coefficient in curve fitting mode (range 0-100) or the filter parameter in filtering mode (range 0-1000). The higher the value, the better the smoothing effect.
     arm_joints: ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6"]
@@ -164,4 +164,4 @@ The current rm_driver package is composed of the following files.
 rm_driver has many topics, and you can learn about the topic information through the following commands.
 ![image](doc/rm_driver2.png)
 ![image](doc/rm_driver3.png)  
-It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".
+It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".

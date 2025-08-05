@@ -104,7 +104,7 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 ![image](doc/rm_moveit2_config4.png)
 ## rm_moveit2_config架构说明
 ### 功能包文件总览
-当前rm_moveit2_config的文件构成如下。  
+当前rm_driver功能包的文件构成如下。  
 ```
 ├── doc
 │   ├── rm_moveit2_config1.png

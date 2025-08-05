@@ -1,12 +1,12 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_driver使用说明书V1.4
+# 睿尔曼机器人rm_driver使用说明书V1.5
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -18,7 +18,9 @@
 |V1.2    |2024-9-10 |修订(添加ECO63适配文件) |
 |V1.2.1  |2024-10-31|修订(添加灵巧手高速适配) |
 |V1.3    |2024-12-25|修订(添加UDP上报适配) |
-|V1.4    | 2025-4-7|修订(添加UDP上报适配) |
+|V1.4    |2024-12-25|修订(添加UDP上报适配) |
+|V1.5    |2025-05-29|修订（适配四代控制器、添加版本查询接口、添加笛卡尔空间直线偏移运动接口、添加Modbus接口、添加轨迹列表接口详见话题接口说明文档）|
+
 </div>
 
 ## 目录
@@ -155,4 +157,4 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 rm_driver的话题较多，可以通过如下指令了解其话题信息。
 ![image](doc/rm_driver2.png)
 ![image](doc/rm_driver3.png)  
-主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。
+主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。

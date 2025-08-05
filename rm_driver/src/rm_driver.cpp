@@ -110,32 +110,26 @@ int Arm_Start(void)
 {
     std::string version;
     Rm_Api.rm_init(RM_TRIPLE_MODE_E);
-    //m_sockhand =  Rm_Api.Service_Arm_Socket_Start((char*)tcp_ip, tcp_port, 5000);
+
     version = Rm_Api.rm_api_version();
     // std::cout << version.c_str() << std::endl;
     // Rm_Api.rm_set_log_call_back(NULL ,0);
+    // Rm_Api.rm_set_log_save("/home/yangfan/Plog.txt");
     robot_handle = Rm_Api.rm_create_robot_arm((char*)tcp_ip, tcp_port);
-
-    
-    // Rm_Api.rm_set_robot_dof(robot_handle,7);
-    // robot_handle = Rm_Api.rm_create_robot_arm("192.168.1.18", 8080);
-    if(robot_handle->id == -1)
+    if(robot_handle->id < 0)
     {
-        //rm_delete_robot_arm(robot_handle);
-        std::cout<<"arm connect err..."<<std::endl;
+        rm_delete_robot_arm(robot_handle);
+        std::cout<<"arm connect err..."<< robot_handle << std::endl;
     }
-    else if(robot_handle != NULL)
-    {
-        std::cout<<"connect success, arm id :"<<robot_handle->id<<std::endl;
-    }
-    // m_sockhand =  Rm_Api.Service_Arm_Socket_Start((char*)"192.168.1.234", 8080, 5000);
-    //std::cout<<m_sockhand<<std::endl;
+    // else if(robot_handle != NULL)
+    // {
+    //     std::cout<<"connect success, arm id :"<<robot_handle->id<<std::endl;
+    // }
     return 0;
 }
 
 void Arm_Close(void)
 {
-    //Rm_Api.Service_Arm_Socket_Close(m_sockhand);
     Rm_Api.rm_delete_robot_arm(robot_handle);
 }
 
@@ -215,6 +209,47 @@ void RmArm::Arm_MoveL_Callback(rm_ros_interfaces::msg::Movel::SharedPtr msg)
     {
         movel_result.data = false;
         this->MoveL_Cmd_Result->publish(movel_result);
+        RCLCPP_INFO (this->get_logger(),"MoveL error code is %d\n",movel_data.data);
+    }
+}
+void RmArm::Arm_MoveL_Offset_Callback(rm_ros_interfaces::msg::Moveloffset::SharedPtr msg)
+{
+    rm_pose_t pose;
+    int v,r;
+    bool frame_type,block;
+    int32_t res;
+    std_msgs::msg::UInt32 movel_data;
+    std_msgs::msg::Bool movel_result;
+    rm_quat_t rec_pose;
+    rm_euler_t tarns_euler;
+    int trajectory_connect;
+    pose.position.x = msg->pose.position.x;
+    pose.position.y = msg->pose.position.y;
+    pose.position.z = msg->pose.position.z;
+    rec_pose.w = msg->pose.orientation.w;
+    rec_pose.x = msg->pose.orientation.x;
+    rec_pose.y = msg->pose.orientation.y;
+    rec_pose.z = msg->pose.orientation.z;
+    tarns_euler = Rm_Api.rm_algo_quaternion2euler(rec_pose);
+    pose.euler.rx = tarns_euler.rx;
+    pose.euler.ry = tarns_euler.ry;
+    pose.euler.rz = tarns_euler.rz;
+    v = msg->speed;
+    r = msg->r;
+    block = msg->block;
+    frame_type = msg->frame_type;
+    trajectory_connect = msg->trajectory_connect;
+    res = Rm_Api.rm_movel_offset(robot_handle, pose, v ,r, trajectory_connect, frame_type, block);
+    movel_data.data = res;
+    if(movel_data.data == 0)
+    {
+        movel_result.data = true;
+        this->MoveL_offset_Cmd_Result->publish(movel_result);
+    }
+    else
+    {
+        movel_result.data = false;
+        this->MoveL_offset_Cmd_Result->publish(movel_result);
         RCLCPP_INFO (this->get_logger(),"MoveL error code is %d\n",movel_data.data);
     }
 }
@@ -489,6 +524,30 @@ void RmArm::Arm_Move_Stop_Callback(const std_msgs::msg::Empty::SharedPtr msg)
     }
 }
 
+void RmArm::Arm_Emergency_Stop_Callback(const rm_ros_interfaces::msg::Stop::SharedPtr msg)
+{
+    // copy = msg;
+    int32_t res;
+    bool state;
+    state = msg->state;
+    std_msgs::msg::UInt32 move_stop_data;
+    std_msgs::msg::Bool move_stop_result;
+    res = Rm_Api.rm_set_arm_emergency_stop(robot_handle,state);
+    move_stop_data.data = res;
+    if(move_stop_data.data == 0)
+    {
+        move_stop_result.data = true;
+        this->Arm_Emergency_Stop_Cmd_Result->publish(move_stop_result);
+    }
+    else
+    {
+        move_stop_result.data = false;
+        this->Arm_Emergency_Stop_Cmd_Result->publish(move_stop_result);
+        RCLCPP_INFO (this->get_logger(),"Emergency stop error code is %d\n",move_stop_data.data);
+    }
+}
+
+
 void RmArm::Set_Joint_Teach_Callback(rm_ros_interfaces::msg::Jointteach::SharedPtr msg)
 {
     int num;
@@ -608,6 +667,7 @@ void RmArm::Set_Stop_Teach_Callback(const std_msgs::msg::Empty::SharedPtr msg)
     }
 }
 
+
 void RmArm::Arm_Get_Realtime_Push_Callback(const std_msgs::msg::Empty::SharedPtr msg)
 {
     int32_t res;
@@ -628,15 +688,11 @@ void RmArm::Arm_Get_Realtime_Push_Callback(const std_msgs::msg::Empty::SharedPtr
         Setrealtime_msg.expand_state_enable = config.custom_config.expand_state;
         Setrealtime_msg.arm_current_status_enable = config.custom_config.arm_current_status;
         Setrealtime_msg.aloha_state_enable = config.custom_config.aloha_state;
-        Setrealtime_msg.plus_base_enable = config.custom_config.plus_base;
-        rm_plus_base_g = config.custom_config.plus_base;
-        Setrealtime_msg.plus_state_enable = config.custom_config.plus_state;
-        rm_plus_state_g = config.custom_config.plus_state;
         udp_hand_g = config.custom_config.hand_state;
         this->Get_Realtime_Push_Result->publish(Setrealtime_msg);
     }
     else
-    RCLCPP_INFO (this->get_logger(),"The error code is %d\n",res);
+    RCLCPP_INFO (this->get_logger(),"The get_realtime_push error code is %d\n",res);
 }
 
 void RmArm::Arm_Set_Realtime_Push_Callback(const rm_ros_interfaces::msg::Setrealtimepush::SharedPtr msg)
@@ -673,7 +729,7 @@ void RmArm::Arm_Set_Realtime_Push_Callback(const rm_ros_interfaces::msg::Setreal
     {
         set_realtime_result.data = false;
         this->Set_Realtime_Push_Result->publish(set_realtime_result);
-        RCLCPP_INFO (this->get_logger(),"The error code is %d\n",res);
+        RCLCPP_INFO (this->get_logger(),"The set_realtime_push error code is %d\n",res);
     }
 }
 
@@ -707,7 +763,7 @@ void RmArm::Set_UDP_Configuration(int udp_cycle, int udp_port, int udp_force_coo
     }
     else
     {
-        RCLCPP_INFO (this->get_logger(),"The error code is %d\n",res);
+        RCLCPP_INFO (this->get_logger(),"The set_realtime_push error code is %d\n",res);
     }
 }
 
@@ -739,14 +795,31 @@ void RmArm::Get_Arm_Version()
     }
 }
 
+void RmArm::Get_Controller_Version()
+{
+    rm_robot_info_t robot_info;
+    int32_t res;
+    res = Rm_Api.rm_get_robot_info(robot_handle, &robot_info);
+    if(res == 0)
+    {
+        controller_version = robot_info.robot_controller_version;
+        RCLCPP_INFO (this->get_logger(),"controller version : %d",controller_version);
+        
+    }
+    else
+    {
+        RCLCPP_INFO (this->get_logger(),"Service_Get_Arm_Software_Version error = %d",res);
+    }
+}
+
 // 机械臂固件版本信息查询，在Api中去掉了
 // void RmArm::Arm_Get_Arm_Software_Version_Callback(const std_msgs::msg::Empty::SharedPtr msg)
 // {
-//     char plan_version[50];
-//     char ctrl_version[50];
-//     char kernal1[50];
-//     char kernal2[50];
-//     char product_version[50];
+    //     char plan_version[50];
+    //     char ctrl_version[50];
+    //     char kernal1[50];
+    //     char kernal2[50];
+    //     char product_version[50];
 //     int32_t res;
 //     rm_ros_interfaces::msg::Armsoftversion Armsoftversion_msg;
 //     copy = msg;
@@ -762,10 +835,1058 @@ void RmArm::Get_Arm_Version()
 //     }
 //     else
 //     {
-//         RCLCPP_INFO (this->get_logger(),"The error code is %d\n",res);
+    //         RCLCPP_INFO (this->get_logger(),"The error code is %d\n",res);
 //     }
 
 // }
+
+// 20250425:在适配四代控制器时又选择保留
+void RmArm::Arm_Get_Arm_Software_Info_Callback(const std_msgs::msg::Empty::SharedPtr msg)
+{
+    rm_arm_software_version_t arm_software_info;
+    memset(&arm_software_info, 0, sizeof(arm_software_info));
+    int32_t res;
+    copy = msg;
+    res = Rm_Api.rm_get_arm_software_info(robot_handle, &arm_software_info);
+    // res = Rm_Api.Service_Get_Arm_Software_Version(m_sockhand, plan_version, ctrl_version, kernal1, kernal2, product_version);
+    if(res == 0)
+    {
+        if(controller_version==3){
+            rm_ros_interfaces::msg::Armsoftversion Armsoftversion_msg;
+            Armsoftversion_msg.plan_info.version = arm_software_info.plan_info.version;
+            Armsoftversion_msg.plan_info.build_time = arm_software_info.plan_info.build_time;
+            Armsoftversion_msg.ctrl_info.build_time = arm_software_info.ctrl_info.build_time;
+            Armsoftversion_msg.ctrl_info.version = arm_software_info.ctrl_info.version;
+            Armsoftversion_msg.product_version = arm_software_info.product_version;
+            Armsoftversion_msg.controller_version = arm_software_info.robot_controller_version;
+            Armsoftversion_msg.algorithm_info = arm_software_info.algorithm_info.version;
+            Armsoftversion_msg.dynamic_info = arm_software_info.dynamic_info.model_version;
+            Armsoftversion_msg.state = true;
+            this->Get_Arm_Software_Version_Result->publish(Armsoftversion_msg);
+        }
+        if(controller_version==4){
+            rm_ros_interfaces::msg::Armsoftversion Armsoftversion_msg;
+            Armsoftversion_msg.algorithm_info = arm_software_info.algorithm_info.version;
+            Armsoftversion_msg.ctrl_info.build_time = arm_software_info.ctrl_info.build_time;
+            Armsoftversion_msg.ctrl_info.version = arm_software_info.ctrl_info.version;
+            Armsoftversion_msg.product_version = arm_software_info.product_version;
+            Armsoftversion_msg.controller_version = arm_software_info.robot_controller_version;
+            Armsoftversion_msg.com_info.build_time = arm_software_info.com_info.build_time;
+            Armsoftversion_msg.com_info.version = arm_software_info.com_info.version;
+            Armsoftversion_msg.program_info.build_time = arm_software_info.program_info.build_time;
+            Armsoftversion_msg.program_info.version = arm_software_info.program_info.version;
+            Armsoftversion_msg.state = true;
+            this->Get_Arm_Software_Version_Result->publish(Armsoftversion_msg);
+        }
+    }
+    else
+    {
+        rm_ros_interfaces::msg::Armsoftversion Armsoftversion_msg;
+        Armsoftversion_msg.state = false;
+        this->Get_Arm_Software_Version_Result->publish(Armsoftversion_msg);
+        RCLCPP_INFO (this->get_logger(),"The get_arm_software error code is %d\n",res);
+    }
+
+}
+
+void RmArm::Arm_Get_Robot_Info_Callback(const std_msgs::msg::Empty::SharedPtr msg)
+{
+    rm_robot_info_t arm_robot_info;
+    memset(&arm_robot_info, 0, sizeof(arm_robot_info));
+    int32_t res;
+    rm_ros_interfaces::msg::RobotInfo robotinfo_msg;
+    copy = msg;
+    res = Rm_Api.rm_get_robot_info(robot_handle, &arm_robot_info);
+    if(res == 0)
+    {
+        robotinfo_msg.arm_dof = arm_robot_info.arm_dof;
+        robotinfo_msg.arm_model = arm_robot_info.arm_model;
+        robotinfo_msg.force_type = arm_robot_info.force_type;
+        robotinfo_msg.robot_controller_version = arm_robot_info.robot_controller_version;
+        robotinfo_msg.state = true;
+        this->Get_Robot_Info_Result->publish(robotinfo_msg);
+    }
+    else
+    {
+        robotinfo_msg.state = false;
+        this->Get_Robot_Info_Result->publish(robotinfo_msg);
+        RCLCPP_INFO (this->get_logger(),"The robot info error code is %d\n",res);
+    }
+}
+
+void RmArm::Arm_Get_Joint_Software_Version_Callback(const std_msgs::msg::Empty::SharedPtr msg)
+{
+    int32_t res;
+    int joint_software_info[7];
+    rm_ros_interfaces::msg::Jointversion jointsoftwareinfo;
+    rm_version_t joint_version[7] = {0};
+    copy = msg;
+    res = Rm_Api.rm_get_joint_software_version(robot_handle, joint_software_info,joint_version);
+    if(res == 0)
+    {
+        if(controller_version==3){
+            for(int i=0;i<7;i++){
+                jointsoftwareinfo.joint_version[i] = std::to_string(joint_software_info[i]);  //这里需要先转换成十六进制再转换成字符串
+            }
+        }
+        if(controller_version==4){
+            for(int i=0;i<7;i++){
+                jointsoftwareinfo.joint_version[i] = joint_version[i].version;
+            }
+        }
+        jointsoftwareinfo.state = true;
+        this->Get_Joint_Software_Version_Result->publish(jointsoftwareinfo);
+    }
+    else
+    {
+        jointsoftwareinfo.state = true;
+        this->Get_Joint_Software_Version_Result->publish(jointsoftwareinfo);
+        RCLCPP_INFO (this->get_logger(),"The joint software info error code is %d\n",res);
+    }
+}
+void RmArm::Arm_Get_Tool_Software_Version_Callback(const std_msgs::msg::Empty::SharedPtr msg)
+{
+    int32_t res;
+    rm_version_t end_v;
+    int tool_software_info;
+    // std_msgs::msg::String toolsoftwareinfo;
+    rm_ros_interfaces::msg::Toolsoftwareversionv4 toolsoftwareinfo;
+    copy = msg;
+    res = Rm_Api.rm_get_tool_software_version(robot_handle, &tool_software_info,&end_v);
+    if(res == 0)
+    {
+        if(controller_version==3){
+            toolsoftwareinfo.tool_version = std::to_string(tool_software_info);
+        }
+        if(controller_version==4){
+            toolsoftwareinfo.tool_version = end_v.version;
+        }
+        toolsoftwareinfo.state = true;
+        this->Get_Tool_Software_Version_Result->publish(toolsoftwareinfo);
+    }
+    else
+    {
+        toolsoftwareinfo.state = false;
+        this->Get_Tool_Software_Version_Result->publish(toolsoftwareinfo);
+        RCLCPP_INFO (this->get_logger(),"The tool software error code is %d\n",res);
+    }
+}
+void RmArm::Get_Trajectory_File_List_Callback(const rm_ros_interfaces::msg::Gettrajectorylist::SharedPtr msg)   //查询轨迹列表
+{
+    int32_t res;
+    rm_trajectory_list_t trajectory_file_list;
+    rm_ros_interfaces::msg::Trajectorylist get_trajectory_file_list;
+
+    rm_ros_interfaces::msg::Trajectoryinfo tral_info;
+    // copy = msg;
+    int page_num,page_size;
+    const char *vague_search=msg->vague_search.c_str();
+    page_num = msg->page_num;
+    page_size = msg->page_size;
+    res = Rm_Api.rm_get_trajectory_file_list(robot_handle, page_num,page_size,vague_search,&trajectory_file_list);
+    if(res == 0)
+    {
+        get_trajectory_file_list.page_num = trajectory_file_list.page_num;
+        get_trajectory_file_list.page_size = trajectory_file_list.page_size;
+        get_trajectory_file_list.total_size = trajectory_file_list.total_size;
+        get_trajectory_file_list.vague_search = trajectory_file_list.vague_search;
+        for(int i=0;i<trajectory_file_list.list_len;i++){
+            tral_info.name = trajectory_file_list.tra_list[i].name;
+            tral_info.create_time = trajectory_file_list.tra_list[i].create_time;
+            tral_info.point_num = trajectory_file_list.tra_list[i].point_num;
+            get_trajectory_file_list.tra_list.push_back(tral_info);
+        }
+        get_trajectory_file_list.state = true;
+        this->Get_Trajectory_File_List_Result->publish(get_trajectory_file_list);
+    }
+    else
+    {
+        get_trajectory_file_list.state = false;
+        this->Get_Trajectory_File_List_Result->publish(get_trajectory_file_list);
+        RCLCPP_INFO (this->get_logger(),"The get_trajectory_file error code is %d\n",res);
+    }
+}
+void RmArm::Set_Run_Trajectory_Callback(const std_msgs::msg::String::SharedPtr msg)   //开始运行指定轨迹
+{
+    int32_t res;
+    std_msgs::msg::Bool set_run_trajectory_result;
+    const char *trajectory_name=msg->data.c_str();
+    res = Rm_Api.rm_set_run_trajectory(robot_handle, trajectory_name);
+    if(res == 0)
+    {
+        set_run_trajectory_result.data = true;
+        this->Set_Run_Trajectory_Result->publish(set_run_trajectory_result);
+    }
+    else
+    {
+        set_run_trajectory_result.data = false;
+        this->Set_Run_Trajectory_Result->publish(set_run_trajectory_result);
+        RCLCPP_INFO (this->get_logger(),"Set_Run_Trajectory error code is %d\n",res);
+    }
+}
+void RmArm::Delete_Trajectory_File_Callback(const std_msgs::msg::String::SharedPtr msg)   //删除指定轨迹
+{
+    int32_t res;
+    std_msgs::msg::Bool Delete_Trajectory_File_result;
+    const char *trajectory_name=msg->data.c_str();
+    res = Rm_Api.rm_delete_trajectory_file(robot_handle, trajectory_name);
+    if(res == 0)
+    {
+        Delete_Trajectory_File_result.data = true;
+        this->Delete_Trajectory_File_Result->publish(Delete_Trajectory_File_result);
+    }
+    else
+    {
+        Delete_Trajectory_File_result.data = false;
+        this->Delete_Trajectory_File_Result->publish(Delete_Trajectory_File_result);
+        RCLCPP_INFO (this->get_logger(),"Set_Run_Trajectory error code is %d\n",res);
+    }
+}
+void RmArm::Save_Trajectory_File_Callback(const std_msgs::msg::String::SharedPtr msg)   //保存轨迹到控制机器
+{
+    int32_t res;
+    std_msgs::msg::Bool Save_Trajectory_File_result;
+    const char *trajectory_name=msg->data.c_str();
+    res = Rm_Api.rm_save_trajectory_file(robot_handle, trajectory_name);
+    if(res == 0)
+    {
+        Save_Trajectory_File_result.data = true;
+        this->Save_Trajectory_File_Result->publish(Save_Trajectory_File_result);
+    }
+    else
+    {
+        Save_Trajectory_File_result.data = false;
+        this->Save_Trajectory_File_Result->publish(Save_Trajectory_File_result);
+        RCLCPP_INFO (this->get_logger(),"Save_Trajectory_File error code is %d\n",res);
+    }
+}
+
+void RmArm::Arm_Get_Flowchart_Program_Run_State_Callback(const std_msgs::msg::Empty::SharedPtr msg)// 不支持三代控制器
+{
+    int32_t res;
+    rm_ros_interfaces::msg::Flowchartrunstate flowchatrunstate;
+    rm_flowchart_run_state_t flow_run_state;
+    copy = msg;
+    res = Rm_Api.rm_get_flowchart_program_run_state(robot_handle, &flow_run_state);
+    if(res == 0)
+    {
+        flowchatrunstate.run_state = flow_run_state.run_state;
+        flowchatrunstate.id = flow_run_state.id;
+        flowchatrunstate.name = flow_run_state.name;
+        flowchatrunstate.plan_speed = flow_run_state.plan_speed;
+        flowchatrunstate.step_mode = flow_run_state.step_mode;
+        flowchatrunstate.modal_id = flow_run_state.modal_id;
+        flowchatrunstate.state = true;
+        this->Get_Flowchart_Program_Run_State_Result->publish(flowchatrunstate);
+    }
+    else
+    {
+        flowchatrunstate.state = false;
+        this->Get_Flowchart_Program_Run_State_Result->publish(flowchatrunstate);
+        RCLCPP_INFO (this->get_logger(),"The flow chat run error code is %d\n",res);
+    }
+}
+
+
+// ------------------------------------------Modbus相关------------------------------------------
+void RmArm::Add_Modbus_Tcp_Master_Callback(const rm_ros_interfaces::msg::Modbustcpmasterinfo::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_tcp_master_info_t master;
+    std_msgs::msg::Bool Add_Modbus_Tcp_Master;
+    strcpy(master.master_name, msg->master_name.c_str());
+    strcpy(master.ip, msg->ip.c_str());
+    master.port = msg->port;
+        
+    res = Rm_Api.rm_add_modbus_tcp_master(robot_handle, master);
+    
+    if(res == 0)
+    {   
+        Add_Modbus_Tcp_Master.data = true;
+        this->Add_Modbus_Tcp_Master_Result->publish(Add_Modbus_Tcp_Master);
+    }
+    else
+    {
+        Add_Modbus_Tcp_Master.data = false;
+        this->Add_Modbus_Tcp_Master_Result->publish(Add_Modbus_Tcp_Master);
+        RCLCPP_INFO (this->get_logger(),"The Add_Modbus_Tcp error code is %d\n",res);
+    }
+}
+
+void RmArm::Update_Modbus_Tcp_Master_Callback(const rm_ros_interfaces::msg::Modbustcpmasterupdata::SharedPtr msg)
+{
+    int32_t res;
+    rm_modbus_tcp_master_info_t master;
+    // copy = msg;
+    std_msgs::msg::Bool Update_Modbus_Tcp_Master_result;
+    char *old_master_name =  (char*)malloc(14*sizeof(char));
+    strcpy(old_master_name, msg->master_name.c_str());
+    strcpy(master.master_name, msg->new_master_name.c_str());
+    strcpy(master.ip, msg->ip.c_str());
+    master.port = msg->port;
+    
+    res = Rm_Api.rm_update_modbus_tcp_master(robot_handle, old_master_name,master);
+        
+    if(res == 0)
+    {
+        Update_Modbus_Tcp_Master_result.data = true;
+        this->Update_Modbus_Tcp_Master_Result->publish(Update_Modbus_Tcp_Master_result);
+    }
+    else
+    {
+        Update_Modbus_Tcp_Master_result.data = false;
+        this->Update_Modbus_Tcp_Master_Result->publish(Update_Modbus_Tcp_Master_result);
+        RCLCPP_INFO (this->get_logger(),"The error code is %d\n",res);
+    }
+}
+
+void RmArm::Delete_Modbus_Tcp_Master_Callback(const rm_ros_interfaces::msg::Mastername::SharedPtr msg)
+{
+    int32_t res;
+    char master_name[20];
+    std_msgs::msg::Bool Delete_Modbus_Tcp_Master_result;
+    strcpy(master_name, msg->master_name.c_str());
+    
+    res = Rm_Api.rm_delete_modbus_tcp_master(robot_handle, master_name);
+        
+    if(res == 0)
+    {
+        Delete_Modbus_Tcp_Master_result.data = true;
+        this->Delete_Modbus_Tcp_Master_Result->publish(Delete_Modbus_Tcp_Master_result);
+    }
+    else
+    {
+        Delete_Modbus_Tcp_Master_result.data = false;
+        this->Delete_Modbus_Tcp_Master_Result->publish(Delete_Modbus_Tcp_Master_result);
+        RCLCPP_INFO (this->get_logger(),"The Delete_Modbus_Tcp_Master error code is %d\n",res);
+    }
+}
+
+void RmArm::Get_Modbus_Tcp_Master_Callback(const rm_ros_interfaces::msg::Mastername::SharedPtr msg)
+{
+    int32_t res;
+    rm_modbus_tcp_master_info_t master;
+    rm_ros_interfaces::msg::Modbustcpmasterinfo get_Tcp_Master_info;
+    // copy = msg;
+    char master_name[20];
+    strcpy(master_name, msg->master_name.c_str());
+    
+    res = Rm_Api.rm_get_modbus_tcp_master(robot_handle, master_name,&master);
+    
+
+    if(res == 0)
+    {
+        get_Tcp_Master_info.ip = master.ip;
+        get_Tcp_Master_info.master_name = master.master_name;
+        get_Tcp_Master_info.port = master.port;
+        get_Tcp_Master_info.state = true;
+        this->Get_Modbus_Tcp_Master_Result->publish(get_Tcp_Master_info);
+    }
+    else
+    {
+        get_Tcp_Master_info.state = false;
+        this->Get_Modbus_Tcp_Master_Result->publish(get_Tcp_Master_info);
+        RCLCPP_INFO (this->get_logger(),"The get_Tcp_Master error code is %d\n",res);
+    }
+}
+
+void RmArm::Get_Modbus_Tcp_Master_List_Callback(const rm_ros_interfaces::msg::Getmodbustcpmasterlist::SharedPtr msg)
+{
+    int32_t res;
+    rm_modbus_tcp_master_list_t master_list;
+    rm_ros_interfaces::msg::Modbustcpmasterlist get_Tcp_Master_list;
+    rm_ros_interfaces::msg::Modbustcpmasterinfo master_info;
+    // copy = msg;
+    int page_num,page_size;
+    char vague_search[20];
+    page_num = msg->page_num;
+    page_size = msg->page_size;
+    strcpy(vague_search, msg->vague_search.c_str());
+    
+    res = Rm_Api.rm_get_modbus_tcp_master_list(robot_handle, page_num,page_size,vague_search,&master_list);
+        
+    if(res == 0)
+    {
+        get_Tcp_Master_list.page_num = master_list.page_num;
+        get_Tcp_Master_list.page_size = master_list.page_size;
+        get_Tcp_Master_list.total_size = master_list.total_size;
+        get_Tcp_Master_list.vague_search = master_list.vague_search;
+        for(int i=0;i<master_list.list_len;i++){
+            master_info.ip = master_list.master_list[i].ip;
+            master_info.master_name = master_list.master_list[i].master_name;
+            master_info.port = master_list.master_list[i].port;
+            get_Tcp_Master_list.master_list.push_back(master_info);
+        }
+        get_Tcp_Master_list.state = true;
+        this->Get_Modbus_Tcp_Master_List_Result->publish(get_Tcp_Master_list);
+    }
+    else
+    {
+        get_Tcp_Master_list.state = false;
+        this->Get_Modbus_Tcp_Master_List_Result->publish(get_Tcp_Master_list);
+        RCLCPP_INFO (this->get_logger(),"The get_Tcp_Master_list error code is %d\n",res);
+    }
+}
+
+void RmArm::Set_Controller_RS485_Mode_Callback(const rm_ros_interfaces::msg::RS485params::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    int tool_rs485_mode,baudrate;
+    std_msgs::msg::Bool controller_RS485_mode_set_result;
+    tool_rs485_mode = msg->mode;
+    baudrate = msg->baudrate;
+    
+    res = Rm_Api.rm_set_controller_rs485_mode(robot_handle, tool_rs485_mode, baudrate);
+    
+    if(res == 0)
+    {
+        controller_RS485_mode_set_result.data = true;
+        this->Set_Controller_RS485_Mode_Result->publish(controller_RS485_mode_set_result);
+    }
+    else
+    {
+        controller_RS485_mode_set_result.data = false;
+        this->Set_Controller_RS485_Mode_Result->publish(controller_RS485_mode_set_result);
+        RCLCPP_INFO (this->get_logger(),"The set_controller_rs485 error code is %d\n",res);
+    }
+}
+
+void RmArm::Get_Controller_RS485_Mode_v4_Callback(const std_msgs::msg::Empty::SharedPtr msg)
+{
+    int32_t res;
+    int tool_rs485_mode, baudrate;
+    rm_ros_interfaces::msg::RS485params controller_rs485_mode_get_result;
+    copy = msg;
+    
+    res = Rm_Api.rm_get_controller_rs485_mode_v4(robot_handle, &tool_rs485_mode, &baudrate);
+    
+    if(res == 0)
+    {
+        controller_rs485_mode_get_result.mode = tool_rs485_mode;
+        controller_rs485_mode_get_result.baudrate = baudrate;
+        controller_rs485_mode_get_result.state = true;
+        this->Get_Controller_RS485_Mode_v4_Result->publish(controller_rs485_mode_get_result);
+    }
+    else
+    {
+        controller_rs485_mode_get_result.state = false;
+        this->Get_Controller_RS485_Mode_v4_Result->publish(controller_rs485_mode_get_result);
+        RCLCPP_INFO (this->get_logger(),"The get_controller_rs485_mode_v4 error code is %d\n",res);
+    }
+}
+void RmArm::Set_Tool_RS485_Mode_Callback(const rm_ros_interfaces::msg::RS485params::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    int tool_rs485_mode,baudrate;
+    std_msgs::msg::Bool tool_RS485_mode_set_result;
+    tool_rs485_mode = msg->mode;
+    baudrate = msg->baudrate;
+    
+    res = Rm_Api.rm_set_tool_rs485_mode(robot_handle, tool_rs485_mode, baudrate);
+    
+    if(res == 0)
+    {
+        tool_RS485_mode_set_result.data = true;
+        this->Set_Tool_RS485_Mode_Result->publish(tool_RS485_mode_set_result);
+    }
+    else
+    {
+        tool_RS485_mode_set_result.data = false;
+        this->Set_Tool_RS485_Mode_Result->publish(tool_RS485_mode_set_result);
+        RCLCPP_INFO (this->get_logger(),"The set_tool_rs485_mode error code is %d\n",res);
+    }
+}
+void RmArm::Get_Tool_RS485_Mode_v4_Callback(const std_msgs::msg::Empty::SharedPtr msg)
+{
+    int32_t res;
+    int tool_rs485_mode = 0;
+    int baudrate = 0;
+    rm_ros_interfaces::msg::RS485params tool_rs485_mode_get_result;
+    copy = msg;
+    res = Rm_Api.rm_get_tool_rs485_mode_v4(robot_handle, &tool_rs485_mode, &baudrate);
+    
+    if(res == 0)
+    {
+        tool_rs485_mode_get_result.mode = tool_rs485_mode;
+        tool_rs485_mode_get_result.baudrate = baudrate;
+        tool_rs485_mode_get_result.state = true;
+        this->Get_Tool_RS485_Mode_v4_Result->publish(tool_rs485_mode_get_result);
+    }
+    else
+    {
+        tool_rs485_mode_get_result.state = false;
+        this->Get_Tool_RS485_Mode_v4_Result->publish(tool_rs485_mode_get_result);
+        RCLCPP_INFO (this->get_logger(),"The get_tool_rs485_mode_v4 error code is %d\n",res);
+    }
+}
+
+void RmArm::Read_Modbus_RTU_Coils_Callback(const rm_ros_interfaces::msg::Modbusrtureadparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_rtu_read_params_t param;
+    rm_ros_interfaces::msg::Modbusreaddata read_coil_data;
+    param.address = msg->address;
+    param.device = msg->device;
+    param.type = msg->type;
+    param.num = msg->num;
+
+    int data[100]; // 要读的数据的数量，数据长度不超过100
+    if(param.num>100)
+    {
+        param.num = 100;
+        RCLCPP_WARN (this->get_logger(),"The read_modbus_rtu_coils num is over 100 use 100\n");
+    }
+    res = Rm_Api.rm_read_modbus_rtu_coils(robot_handle, param, data);
+    
+    if(res == 0)
+    {
+        for(int i=0;i<param.num;i++){
+            read_coil_data.read_data.push_back(data[i]);
+        }
+        read_coil_data.state = true;
+        this->Read_Modbus_RTU_Coils_Result->publish(read_coil_data);
+    }
+    else
+    {
+        read_coil_data.state = false;
+        this->Read_Modbus_RTU_Coils_Result->publish(read_coil_data);
+        RCLCPP_INFO (this->get_logger(),"The read_modbus_rtu_coils error code is %d\n",res);
+    }
+}
+void RmArm::Write_Modbus_RTU_Coils_Callback(const rm_ros_interfaces::msg::Modbusrtuwriteparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_rtu_write_params_t param;
+    std_msgs::msg::Bool write_coil_data_result;
+    param.address = msg->address;
+    param.device = msg->device;
+    param.type = msg->type;
+    param.num = msg->num;
+    if((param.num == int(msg->data.size()))&&(param.num<=100))
+    {
+        for(int i=0;i<param.num;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+    }
+    else if(msg->data.size()<=100)
+    {
+        param.num = msg->data.size();
+        for(int i=0;i<param.num;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+        RCLCPP_WARN (this->get_logger(),"The write_modbus_rtu_coils num is diff with data size use data size %d\n",param.num);
+    }
+    else if(msg->data.size()>100)
+    {
+        param.num = 100;
+        for(int i=0;i<100;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+        RCLCPP_WARN (this->get_logger(),"The write_modbus_rtu_coils num is over 100 use 100\n");
+    }
+    
+    res = Rm_Api.rm_write_modbus_rtu_coils(robot_handle, param);
+    
+    if(res == 0)
+    {
+        write_coil_data_result.data = true;
+        this->Write_Modbus_RTU_Coils_Result->publish(write_coil_data_result);
+    }
+    else
+    {
+        write_coil_data_result.data = false;
+        this->Write_Modbus_RTU_Coils_Result->publish(write_coil_data_result);
+        RCLCPP_INFO (this->get_logger(),"The write_modbus_rtu_coils error code is %d\n",res);
+    }
+}
+
+
+void RmArm::Read_Modbus_RTU_Input_Status_Callback(const rm_ros_interfaces::msg::Modbusrtureadparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_rtu_read_params_t param;
+    rm_ros_interfaces::msg::Modbusreaddata read_input_status_data;
+    param.address = msg->address;
+    param.device = msg->device;
+    param.type = msg->type;
+    param.num = msg->num;
+
+    int data[100]; // 要读的数据的数量，数据长度不超过100
+    if(param.num>100)
+    {
+        param.num = 100;
+        RCLCPP_WARN (this->get_logger(),"The read_modbus_rtu_input_status num is over 100 use 100\n");
+    }
+    res = Rm_Api.rm_read_modbus_rtu_input_status(robot_handle, param, data);
+    
+    if(res == 0)
+    {
+        for(int i=0;i<param.num;i++){
+            read_input_status_data.read_data.push_back(data[i]);
+        }
+        read_input_status_data.state = true;
+        this->Read_Modbus_RTU_Input_Status_Result->publish(read_input_status_data);
+    }
+    else
+    {
+        read_input_status_data.state = false;
+        this->Read_Modbus_RTU_Input_Status_Result->publish(read_input_status_data);
+        RCLCPP_INFO (this->get_logger(),"The read_modbus_rtu_input error code is %d\n",res);
+    }
+}
+
+void RmArm::Read_Modbus_RTU_Holding_Registers_Callback(const rm_ros_interfaces::msg::Modbusrtureadparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_rtu_read_params_t param;
+    rm_ros_interfaces::msg::Modbusreaddata read_holding_registers_data;
+    param.address = msg->address;
+    param.device = msg->device;
+    param.type = msg->type;
+    param.num = msg->num;
+
+    int data[100]; // 要读的数据的数量，数据长度不超过100
+    if(param.num>100)
+    {
+        param.num = 100;
+        RCLCPP_WARN (this->get_logger(),"The read_modbus_rtu_holding_registers num is over 100 use 100\n");
+    }
+    res = Rm_Api.rm_read_modbus_rtu_holding_registers(robot_handle, param, data);
+    
+    if(res == 0)
+    {
+        for(int i=0;i<param.num;i++){
+            read_holding_registers_data.read_data.push_back(data[i]);
+        }
+        read_holding_registers_data.state = true;
+        this->Read_Modbus_RTU_Holding_Registers_Result->publish(read_holding_registers_data);
+    }
+    else
+    {
+        read_holding_registers_data.state = false;
+        this->Read_Modbus_RTU_Holding_Registers_Result->publish(read_holding_registers_data);
+        RCLCPP_INFO (this->get_logger(),"The read_modbus_rtu_holding error code is %d\n",res);
+    }
+}
+
+void RmArm::Write_Modbus_RTU_Registers_Callback(const rm_ros_interfaces::msg::Modbusrtuwriteparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_rtu_write_params_t param;
+    std_msgs::msg::Bool write_Registers_data_result;
+    param.address = msg->address;
+    param.device = msg->device;
+    param.type = msg->type;
+    param.num = msg->num;
+    // for(int i=0;i<param.num;i++){
+    //     param.data[i] = msg->data[i];
+    // }
+    if((param.num == int(msg->data.size()))&&(param.num<=100))
+    {
+        for(int i=0;i<param.num;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+    }
+    else if(msg->data.size()<=100)
+    {
+        param.num = msg->data.size();
+        for(int i=0;i<param.num;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+        RCLCPP_WARN (this->get_logger(),"The write_modbus_rtu_registers num is diff with data size use data size %d\n",param.num);
+    }
+    else if(msg->data.size()>100)
+    {
+        param.num = 100;
+        for(int i=0;i<100;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+        RCLCPP_WARN (this->get_logger(),"The write_modbus_rtu_registers num is over 100 use 100\n");
+    }
+    
+    res = Rm_Api.rm_write_modbus_rtu_registers(robot_handle, param);
+    
+    if(res == 0)
+    {
+        write_Registers_data_result.data = true;
+        this->Write_Modbus_RTU_Registers_Result->publish(write_Registers_data_result);
+    }
+    else
+    {
+        write_Registers_data_result.data = false;
+        this->Write_Modbus_RTU_Registers_Result->publish(write_Registers_data_result);
+        RCLCPP_INFO (this->get_logger(),"The write_modbus_rtu_registers error code is %d\n",res);
+    }
+}
+
+void RmArm::Read_Modbus_RTU_Input_Registers_Callback(const rm_ros_interfaces::msg::Modbusrtureadparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_rtu_read_params_t param;
+    rm_ros_interfaces::msg::Modbusreaddata read_input_registers_data;
+    param.address = msg->address;
+    param.device = msg->device;
+    param.type = msg->type;
+    param.num = msg->num;
+
+    int data[100]; // 要读的数据的数量，数据长度不超过100
+    if(param.num>100)
+    {
+        param.num = 100;
+        RCLCPP_WARN (this->get_logger(),"The read_modbus_rtu_input_registers num is over 100 use 100\n");
+    }
+    res = Rm_Api.rm_read_modbus_rtu_input_registers(robot_handle, param, data);
+    
+    if(res == 0)
+    {
+        for(int i=0;i<param.num;i++){
+            read_input_registers_data.read_data.push_back(data[i]);
+        }
+        read_input_registers_data.state = true;
+        this->Read_Modbus_RTU_Input_Registers_Result->publish(read_input_registers_data);
+    }
+    else
+    {
+        read_input_registers_data.state = false;
+        this->Read_Modbus_RTU_Input_Registers_Result->publish(read_input_registers_data);
+        RCLCPP_INFO (this->get_logger(),"The read_modbus_rtu_input_registers error code is %d\n",res);
+    }
+}
+
+void RmArm::Read_Modbus_TCP_Coils_Callback(const rm_ros_interfaces::msg::Modbustcpreadparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_tcp_read_params_t param;
+    rm_ros_interfaces::msg::Modbusreaddata tcp_read_coil_data;
+    param.address = msg->address;
+    strcpy(param.master_name, msg->master_name.c_str());
+    strcpy(param.ip, msg->ip.c_str());
+    param.port = msg->port;
+    param.num = msg->num;
+    int data[100]; // 要读的数据的数量，数据长度不超过100
+    if(param.num>100)
+    {
+        param.num = 100;
+        RCLCPP_WARN (this->get_logger(),"The read_modbus_tcp_coils num is over 100 use 100\n");
+    }
+    res = Rm_Api.rm_read_modbus_tcp_coils(robot_handle, param, data);
+    
+    if(res == 0)
+    {
+        for(int i=0;i<param.num;i++){
+            tcp_read_coil_data.read_data.push_back(data[i]);
+        }
+        tcp_read_coil_data.state = true;
+        this->Read_Modbus_TCP_Coils_Result->publish(tcp_read_coil_data);
+    }
+    else
+    {
+        tcp_read_coil_data.state = false;
+        this->Read_Modbus_TCP_Coils_Result->publish(tcp_read_coil_data);
+        RCLCPP_INFO (this->get_logger(),"The read_modbus_tcp_coils error code is %d\n",res);
+    }
+}
+void RmArm::Write_Modbus_TCP_Coils_Callback(const rm_ros_interfaces::msg::Modbustcpwriteparams::SharedPtr msg)
+{
+    int32_t res;
+    rm_modbus_tcp_write_params_t param;
+    std_msgs::msg::Bool tcp_write_coil_data_result;
+    param.address = msg->address;
+    strcpy(param.master_name, msg->master_name.c_str());
+    strcpy(param.ip, msg->ip.c_str());
+    param.port = msg->port;
+    param.num = msg->num;
+    // for(int i=0;i<param.num;i++){
+    //     param.data[i] = msg->data[i];
+    // }
+    if((param.num == int(msg->data.size()))&&(param.num<=100))
+    {
+        for(int i=0;i<param.num;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+    }
+    else if(msg->data.size()<=100)
+    {
+        param.num = msg->data.size();
+        for(int i=0;i<param.num;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+        RCLCPP_WARN (this->get_logger(),"The write_modbus_tcp_coils num is diff with data size use data size %d\n",param.num);
+    }
+    else if(msg->data.size()>100)
+    {
+        param.num = 100;
+        for(int i=0;i<100;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+        RCLCPP_WARN (this->get_logger(),"The write_modbus_tcp_coils num is over 100 use 100\n");
+    }
+    
+    res = Rm_Api.rm_write_modbus_tcp_coils(robot_handle, param);
+    
+    if(res == 0)
+    {
+        tcp_write_coil_data_result.data = true;
+        this->Write_Modbus_TCP_Coils_Result->publish(tcp_write_coil_data_result);
+    }
+    else
+    {
+        tcp_write_coil_data_result.data = false;
+        this->Write_Modbus_TCP_Coils_Result->publish(tcp_write_coil_data_result);
+        RCLCPP_INFO (this->get_logger(),"The write_modbus_tcp_coils error code is %d\n",res);
+    }
+}
+
+
+void RmArm::Read_Modbus_TCP_Input_Status_Callback(const rm_ros_interfaces::msg::Modbustcpreadparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_tcp_read_params_t param;
+    rm_ros_interfaces::msg::Modbusreaddata tcp_read_input_status_data;
+    param.address = msg->address;
+    strcpy(param.master_name, msg->master_name.c_str());
+    strcpy(param.ip, msg->ip.c_str());
+    param.port = msg->port;
+    param.num = msg->num;
+    int data[100]; // 要读的数据的数量，数据长度不超过100
+    if(param.num>100)
+    {
+        param.num = 100;
+        RCLCPP_WARN (this->get_logger(),"The read_modbus_tcp_input_status num is over 100 use 100\n");
+    }
+    res = Rm_Api.rm_read_modbus_tcp_input_status(robot_handle, param, data);
+    
+    if(res == 0)
+    {
+        for(int i=0;i<param.num;i++){
+            tcp_read_input_status_data.read_data.push_back(data[i]);
+        }
+        tcp_read_input_status_data.state = true;
+        this->Read_Modbus_TCP_Input_Status_Result->publish(tcp_read_input_status_data);
+    }
+    else
+    {
+        tcp_read_input_status_data.state = false;
+        this->Read_Modbus_TCP_Input_Status_Result->publish(tcp_read_input_status_data);
+        RCLCPP_INFO (this->get_logger(),"The read_modbus_tcp_input_status error code is %d\n",res);
+    }
+}
+
+void RmArm::Read_Modbus_TCP_Holding_Registers_Callback(const rm_ros_interfaces::msg::Modbustcpreadparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_tcp_read_params_t param;
+    rm_ros_interfaces::msg::Modbusreaddata tcp_read_holding_registers_data;
+    param.address = msg->address;
+    strcpy(param.master_name, msg->master_name.c_str());
+    strcpy(param.ip, msg->ip.c_str());
+    param.port = msg->port;
+    param.num = msg->num;
+    int data[100]; // 要读的数据的数量，数据长度不超过100
+    if(param.num>100)
+    {
+        param.num = 100;
+        RCLCPP_WARN (this->get_logger(),"The read_modbus_tcp_holding_registers num is over 100 use 100\n");
+    }
+    res = Rm_Api.rm_read_modbus_tcp_holding_registers(robot_handle, param, data);
+    
+    if(res == 0)
+    {
+        for(int i=0;i<param.num;i++){
+            tcp_read_holding_registers_data.read_data.push_back(data[i]);
+        }
+        tcp_read_holding_registers_data.state = true;
+        this->Read_Modbus_TCP_Holding_Registers_Result->publish(tcp_read_holding_registers_data);
+    }
+    else
+    {
+        tcp_read_holding_registers_data.state = false;
+        this->Read_Modbus_TCP_Holding_Registers_Result->publish(tcp_read_holding_registers_data);
+        RCLCPP_INFO (this->get_logger(),"The read_modbus_tcp_holding_registers error code is %d\n",res);
+    }
+}
+
+void RmArm::Write_Modbus_TCP_Registers_Callback(const rm_ros_interfaces::msg::Modbustcpwriteparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_tcp_write_params_t param;
+    std_msgs::msg::Bool tcp_write_TCP_registers_data_result;
+    param.address = msg->address;
+    strcpy(param.master_name, msg->master_name.c_str());
+    strcpy(param.ip, msg->ip.c_str());
+    param.port = msg->port;
+    param.num = msg->num;
+    // for(int i=0;i<param.num;i++){
+    //     param.data[i] = msg->data[i];
+    // }
+    if((param.num == int(msg->data.size()))&&(param.num<=100))
+    {
+        for(int i=0;i<param.num;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+    }
+    else if(msg->data.size()<=100)
+    {
+        param.num = msg->data.size();
+        for(int i=0;i<param.num;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+        RCLCPP_WARN (this->get_logger(),"The write_modbus_tcp_registers num is diff with data size use data size %d\n",param.num);
+    }
+    else if(msg->data.size()>100)
+    {
+        param.num = 100;
+        for(int i=0;i<100;i++)
+        {
+            param.data[i] = msg->data[i];
+        }
+        RCLCPP_WARN (this->get_logger(),"The write_modbus_tcp_registers num is over 100 use 100\n");
+    }
+    
+    res = Rm_Api.rm_write_modbus_tcp_registers(robot_handle, param);
+    
+    if(res == 0)
+    {
+        tcp_write_TCP_registers_data_result.data = true;
+        this->Write_Modbus_TCP_Registers_Result->publish(tcp_write_TCP_registers_data_result);
+    }
+    else
+    {
+        tcp_write_TCP_registers_data_result.data = false;
+        this->Write_Modbus_TCP_Registers_Result->publish(tcp_write_TCP_registers_data_result);
+        RCLCPP_INFO (this->get_logger(),"The write_modbus_tcp_registers error code is %d\n",res);
+    }
+}
+
+void RmArm::Read_Modbus_TCP_Input_Registers_Callback(const rm_ros_interfaces::msg::Modbustcpreadparams::SharedPtr msg)
+{
+    int32_t res;
+    // copy = msg;
+    rm_modbus_tcp_read_params_t param;
+    rm_ros_interfaces::msg::Modbusreaddata tcp_read_input_registers_data;
+    param.address = msg->address;
+    strcpy(param.master_name, msg->master_name.c_str());
+    strcpy(param.ip, msg->ip.c_str());
+    param.port = msg->port;
+    param.num = msg->num;
+    int data[100]; // 要读的数据的数量，数据长度不超过100
+    if(param.num>100)
+    {
+        param.num = 100;
+        RCLCPP_WARN (this->get_logger(),"The read_modbus_tcp_input_registers num is over 100 use 100\n");
+    }
+    res = Rm_Api.rm_read_modbus_tcp_input_registers(robot_handle, param, data);
+    
+    if(res == 0)
+    {
+        for(int i=0;i<param.num;i++){
+            tcp_read_input_registers_data.read_data.push_back(data[i]);
+        }
+        tcp_read_input_registers_data.state = true;
+        this->Read_Modbus_TCP_Input_Registers_Result->publish(tcp_read_input_registers_data);
+    }
+    else
+    {
+        tcp_read_input_registers_data.state = false;
+        this->Read_Modbus_TCP_Input_Registers_Result->publish(tcp_read_input_registers_data);
+        RCLCPP_INFO (this->get_logger(),"The read_modbus_tcp_input_registers error code is %d\n",res);
+    }
+}
+
+// ------------------------------------------Modbus相关 end------------------------------------------
+void RmArm::Send_Project_Callback(const rm_ros_interfaces::msg::Sendproject::SharedPtr msg)   //文件下发
+{
+    int32_t res;
+    std_msgs::msg::Bool Send_Project_result;
+    rm_send_project_t project;
+    int errline;
+    strcpy(project.project_path,msg->project_path.c_str());
+    project.project_path_len = msg->project_path_len;
+    project.plan_speed = msg->plan_speed;
+    project.only_save = msg->only_save;
+    project.save_id = msg->save_id;
+    project.step_flag = msg->step_flag;
+    project.auto_start = msg->auto_start;
+    project.project_type = msg->project_type;
+    res = Rm_Api.rm_send_project(robot_handle, project, &errline);
+    if(res == 0)
+    {
+        Send_Project_result.data = true;
+        this->Send_Project_Result->publish(Send_Project_result);
+    }
+    else
+    {
+        Send_Project_result.data = false;
+        this->Send_Project_Result->publish(Send_Project_result);
+        RCLCPP_INFO (this->get_logger(),"The error code is %d\n",res);
+        if(res == 1){
+            if(errline ==0)
+                RCLCPP_INFO (this->get_logger(),"The rm_send_project length of the verification data is incorrect");
+            else if(errline == -1)
+            {
+                RCLCPP_INFO (this->get_logger(),"rm_send_project no error");
+            }else{
+                RCLCPP_INFO (this->get_logger(),"The rm_send_project number of problematic engineering lines：%d",errline);
+            }
+        }
+        
+    }
+}
+void RmArm::Get_Program_Run_State_Callback(const std_msgs::msg::Empty::SharedPtr msg)   //查询在线编程运行状态   
+{
+    int32_t res;
+    copy = msg;
+    rm_program_run_state_t run_state;
+    rm_ros_interfaces::msg::Programrunstate get_program_run_state_result;
+    res = Rm_Api.rm_get_program_run_state(robot_handle,&run_state);
+    if(res == 0)
+    {
+        get_program_run_state_result.run_state = run_state.run_state;
+        get_program_run_state_result.id = run_state.id;
+        get_program_run_state_result.edit_id = run_state.edit_id;
+        get_program_run_state_result.plan_num = run_state.plan_num;
+        get_program_run_state_result.total_loop = run_state.total_loop;
+        get_program_run_state_result.step_mode = run_state.step_mode;
+        get_program_run_state_result.plan_speed = run_state.plan_speed;
+        for(int i=0;i<run_state.total_loop;i++){
+            get_program_run_state_result.loop_num[i] = run_state.loop_num[i];
+            get_program_run_state_result.loop_cont[i] = run_state.loop_cont[i];
+        }
+        get_program_run_state_result.state = true;
+        this->Get_Program_Run_State_Result->publish(get_program_run_state_result);
+    }
+    else
+    {
+        get_program_run_state_result.state = false;
+        this->Get_Program_Run_State_Result->publish(get_program_run_state_result);
+        RCLCPP_INFO (this->get_logger(),"Get_Program_Run_State error code is %d\n",res); 
+    }
+}
+
 
 void RmArm::Arm_Start_Force_Position_Move_Callback(const std_msgs::msg::Empty::SharedPtr msg)
 {
@@ -968,7 +2089,7 @@ void RmArm::Arm_Change_Work_Frame_Callback(const std_msgs::msg::String::SharedPt
     {
         arm_change_work_frame_result.data = false;
         this->Change_Work_Frame_Result->publish(arm_change_work_frame_result);
-        RCLCPP_INFO (this->get_logger(),"Arm_change_work_frame_callback error code is %d\n",res);
+        RCLCPP_INFO(this->get_logger(),"Arm_change_work_frame_callback error code is %d\n",res);
     }
 }
 
@@ -1019,7 +2140,7 @@ void RmArm::Arm_Get_Current_Tool_Frame_Callback(const std_msgs::msg::Empty::Shar
 void RmArm::Arm_Get_All_Tool_Frame_Callback(const std_msgs::msg::Empty::SharedPtr msg)
 {
     // FRAME_NAME name[10];
-    rm_frame_name_t frame_names[10];
+    rm_frame_name_t frame_names[10] = {0};
     int32_t res;
     rm_ros_interfaces::msg::Getallframe all_tool_frame;
     int len=-1;
@@ -1048,7 +2169,7 @@ void RmArm::Arm_Get_All_Tool_Frame_Callback(const std_msgs::msg::Empty::SharedPt
 void RmArm::Arm_Get_All_Work_Frame_Callback(const std_msgs::msg::Empty::SharedPtr msg)
 {
     // char name[10];
-    rm_frame_name_t frame_names[10]; 
+    rm_frame_name_t frame_names[10] = {0}; 
     int32_t res;
     rm_ros_interfaces::msg::Getallframe all_work_frame;
     int len=-1;
@@ -1064,12 +2185,10 @@ void RmArm::Arm_Get_All_Work_Frame_Callback(const std_msgs::msg::Empty::SharedPt
     {
         for(i = 0;i<=len;i++)
         {
-            // RCLCPP_INFO (this->get_logger(),"Arm all work frame is %s\n",frame_names[i].name);
             all_work_frame.frame_name[i] = std::string(frame_names[i].name);
         }
         for(i = len;i<10;i++)
         {
-            // RCLCPP_INFO (this->get_logger(),"Arm all work frame is %s\n",frame_names[i].name);
             all_work_frame.frame_name[i] = "";
         }
         this->Get_All_Work_Frame_Result->publish(all_work_frame);
@@ -1455,86 +2574,76 @@ void RmArm::Arm_Get_Lift_State_Callback(const std_msgs::msg::Empty::SharedPtr ms
         RCLCPP_INFO (this->get_logger(),"Arm set lift state result error code is %d\n",res);
     }
 }
-
-void RmArm::Arm_Set_Rm_Plus_Mode_Callback(const std_msgs::msg::Int32::SharedPtr msg)
+// ------------------------plus----------------------------------------
+void RmArm::Set_Rm_Plus_Mode_Callback(const std_msgs::msg::UInt32::SharedPtr msg)
 {
-    int mode;
     int32_t res;
-    std_msgs::msg::Bool set_rm_plus_mode;
-    mode = msg->data;
-    // res = Rm_Api.Service_Set_Lift_Height(m_sockhand, height, speed, block);
-    res = Rm_Api.rm_set_rm_plus_mode(robot_handle, mode);
+    std_msgs::msg::Bool set_rm_plus_mode_result;
+    res = Rm_Api.rm_set_rm_plus_mode(robot_handle, msg->data);
     if(res == 0)
     {
-        set_rm_plus_mode.data = true;
-        this->Set_Rm_Plus_Mode_Result->publish(set_rm_plus_mode);
+        set_rm_plus_mode_result.data = true;
+        this->Set_Rm_Plus_Mode_Result->publish(set_rm_plus_mode_result);
     }
     else
     {
-        set_rm_plus_mode.data = false;
-        this->Set_Rm_Plus_Mode_Result->publish(set_rm_plus_mode);
-        RCLCPP_INFO (this->get_logger(),"Arm set rm plus mode result error code is %d\n",res);
+        set_rm_plus_mode_result.data = false;
+        this->Set_Rm_Plus_Mode_Result->publish(set_rm_plus_mode_result);
+        RCLCPP_INFO (this->get_logger(),"Set plus mode result error code is %d\n",res);
     }
 }
-
-void RmArm::Arm_Get_Rm_Plus_Mode_Callback(const std_msgs::msg::Empty::SharedPtr msg)
+void RmArm::Get_Rm_Plus_Mode_Callback(const std_msgs::msg::Empty::SharedPtr msg)
 {
-    int32_t mode;
     int32_t res;
-    std_msgs::msg::Int32 get_rm_plus_mode;
+    std_msgs::msg::UInt32 send_mode;
+    int mode;
     copy = msg;
-    // res = Rm_Api.Service_Get_Lift_State(m_sockhand, &height, &current, &err_flag, &mode);
     res = Rm_Api.rm_get_rm_plus_mode(robot_handle, &mode);
     if(res == 0)
     {
-        get_rm_plus_mode.data = mode;
-        this->Get_Rm_Plus_Mode_Result->publish(get_rm_plus_mode);
+        send_mode.data = mode;
+        this->Get_Rm_Plus_Mode_Result->publish(send_mode);
     }
     else
     {
-        RCLCPP_INFO (this->get_logger(),"Arm get rm plus mode result error code is %d\n",res);
+        RCLCPP_INFO (this->get_logger(),"Get plus mode result error code is %d\n",res);
     }
 }
-
-void RmArm::Arm_Set_Rm_Plus_Touch_Callback(const std_msgs::msg::Int32::SharedPtr msg)
+void RmArm::Set_Rm_Plus_Touch_Callback(const std_msgs::msg::UInt32::SharedPtr msg)
 {
-    int mode;
     int32_t res;
-    std_msgs::msg::Bool set_rm_plus_touch;
-    mode = msg->data;
-    // res = Rm_Api.Service_Set_Lift_Height(m_sockhand, height, speed, block);
-    res = Rm_Api.rm_set_rm_plus_touch(robot_handle, mode);
+    std_msgs::msg::Bool set_rm_plus_touch_result;
+    res = Rm_Api.rm_set_rm_plus_touch(robot_handle, msg->data);
     if(res == 0)
     {
-        set_rm_plus_touch.data = true;
-        this->Set_Rm_Plus_Touch_Result->publish(set_rm_plus_touch);
+        set_rm_plus_touch_result.data = true;
+        this->Set_Rm_Plus_Touch_Result->publish(set_rm_plus_touch_result);
     }
     else
     {
-        set_rm_plus_touch.data = false;
-        this->Set_Rm_Plus_Touch_Result->publish(set_rm_plus_touch);
-        RCLCPP_INFO (this->get_logger(),"Arm set rm plus touch result error code is %d\n",res);
+        set_rm_plus_touch_result.data = false;
+        this->Set_Rm_Plus_Touch_Result->publish(set_rm_plus_touch_result);
+        RCLCPP_INFO (this->get_logger(),"Set plus touch result error code is %d\n",res);
     }
 }
-
-void RmArm::Arm_Get_Rm_Plus_Touch_Callback(const std_msgs::msg::Empty::SharedPtr msg)
+void RmArm::Get_Rm_Plus_Touch_Callback(const std_msgs::msg::Empty::SharedPtr msg)
 {
-    int32_t mode;
     int32_t res;
-    std_msgs::msg::Int32 get_rm_plus_touch;
+    int mode;
     copy = msg;
-    // res = Rm_Api.Service_Get_Lift_State(m_sockhand, &height, &current, &err_flag, &mode);
+    std_msgs::msg::UInt32 send_mode;
     res = Rm_Api.rm_get_rm_plus_touch(robot_handle, &mode);
     if(res == 0)
     {
-        get_rm_plus_touch.data = mode;
-        this->Get_Rm_Plus_Touch_Result->publish(get_rm_plus_touch);
+        send_mode.data = mode;
+        this->Get_Rm_Plus_Touch_Result->publish(send_mode);
     }
     else
     {
-        RCLCPP_INFO (this->get_logger(),"Arm get rm plus touch result error code is %d\n",res);
+        RCLCPP_INFO (this->get_logger(),"Get plus touch result error code is %d\n",res);
     }
 }
+
 
 void RmArm::Arm_Get_Current_Arm_State_Callback(const std_msgs::msg::Empty::SharedPtr msg)
 {
@@ -1737,8 +2846,6 @@ void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data)
             Udp_RM_Joint.udp_rm_plus_base_info.hv[i] = data.plus_base_info.hv[i];
             Udp_RM_Joint.udp_rm_plus_base_info.sv[i] = data.plus_base_info.sv[i];
             Udp_RM_Joint.udp_rm_plus_base_info.bv[i] = data.plus_base_info.bv[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_low[i] = data.plus_base_info.angle_low[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_up[i] = data.plus_base_info.angle_up[i];
             Udp_RM_Joint.udp_rm_plus_base_info.pos_up[i] = data.plus_base_info.pos_up[i];
             Udp_RM_Joint.udp_rm_plus_base_info.pos_low[i] = data.plus_base_info.pos_low[i];
             Udp_RM_Joint.udp_rm_plus_base_info.speed_up[i] = data.plus_base_info.speed_up[i];
@@ -1748,8 +2855,6 @@ void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data)
         }
         for(int i = 0; i < 2; i++)
         {
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_low[10+i] = data.plus_base_info.angle_low[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_up[10+i] = data.plus_base_info.angle_up[10+i];
             Udp_RM_Joint.udp_rm_plus_base_info.pos_up[10+i] = data.plus_base_info.pos_up[10+i];
             Udp_RM_Joint.udp_rm_plus_base_info.pos_low[10+i] = data.plus_base_info.pos_low[10+i];
             Udp_RM_Joint.udp_rm_plus_base_info.speed_up[10+i] = data.plus_base_info.speed_up[10+i];
@@ -1919,8 +3024,6 @@ void UdpPublisherNode::udp_timer_callback()
                 udp_rm_plus_base_.speed_low[i] = Udp_RM_Joint.udp_rm_plus_base_info.speed_low[i];
                 udp_rm_plus_base_.force_up[i] = Udp_RM_Joint.udp_rm_plus_base_info.force_up[i];
                 udp_rm_plus_base_.force_low[i] = Udp_RM_Joint.udp_rm_plus_base_info.force_low[i];
-                udp_rm_plus_base_.angle_low[i] = Udp_RM_Joint.udp_rm_plus_base_info.angle_low[i];
-                udp_rm_plus_base_.angle_up[i] = Udp_RM_Joint.udp_rm_plus_base_info.angle_up[i];
             }
             for(int i = 0; i < 2; i++)
             {
@@ -1930,8 +3033,6 @@ void UdpPublisherNode::udp_timer_callback()
                 udp_rm_plus_base_.speed_low[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.speed_low[10+i];
                 udp_rm_plus_base_.force_up[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.force_up[10+i];
                 udp_rm_plus_base_.force_low[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.force_low[10+i];
-                udp_rm_plus_base_.angle_low[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.angle_low[10+i];
-                udp_rm_plus_base_.angle_up[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.angle_up[10+i];
             }
             udp_rm_plus_base_.manu = Udp_RM_Joint.udp_rm_plus_base_info.manu;
             udp_rm_plus_base_.hv = Udp_RM_Joint.udp_rm_plus_base_info.hv;
@@ -2022,9 +3123,10 @@ void UdpPublisherNode::udp_timer_callback()
             sleep(1);
                     
         }
-        Arm_Start();
         come_time = 0;
         connect_state = 0;
+        connect_state_flag = 0;
+        Arm_Start();
         RCLCPP_INFO (this->get_logger(),"Connect success\n");
     }
 }
@@ -2034,12 +3136,37 @@ void UdpPublisherNode::heart_timer_callback()
     int run_mode;
     if(connect_state == 0)
     {
-        connect_state = Rm_Api.rm_get_arm_run_mode(robot_handle, &run_mode);
-        // RCLCPP_INFO (this->get_logger(),"connect_state = %d\n",connect_state);
+        // if(robot_handle->id > 0)
+        // {
+        //     connect_state = 0;
+        //     // RCLCPP_ERROR (this->get_logger(),"Id is %d\n",robot_handle->id);
+        // }
+        // else
+        // {
+        //     connect_state = robot_handle->id;
+        //     if(robot_handle != NULL)
+        //     {
+        //         Rm_Api.rm_delete_robot_arm(robot_handle);
+        //     }
+        //     RCLCPP_ERROR (this->get_logger(),"Arm Disconnect connect id is %d\n",connect_state);
+        // }
+        connect_state = Rm_Api.rm_get_arm_run_mode(robot_handle,&run_mode);
+        if(connect_state !=0)
+        {  
+            RCLCPP_INFO (this->get_logger(),"connect_state = %d\n",connect_state);
+            if(connect_state_flag <3)
+            {
+                connect_state = 0;
+                connect_state_flag++;
+            }
+        }
     }
     else
     {
-        ;
+        if(robot_handle != NULL)
+        {
+            Rm_Api.rm_delete_robot_arm(robot_handle);
+        }
     }
 }
 
@@ -2080,7 +3207,7 @@ UdpPublisherNode::UdpPublisherNode():
         Udp_Timer = this->create_wall_timer(std::chrono::milliseconds(udp_cycle_g), 
         std::bind(&UdpPublisherNode::udp_timer_callback,this), callback_group_time1_);
         /*****************************************************定时器*****************************************************************/
-        Heart_Timer = this->create_wall_timer(std::chrono::milliseconds(100), 
+        Heart_Timer = this->create_wall_timer(std::chrono::milliseconds(500), 
         std::bind(&UdpPublisherNode::heart_timer_callback,this), callback_group_time2_);
         /********************************************************************UDP传输数据**********************************************************/
         Joint_Position_Result = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);                                    //发布当前的关节角度
@@ -2115,7 +3242,7 @@ RmArm::~RmArm()
 RmArm::RmArm():
     rclcpp::Node("rm_driver"){
     //参数初始化
-    this->declare_parameter("arm_ip", "192.168.1.188");
+    this->declare_parameter("arm_ip", "192.168.1.18");
     arm_ip_ = this->get_parameter("arm_ip").as_string();
     
     this->declare_parameter("udp_ip", "192.168.1.10");
@@ -2160,7 +3287,6 @@ RmArm::RmArm():
     if(arm_type_ == "RM_65")
     {
         // Rm_Api.Service_RM_API_Init(65, NULL);
-        // RCLCPP_INFO (this->get_logger(),"0000000000000000000000000000000000000000000000000");
         realman_arm = 65;
     }
     else if(arm_type_ == "RM_75")
@@ -2199,7 +3325,7 @@ RmArm::RmArm():
     udp_hand_g = udp_hand_;
     rm_plus_base_g = udp_rm_plus_base_;
     rm_plus_state_g = udp_rm_plus_state_;
-    RCLCPP_INFO (this->get_logger(),"arm_ip is %s", arm_ip_.c_str());
+    // RCLCPP_INFO (this->get_logger(),"arm_ip is %s", arm_ip_.c_str());
     while(Arm_Socket_Start_Connect())
     {
         if(ctrl_flag == true )
@@ -2253,9 +3379,12 @@ RmArm::RmArm():
     callback_group_sub4_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     auto sub_opt4 = rclcpp::SubscriptionOptions();
     sub_opt4.callback_group = callback_group_sub4_;
-    
-    Get_Arm_Version();//获取机械臂版本
+    callback_group_sub5_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    auto sub_opt5 = rclcpp::SubscriptionOptions();
+    sub_opt5.callback_group = callback_group_sub5_;
 
+    Get_Arm_Version();//获取机械臂版本
+    Get_Controller_Version();//获取控制器版本
     Set_UDP_Configuration(udp_cycle_, udp_port_, udp_force_coordinate_, udp_ip_, udp_hand_, udp_rm_plus_base_, udp_rm_plus_state_);
 
     /******************************************************获取udp配置********************************************************************/
@@ -2280,6 +3409,10 @@ RmArm::RmArm():
     MoveL_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movel_result", rclcpp::ParametersQoS());
     MoveL_Cmd = this->create_subscription<rm_ros_interfaces::msg::Movel>("rm_driver/movel_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_MoveL_Callback,this,std::placeholders::_1),
+        sub_opt4);
+    MoveL_offset_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movel_offset_result", rclcpp::ParametersQoS());
+    MoveL_offset_Cmd = this->create_subscription<rm_ros_interfaces::msg::Moveloffset>("rm_driver/movel_offset_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Arm_MoveL_Offset_Callback,this,std::placeholders::_1),
         sub_opt4);
     /****************************************MoveC运动控制*************************************/
     MoveC_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/movec_result", rclcpp::ParametersQoS());
@@ -2310,6 +3443,11 @@ RmArm::RmArm():
     Move_Stop_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/move_stop_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Arm_Move_Stop_Callback,this,std::placeholders::_1),
         sub_opt2);
+    
+    Arm_Emergency_Stop_Cmd_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/emergency_stop_result", rclcpp::ParametersQoS());
+    Arm_Emergency_Stop_Cmd = this->create_subscription<rm_ros_interfaces::msg::Stop>("rm_driver/emergency_stop_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Arm_Emergency_Stop_Callback,this,std::placeholders::_1),
+        sub_opt2);
 /******************************************************************************end*******************************************************************/
 
 /******************************************************************************示教指令*****************************************************************/
@@ -2335,12 +3473,184 @@ RmArm::RmArm():
         sub_opt2);
 /******************************************************************************end*****************************************************************/
 
-    /************************************************************************查询机械臂固件版本***************************************************************/
-    // Get_Arm_Software_Version_Result = this->create_publisher<rm_ros_interfaces::msg::Armsoftversion>("rm_driver/get_arm_software_version_result", rclcpp::ParametersQoS());
-    // Get_Arm_Software_Version_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_arm_software_version_cmd",rclcpp::ParametersQoS(),
-    //     std::bind(&RmArm::Arm_Get_Arm_Software_Version_Callback,this,std::placeholders::_1),
-    //     sub_opt2);
-    /*********************************************************************************end*******************************************************************/
+/******************************************************************************四代控制器新增*****************************************************************/
+    /************************************************************************查询机械臂基本信息***************************************************************/
+    // if(controller_version==4){
+    //     Get_Arm_Software_Version_Result_v4 = this->create_publisher<rm_ros_interfaces::msg::Armsoftversionv4>("rm_driver/get_arm_software_version_result", rclcpp::ParametersQoS());
+    //     Get_Arm_Software_Version_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_arm_software_version_cmd",rclcpp::ParametersQoS(),
+    //         std::bind(&RmArm::Arm_Get_Arm_Software_Info_Callback,this,std::placeholders::_1),
+    //         sub_opt2);}
+    // if(controller_version==3){
+    //     Get_Arm_Software_Version_Result_v3 = this->create_publisher<rm_ros_interfaces::msg::Armsoftversionv3>("rm_driver/get_arm_software_version_result", rclcpp::ParametersQoS());
+    //     Get_Arm_Software_Version_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_arm_software_version_cmd",rclcpp::ParametersQoS(),
+    //         std::bind(&RmArm::Arm_Get_Arm_Software_Info_Callback,this,std::placeholders::_1),
+    //         sub_opt2);}
+    Get_Arm_Software_Version_Result = this->create_publisher<rm_ros_interfaces::msg::Armsoftversion>("rm_driver/get_arm_software_version_result", rclcpp::ParametersQoS());
+    Get_Arm_Software_Version_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_arm_software_version_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Arm_Get_Arm_Software_Info_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /************************************************************************查询软件版本***************************************************************/
+    Get_Robot_Info_Result = this->create_publisher<rm_ros_interfaces::msg::RobotInfo>("rm_driver/get_robot_info_result", rclcpp::ParametersQoS());
+    Get_Robot_Info_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_robot_info_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Arm_Get_Robot_Info_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /************************************************************************查询关节软件版本***************************************************************/
+    Get_Joint_Software_Version_Result = this->create_publisher<rm_ros_interfaces::msg::Jointversion>("rm_driver/get_joint_software_version_result", rclcpp::ParametersQoS());
+    Get_Joint_Software_Version_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_joint_software_version_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Arm_Get_Joint_Software_Version_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /************************************************************************查询末端接口板软件版本号***************************************************************/
+    Get_Tool_Software_Version_Result = this->create_publisher<rm_ros_interfaces::msg::Toolsoftwareversionv4>("rm_driver/get_tool_software_version_result", rclcpp::ParametersQoS());
+    Get_Tool_Software_Version_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_tool_software_version_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Arm_Get_Tool_Software_Version_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /************************************************************************ 查询流程图运行状态***************************************************************/
+    Get_Flowchart_Program_Run_State_Result = this->create_publisher<rm_ros_interfaces::msg::Flowchartrunstate>("rm_driver/get_flowchart_program_run_state_result", rclcpp::ParametersQoS());
+    Get_Flowchart_Program_Run_State_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_flowchart_program_run_state_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Arm_Get_Flowchart_Program_Run_State_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    
+    /************************************************************************轨迹列表相关***************************************************************/
+    Get_Trajectory_File_List_Result = this->create_publisher<rm_ros_interfaces::msg::Trajectorylist>("rm_driver/get_trajectory_file_list_result", rclcpp::ParametersQoS());
+    Get_Trajectory_File_List_Cmd = this->create_subscription<rm_ros_interfaces::msg::Gettrajectorylist>("rm_driver/get_trajectory_file_list_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Get_Trajectory_File_List_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    Set_Run_Trajectory_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_run_trajectory_result", rclcpp::ParametersQoS());
+    Set_Run_Trajectory_Cmd = this->create_subscription<std_msgs::msg::String>("rm_driver/set_run_trajectory_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Set_Run_Trajectory_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    Delete_Trajectory_File_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/delete_trajectory_file_result", rclcpp::ParametersQoS());
+    Delete_Trajectory_File_Cmd = this->create_subscription<std_msgs::msg::String>("rm_driver/delete_trajectory_file_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Delete_Trajectory_File_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    Save_Trajectory_File_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/save_trajectory_file_result", rclcpp::ParametersQoS());
+    Save_Trajectory_File_Cmd = this->create_subscription<std_msgs::msg::String>("rm_driver/save_trajectory_file_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Save_Trajectory_File_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /************************************************************************Modbus相关***************************************************************/
+    /************************************************************************新增Modbus TCP主站***************************************************************/
+    Add_Modbus_Tcp_Master_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/add_modbus_tcp_master_result", rclcpp::ParametersQoS());
+    Add_Modbus_Tcp_Master_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbustcpmasterinfo>("rm_driver/add_modbus_tcp_master_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Add_Modbus_Tcp_Master_Callback,this,std::placeholders::_1),
+        sub_opt5);
+    /************************************************************************更新Modbus TCP主站***************************************************************/
+    Update_Modbus_Tcp_Master_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/update_modbus_tcp_master_result", rclcpp::ParametersQoS());
+    Update_Modbus_Tcp_Master_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbustcpmasterupdata>("rm_driver/update_modbus_tcp_master_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Update_Modbus_Tcp_Master_Callback,this,std::placeholders::_1),
+        sub_opt5);
+    /************************************************************************删除Modbus TCP主站***************************************************************/
+    Delete_Modbus_Tcp_Master_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/delete_modbus_tcp_master_result", rclcpp::ParametersQoS());
+    Delete_Modbus_Tcp_Master_Cmd = this->create_subscription<rm_ros_interfaces::msg::Mastername>("rm_driver/delete_modbus_tcp_master_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Delete_Modbus_Tcp_Master_Callback,this,std::placeholders::_1),
+        sub_opt5);
+    /************************************************************************查询指定modbus主站*****************************************************************/
+    Get_Modbus_Tcp_Master_Result = this->create_publisher<rm_ros_interfaces::msg::Modbustcpmasterinfo>("rm_driver/get_modbus_tcp_master_result", rclcpp::ParametersQoS());
+    Get_Modbus_Tcp_Master_Cmd = this->create_subscription<rm_ros_interfaces::msg::Mastername>("rm_driver/get_modbus_tcp_master_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Get_Modbus_Tcp_Master_Callback,this,std::placeholders::_1),
+        sub_opt5);
+    /***********************************************************************查询modbus主站列表***********************************************************************/
+    Get_Modbus_Tcp_Master_List_Result = this->create_publisher<rm_ros_interfaces::msg::Modbustcpmasterlist>("rm_driver/get_modbus_tcp_master_list_result", rclcpp::ParametersQoS());
+    Get_Modbus_Tcp_Master_List_Cmd = this->create_subscription<rm_ros_interfaces::msg::Getmodbustcpmasterlist>("rm_driver/get_modbus_tcp_master_list_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Get_Modbus_Tcp_Master_List_Callback,this,std::placeholders::_1),
+        sub_opt5);
+    /***********************************************************************设置控制器RS485模式(四代控制器支持)***********************************************************************/
+    Set_Controller_RS485_Mode_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_controller_rs485_mode_result", rclcpp::ParametersQoS());
+    Set_Controller_RS485_Mode_Cmd = this->create_subscription<rm_ros_interfaces::msg::RS485params>("rm_driver/set_controller_rs485_mode_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Set_Controller_RS485_Mode_Callback,this,std::placeholders::_1),
+        sub_opt5);
+    /***********************************************************************查询控制器RS485模式(四代控制器支持)***********************************************************************/
+    Get_Controller_RS485_Mode_v4_Result = this->create_publisher<rm_ros_interfaces::msg::RS485params>("rm_driver/get_controller_rs485_mode_result", rclcpp::ParametersQoS());
+    Get_Controller_RS485_Mode_v4_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_controller_rs485_mode_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Get_Controller_RS485_Mode_v4_Callback,this,std::placeholders::_1),
+        sub_opt5);
+    /***********************************************************************设置工具端RS485模式(四代控制器支持)***********************************************************************/
+    Set_Tool_RS485_Mode_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_tool_rs485_mode_result", rclcpp::ParametersQoS());
+    Set_Tool_RS485_Mode_Cmd = this->create_subscription<rm_ros_interfaces::msg::RS485params>("rm_driver/set_tool_rs485_mode_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Set_Tool_RS485_Mode_Callback,this,std::placeholders::_1),
+        sub_opt5);
+    /***********************************************************************查询工具端RS485模式(四代控制器支持)***********************************************************************/
+    Get_Tool_RS485_Mode_v4_Result = this->create_publisher<rm_ros_interfaces::msg::RS485params>("rm_driver/get_tool_rs485_mode_v4_result", rclcpp::ParametersQoS());
+    Get_Tool_RS485_Mode_v4_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_tool_rs485_mode_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Get_Tool_RS485_Mode_v4_Callback,this,std::placeholders::_1),
+        sub_opt2);
+
+
+    /***********************************************************************Modbus RTU协议读线圈***********************************************************************/
+    Read_Modbus_RTU_Coils_Result = this->create_publisher<rm_ros_interfaces::msg::Modbusreaddata>("rm_driver/read_modbus_rtu_coils_result", rclcpp::ParametersQoS());
+    Read_Modbus_RTU_Coils_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbusrtureadparams>("rm_driver/read_modbus_rtu_coils_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Read_Modbus_RTU_Coils_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************Modbus RTU协议写线圈***********************************************************************/
+    Write_Modbus_RTU_Coils_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/write_modbus_rtu_coils_result", rclcpp::ParametersQoS());
+    Write_Modbus_RTU_Coils_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbusrtuwriteparams>("rm_driver/write_modbus_rtu_coils_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Write_Modbus_RTU_Coils_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************Modbus RTU协议读离散量输入***********************************************************************/
+    Read_Modbus_RTU_Input_Status_Result = this->create_publisher<rm_ros_interfaces::msg::Modbusreaddata>("rm_driver/read_modbus_rtu_input_status_result", rclcpp::ParametersQoS());
+    Read_Modbus_RTU_Input_Status_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbusrtureadparams>("rm_driver/read_modbus_rtu_input_status_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Read_Modbus_RTU_Input_Status_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************Modbus RTU协议读保持寄存器***********************************************************************/
+    Read_Modbus_RTU_Holding_Registers_Result = this->create_publisher<rm_ros_interfaces::msg::Modbusreaddata>("rm_driver/read_modbus_rtu_holding_registers_result", rclcpp::ParametersQoS());
+    Read_Modbus_RTU_Holding_Registers_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbusrtureadparams>("rm_driver/read_modbus_rtu_holding_registers_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Read_Modbus_RTU_Holding_Registers_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************Modbus RTU协议写保持寄存器***********************************************************************/
+    Write_Modbus_RTU_Registers_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/write_modbus_rtu_registers_result", rclcpp::ParametersQoS());
+    Write_Modbus_RTU_Registers_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbusrtuwriteparams>("rm_driver/write_modbus_rtu_registers_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Write_Modbus_RTU_Registers_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************Modbus RTU协议读输入寄存器***********************************************************************/
+    Read_Modbus_RTU_Input_Registers_Result = this->create_publisher<rm_ros_interfaces::msg::Modbusreaddata>("rm_driver/read_modbus_rtu_input_registers_result", rclcpp::ParametersQoS());
+    Read_Modbus_RTU_Input_Registers_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbusrtureadparams>("rm_driver/read_modbus_rtu_input_registers_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Read_Modbus_RTU_Input_Registers_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    
+
+    /***********************************************************************Modbus TCP协议读线圈***********************************************************************/
+    Read_Modbus_TCP_Coils_Result = this->create_publisher<rm_ros_interfaces::msg::Modbusreaddata>("rm_driver/read_modbus_tcp_coils_result", rclcpp::ParametersQoS());
+    Read_Modbus_TCP_Coils_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbustcpreadparams>("rm_driver/read_modbus_tcp_coils_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Read_Modbus_TCP_Coils_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************Modbus TCP协议写线圈***********************************************************************/
+    Write_Modbus_TCP_Coils_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/write_modbus_tcp_coils_result", rclcpp::ParametersQoS());
+    Write_Modbus_TCP_Coils_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbustcpwriteparams>("rm_driver/write_modbus_tcp_coils_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Write_Modbus_TCP_Coils_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************Modbus TCP协议读离散量输入***********************************************************************/
+    Read_Modbus_TCP_Input_Status_Result = this->create_publisher<rm_ros_interfaces::msg::Modbusreaddata>("rm_driver/read_modbus_tcp_input_status_result", rclcpp::ParametersQoS());
+    Read_Modbus_TCP_Input_Status_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbustcpreadparams>("rm_driver/read_modbus_tcp_input_status_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Read_Modbus_TCP_Input_Status_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************Modbus TCP协议读保持寄存器***********************************************************************/
+    Read_Modbus_TCP_Holding_Registers_Result = this->create_publisher<rm_ros_interfaces::msg::Modbusreaddata>("rm_driver/read_modbus_tcp_holding_registers_result", rclcpp::ParametersQoS());
+    Read_Modbus_TCP_Holding_Registers_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbustcpreadparams>("rm_driver/read_modbus_tcp_holding_registers_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Read_Modbus_TCP_Holding_Registers_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************Modbus TCP协议写保持寄存器***********************************************************************/
+    Write_Modbus_TCP_Registers_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/write_modbus_tcp_registers_result", rclcpp::ParametersQoS());
+    Write_Modbus_TCP_Registers_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbustcpwriteparams>("rm_driver/write_modbus_tcp_registers_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Write_Modbus_TCP_Registers_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************Modbus TCP协议读输入寄存器***********************************************************************/
+    Read_Modbus_TCP_Input_Registers_Result = this->create_publisher<rm_ros_interfaces::msg::Modbusreaddata>("rm_driver/read_modbus_tcp_input_registers_result", rclcpp::ParametersQoS());
+    Read_Modbus_TCP_Input_Registers_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbustcpreadparams>("rm_driver/read_modbus_tcp_input_registers_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Read_Modbus_TCP_Input_Registers_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    
+    /***********************************************************************文件下发***********************************************************************/
+    Send_Project_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/send_project_result", rclcpp::ParametersQoS());
+    Send_Project_Cmd = this->create_subscription<rm_ros_interfaces::msg::Sendproject>("rm_driver/send_project_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Send_Project_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    /***********************************************************************查询在线编程运行状态***********************************************************************/
+    Get_Program_Run_State_Result = this->create_publisher<rm_ros_interfaces::msg::Programrunstate>("rm_driver/get_program_run_state_result", rclcpp::ParametersQoS());
+    Get_Program_Run_State_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_program_run_state_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Get_Program_Run_State_Callback,this,std::placeholders::_1),
+        sub_opt2);
+    
+
+/******************************************************************************end*****************************************************************/
 
 /**********************************************************************透传力位混合控制***********************************************************/
     /******************************************************开启力位混合********************************************************************/
@@ -2489,6 +3799,30 @@ RmArm::RmArm():
         sub_opt3);
 /*******************************************************************************end*****************************************************************/
 
+/********************************************************************末端生态协议************************************************************/
+    /****************************************设置末端生态协议模式**********************************/
+    Set_Rm_Plus_Mode_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_rm_plus_mode_result", rclcpp::ParametersQoS());
+    Set_Rm_Plus_Mode_Cmd = this->create_subscription<std_msgs::msg::UInt32>("rm_driver/set_rm_plus_mode_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Set_Rm_Plus_Mode_Callback,this,std::placeholders::_1),
+        sub_opt3);
+    /****************************************查询末端生态协议模式**********************************/
+    Get_Rm_Plus_Mode_Result = this->create_publisher<std_msgs::msg::UInt32>("rm_driver/get_rm_plus_mode_result", rclcpp::ParametersQoS());
+    Get_Rm_Plus_Mode_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_rm_plus_mode_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Get_Rm_Plus_Mode_Callback,this,std::placeholders::_1),
+        sub_opt3);
+    /****************************************设置触觉传感器模式**********************************/
+    Set_Rm_Plus_Touch_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_rm_plus_touch_result", rclcpp::ParametersQoS());
+    Set_Rm_Plus_Touch_Cmd = this->create_subscription<std_msgs::msg::UInt32>("rm_driver/set_rm_plus_touch_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Set_Rm_Plus_Touch_Callback,this,std::placeholders::_1),
+        sub_opt3);
+    /****************************************查询触觉传感器模式**********************************/
+    Get_Rm_Plus_Touch_Result = this->create_publisher<std_msgs::msg::UInt32>("rm_driver/get_rm_plus_touch_result", rclcpp::ParametersQoS());
+    Get_Rm_Plus_Touch_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_rm_plus_touch_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Get_Rm_Plus_Touch_Callback,this,std::placeholders::_1),
+        sub_opt3);
+/*******************************************************************************end*****************************************************************/
+
+
     /***************************************************获取机械臂当前状态********************************************/
     Get_Current_Arm_Original_State_Result = this->create_publisher<rm_ros_interfaces::msg::Armoriginalstate>("rm_driver/get_current_arm_original_state_result", rclcpp::ParametersQoS());
     Get_Current_Arm_State_Result = this->create_publisher<rm_ros_interfaces::msg::Armstate>("rm_driver/get_current_arm_state_result", rclcpp::ParametersQoS());
@@ -2514,30 +3848,6 @@ RmArm::RmArm():
         std::bind(&RmArm::Arm_Get_Force_Data_Callback,this,std::placeholders::_1),
         sub_opt2);
 /*******************************************************************************end*****************************************************************/
-
-/********************************************************************末端生态协议************************************************************/
-    /****************************************设置末端生态协议模式**********************************/
-    Set_Rm_Plus_Mode_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_rm_plus_mode_result", rclcpp::ParametersQoS());
-    Set_Rm_Plus_Mode_Cmd = this->create_subscription<std_msgs::msg::Int32>("rm_driver/set_rm_plus_mode_cmd",rclcpp::ParametersQoS(),
-        std::bind(&RmArm::Arm_Set_Rm_Plus_Mode_Callback,this,std::placeholders::_1),
-        sub_opt3);
-    /****************************************查询末端生态协议模式**********************************/
-    Get_Rm_Plus_Mode_Result = this->create_publisher<std_msgs::msg::Int32>("rm_driver/get_rm_plus_mode_result", rclcpp::ParametersQoS());
-    Get_Rm_Plus_Mode_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_rm_plus_mode_cmd",rclcpp::ParametersQoS(),
-        std::bind(&RmArm::Arm_Get_Rm_Plus_Mode_Callback,this,std::placeholders::_1),
-        sub_opt3);
-    /****************************************设置触觉传感器模式**********************************/
-    Set_Rm_Plus_Touch_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_rm_plus_touch_result", rclcpp::ParametersQoS());
-    Set_Rm_Plus_Touch_Cmd = this->create_subscription<std_msgs::msg::Int32>("rm_driver/set_rm_plus_touch_cmd",rclcpp::ParametersQoS(),
-        std::bind(&RmArm::Arm_Set_Rm_Plus_Touch_Callback,this,std::placeholders::_1),
-        sub_opt3);
-    /****************************************获取触觉传感器模式**********************************/
-    Get_Rm_Plus_Touch_Result = this->create_publisher<std_msgs::msg::Int32>("rm_driver/get_rm_plus_touch_result", rclcpp::ParametersQoS());
-    Get_Rm_Plus_Touch_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_rm_plus_touch_cmd",rclcpp::ParametersQoS(),
-        std::bind(&RmArm::Arm_Get_Rm_Plus_Touch_Callback,this,std::placeholders::_1),
-        sub_opt3);
-/*******************************************************************************end*****************************************************************/
-
 }   
 
 
