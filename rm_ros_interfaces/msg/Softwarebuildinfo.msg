@@ -1,0 +1,2 @@
+string build_time
+string version

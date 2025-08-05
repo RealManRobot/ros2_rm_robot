@@ -24,6 +24,7 @@ set(msg_files
   msg/Ortteach.msg
   msg/Setrealtimepush.msg
   msg/Armsoftversion.msg
+  msg/Softwarebuildinfo.msg
   msg/Sixforce.msg
   msg/Jointerrorcode.msg
   msg/Forcepositionmovejoint.msg
@@ -60,6 +61,32 @@ set(msg_files
   msg/Rmplusbase.msg
   msg/Rmplusstate.msg
   msg/Rmerr.msg
+  # 四代控制器适配新增
+  # msg/Armsoftversionv3.msg
+  # msg/Armsoftversionv4.msg
+  msg/RobotInfo.msg
+  # msg/Rmversion.msg
+  msg/Flowchartrunstate.msg
+  msg/Trajectoryinfo.msg
+  msg/Trajectorylist.msg
+  msg/Modbustcpmasterinfo.msg
+  msg/Modbustcpmasterupdata.msg
+  msg/Modbustcpmasterlist.msg
+  msg/Modbustcpreadparams.msg
+  msg/Modbustcpwriteparams.msg
+  msg/Modbusrtureadparams.msg
+  msg/Modbusrtuwriteparams.msg
+  msg/Programrunstate.msg
+  msg/Toolsoftwareversionv4.msg
+  msg/Moveloffset.msg
+  msg/Jointversion.msg
+  msg/Stop.msg
+  msg/Mastername.msg  
+  msg/Getmodbustcpmasterlist.msg
+  msg/RS485params.msg
+  msg/Modbusreaddata.msg
+  msg/Gettrajectorylist.msg
+  msg/Sendproject.msg
 )
 
 # uncomment the following section in order to fill in
