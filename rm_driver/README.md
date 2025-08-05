@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robot rm_driver User Manual V1.4
+# RealMan Robot rm_driver User Manual V1.5
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -18,8 +18,9 @@ Revision History:
 |V1.1	  | 7/8/2024  | Amend（Add GEN72 adapter files） |
 |V1.2	  | 9/10/2024 | Amend（Add ECO63 adapter files） |
 |V1.2.1 | 10/31/2024| Amend（Add dexterous hand udp topic） |
-|V1.3 | 12/25/2024 | Amend（Add UDP reporting adaptation） |
-|V1.4 | 4/7/2025 | Amend（Add UDP reporting adaptation） |
+|V1.3   | 12/25/2024 | Amend（Add UDP reporting adaptation） |
+|V1.4   | 4/7/2025  | Amend（Add UDP reporting adaptation） |
+|V1.5   | 5/29/2025 | Revision (adapted to fourth generation controllers, added version query interface, added Cartesian space linear offset motion interface, added Modbus interface, added trajectory list interface. Please refer to the topic interface description document for details) |
 
 </div>
 
