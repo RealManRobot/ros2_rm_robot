@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robot rm_description User Manual V1.4
+# RealMan Robot rm_description User Manual V1.5
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -19,6 +19,8 @@ Revision History:
 |V1.2	  | 9/11 /2024| Amend(Add ECO63 adapter files) |
 |V1.3 	| 25/12/2024| Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
 |V1.4   |2025-4-7 |Amend(AddGEN72_II adapter files) |
+|V1.5   |2025-11-13 |Amend(Add RML63_III adapter files) |
+
 </div>
 
 ## Content
@@ -43,7 +45,7 @@ First, after configuring the environment and completing the connection, we can d
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, 75, and gen72.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, 63_III, eco65, eco63, 75, and gen72.  
 
 The command to start the six-axis force version of the manipulator is (note: eco63 is not available):
 ```
@@ -82,6 +84,8 @@ The current rm_description package is composed of the following files.
 │   ├── rm_63_6f_display.launch.py  # 63 six-axis force launch file
 │   ├── rm_63_6fb_display.launch.py # 63 integrated six-axis force launch file
 │   ├── rm_63_display.launch.py     # 63 launch file
+│   ├── rm_63_III_6fb_display.launch.py # 63_III integrated six-axis force launch file
+│   ├── rm_63_III_display.launch.py     # 63_III launch file
 │   ├── rm_65_6f_display.launch.py  # 65 six-axis force launch file
 │   ├── rm_65_6fb_display.launch.py # 65 integrated six-axis force launch file
 │   ├── rm_65_display.launch.py     # 65 launch file

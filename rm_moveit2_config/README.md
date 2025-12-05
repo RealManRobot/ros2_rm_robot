@@ -57,7 +57,7 @@ The command to start the integrated six-axis force version of the manipulator is
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6fb.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63,  eco65, eco63, 75, and gen72、gen72_II.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, 63_III,  eco65, eco63, 75, and gen72、gen72_II.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_65_config demo.launch.py
@@ -102,8 +102,16 @@ The command to start the integrated six-axis force version of the manipulator is
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 ```
-Note that the above commands need to replace <arm_type> with the corresponding robotic arm model, which can be selected as 65, 63, eco65, eco63, 75, and gen72、gen72_II.  
+Note that the above commands need to replace <arm_type> with the corresponding robotic arm model, which can be selected as 65, 63, eco65, eco63, 75, and gen72.  
 After completing the above operations, the following interface appears, and we can control the movement of the robotic arm by dragging the control ball.  
+**Note: The newly added gen72_II and 63_III models are both included in their respective model files. The difference lies in the fact that during startup, it is necessary to append the identifier II or III after "demo"**
+The start command for 63_III is as follows:
+``` C++
+//Regular Version B
+ros2 launch rm_63_config demo_III.launch.py
+//Six-axis force 6FB version
+ros2 launch rm_63_config demo_III_6fb.launch.py
+```
 ![image](doc/rm_moveit2_config4.png)
 ## rm_moveit2_config_Architecture_Description
 ### Overview_of_package_files

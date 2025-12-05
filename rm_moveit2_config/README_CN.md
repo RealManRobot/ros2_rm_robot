@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_moveit2_config使用说明书V1.4
+# 睿尔曼机器人rm_moveit2_config使用说明书V1.5
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -18,6 +18,7 @@
 |V1.2    |2024-9-10  |修订（添加ECO63适配） |
 |V1.3    |2024-12-25 |修订(添加了63、65、75、ECO65的六维力适配文件，以及63、65、75、ECO63、ECO65的一体化六维力适配文件) |
 |V1.4    |2025-4-3 |修订(添加了Gen72_II型适配文件) |
+|V1.5    |2025-11-13 |修订(添加了RML63_III型适配文件) |
 
 </div>
 
@@ -99,7 +100,15 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6f.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 ```
-注意以上指令均需要将<arm_type>更换为对应的机械臂型号，可选择的型号有65、63、eco65、eco63、75、gen72、gen72_II。  
+注意以上指令均需要将<arm_type>更换为对应的机械臂型号，可选择的型号有65、63、eco65、eco63、75、gen72。  
+**注：新添加的gen72_II型和63_III型均在对应的型号文件下，区别在于启动时需要在demo后面添加II或III的标识**  
+如63_III启动命令如下：
+``` C++
+//普通B版本
+ros2 launch rm_63_config demo_III.launch.py
+//六维力6FB版本
+ros2 launch rm_63_config demo_III_6fb.launch.py
+```
 完成以上操作后将会出现以下界面，我们可以通过拖动控制球的方式控制机械臂运动。  
 ![image](doc/rm_moveit2_config4.png)
 ## rm_moveit2_config架构说明
@@ -136,14 +145,20 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 │   │   ├── demo_6f.launch.py                       #63六维力虚拟机械臂moveit2启动文件
 │   │   ├── demo_6fb.launch.py                      #63一体化六维力虚拟机械臂moveit2启动文件
 │   │   ├── demo.launch.py                          #63虚拟机械臂moveit2启动文件
+│   │   ├── demo_III_6fb.launch.py                  #63_III一体化六维力虚拟机械臂moveit2启动文件
+│   │   ├── demo_III.launch.py                      #63_III虚拟机械臂moveit2启动文件
 │   │   ├── gazebo_moveit_demo_6f.launch.py         #63六维力仿真机械臂moveit2启动文件
 │   │   ├── gazebo_moveit_demo_6fb.launch.py        #63一体化六维力仿真机械臂moveit2启动文件
 │   │   ├── gazebo_moveit_demo.launch.py            #63仿真机械臂moveit2启动文件
+│   │   ├── gazebo_moveit_demo_III_6fb.launch.py    #63_III一体化六维力仿真机械臂moveit2启动文件
+│   │   ├── gazebo_moveit_demo_III.launch.py        #63_III仿真机械臂moveit2启动文件
 │   │   ├── move_group.launch.py
 │   │   ├── moveit_rviz.launch.py 
 │   │   ├── real_moveit_demo_6f.launch.py           #63六维力真实机械臂moveit2启动文件
 │   │   ├── real_moveit_demo_6fb.launch.py          #63一体化六维力真实机械臂moveit2启动文件
 │   │   ├── real_moveit_demo.launch.py              #63真实机械臂moveit2启动文件
+│   │   ├── real_moveit_demo_III_6fb.launch.py      #63_III一体化六维力真实机械臂moveit2启动文件
+│   │   ├── real_moveit_demo_III.launch.py          #63_III真实机械臂moveit2启动文件
 │   │   ├── rsp.launch.py
 │   │   ├── setup_assistant.launch.py
 │   │   ├── spawn_controllers.launch.py

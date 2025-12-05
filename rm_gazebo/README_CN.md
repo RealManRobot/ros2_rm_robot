@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_gazebo使用说明书V1.4
+# 睿尔曼机器人rm_gazebo使用说明书V1.5
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -19,6 +19,7 @@
 |V1.2    |2024-9-10  |修订（添加eco63相关适配文件） |
 |V1.3    |2024-12-25 |修订(添加了63、65、75、ECO65的六维力适配文件，以及63、65、75、ECO63、ECO65的一体化六维力适配文件) |
 |V1.4    |2025-4-3 |修订(添加了Gen72_II型适配文件) |
+|V1.5    |2025-11-13 |修订(添加了RML63_III型适配文件) |
 
 </div>
 
@@ -50,7 +51,7 @@ rm@rm-desktop:~$ ros2 launch rm_gazebo gazebo_<arm_type>_6f_demo.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_gazebo gazebo_<arm_type>_6fb_demo.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72、gen72_II，运行成功后将弹出如下界面。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、 63_III、eco65、eco63、75、gen72、gen72_II，运行成功后将弹出如下界面。  
 ![image](doc/rm_gazebo1.png)
 之后我们使用如下指令启动moveit2控制gazebo中的仿真机械臂。
 ```
@@ -64,7 +65,7 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config gazebo_moveit_demo_6f.launch.p
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config gazebo_moveit_demo_6fb.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72、gen72_II，运行成功后弹出rviz2的控制界面后就可以进行moveit2和gazebo的仿真控制了。
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、 63_III、eco65、eco63、75、gen72、gen72_II，运行成功后弹出rviz2的控制界面后就可以进行moveit2和gazebo的仿真控制了。
 ![image](doc/rm_gazebo2.png)
 ## rm_gazebo功能包架构说明
 ### 功能包文件总览
@@ -73,6 +74,7 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config gazebo_moveit_demo_6fb.launch.
 ├── CMakeLists.txt                              #编译规则文件
 ├── config
 │   ├── gazebo_63_6fb_description.urdf.xacro    #RML63一体化六维力gazebo模型描述文件
+│   ├── gazebo_63_III_6fb_description.urdf.xacro#RML63_III一体化六维力gazebo模型描述文件
 │   ├── gazebo_65_6fb_description.urdf.xacro    #RM65一体化六维力gazebo模型描述文件
 │   ├── gazebo_75_6fb_description.urdf.xacro    #RM75一体化六维力gazebo模型描述文件
 │   ├── gazebo_eco63_6fb_description.urdf.xacro #ECO63一体化六维力gazebo模型描述文件
@@ -93,6 +95,8 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config gazebo_moveit_demo_6fb.launch.
 │   ├── gazebo_63_6fb_demo.launch.py       #RML63一体化六维力gazebo启动文件
 │   ├── gazebo_63_6f_demo.launch.py        #RML63六维力gazebo启动文件
 │   ├── gazebo_63_demo.launch.py           #RML63gazebo启动文件
+│   ├── gazebo_63_III_6fb_demo.launch.py   #RML63_III 一体化六维力gazebo启动文件
+│   ├── gazebo_63_III_demo.launch.py       #RML63_III gazebo启动文件
 │   ├── gazebo_65_6fb_demo.launch.py       #RM65一体化六维力gazebo启动文件
 │   ├── gazebo_65_6f_demo.launch.py        #RM65六维力gazebo启动文件
 │   ├── gazebo_65_demo.launch.py           #RM65gazebo启动文件

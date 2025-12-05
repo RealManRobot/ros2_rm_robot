@@ -43,11 +43,12 @@ Revision History:
 * 3.2.4[Get the software version of the end interface board](#Get_the_software_version_of_the_end_interface_board)
 * 3.3[Functions related to the work coordinate system settings](#Functions_related_to_the_work_coordinate_system_settings)
 * 3.3.1[Change the current work coordinate system](#Change_the_current_work_coordinate_system)
-* 3.4[Coordinate system query](#Coordinate_system_query)
-* 3.4.1[Get the current tool coordinate system](#Get_the_current_tool_coordinate_system)
-* 3.4.2[Get all tool coordinate system names](#Get_all_tool_coordinate_system_names)
-* 3.4.3[Get the current work coordinate system](#Get_the_current_work_coordinate_system)
-* 3.4.4[Get all work coordinate system names](#Get_all_work_coordinate_system_names)
+* 3.3.2[Get the current work coordinate system](#Get_the_current_work_coordinate_system)
+* 3.3.3[Get all work coordinate system names](#Get_all_work_coordinate_system_names)
+* 3.4[Functions related to the tool coordinate system settings](#Functions_related_to_the_tool_coordinate_system_settings)
+* 3.4.1[Change the current tool coordinate system](#Change_the_current_tool_coordinate_system)
+* 3.4.2[Get the current tool coordinate system](#Get_the_current_tool_coordinate_system)
+* 3.4.3[Get all tool coordinate system names](#Get_all_tool_coordinate_system_names)
 * 3.5[Functions related to the arm state query](#Functions_related_to_the_arm_state_query)
 * 3.5.1[Get the current state of the robot arm - return each joint angle + Euler angle](#Get_the_current_state_of_the_robot_arm-return_each_joint_angle_and_Euler_angle)
 * 3.5.2[Get the current state of the robotic arm - return each joint radians + quaternion](#Get_the_current_state_of_the_robotic_arm-return_each_joint_radians_and_quaternion)
@@ -63,6 +64,8 @@ Revision History:
 * 3.6.9[Joint space planning to target pose](#Joint_space_planning_to_target_pose)
 * 3.6.10[Trajectory emergency stop](#Trajectory_emergency_stop)
 * 3.6.11[Emergency stop](#Emergency_stop)
+* 3.6.12[Emergency pause](#Emergency_pause)
+* 3.6.13[Resume after rajectory pause](#Resume_after_trajectory_pause)
 * 3.7[Teaching instructions](#Teaching_instructions)
 * 3.7.1[Joint teaching](#Joint_teaching)
 * 3.7.2[Position teaching](#Position_teaching)
@@ -75,30 +78,46 @@ Revision History:
 * 3.8.4[Save Trajectory File](#Save_Trajectory_File)
 * 3.8.5[Query Flowchart Program Run State](#Query_Flowchart_Program_Run_State)
 * 3.9[Modbus Configuration](#Modbus_Configuration)
-* 3.9.1[Set Controller RS485 Mode](#Set_Controller_RS485_Mode)
-* 3.9.2[Get Controller RS485 Mode](#Get_Controller_RS485_Mode)
-* 3.9.3[Set Tool End RS485 Mode](#Set_Tool_End_RS485_Mode)
-* 3.9.4[Get Tool End RS485 Mode](#Get_Tool_End_RS485_Mode)
+* 3.9.1[Set Controller RS485 Mode-Four_Generations](#Set_Controller_RS485_Mode-Four_Generations)
+* 3.9.2[Get Controller RS485 Mode-Four_Generations](#Get_Controller_RS485_Mode-Four_Generations)
+* 3.9.3[Set Tool End RS485 Mode-Four_Generations](#Set_Tool_End_RS485_Mode-Four_Generations)
+* 3.9.4[Get Tool End RS485 Mode-Four_Generations](#Get_Tool_End_RS485_Mode-Four_Generations)
+* 3.9.5[Set Controller And Tools ModbusRTU Mode-Three_Generations](#Set_Controller_And_Tools_ModbusRTU_Mode-Three_Generations)
+* 3.9.6[Close Controller And Tools ModbusRTU Mode-Three_Generations](#Close_Controller_And_Tools_ModbusRTU_Mode-Three_Generations)
 * 3.10[ModbusTCP Master](#ModbusTCP_Master)
-* 3.10.1[Add Modbus TCP Master](#Add_Modbus_TCP_Master)
-* 3.10.2[Update Modbus TCP Master](#Update_Modbus_TCP_Master)
-* 3.10.3[Delete Modbus TCP Master](#Delete_Modbus_TCP_Master)
-* 3.10.4[Get Specified Modbus TCP Master](#Get_Specified_Modbus_TCP_Master)
-* 3.10.5[Get Modbus TCP Master List](#Get_Modbus_TCP_Master_List)
+* 3.10.1[Add Modbus TCP Master-Four_Generations](#Add_Modbus_TCP_Master-Four_Generations)
+* 3.10.2[Update Modbus TCP Master-Four_Generations](#Update_Modbus_TCP_Master-Four_Generations)
+* 3.10.3[Delete Modbus TCP Master-Four_Generations](#Delete_Modbus_TCP_Master-Four_Generations)
+* 3.10.4[Get Specified Modbus TCP Master-Four_Generations](#Get_Specified_Modbus_TCP_Master-Four_Generations)
+* 3.10.5[Get Modbus TCP Master List-Four_Generations](#Get_Modbus_TCP_Master_List-Four_Generations)
+* 3.10.6[Set Modbus TCP Master-Three_Generations](#Set_Modbus_TCP_Master-Three_Generations)
+* 3.10.7[Close Modbus TCP Master-Three_Generations](#Close_Modbus_TCP_Master-Three_Generations)
 * 3.11[Tool end controller end RTU Modbus protocol reads and writes data](#Tool_end_controller_end_RTU_Modbus_protocol_reads_and_writes_data)
-* 3.11.1[Modbus RTU Protocol Read Coils](#Modbus_RTU_Protocol_Read_Coils)
-* 3.11.2[Modbus RTU Protocol Write Coils](#Modbus_RTU_Protocol_Write_Coils)
-* 3.11.3[Modbus RTU Protocol Read Discrete Inputs](#Modbus_RTU_Protocol_Read_Discrete_Inputs)
-* 3.11.4[Modbus RTU Protocol Read Holding Registers](#Modbus_RTU_Protocol_Read_Holding_Registers)
-* 3.11.5[Modbus RTU Protocol Write Holding Registers](#Modbus_RTU_Protocol_Write_Holding_Registers)
-* 3.11.6[Modbus RTU Protocol Read Input Registers](#Modbus_RTU_Protocol_Read_Input_Registers)
+* 3.11.1[Modbus RTU Protocol Read Coils-Four_Generations](#Modbus_RTU_Protocol_Read_Coils-Four_Generations)
+* 3.11.2[Modbus RTU Protocol Write Coils-Four_Generations](#Modbus_RTU_Protocol_Write_Coils-Four_Generations)
+* 3.11.3[Modbus RTU Protocol Read Discrete Inputs-Four_Generations](#Modbus_RTU_Protocol_Read_Discrete_Inputs-Four_Generations)
+* 3.11.4[Modbus RTU Protocol Read Holding Registers-Four_Generations](#Modbus_RTU_Protocol_Read_Holding_Registers-Four_Generations)
+* 3.11.5[Modbus RTU Protocol Write Holding Registers-Four_Generations](#Modbus_RTU_Protocol_Write_Holding_Registers-Four_Generations)
+* 3.11.6[Modbus RTU Protocol Read Input Registers-Four_Generations](#Modbus_RTU_Protocol_Read_Input_Registers-Four_Generations)
+* 3.11.7[Modbus RTU Protocol Read Coils-Three_Generations](#Modbus_RTU_Protocol_Read_Coils-Three_Generations)
+* 3.11.8[Modbus RTU Protocol Write Coils-Three_Generations](#Modbus_RTU_Protocol_Write_Coils-Three_Generations)
+* 3.11.9[Modbus RTU Protocol Read Discrete Inputs-Three_Generations](#Modbus_RTU_Protocol_Read_Discrete_Inputs-Three_Generations)
+* 3.11.10[Modbus RTU Protocol Read Holding Registers-Three_Generations](#Modbus_RTU_Protocol_Read_Holding_Registers-Three_Generations)
+* 3.11.11[Modbus RTU Protocol Write Holding Registers-Three_Generations](#Modbus_RTU_Protocol_Write_Holding_Registers-Three_Generations)
+* 3.11.12[Modbus RTU Protocol Read Input Registers-Three_Generations](#Modbus_RTU_Protocol_Read_Input_Registers-Three_Generations)
 * 3.12[Controller Modbus TCP protocol reads and writes data](#Controller_Modbus_TCP_protocol_reads_and_writes_data)
-* 3.12.1[Modbus TCP Protocol Read Coils](#Modbus_TCP_Protocol_Read_Coils)
-* 3.12.2[Modbus TCP Protocol Write Coils](#Modbus_TCP_Protocol_Write_Coils)
-* 3.12.3[Modbus TCP Protocol Read Discrete Inputs](#Modbus_TCP_Protocol_Read_Discrete_Inputs)
-* 3.12.4[Modbus TCP Protocol Read Holding Registers](#Modbus_TCP_Protocol_Read_Holding_Registers)
-* 3.12.5[Modbus TCP Protocol Write Holding Registers](#Modbus_TCP_Protocol_Write_Holding_Registers)
-* 3.12.5[Modbus TCP Protocol Read Input Registers](#Modbus_TCP_Protocol_Read_Input_Registers)
+* 3.12.1[Modbus TCP Protocol Read Coils-Four_Generations](#Modbus_TCP_Protocol_Read_Coils-Four_Generations)
+* 3.12.2[Modbus TCP Protocol Write Coils-Four_Generations](#Modbus_TCP_Protocol_Write_Coils-Four_Generations)
+* 3.12.3[Modbus TCP Protocol Read Discrete Inputs-Four_Generations](#Modbus_TCP_Protocol_Read_Discrete_Inputs-Four_Generations)
+* 3.12.4[Modbus TCP Protocol Read Holding Registers-Four_Generations](#Modbus_TCP_Protocol_Read_Holding_Registers-Four_Generations)
+* 3.12.5[Modbus TCP Protocol Write Holding Registers-Four_Generations](#Modbus_TCP_Protocol_Write_Holding_Registers-Four_Generations)
+* 3.12.6[Modbus TCP Protocol Read Input Registers-Four_Generations](#Modbus_TCP_Protocol_Read_Input_Registers-Four_Generations)
+* 3.12.7[Modbus TCP Protocol Read Coils-Three_Generations](#Modbus_TCP_Protocol_Read_Coils-Three_Generations)
+* 3.12.8[Modbus TCP Protocol Write Coils-Three_Generations](#Modbus_TCP_Protocol_Write_Coils-Three_Generations)
+* 3.12.9[Modbus TCP Protocol Read Discrete Inputs-Three_Generations](#Modbus_TCP_Protocol_Read_Discrete_Inputs-Three_Generations)
+* 3.12.10[Modbus TCP Protocol Read Holding Registers-Three_Generations](#Modbus_TCP_Protocol_Read_Holding_Registers-Three_Generations)
+* 3.12.11[Modbus TCP Protocol Write Holding Registers-Three_Generations](#Modbus_TCP_Protocol_Write_Holding_Registers-Three_Generations)
+* 3.12.12[Modbus TCP Protocol Read Input Registers-Three_Generations](#Modbus_TCP_Protocol_Read_Input_Registers-Three_Generations)
 * 3.13[Functions related to the IO configuration of the end tool](#Functions_related_to_the_IO_configuration_of_the_end_tool)
 * 3.13.1[Setting the tool voltage output](#Setting_the_tool_voltage_output)
 * 3.14[Functions related to the control of the end gripper - optional](#Functions_related_to_the_control_of_the_end_gripper)
@@ -123,6 +142,10 @@ Revision History:
 * 3.18.1[Speed open-loop control of the lifting mechanism](#Speed_open-loop_control_of_the_lifting_mechanism)
 * 3.18.2[Position closed-loop control of the lifting mechanism](#Position_closed-loop_control_of_the_lifting_mechanism)
 * 3.18.3[Get the lifting mechanism state](#Get_the_lifting_mechanism_state)
+* 3.19[General expansion joint](#General_expansion_joint)
+* 3.19.1[Get the state of the expansion joint](#Get_the_state_of_the_expansion_joint)
+* 3.19.2[Set the open-loop speed control of the expansion joint](#Set_the_open-loop_speed_control_of_the_expansion_joint)
+* 3.19.3[Set the closed-loop position control of the expansion joint](#Set_the_closed-loop_position_control_of_the_expansion_joint)
 * 3.19[End-Effector Ecosystem Command Set](#End_Effector_Ecosystem_Command_Set)
 * 3.19.1[Setting End-Effector Ecosystem Protocol Mode](#Setting_End_Effector_Ecosystem_Protocol_Mode)
 * 3.19.2[Querying End-Effector Ecosystem Protocol Mode](#Querying_End_Effector_Ecosystem_Protocol_Mode)
@@ -133,6 +156,7 @@ Revision History:
 * 3.20.2[Stopping the transmissive force-position mixing control compensation mode](#Stopping_the_transmissive_force-position_mixing_control_compensation_mode)
 * 3.20.3[Transmissive force-position mixing control compensation - joint](#Transmissive_force-position_mixing_control_compensation-joint)
 * 3.20.4[Transmissive force-position mixing control compensation - pose](#Transmissive_force-position_mixing_control_compensation-pose)
+* 3.20.5[Transmissive_force-position_mixing_control_compensation](#Transmissive_force-position_mixing_control_compensation)
 * 3.21[Robotic arm state active reporting](#Robotic_arm_state_active_reporting)
 * 3.21.1[Setting UDP robotic arm state active reporting configuration](#Setting_UDP_robotic_arm_state_active_reporting_configuration)
 * 3.21.2[Getting UDP robotic arm state active reporting configuration](#Getting_UDP_robotic_arm_state_active_reporting_configuration)
@@ -242,7 +266,7 @@ This section describes how to query and control the robotic arm through the topi
 | :---: | :---- |
 | Parameter description | std_msgs::msg::Empty. |
 | Command example | ros2 topic pub --once /rm_driver/get_joint_software_version_cmd std_msgs/msg/Empty "{}" |
-| Return value | Jointversion.msg<br>string[7] joint_version: An array of software version numbers for each joint obtained. These need to be converted to hexadecimal. For example, if a joint version obtained is 54536, converting it to hexadecimal gives D508, which means the current joint version is Vd5.0.8 (for third-generation controllers).<br>bool state: Acquisition status - true for successful acquisition, false for failed acquisition. |
+| Return value | Jointversion.msg<br>string[] joint_version: An array of software version numbers for each joint obtained. These need to be converted to hexadecimal. For example, if a joint version obtained is 54536, converting it to hexadecimal gives D508, which means the current joint version is Vd5.0.8 (for third-generation controllers).<br>bool state: Acquisition status - true for successful acquisition, false for failed acquisition. |
 | Return example | ros2 topic echo /rm_driver/get_joint_software_version_result |
 
 #### Get_the_software_version_of_the_end_interface_board
@@ -265,7 +289,34 @@ This section describes how to query and control the robotic arm through the topi
 | Return value | true-set successfully，false-set failed |
 | Return example | ros2 topic echo /rm_driver/change_work_frame_result |
 
-### Coordinate_system_query
+#### Get_the_current_work_coordinate_system
+
+| Function description | Get_the_current_work_coordinate_system |
+| :---: | :---- |
+| Parameter description | ROS msg std_msgs::msg::Empty |
+| Command example | ros2 topic pub --once /rm_driver/get_curr_workFrame_cmd std_msgs/msg/Empty "{}" |
+| Return value | true-set successfully，false-set failed |
+| Return example | ros2 topic echo /rm_driver/get_curr_workFrame_result |
+
+#### Get_all_work_coordinate_system_names
+
+| Function description | Get_all_work_coordinate_system_names |
+| :---: | :---- |
+| Parameter description | ROS msg std_msgs::msg::Empty |
+| Command example | ros2 topic pub --once /rm_driver/get_all_work_frame_cmd std_msgs/msg/Empty "{}" |
+| Return value | All work coordinate system names |
+| Return example | ros2 topic echo /rm_driver/get_all_work_frame_result |
+
+### Functions_related_to_the_tool_coordinate_system_settings
+
+#### Change_the_current_tool_coordinate_system
+
+| Function description | Change_the_current_tool_coordinate_system |
+| :---: | :---- |
+| Parameter description | ROS msg std_msgs::msg::String |
+| Command example | ros2 topic pub --once /rm_driver/change_tool_frame_cmd std_msgs/msg/String "data: 'Arm_Tip'" |
+| Return value | true-set successfully，false-set failed |
+| Return example | ros2 topic echo /rm_driver/change_tool_frame_result |
 
 #### Get_the_current_tool_coordinate_system
 
@@ -285,23 +336,7 @@ This section describes how to query and control the robotic arm through the topi
 | Return value | All names of the current tool coordinate system |
 | Return example | ros2 topic echo /rm_driver/get_all_tool_frame_result |
 
-#### Get_the_current_work_coordinate_system
 
-| Function description | Get_the_current_work_coordinate_system |
-| :---: | :---- |
-| Parameter description | ROS msg std_msgs::msg::Empty |
-| Command example | ros2 topic pub --once /rm_driver/get_curr_workFrame_cmd std_msgs/msg/Empty "{}" |
-| Return value | true-set successfully，false-set failed |
-| Return example | ros2 topic echo /rm_driver/get_curr_workFrame_result |
-
-#### Get_all_work_coordinate_system_names
-
-| Function description | Get_all_work_coordinate_system_names |
-| :---: | :---- |
-| Parameter description | ROS msg std_msgs::msg::Empty |
-| Command example | ros2 topic pub --once /rm_driver/get_all_work_frame_cmd std_msgs/msg/Empty "{}" |
-| Return value | All work coordinate system names |
-| Return example | ros2 topic echo /rm_driver/get_all_work_frame_result |
 
 ### Functions_related_to_the_arm_state_query
 
@@ -407,7 +442,7 @@ This section describes how to query and control the robotic arm through the topi
 | Function description | Motion planning trajectory emergency stop |
 | :---: | :---- |
 | Parameter description | ROS msg std_msgs::msg::Empty |
-| Command example | ros2 topic pub /rm_driver/move_stop_cmd std_msgs/msg/Empty "{}"|
+| Command example | ros2 topic pub /rm_driver/move_stop_cmd std_msgs/msg/Empty "{}" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/move_stop_result |
 
@@ -419,6 +454,22 @@ This section describes how to query and control the robotic arm through the topi
 | Command example | ros2 topic pub --once /rm_driver/emergency_stop_cmd rm_ros_interfaces/Stop "state: true" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/emergency_stop_result |
+
+#### Emergency_pause
+| Function description | Emergency pause |
+| :---: | :---- |
+| Parameter description | std_msgs::msg::Empty |
+| Command example | ros2 topic pub --once /rm_driver/pause_cmd std_msgs/msg/Empty "{}" |
+| Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/pause_result |
+
+#### Resume_after_trajectory_pause
+| Function description | Resume after trajectory pause |
+| :---: | :---- |
+| Parameter description | std_msgs::msg::Empty |
+| Command example | ros2 topic pub --once /rm_driver/set_arm_continue_cmd std_msgs/msg/Empty "{}" |
+| Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/set_arm_continue_result |
 
 ### Teaching_instructions
 
@@ -544,6 +595,24 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | RS485params.msg<br>int32 mode: 0- Set the RS485 port of the tool end to RTU master station, 1- Smart hand mode, 2- Claw mode. <br>Int32 baudrate: Currently supports 9600 115200 460800. |
 | Return example | ros2 topic echo /rm_driver/get_tool_rs485_mode_result |
 
+#### Set_Controller_And_Tools_ModbusRTU_Mode-Three_Generations
+
+| Function description | Set_Controller_And_Tools_ModbusRTU_Mode |
+| :---: | :---- |
+| Parameter description | RS485params.msg<br>int32 mode: 0- Set the RS485 port of the tool end to RTU master station, 1- Smart hand mode, 2- Claw mode. <br>Int32 baudrate: Currently supports 9600 115200 460800. |
+| Command example | ros2 topic pub --once /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200, state: false}" |
+| Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/get_tool_rs485_mode_result |
+
+#### Close_Controller_And_Tools_ModbusRTU_Mode-Three_Generations
+
+| Function description | Close_Controller_And_Tools_ModbusRTU_Mode |
+| :---: | :---- |
+| Parameter description | std_msgs::msg::Uint16<br>Uint16 data: 0- Close the RS485 port of the tool end to RTU master station, 1- Smart hand mode, 2- Claw mode. |
+| Command example | ros2 topic pub --once /rm_driver/close_controller_rtu_modbus_cmd std_msgs/msg/UInt16 "data: 0" |
+| Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/get_tool_rs485_mode_result |
+
 ### ModbusTCP_Master
 
 #### Add_Modbus_TCP_Master
@@ -591,9 +660,27 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Modbustcpmasterlist.msg<br>uint8 page_num # Page number<br>uint8 page_size # Size per page<br>uint8 total_size # Length of the list<br>string vague_search # Fuzzy search<br>Modbustcpmasterinfo[] master_list # List of TCP master stations that match the criteria<br>bool state # Query status - true for success, false for failure<br>On failure, the driver terminal returns an error code |
 | Return example | ros2 topic echo /rm_driver/get_modbus_tcp_master_list_result |
 
+#### Set_Modbus_TCP_Master-Three_Generations
+
+| Function description | Add_Modbus_TCP_Master |
+| :---: | :---- |
+| Parameter description | Modbustcpmasterinfo.msg<br>string master_name: Modbus master station name(No configuration required). <br>String ip: TCP master IP address. <br>Int32 port: TCP primary port number. |
+| Command example | ros2 topic pub --once /rm_driver/set_controller_tcp_mode_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '', ip: '192.168.1.18', port: 502, state: false}" |
+| Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code.  |
+| Return example | ros2 topic echo rm_driver/set_controller_tcp_mode_result |
+
+#### Close_Modbus_TCP_Master-Three_Generations
+
+| Function description | Close_Modbus_TCP_Master |
+| :---: | :---- |
+| Parameter description | Empty.msg. |
+| Command example | ros2 topic pub --once /rm_driver/close_controller_tcp_modbus_cmd std_msgs/msg/Empty "{}" |
+| Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code.  |
+| Return example | ros2 topic echo /rm_driver/close_controller_tcp_modbus_result |
+
 ### Tool_end_controller_end_RTU_Modbus_protocol_reads_and_writes_data
 
-#### Modbus_RTU_Protocol_Read_Coils
+#### Modbus_RTU_Protocol_Read_Coils-Four_Generations
 
 | Function description | Modbus_RTU_Protocol_Read_Coils |
 | :---: | :---- |
@@ -602,7 +689,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code.|
 | Return example | ros2 topic echo /rm_driver/read_modbus_rtu_coils_result |
 
-#### Modbus_RTU_Protocol_Write_Coils
+#### Modbus_RTU_Protocol_Write_Coils-Four_Generations
 
 | Function description | Modbus_RTU_Protocol_Write_Coils |
 | :---: | :---- |
@@ -611,7 +698,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code.  |
 | Return example | ros2 topic echo /rm_driver/write_modbus_rtu_coils_result |
 
-#### Modbus_RTU_Protocol_Read_Discrete_Inputs
+#### Modbus_RTU_Protocol_Read_Discrete_Inputs-Four_Generations
 
 | Function description | Modbus_RTU_Protocol_Read_Discrete_Inputs |
 | :---: | :---- |
@@ -620,7 +707,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/read_modbus_rtu_input_status_result |
 
-#### Modbus_RTU_Protocol_Read_Holding_Registers
+#### Modbus_RTU_Protocol_Read_Holding_Registers-Four_Generations
 
 | Function description | Modbus_RTU_Protocol_Read_Discrete_Inputs |
 | :---: | :---- |
@@ -629,7 +716,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Modbusreaddata.msg<br>int32[] read_data # The data read from Modbus<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/read_modbus_rtu_holding_registers_result |
 
-#### Modbus_RTU_Protocol_Write_Holding_Registers
+#### Modbus_RTU_Protocol_Write_Holding_Registers-Four_Generations
 
 | Function description | Modbus_RTU_Protocol_Write_Holding_Registers |
 | :---: | :---- |
@@ -638,7 +725,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code.  |
 | Return example | ros2 topic echo /rm_driver/write_modbus_rtu_registers_result |
 
-#### Modbus_RTU_Protocol_Read_Input_Registers
+#### Modbus_RTU_Protocol_Read_Input_Registers-Four_Generations
 
 | Function description | Modbus_RTU_Protocol_Read_Input_Registers |
 | :---: | :---- |
@@ -647,9 +734,63 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code.  |
 | Return example | ros2 topic echo /rm_driver/read_modbus_rtu_input_registers_result |
 
+#### Modbus_RTU_Protocol_Read_Coils-Three_Generations
+
+| Function description | Modbus_RTU_Protocol_Read_Coils |
+| :---: | :---- |
+| Parameter description | Modbusrtureadparams.msg<br>int32 address: data starting address. <br>Int32 device: Peripheral device address.<br>int32 type: 0-Controller end Modbus host; 1. Tool end Modbus host. <br>Int32 num: The number of data to be read, with a length not exceeding 120. |
+| Command example | ros2 topic pub --once /rm_driver/read_modbus_rtu_coils_cmd rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 1, type: 0, num: 1}" |
+| Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus，(When reading, 8-bit data will be combined into a byte and returned).<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code.|
+| Return example | ros2 topic echo /rm_driver/read_modbus_rtu_coils_result |
+
+#### Modbus_RTU_Protocol_Write_Coils-Three_Generations
+
+| Function description | Modbus_RTU_Protocol_Write_Coils |
+| :---: | :---- |
+| Parameter description | Modbusrtuwriteparams.msg<br>int32 address: data starting address. <br>Int32 device: Address of peripheral device. <br>Int32 type: 0-Controller side Modbus host; 1. Tool side Modbus host. <br>Int32 num: The maximum number of data to be written is 160. <br>Int32 [] data: The data to be written, with a length corresponding to num(When writing, it is necessary to combine 8-bit data into a byte for writing). |
+| Command example | ros2 topic pub --once /rm_driver/write_modbus_rtu_coils_cmd rm_ros_interfaces/msg/Modbusrtuwriteparams "{address: 0, device: 1, type: 0, num: 8, data: [3]}" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code.  |
+| Return example | ros2 topic echo /rm_driver/write_modbus_rtu_coils_result |
+
+#### Modbus_RTU_Protocol_Read_Discrete_Inputs-Three_Generations
+
+| Function description | Modbus_RTU_Protocol_Read_Discrete_Inputs |
+| :---: | :---- |
+| Parameter description | Modbusrtureadparams.msg<br>int32 address: data starting address. <br>Int32 device: Peripheral device address.<br>int32 type: 0-Controller side Modbus host; 1. Tool side Modbus host. <br>Int32 num: The number of data to be read, with a data length not exceeding 8. |
+| Command example | ros2 topic pub --once /rm_driver/read_modbus_rtu_input_status_cmd  rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 2, type: 0, num: 1}" |
+| Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus,(When reading, 8-bit data will be combined into a byte and returned).<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/read_modbus_rtu_input_status_result |
+
+#### Modbus_RTU_Protocol_Read_Holding_Registers-Three_Generations
+
+| Function description | Modbus_RTU_Protocol_Read_Discrete_Inputs |
+| :---: | :---- |
+| Parameter description | Modbusrtureadparams.msg<br>int32 address: data starting address. <br>Int32 device: Peripheral device address.<br>int32 type: 0-Controller end Modbus host; 1. Tool end Modbus host. <br>Int32 num: The number of data to be read, with a data length not exceeding 12. |
+| Command example | ros2 topic pub --once /rm_driver/read_modbus_rtu_holding_registers_cmd rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 2, type: 0, num: 1}" |
+| Return value | Modbusreaddata.msg<br>int32[] read_data # The data read from Modbus.This instruction supports reading up to 12 registers of data at a time, which amounts to 24 bytes (each data is represented as a 16-bit value, with the rest displayed in two-digit octal notation).<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/read_modbus_rtu_holding_registers_result |
+
+#### Modbus_RTU_Protocol_Write_Holding_Registers-Three_Generations
+
+| Function description | Modbus_RTU_Protocol_Write_Holding_Registers |
+| :---: | :---- |
+| Parameter description | Modbusrtuwritableparams.msg<br>int32 address: data starting address<br>int32 device: peripheral device address<br>int32 type: 0-controller end Modbus host; 1. Tool end Modbus host. <br>Int32 num: The maximum amount of data to be written, not exceeding 10<br>int32 [] data: The data to be written, with a length corresponding to num,The maximum size should not exceed 10 (when writing multiple items, it is necessary to split a 16-bit value into two 8-bit values for writing).  |
+| Command example | ros2 topic pub --once /rm_driver/write_modbus_rtu_registers_cmd rm_ros_interfaces/msg/Modbusrtuwriteparams "{address: 0, device: 2, type: 0, num: 2, data: [1,1,2,3]}" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code.  |
+| Return example | ros2 topic echo /rm_driver/write_modbus_rtu_registers_result |
+
+#### Modbus_RTU_Protocol_Read_Input_Registers-Three_Generations
+
+| Function description | Modbus_RTU_Protocol_Read_Input_Registers |
+| :---: | :---- |
+| Parameter description | Modbusrtureadparams.msg<br>int32 address: data starting address. <br>Int32 device: Peripheral device address.<br>int32 type: 0-Controller side Modbus host; 1. Tool side Modbus host.. <br>Int32 num: The number of data to be read, with a data length not exceeding 12. |
+| Command example | ros2 topic pub --once /rm_driver/read_modbus_rtu_input_registers_cmd  rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 2, type: 0, num: 1}" |
+| Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus.The data length should not exceed 12. This instruction supports reading up to 12 register data at a time, which is 24 bytes (when the number of reads exceeds 1, the data will be split into two 8-bit returns).<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code.  |
+| Return example | ros2 topic echo /rm_driver/read_modbus_rtu_input_registers_result |
+
 ### Controller_Modbus_TCP_protocol_reads_and_writes_data
 
-#### Modbus_TCP_Protocol_Read_Coils
+#### Modbus_TCP_Protocol_Read_Coils-Four_Generations
 
 | Function description | Modbus_TCP_Protocol_Read_Coils |
 | :---: | :---- |
@@ -658,7 +799,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code.  |
 | Return example | ros2 topic echo /rm_driver/read_modbus_tcp_coils_result |
 
-#### Modbus_TCP_Protocol_Write_Coils
+#### Modbus_TCP_Protocol_Write_Coils-Four_Generations
 
 | Function description | Modbus_TCP_Protocol_Write_Coils |
 | :---: | :---- |
@@ -667,7 +808,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code.  |
 | Return example | ros2 topic echo /rm_driver/write_modbus_tcp_coils_result |
 
-#### Modbus_TCP_Protocol_Read_Discrete_Inputs
+#### Modbus_TCP_Protocol_Read_Discrete_Inputs-Four_Generations
 
 | Function description | Modbus_TCP_Protocol_Read_Discrete_Inputs |
 | :---: | :---- |
@@ -676,7 +817,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code.  |
 | Return example | ros2 topic echo /rm_driver/read_modbus_tcp_input_status_result |
 
-#### Modbus_TCP_Protocol_Read_Holding_Registers
+#### Modbus_TCP_Protocol_Read_Holding_Registers-Four_Generations
 
 | Function description | Modbus_TCP_Protocol_Read_Holding_Registers |
 | :---: | :---- |
@@ -685,7 +826,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/read_modbus_tcp_holding_registers_result |
 
-#### Modbus_TCP_Protocol_Write_Holding_Registers
+#### Modbus_TCP_Protocol_Write_Holding_Registers-Four_Generations
 
 | Function description | Modbus_TCP_Protocol_Write_Holding_Registers |
 | :---: | :---- |
@@ -694,13 +835,67 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example |  ros2 topic echo /rm_driver/write_modbus_tcp_registers_result |
 
-#### Modbus_TCP_Protocol_Read_Input_Registers
+#### Modbus_TCP_Protocol_Read_Input_Registers-Four_Generations
 
 | Function description | Modbus_TCP_Protocol_Read_Input_Registers |
 | :---: | :---- |
 | Parameter description | Modbustcpreadparams.msg<br>int32 address: data starting address. <br>String master_name: Modbus master name, maximum length of 15 characters. <br>String ip: The IP address of the host connection. <br>Int32 port: The port number of the host connection. <br>Int32 num: Read data quantity, maximum not exceeding 100. |
 | Command example | ros2 topic pub /rm_driver/read_modbus_tcp_input_registers_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
 | Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/read_modbus_tcp_input_registers_result |
+
+#### Modbus_TCP_Protocol_Read_Coils-Three_Generations
+
+| Function description | Modbus_TCP_Protocol_Read_Coils |
+| :---: | :---- |
+| Parameter description | Modbustcpreadparams.msg<br>int32 address: data starting address. <br>String master_name: Modbus master name, maximum length of 15 characters(No configuration required). <br>String ip: The IP address of the host connection. <br>Int32 port: The port number of the host connection. <br>Int32 num: Read data quantity, maximum not exceeding 120. |
+| Command example | ros2 topic pub --once /rm_driver/read_modbus_tcp_coils_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
+| Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus，(When reading, 8-bit data will be combined into a byte and returned).<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code.  |
+| Return example | ros2 topic echo /rm_driver/read_modbus_rtu_coils_result |
+
+#### Modbus_TCP_Protocol_Write_Coils-Three_Generations
+
+| Function description | Modbus_TCP_Protocol_Write_Coils |
+| :---: | :---- |
+| Parameter description | Modbustcpwriteparames.msg<br>int32 address: data starting address. <br>String master_name: Modbus master name, maximum length of 15 characters(No configuration required). <br>String ip: The IP address of the host connection. <br>Int32 port: The port number of the host connection. <br>Int32 num: Write data quantity, maximum not exceeding 160. <br>Int32 [] data: The written data has a length corresponding to num(When writing, it is necessary to combine 8-bit data into a byte for writing). |
+| Command example | ros2 topic pub --once /rm_driver/write_modbus_tcp_coils_cmd rm_ros_interfaces/msg/Modbustcpwriteparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502, num: 10, data: [2,3]}" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code.  |
+| Return example | ros2 topic echo /rm_driver/write_modbus_tcp_coils_result |
+
+#### Modbus_TCP_Protocol_Read_Discrete_Inputs-Three_Generations
+
+| Function description | Modbus_TCP_Protocol_Read_Discrete_Inputs |
+| :---: | :---- |
+| Parameter description | Modbustcpreadparams.msg<br>int32 address: data starting address. <br>String master_name: Modbus master name, maximum length of 15 characters(No configuration required). <br>String ip: The IP address of the host connection. <br>Int32 port: The port number of the host connection. <br>Int32 num: Read data quantity, maximum not exceeding 8. |
+| Command example | ros2 topic pub --once /rm_driver/read_modbus_tcp_input_status_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
+| Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus,(When reading, 8-bit data will be combined into a byte and returned).<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code.  |
+| Return example | ros2 topic echo /rm_driver/read_modbus_tcp_input_status_result |
+
+#### Modbus_TCP_Protocol_Read_Holding_Registers-Three_Generations
+
+| Function description | Modbus_TCP_Protocol_Read_Holding_Registers |
+| :---: | :---- |
+| Parameter description | Modbustcpreadparams.msg<br>int32 address: data starting address. <br>String master_name: Modbus master name, maximum length of 15 characters(No configuration required). <br>String ip: The IP address of the host connection. <br>Int32 port: The port number of the host connection. <br>Int32 num: Read data quantity, maximum not exceeding 12. |
+| Command example | ros2 topic pub /rm_driver/read_modbus_tcp_holding_registers_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
+| Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus.This instruction supports reading up to 12 registers of data at a time, which amounts to 24 bytes (each data is represented as a 16-bit value, with the rest displayed in two-digit octal notation).<br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/read_modbus_tcp_holding_registers_result |
+
+#### Modbus_TCP_Protocol_Write_Holding_Registers-Three_Generations
+
+| Function description | Modbus_TCP_Protocol_Write_Holding_Registers |
+| :---: | :---- |
+| Parameter description | Modbustcpwriteparames.msg<br>int32 address: data starting address. <br>String master_name: Modbus master name, maximum length of 15 characters(No configuration required). <br>String ip: The IP address of the host connection. <br>Int32 port: The port number of the host connection. <br>Int32 num: Write data quantity, maximum not exceeding 10. <br>Int32 [] data: The written data has a length corresponding to num.The maximum size should not exceed 10 (when writing multiple items, it is necessary to split a 16-bit value into two 8-bit values for writing). |
+| Command example | When writing to multiple registers, it is necessary to split the register contents into high and low bits. For example, to write 257, you should enter 1, 1<br>ros2 topic pub --once /rm_driver/write_modbus_tcp_registers_cmd rm_ros_interfaces/msg/Modbustcpwriteparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502, num: 2, data: [100,100,100,200]}"<br>Write a single register by directly inputting the corresponding value <br> ros2 topic pub --once /rm_driver/write_modbus_tcp_registers_cmd rm_ros_interfaces/msg/Modbustcpwriteparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502, num: 1, data: [1000]}" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
+| Return example |  ros2 topic echo /rm_driver/write_modbus_tcp_registers_result |
+
+#### Modbus_TCP_Protocol_Read_Input_Registers-Three_Generations
+
+| Function description | Modbus_TCP_Protocol_Read_Input_Registers |
+| :---: | :---- |
+| Parameter description | Modbustcpreadparams.msg<br>int32 address: data starting address. <br>String master_name: Modbus master name, maximum length of 15 characters. <br>String ip: The IP address of the host connection. <br>Int32 port: The port number of the host connection. <br>Int32 num: Read data quantity, maximum not exceeding 12. |
+| Command example | ros2 topic pub --once /rm_driver/read_modbus_tcp_input_registers_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
+| Return value | Modbusreaddata.msg<br>int32[] read_data # Data read from Modbus.The data length should not exceed 12. This instruction supports reading up to 12 register data at a time, which is 24 bytes (when the number of reads exceeds 1, the data will be split into two 8-bit returns).br>bool state # Feedback query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/read_modbus_tcp_input_registers_result |
 
 ### Functions_related_to_the_IO_configuration_of_the_end_tool
@@ -885,6 +1080,32 @@ The RealMan robotic arm can be integrated with the self-developed lifting mechan
 | Return value | Successful return: current state of the lifting mechanism; Failure return: the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/get_lift_state_result |
 
+### General_expansion_joint
+
+#### Get_the_state_of_the_expansion_joint
+| Function description | Get the state of the expansion joint |
+| :---: | :---- |
+| Parameter description | td_msgs/msg/Empty. |
+| Command example | ros2 topic pub /rm_driver/get_expand_state_cmd std_msgs/msg/Empty "{}" |
+| Return value | Expandstate.msg<br>int16 pos：Angle of the expansion joint, unit: °, accuracy: 0.001°.<br>int16 current：Drive current,Unit: mA, accuracy: 1 mA.<br>uint16 err_flag：Drive error code,Refer to joint error codes for details.<br>Current state,mode 0: idle, 1: forward speed motion, 2: forward position motion, 3: backward speed motion, 4: backward position motion. |
+| Return example | ros2 topic echo /rm_driver/get_expand_state_result |
+
+#### Set_the_open-loop_speed_control_of_the_expansion_joint
+| Function description | Speed open-loop control of the lifting mechanism |
+| :---: | :---- |
+| Parameter description | Liftspeed.msg<br>int16 speed: speed percentage, -100-100, Speed > 0: the lifting mechanism moves right-hand rule, Speed = 0: the lifting mechanism stops.<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
+| Command example | ros2 topic pub --once /rm_driver/set_expand_speed_cmd std_msgs/msg/Int32 "data: 10" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/set_expand_speed_result |
+
+#### Set_the_closed-loop_position_control_of_the_expansion_joint
+| Function description | Set the closed-loop position control of the expansion joint |
+| :---: | :---- |
+| Parameter description | Expandpos.msg<br>int32 pos:  target angle, unit: 0.001°.<br>uint16 speed: speed percentage, 1-100.<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
+| Command example | ros2 topic pub --once /rm_driver/set_expand_pos_cmd rm_ros_interfaces/msg/Expandpos "{pos: 100000, speed: 20, block: true}" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/set_expand_pos_result |
+
 ### End_Effector_Ecosystem_Command_Set
 
 Reading of basic and real-time information of end-effector devices supported by the end-effector ecosystem protocol.
@@ -952,7 +1173,7 @@ If force data calibration has not been completed before the force operations, th
 
 | Function description | Transmissive force-position mixing control compensation (joint) |
 | :---: | :---- |
-| Parameter description | Forcepositionmovejoint.msg<br>float32[6] joint:  target joint radian<br>uint8 sensor: type of sensor used, 0 - one-axis force, 1 - six-axis force<br>uint8 mode, 0 - along the base coordinate system, 1 - along the tool coordinate system.<br>int16 dir: force control direction, 0-5 represent X/Y/Z/Rx/Ry/Rz respectively, where the default direction is Z direction for one-axis force type<br>float32 force: force value, unit: 0.1 N.<br>bool follow: whether high follow, true: high follow, false: low follow.<br>uint8 dof:degree of freedom of the robotic arm |
+| Parameter description | Forcepositionmovejoint.msg<br>float32[] joint:  target joint radian<br>uint8 sensor: type of sensor used, 0 - one-axis force, 1 - six-axis force<br>uint8 mode, 0 - along the base coordinate system, 1 - along the tool coordinate system.<br>int16 dir: force control direction, 0-5 represent X/Y/Z/Rx/Ry/Rz respectively, where the default direction is Z direction for one-axis force type<br>float32 force: force value, unit: 0.1 N.<br>bool follow: whether high follow, true: high follow, false: low follow.<br>uint8 dof:degree of freedom of the robotic arm |
 | Command example | It needs to be a large number (10 or more) of continuous position points, with more than 2ms period continuous release.<br>ros2 topic pub /rm_driver/force_position_move_joint_cmd rm_ros_interfaces/msg/Forcepositionmovejoint " joint: [0, 0, 0, 0, 0, 0]<br>sensor: 0<br>mode: 0<br>dir: 0<br>force: 0.0<br>follow: false<br>dof: 6 |
 | Return value | Success: no return; Failure return: false, and the driver terminal returns an error code. |
 
@@ -963,6 +1184,20 @@ If force data calibration has not been completed before the force operations, th
 | Parameter description | Forcepositionmovepose.msg<br>geometry_msgs/Pose pose: target pose, x, y, z coordinates (float type, unit: m) + quaternion.<br>uint8 sensor:  type of sensor used, 0 - one-axis force, 1 - six-axis force.<br>uint8 mode: mode, 0 - along the base coordinate system, 1 - along the tool coordinate system<br>int16 dir: force control direction, 0-5 represent X/Y/Z/Rx/Ry/Rz respectively, where the default direction is Z direction for one-axis force type.<br>float32 force: force value,unit:0.1 N.<br>bool follow: whether high follow, true: high follow, false: low follow. |
 | Command example | It needs to be a large number (10 or more) of continuous position points, with more than 2ms period continuous release.<br>ros2 topic pub /rm_driver/force_position_move_pose_cmd rm_ros_interfaces/msg/Forcepositionmovepose "pose:<br>  position:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>  orientation:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>    w: 1.0<br>sensor: 0<br>mode: 0<br>dir: 0<br>force: 0<br>follow: false" |
 | Return value | Success: no return; Failure return: false, and the driver terminal returns an error code.|
+#### Transmissive_force-position_mixing_control_compensation
+| Function description | Transmissive_force-position_mixing_control_compensation |
+| :---: | :---- |
+| Parameter description | Forcepositionmove.msg<br>geometry_msgs/Pose pose   #The target pose in the current coordinate system supports quaternion/Euler angle representation for pose. Position accuracy: 0.001mm; Euler angle representation for pose, pose accuracy: 0.001rad; quaternion representation for pose, pose accuracy：0.000001<br>float32[] joint #Target joint angle, unit: °, accuracy：0.001°<br>uint8 flag #0-Issue target angle, 1 - Issue target pose<br>uint8 sensor #0-One-dimensional force; 1-six-dimensional force<br>uint8 mode   #0-Force control in base coordinate system; force control in tool coordinate system；<br>uint8[6] control_mode     #6 force control directions (Fx, Fy, Fz, Mx, My, Mz) with modes: 0-fixed mode, 1-floating mode, 2-spring mode, 3-motion mode, 4-force tracking mode, 8-force tracking + attitude adaptive mode<br>bool follow #Indicates the motion following effect of the driver, where true indicates high following and false indicates low following.<br>float32[6] desired_force  #The desired force/torque maintained by the force control axis will only take effect when the force control mode of the force control axis is set to force tracking mode, with an accuracy of 0.1N.<br>float32[6] limit_vel  #The maximum linear velocity and maximum angular velocity limits of the force control axes only take effect when force control is enabled. The maximum linear velocity of the (x, y, z) axes has a precision of 0.001 m/s, and the maximum angular velocity of the (rx, ry, rz) axes has a precision of 0001 °/s<br>uint8 trajectory_mode  #In high-following mode, 0 represents full transparent transmission mode, 1 represents curve fitting mode, and 2 represents filtering mode<br>uint16 radio  #In curve fitting mode, "radio" is the smoothing coefficient (0-100); in filtering mode, "radio" is the filtering parameter (ranging from 0 to 1000) |
+| Command example | It needs to be a large number (10 or more) of continuous position points, with more than 2ms period continuous release.<br>ros2 topic pub /rm_driver/force_position_move_cmd rm_ros_interfaces/msg/Forcepositionmove "pose:<br>  position:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>  orientation:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>    w: 1.0<br>joint: []<br>flag: 0<br>sensor: 0<br>mode: 0<br>control_mode: <br>- 0<br>- 0<br>- 0<br>- 0<br>- 0<br>- 0<br>follow: false<br>desired_force:<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>limit_vel:<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>trajectory_mode: 0<br>radio: 0" |
+| Return value | Success: no return; Failure return: false, and the driver terminal returns an error code. |
+### System_Configuration
+#### Clear_system_errors
+| Function description | Clear system errors |
+| :---: | :---- |
+| Parameter description | std_msgs::msg::Empty |
+| Command example | ros2 topic pub --once /rm_driver/clear_system_err_cmd std_msgs/msg/Empty "{}" |
+| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
+| Return example | ros2 topic echo /rm_driver/clear_system_err_result |
 
 ### Robotic_arm_state_active_reporting
 
@@ -1112,6 +1347,25 @@ If force data calibration has not been completed before the force operations, th
 | :----: | :---- |
 | parameter description | rm_ros_interfaces:: msg:: Jointvoltage.msg <br> float 32 [] joint_voltage: current joint voltage with accuracy of 0.001V|
 | query example | ros2 topic echo /rm_driver/udp_joint_voltage |
+
+* Lift state
+
+| Function Description | Lift state |
+| :----: | :---- |
+| parameter description | rm_ros_interfaces::msg::Udpliftstate.msg<br>int32 height	#Height of the current lifting mechanism Unit: mm, accuracy: 1 mm<br>float32 pos       #Current angle Accuracy: 0.001°, unit: °<br>int16 current	#Current drive current Unit: mA, accuracy: 1 mA<br>bool en_flag    #Current joint enabling state 1: enable, 0: disable<br>uint16 err_flag	#Drive error code.Refer to joint error codes for details |
+| query example | ros2 topic echo /rm_driver/udp_lift_state |
+* Expand state
+
+| Function Description | Expand state |
+| :----: | :---- |
+| parameter description | rm_ros_interfaces::msg::Udpexpandstate.msg<br>int32 pos	    #Current angle Accuracy: 0.001°, unit: °<br>int32 current	#Current drive current Unit: mA, accuracy: 1 mA<br>uint16 err_flag	#Drive error code.Refer to joint error codes for details.<br>bool en_flag    #Current joint enabling state 1: enable, 0: disable<br>uint8 joint_id  #Joint ID<br>int16 mode      #Current lifting state，0: idle, 1: forward speed motion, 2: forward position motion, 3: backward speed motion, 4: backward position motion |
+| query example | ros2 topic echo /rm_driver/udp_expand_state |
+* aloha state
+
+| Function Description | aloha state |
+| :----: | :---- |
+| parameter description | rm_ros_interfaces::msg::Alohastate.msg<br>int16 io1_state  #IO1 state (photoelectric detection), 0: key non-triggered, 1: key triggered.<br>int16 io2_state  #IO2 state (photoelectric detection), 0: key non-triggered, 1: key triggered. |
+| query example | ros2 topic echo /rm_driver/udp_aloha_state |
 
 * Reading Basic Information of End-Effector Device
 

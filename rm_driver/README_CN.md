@@ -20,6 +20,7 @@
 |V1.3    |2024-12-25|修订(添加UDP上报适配) |
 |V1.4    |2024-12-25|修订(添加UDP上报适配) |
 |V1.5    |2025-05-29|修订（适配四代控制器、添加版本查询接口、添加笛卡尔空间直线偏移运动接口、添加Modbus接口、添加轨迹列表接口详见话题接口说明文档）|
+|V1.6    |2025-11-13|修订（添加UDP所有基础使能配置）|
 
 </div>
 
@@ -73,7 +74,11 @@ rm_driver:
     udp_hand: false               #设置灵巧手udp主动上报使能
     udp_plus_base: false          #设置末端设备基础信息udp主动上报使能
     udp_plus_state: false         #设置末端设备实时信息udp主动上报使能
-
+    udp_joint_speed_state: true   #设置关节速度主动上报
+    udp_lift_state: true          #设置升降关节主动上报
+    udp_expand_state: false       #设置拓展关节主动上报
+    udp_arm_current_status: true  #设置机械臂状态主动上报
+    udp_aloha_state: true         #aloha状态主动上报
     trajectory_mode: 0            #设置高跟随模式下，支持多种模式，0-完全透传模式、1-曲线拟合模式、2-滤波模式
     radio: 0                      #设置曲线拟合模式下平滑系数（范围0-100）或者滤波模式下的滤波参数（范围0-1000），数值越大表示平滑效果越好
     arm_joints: ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6"]
@@ -87,6 +92,14 @@ rm_driver:
 * udp_ip: 设置udp主动上报目标IP。
 * udp_cycle：udp主动上报周期，需要是5的倍数。
 * udp_port：设置udp主动上报端口。
+* udp_hand: false               #设置灵巧手udp主动上报使能
+* udp_plus_base: false          #设置末端设备基础信息udp主动上报使能
+* udp_plus_state: false         #设置末端设备实时信息udp主动上报使能
+* udp_joint_speed_state: true   #设置关节速度主动上报
+* udp_lift_state: true          #设置升降关节主动上报
+* udp_expand_state: false       #设置拓展关节主动上报
+* udp_arm_current_status: true  #设置机械臂状态主动上报
+* udp_aloha_state: true         #aloha状态主动上报
 * udp_force_coordinate：设置系统受力时六维力的基准坐标，0为传感器坐标系（原始数据） 1为当前工作坐标系 2为当前工具坐标系。
 * trajectory_mode：设置高跟随模式下，支持多种模式，0-完全透传模式、1-曲线拟合模式、2-滤波模式
 * radio：设置曲线拟合模式下平滑系数（范围0-100）或者滤波模式下的滤波参数（范围0-1000），数值越大表示平滑效果越好

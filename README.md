@@ -10,8 +10,8 @@
 The package is mainly used for providing ROS2 support for the robotic arm, and the following is the use environment.
 
 * Currently supported robotic arms are RM65 series, RM75 series, ECO65 series, ECO63 series, RML63 series, GEN72 series, and the details can be referred to the website [RealMan robots](http://www.realman-robotics.com/).
-* Version V1.5.0.
-* The supported robotic arm controller version is 1.4.3 or above.
+* Version V1.6.0.
+* Based on the third-generation robotic arm controller version 1.7.3.
 * The Ubuntu version is 22.04.
 * The ROS2 version is humble.
 
@@ -136,7 +136,7 @@ source ~/ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_gazebo.launch.py
 ```
 
-\<arm_type> needs to use 65, 75, eco65、eco63, 63, gen72, gen72_II characters to replace it. For example, when using an RM65 robotic arm, the command is as follows.
+\<arm_type> needs to use 65, 75, eco65、eco63, 63, 63_III, gen72, gen72_II characters to replace it. For example, when using an RM65 robotic arm, the command is as follows.
 
 ```
 ros2 launch rm_bringup rm_65_gazebo.launch.py
@@ -155,7 +155,7 @@ source ~/ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ```
 
-\<arm_type> needs to use 65, 75, eco65、eco63, 63, gen72, gen72_II characters to replace it. For example, when using an RM65 robotic arm, the command is as follows.
+\<arm_type> needs to use 65, 75, eco65、eco63, 63, 63_III, gen72, gen72_II characters to replace it. For example, when using an RM65 robotic arm, the command is as follows.
 
 ```
 ros2 launch rm_bringup rm_65_bringup.launch.py

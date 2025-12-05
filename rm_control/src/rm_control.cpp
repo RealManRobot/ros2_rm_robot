@@ -286,7 +286,7 @@ Rm_Control::Rm_Control(std::string name) : Node(name)
 
     joint_pos_publisher = this->create_publisher<rm_ros_interfaces::msg::Jointpos>("/rm_driver/movej_canfd_cmd", qos);
 
-    Get_Move_Stop_Cmd = this->create_subscription<std_msgs::msg::Bool>("rm_driver/move_stop_cmd",rclcpp::ParametersQoS(),
+    Get_Move_Stop_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/move_stop_cmd",rclcpp::ParametersQoS(),
         std::bind(&Rm_Control::get_move_stop_callback,this,std::placeholders::_1));
 
 }
@@ -725,10 +725,10 @@ void Rm_Control::timer_callback()
     }
 }
 
-void Rm_Control::get_move_stop_callback(const std_msgs::msg::Bool::SharedPtr msg)
+void Rm_Control::get_move_stop_callback(const std_msgs::msg::Empty::SharedPtr msg)
 {
-    bool result;
-    result = msg->data;
+    // bool result;
+    // result = msg->data;
     point_changed=false;
     //RCLCPP_INFO(this->get_logger(), "move stop is true!!! ");
 }

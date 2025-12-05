@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_bringup使用说明书V1.4
+# 睿尔曼机器人rm_bringup使用说明书V1.5
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -18,6 +18,7 @@
 |V1.2    |2024-9-10  |修订(添加ECO63适配文件) |
 |V1.3    |2024-12-25 |修订(添加了63、65、75、ECO65的六维力适配文件，以及63、65、75、ECO63、ECO65的一体化六维力适配文件) |
 |V1.4    |2025-4-7 |修订(添加了GEN72_II适配文件) |
+|V1.5    |2025-11-13 |修订(添加了RML63_III适配文件) |
 
 </div>
 
@@ -45,7 +46,7 @@ rm_bringup功能包为实现多个launch文件同时运行所设计的功能包�
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72、gen72_II。
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、eco65、eco63、75、gen72、gen72_II。
 
 启动六维力版本机械臂的命令为(注意：eco63不可用)：
 ```
@@ -67,7 +68,7 @@ rm@rm-desktop:~$ ros2 launch rm_bringup rm_65_bringup.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_gazebo.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72、gen72_II。
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、eco65、eco63、75、gen72、gen72_II。
 
 启动六维力版本机械臂的命令为(注意：eco63不可用)：
 ```
@@ -101,6 +102,10 @@ rm@rm-desktop:~$ ros2 launch rm_bringup rm_65_gazebo.launch.py
 │   ├── rm_63_6fb_gazebo.launch.py      #63臂一体化六维力gazebo启动文件
 │   ├── rm_63_bringup.launch.py         #63臂moveit2启动文件
 │   ├── rm_63_gazebo.launch.py          #63臂gazebo启动文件
+│   ├── rm_63_III_bringup.launch.py     #63_III臂moveit2启动文件
+│   ├── rm_63_III_gazebo.launch.py      #63_III臂gazebo启动文件
+│   ├── rm_63_III_6fb_bringup.launch.py #63_III臂六维力moveit2启动文件
+│   ├── rm_63_III_6fb_gazebo.launch.py  #63_III臂六维力gazebo启动文件
 │   ├── rm_65_6f_bringup.launch.py      #65臂六维力moveit2启动文件
 │   ├── rm_65_6f_gazebo.launch.py       #65臂六维力gazebo启动文件
 │   ├── rm_65_6fb_bringup.launch.py     #65臂一体化六维力moveit2启动文件
