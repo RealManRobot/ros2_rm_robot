@@ -2,8 +2,11 @@
 <robot  name="rml_63_description" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- link6_type -->
     <xacro:arg name="link6_type" default="Link6" />
+    <xacro:arg name="base_type" default="base_link" />
     <!-- arg->property -->
     <xacro:property name="link6_type" value="$(arg link6_type)" />
+    <xacro:property name="base_type" value="$(arg base_type)" />
+    <xacro:if value="${ base_type =='base_link' }">
     <link
     name="base_link">
     <inertial>
@@ -88,6 +91,106 @@
     name="joint1"
     type="revolute">
     <origin
+      xyz="0 0 0.172"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.107"
+      upper="3.107"
+      effort="100"
+      velocity="1" />
+  </joint>
+  </xacro:if>
+<xacro:if value="${ base_type =='base_link_III' }">
+    <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.000204933302096124 -8.24661684233942E-05 0.0435919339026087"
+        rpy="0 0 0" />
+      <mass
+        value="0.604237569846431" />
+      <inertia
+        ixx="0.00082415777403083"
+        ixy="2.9270718368632E-06"
+        ixz="-2.8722520476522E-05"
+        iyy="0.000820579526371655"
+        iyz="2.21535061552891E-06"
+        izz="0.000685679517381249" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_63_arm/base_link_III.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_63_arm/base_link_III.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="link1">
+    <inertial>
+      <origin
+        xyz="-0.030909 -0.0013023 -0.0053121"
+        rpy="0 0 0" />
+      <mass
+        value="1.7668" />
+      <inertia
+        ixx="0.0014534"
+        ixy="-0.00017578"
+        ixz="0.0002802"
+        iyy="0.0043772"
+        iyz="1.7209E-05"
+        izz="0.0040911" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_63_arm/link1_III.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_63_arm/link1_III.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
       xyz="0 0 0.1625"
       rpy="0 0 0" />
     <parent
@@ -102,6 +205,7 @@
       effort="100"
       velocity="1" />
   </joint>
+  </xacro:if>
   <link
     name="link2">
     <inertial>

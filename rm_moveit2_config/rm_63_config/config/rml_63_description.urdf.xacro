@@ -5,8 +5,10 @@
     <!-- Import rm_65_description urdf file -->
     <!-- arg->property -->
     <xacro:property name="link6_type" value="$(arg link6_type)" />
+    <xacro:property name="base_type" value="$(arg base_type)" />
     <xacro:include filename="$(find rm_description)/urdf/rml_63.urdf.xacro" >
         link6_type:=$(arg link6_type)
+        base_type:=$(arg base_type)
     </xacro:include>
 
     <!-- Import control_xacro -->

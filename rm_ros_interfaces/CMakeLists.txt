@@ -87,6 +87,12 @@ set(msg_files
   msg/Modbusreaddata.msg
   msg/Gettrajectorylist.msg
   msg/Sendproject.msg
+  msg/Expandstate.msg
+  msg/Expandpos.msg
+  msg/Udpexpandstate.msg
+  msg/Forcepositionmove.msg
+  msg/Udpliftstate.msg
+  msg/Alohastate.msg
 )
 
 # uncomment the following section in order to fill in

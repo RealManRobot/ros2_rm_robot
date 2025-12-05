@@ -27,7 +27,7 @@
 |V1.1.4| 2024-12-25|修订（修改UDP上报内容）|
 |V1.1.5| 2025-02-19|修订（适配API2、添加末端生态协议接口、更新UDP接口）|
 |V1.1.6| 2025-05-19|修订（适配四代控制器、添加版本查询接口、添加笛卡尔空间直线偏移运动接口、添加Modbus接口、添加轨迹列表接口）|
-
+|V1.1.7| 2025-05-19|修订（适配四代控制器、添加三代控制器modbus相关功能）|
 
 </div>
 
@@ -47,11 +47,12 @@
 * 3.2.4[查询末端接口板软件版本号](#查询末端接口板软件版本号)
 * 3.3[工作坐标系设置](#工作坐标系设置)
 * 3.3.1[切换当前工作坐标系](#切换当前工作坐标系)
-* 3.4[坐标系查询](#坐标系查询)
-* 3.4.1[查询当前工具坐标系](#查询当前工具坐标系)
-* 3.4.2[查询所有工具坐标系名称](#查询所有工具坐标系名称)
-* 3.4.3[查询当前工作坐标系](#查询当前工作坐标系)
-* 3.4.4[查询所有工作坐标系](#查询所有工作坐标系)
+* 3.3.2[查询当前工作坐标系](#查询当前工作坐标系)
+* 3.3.3[查询所有工作坐标系](#查询所有工作坐标系)
+* 3.4[工具坐标系设置](#工具坐标系设置)
+* 3.4.1[切换当前工具坐标系](#切换当前工具坐标系)
+* 3.4.2[查询当前工具坐标系](#查询当前工具坐标系)
+* 3.4.3[查询所有工具坐标系名称](#查询所有工具坐标系名称)
 * 3.5[机械臂状态查询](#机械臂状态查询)
 * 3.5.1[获取机械臂当前状态-返回关节角度+欧拉角](#获取机械臂当前状态-返回各关节角度和欧拉角)
 * 3.5.2[获取机械臂当前状态-返回各关节弧度+四元数](#获取机械臂当前状态-返回各关节弧度和四元数)
@@ -66,7 +67,9 @@
 * 3.6.8[自定义高跟随模式位姿CANFD透传](#自定义高跟随模式位姿CANFD透传)
 * 3.6.9[关节空间规划到目标位姿](#关节空间规划到目标位姿)
 * 3.6.10[轨迹急停](#轨迹急停)
-* 3.6.11[紧急停止](#紧急停止)
+* 3.6.11[紧急停止](#紧急停止-四代控制器)
+* 3.6.12[轨迹暂停](#轨迹暂停)
+* 3.6.13[轨迹暂停后恢复](#轨迹暂停后恢复)
 * 3.7[示教指令](#示教指令)
 * 3.7.1[关节示教](#关节示教)
 * 3.7.2[位置示教](#位置示教)
@@ -79,30 +82,46 @@
 * 3.8.4[保存轨迹文件](#保存轨迹文件)
 * 3.8.5[查询流程图编程状态](#查询流程图编程状态)
 * 3.9[Modbus模式查询与配置](#Modbus模式查询与配置)
-* 3.9.1[配置控制器通讯端口RS485模式](#配置控制器通讯端口RS485模式)
-* 3.9.2[查询控制器RS485模式](#查询控制器RS485模式)
-* 3.9.3[配置工具端RS485模式](#配置工具端RS485模式)
-* 3.9.4[查询工具端RS485模式](#查询工具端RS485模式)
+* 3.9.1[配置控制器通讯端口RS485模式](#配置控制器通讯端口RS485模式-四代控制器)
+* 3.9.2[查询控制器RS485模式-四代控制器](#查询控制器RS485模式-四代控制器)
+* 3.9.3[配置工具端RS485模式-四代控制器](#配置工具端RS485模式-四代控制器)
+* 3.9.4[查询工具端RS485模式-四代控制器](#查询工具端RS485模式-四代控制器)
+* 3.9.5[配置通讯端口ModbusRTU模式-三代控制器](#配置通讯端口ModbusRTU模式-三代控制器)
+* 3.9.6[关闭通讯端口ModbusRTU模式-三代控制器](#关闭通讯端口ModbusRTU模式-三代控制器)
 * 3.10[ModbusTCP主站](#ModbusTCP主站)
-* 3.10.1[新增Modbus TCP主站](#新增ModbusTCP主站)
-* 3.10.2[更新Modbus TCP主站](#更新ModbusTCP主站)
-* 3.10.3[删除Modbus TCP主站](#删除ModbusTCP主站)
-* 3.10.4[查询指定Modbus主站](#查询指定Modbus主站)
-* 3.10.5[查询Modbus主站列表](#查询Modbus主站列表)
+* 3.10.1[新增Modbus TCP主站-四代控制器](#新增ModbusTCP主站-四代控制器)
+* 3.10.2[更新Modbus TCP主站-四代控制器](#更新ModbusTCP主站-四代控制器)
+* 3.10.3[删除Modbus TCP主站-四代控制器](#删除ModbusTCP主站-四代控制器)
+* 3.10.4[查询指定Modbus主站-四代控制器](#查询指定Modbus主站-四代控制器)
+* 3.10.5[查询Modbus主站列表-四代控制器](#查询Modbus主站列表-四代控制器)
+* 3.10.6[设置ModbusTCP主站连接-三代控制器](#设置ModbusTCP主站连接-三代控制器)
+* 3.10.7[关闭ModbusTCP主站连接-三代控制器](#关闭ModbusTCP主站连接-三代控制器)
 * 3.11[工具端控制器端RTU Modbus协议读写数据](#工具端控制器端ModbusRTU协议读写数据)
-* 3.11.1[ModbusRTU协议读线圈](#ModbusRTU协议读线圈)
-* 3.11.2[ModbusRTU协议写线圈](#ModbusRTU协议写线圈)
-* 3.11.3[ModbusRTU协议读离散量输入](#ModbusRTU协议读离散量输入)
-* 3.11.4[ModbusRTU协议读保持寄存器](#ModbusRTU协议读保持寄存器)
-* 3.11.5[ModbusRTU协议写保持寄存器](#ModbusRTU协议写保持寄存器)
-* 3.11.6[ModbusRTU协议读输入寄存器](#ModbusRTU协议读输入寄存器)
+* 3.11.1[ModbusRTU协议读线圈-四代控制器](#ModbusRTU协议读线圈-四代控制器)
+* 3.11.2[ModbusRTU协议写线圈-四代控制器](#ModbusRTU协议写线圈-四代控制器)
+* 3.11.3[ModbusRTU协议读离散量输入-四代控制器](#ModbusRTU协议读离散量输入-四代控制器)
+* 3.11.4[ModbusRTU协议读保持寄存器-四代控制器](#ModbusRTU协议读保持寄存器-四代控制器)
+* 3.11.5[ModbusRTU协议写保持寄存器-四代控制器](#ModbusRTU协议写保持寄存器-四代控制器)
+* 3.11.6[ModbusRTU协议读输入寄存器-四代控制器](#ModbusRTU协议读输入寄存器-四代控制器)
+* 3.11.7[ModbusRTU协议读线圈-三代控制器](#ModbusRTU协议读线圈-三代控制器)
+* 3.11.8[ModbusRTU协议写线圈-三代控制器](#ModbusRTU协议写线圈-三代控制器)
+* 3.11.9[ModbusRTU协议读离散量输入-三代控制器](#ModbusRTU协议读离散量输入-三代控制器)
+* 3.11.10[ModbusRTU协议读保持寄存器-三代控制器](#ModbusRTU协议读保持寄存器-三代控制器)
+* 3.11.11[ModbusRTU协议写保持寄存器-三代控制器](#ModbusRTU协议写保持寄存器-三代控制器)
+* 3.11.12[ModbusRTU协议读输入寄存器-三代控制器](#ModbusRTU协议读输入寄存器-三代控制器)
 * 3.12[控制器ModbusTCP协议读写数据](#控制器ModbusTCP协议读写数据)
-* 3.12.1[ModbusTCP协议读线圈](#ModbusTCP协议读线圈)
-* 3.12.2[ModbusTCP协议写线圈](#ModbusTCP协议写线圈)
-* 3.12.3[ModbusTCP协议读离散量输入](#ModbusTCP协议读离散量输入)
-* 3.12.4[ModbusTCP协议读保持寄存器](#ModbusTCP协议读保持寄存器)
-* 3.12.5[ModbusTCP协议写保持寄存器](#ModbusTCP协议写保持寄存器)
-* 3.12.5[ModbusTCP协议读输入寄存器](#ModbusTCP协议读输入寄存器)
+* 3.12.1[ModbusTCP协议读线圈-四代控制器](#ModbusTCP协议读线圈-四代控制器)
+* 3.12.2[ModbusTCP协议写线圈-四代控制器](#ModbusTCP协议写线圈-四代控制器)
+* 3.12.3[ModbusTCP协议读离散量输入-四代控制器](#ModbusTCP协议读离散量输入-四代控制器)
+* 3.12.4[ModbusTCP协议读保持寄存器-四代控制器](#ModbusTCP协议读保持寄存器-四代控制器)
+* 3.12.5[ModbusTCP协议写保持寄存器-四代控制器](#ModbusTCP协议写保持寄存器-四代控制器)
+* 3.12.6[ModbusTCP协议读输入寄存器-四代控制器](#ModbusTCP协议读输入寄存器-四代控制器)
+* 3.12.7[ModbusTCP协议读线圈-三代控制器](#ModbusTCP协议读线圈-三代控制器)
+* 3.12.8[ModbusTCP协议写线圈-三代控制器](#ModbusTCP协议写线圈-三代控制器)
+* 3.12.9[ModbusTCP协议读离散量输入-三代控制器](#ModbusTCP协议读离散量输入-三代控制器)
+* 3.12.10[ModbusTCP协议读保持寄存器-三代控制器](#ModbusTCP协议读保持寄存器-三代控制器)
+* 3.12.11[ModbusTCP协议写保持寄存器-三代控制器](#ModbusTCP协议写保持寄存器-三代控制器)
+* 3.12.12[ModbusTCP协议读输入寄存器-三代控制器](#ModbusTCP协议读输入寄存器-三代控制器)
 * 3.13[末端工具IO配置](#末端工具IO配置)
 * 3.13.1[设置工具端电源输出](#设置工具端电源输出)
 * 3.14[末端手爪控制](#末端手爪控制)
@@ -127,22 +146,28 @@
 * 3.18.1[升降机构速度开环控制](#升降机构速度开环控制)
 * 3.18.2[升降机构位置闭环控制](#升降机构位置闭环控制)
 * 3.18.3[获取升降机构状态](#获取升降机构状态)
+* 3.19[通用扩展关节配置](#通用扩展关节配置)
+* 3.19.1[扩展关节状态获取](#扩展关节状态获取)
+* 3.19.2[扩展关节速度环控制](#扩展关节速度环控制)
+* 3.19.3[扩展关节位置环控制](#扩展关节位置环控制)
 * 3.19[末端生态协议](#末端生态协议)
-* 3.19.1[设置末端生态协议模式](#设置末端生态协议模式)
-* 3.19.2[查询末端生态协议模式](#查询末端生态协议模式)
-* 3.19.3[设置触觉传感器模式](#设置触觉传感器模式)
-* 3.19.4[获取触觉传感器模式](#获取触觉传感器模式)
-* 3.20[透传力位混合控制补偿](#透传力位混合控制补偿)
-* 3.20.1[开启透传力位混合控制补偿模式](#开启透传力位混合控制补偿模式)
-* 3.20.2[关闭透传力位混合控制补偿模式](#关闭透传力位混合控制补偿模式)
-* 3.20.3[透传力位混合补偿-关节](#透传力位混合补偿-关节)
-* 3.20.4[透传力位混合补偿-位姿](#透传力位混合补偿-位姿)
-* 3.21[机械臂状态主动上报](#机械臂状态主动上报)
-* 3.21.1[设置UDP机械臂状态主动上报配置](#设置UDP机械臂状态主动上报配置)
-* 3.21.2[查询UDP机械臂状态主动上报配置](#查询UDP机械臂状态主动上报配置)
-* 3.21.3[UDP机械臂状态主动上报](#UDP机械臂状态主动上报)
+* 3.20.1[设置末端生态协议模式](#设置末端生态协议模式)
+* 3.20.2[查询末端生态协议模式](#查询末端生态协议模式)
+* 3.20.3[设置触觉传感器模式](#设置触觉传感器模式)
+* 3.20.4[获取触觉传感器模式](#获取触觉传感器模式)
+* 3.21[透传力位混合控制补偿](#透传力位混合控制补偿)
+* 3.21.1[开启透传力位混合控制补偿模式](#开启透传力位混合控制补偿模式)
+* 3.21.2[关闭透传力位混合控制补偿模式](#关闭透传力位混合控制补偿模式)
+* 3.21.3[透传力位混合补偿-关节](#透传力位混合补偿-关节)
+* 3.21.4[透传力位混合补偿-位姿](#透传力位混合补偿-位姿)
+* 3.21.5[透传力位混合补偿](#透传力位混合补偿)
+* 3.22[系统配置](#系统配置)
+* 3.22.1[清除系统错误](#清除系统错误)
+* 3.23[机械臂状态主动上报](#机械臂状态主动上报)
+* 3.23.1[设置UDP机械臂状态主动上报配置](#设置UDP机械臂状态主动上报配置)
+* 3.23.2[查询UDP机械臂状态主动上报配置](#查询UDP机械臂状态主动上报配置)
+* 3.23.3[UDP机械臂状态主动上报](#UDP机械臂状态主动上报)
 
- 
 ## 简介
 为了方便用户通过ROS2控制机械臂，睿尔曼提供了基于API的ROS2功能包，有关机械臂的控制细节想要了解的话也可以参考API的相关文档和说明，在实际使用机械臂时，用户可通过以太网口与机械臂建立通信，并控制机械臂。
 ## 报错说明
@@ -231,7 +256,7 @@
 | :---: | :---- |
 | 参数说明 | ROS自带msg std_msgs::msg::Empty |
 | 命令示例 | ros2 topic pub --once /rm_driver/get_joint_software_version_cmd std_msgs/msg/Empty "{}" |
-| 返回值 | Jointversion.msg<br> string[7] joint_version：获取到的各关节软件版本号数组，需转换为十六进制，例如获取某关节版本为54536，转换为十六进制为D508，则当前关节的版本号为 Vd5.0.8（三代控制器）<br>bool state ：获取状态 true获取成功 false获取失败。 |
+| 返回值 | Jointversion.msg<br> string[] joint_version：获取到的各关节软件版本号数组，需转换为十六进制，例如获取某关节版本为54536，转换为十六进制为D508，则当前关节的版本号为 Vd5.0.8-三代控制器<br>bool state ：获取状态 true获取成功 false获取失败。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_joint_software_version_result |
 #### 查询末端接口板软件版本号
 | 功能描述 | 查询末端接口板软件版本号 |
@@ -249,21 +274,6 @@
 | 命令示例 | ros2 topic pub /rm_driver/change_work_frame_cmd std_msgs/msg/String "data: 'Base'" |
 | 返回值 | true-设置成功，false-设置失败 |
 | 返回查询示例 | ros2 topic echo /rm_driver/change_work_frame_result |
-### 坐标系查询
-#### 查询当前工具坐标系
-| 功能描述 | 查询当前工具坐标系 |
-| :---: | :---- |
-| 参数说明 | ROS自带msg std_msgs::msg::Empty |
-| 命令示例 | ros2 topic pub --once /rm_driver/get_current_tool_frame_cmd std_msgs/msg/Empty "{}" |
-| 返回值 | 当前工具坐标系名称 |
-| 返回查询示例 | ros2 topic echo /rm_driver/get_current_tool_frame_result |
-#### 查询所有工具坐标系名称
-| 功能描述 | 查询所有工具坐标系 |
-| :---: | :---- |
-| 参数说明 | ROS自带msg std_msgs::msg::Empty |
-| 命令示例 | ros2 topic pub /rm_driver/get_all_tool_frame_cmd std_msgs/msg/Empty "{}" |
-| 返回值 | 当前工具坐标系所有名称 |
-| 返回查询示例 | ros2 topic echo /rm_driver/get_all_tool_frame_result |
 #### 查询当前工作坐标系
 | 功能描述 | 查询当前工作坐标系 |
 | :---: | :---- |
@@ -278,6 +288,30 @@
 | 命令示例 | ros2 topic pub --once /rm_driver/get_all_work_frame_cmd std_msgs/msg/Empty "{}" |
 | 返回值 | 所有工作坐标系名称 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_all_work_frame_result |
+
+### 工具坐标系设置
+#### 切换当前工具坐标系
+| 功能描述 | 切换当前工具坐标系 |
+| :---: | :---- |
+| 参数说明 | ROS自带msg std_msgs::msg::String |
+| 命令示例 | ros2 topic pub --once /rm_driver/change_tool_frame_cmd std_msgs/msg/String "data: 'Arm_Tip'" |
+| 返回值 | true-设置成功，false-设置失败 |
+| 返回查询示例 | ros2 topic echo rm_driver/change_tool_frame_result |
+#### 查询当前工具坐标系
+| 功能描述 | 查询当前工具坐标系 |
+| :---: | :---- |
+| 参数说明 | ROS自带msg std_msgs::msg::Empty |
+| 命令示例 | ros2 topic pub --once /rm_driver/get_current_tool_frame_cmd std_msgs/msg/Empty "{}" |
+| 返回值 | 当前工具坐标系名称 |
+| 返回查询示例 | ros2 topic echo /rm_driver/get_current_tool_frame_result |
+#### 查询所有工具坐标系名称
+| 功能描述 | 查询所有工具坐标系 |
+| :---: | :---- |
+| 参数说明 | ROS自带msg std_msgs::msg::Empty |
+| 命令示例 | ros2 topic pub /rm_driver/get_all_tool_frame_cmd std_msgs/msg/Empty "{}" |
+| 返回值 | 当前工具坐标系所有名称 |
+| 返回查询示例 | ros2 topic echo /rm_driver/get_all_tool_frame_result |
+
 ### 机械臂状态查询
 #### 获取机械臂当前状态-返回各关节角度和欧拉角
 | 功能描述 | 获取机械臂当前状态 |
@@ -362,13 +396,28 @@
 | 命令示例 | ros2 topic pub /rm_driver/move_stop_cmd std_msgs/msg/Empty "{}" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/move_stop_result |
-#### 紧急停止
+#### 紧急停止-四代控制器
 | 功能描述 | 设置机械臂急停状态 |
 | :---: | :---- |
 | 参数说明 | rm_ros_interfaces/Stop 急停状态，true：急停，false：恢复|
 | 命令示例 | ros2 topic pub --once /rm_driver/emergency_stop_cmd rm_ros_interfaces/Stop "state: true" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/emergency_stop_result |
+#### 轨迹暂停
+| 功能描述 | 设置机械臂暂停状态 |
+| :---: | :---- |
+| 参数说明 | std_msgs::msg::Empty |
+| 命令示例 | ros2 topic pub --once /rm_driver/pause_cmd std_msgs/msg/Empty "{}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/pause_result |
+#### 轨迹暂停后恢复
+| 功能描述 | 设置机械臂轨迹暂停后恢复 |
+| :---: | :---- |
+| 参数说明 | std_msgs::msg::Empty |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_arm_continue_cmd std_msgs/msg/Empty "{}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/set_arm_continue_result |
+
 ### 示教指令
 #### 关节示教
 | 功能描述 | 关节示教 |
@@ -404,7 +453,7 @@
 | :---: | :---- |
 | 参数说明 | Gettrajectorylist.msg<br>int32 page_num: 页码。<br>int32 page_size: 每页大小。<br>string vague_search: 模糊搜索。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/get_trajectory_file_list_cmd rm_ros_interfaces/msg/Gettrajectorylist "{page_num: 1,page_size: 10,vague_search: 's'}" |
-| 返回值 | Trajectorylist.msg<br>int32 page_num      # 页码<br>int32 page_size     # 每页大小<br>int32 total_size    # 列表长度<br>string vague_search  # 模糊搜索 <br>Trajectoryinfo[] tra_list  # 返回符合的轨迹列表,若无符合的轨迹，显示为[]<br>bool state          # 查询状态 成功true 失败false <br>其中Trajectoryinfo.msg定义为: <br>string name          #轨迹名称<br>string create_time   #创建时间	<br>int32 point_num      #轨迹点数量|
+| 返回值 | Trajectorylist.msg<br>int32 page_num      # 页码<br>int32 page_size     # 每页大小<br>int32 total_size    # 列表长度<br>string vague_search  # 模糊搜索 <br>Trajectoryinfo[] tra_list  # 返回符合的轨迹列表<br>bool state          # 查询状态 成功true 失败false |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_trajectory_file_list_result |
 #### 开始运行指定轨迹
 | 功能描述 | 开始运行指定轨迹 |
@@ -435,157 +484,273 @@
 | 返回值 | Flowchartrunstate.msg<br>int run_state; #运行状态 0 未开始 1运行中 2暂停中<br>int id;#当前使能的文件id。<br>char name[32]; #当前使能的文件名称。<br>int plan_speed;#当前使能的文件全局规划速度比例 1-100。<br>int step_mode;#单步模式，0为空，1为正常, 2为单步。<br>char modal_id[50];#运行到的流程图块的id。<br>bool state:正常运行返回true,未正常运行则返回false |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_flowchart_program_run_state_result |
 ### Modbus模式查询与配置
-#### 配置控制器通讯端口RS485模式
+#### 配置控制器通讯端口RS485模式-四代控制器
 | 功能描述 | 配置控制器通讯端口RS485模式 |
 | :---: | :---- |
 | 参数说明 | RS485params.msg<br>int32 mode: 0-RS485串行通讯，1-modbus-RTU主站模式，2-modbus-RTU从站模式。<br>int32 baudrate: 当前支持9600 19200 38400 57600 115200 230400 460800。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200}" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_controller_rs485_mode_result |
-#### 查询控制器RS485模式
+#### 查询控制器RS485模式-四代控制器
 | 功能描述 | 查询控制器RS485模式 |
 | :---: | :---- |
 | 参数说明 | ROS官方msg std_msgs::msg::Empty |
-| 命令示例 | ros2 topic pub --once /rm_driver/get_controller_rs485_mode_cmd std_msgs/msg/Empty "{}" |
+| 命令示例 | ros2 topic pub --once /rm_driv/get_controller_rs485_mode_cmd std_msgs/msg/Empty "{}" |
 | 返回值 | RS485params.msg<br>int32 mode     # 0代表默认RS485串行通讯，1代表modbus-RTU主站模式，2-代表modbus-RTU从站模式。<br>int32 baudrate # 波特率(当前支持9600 19200 38400 57600 115200 230400 460800)<br>bool state     # 查询状态 true查询成功 false查询失败 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_controller_rs485_mode_result |
-#### 配置工具端RS485模式
+#### 配置工具端RS485模式-四代控制器
 | 功能描述 | 配置工具端RS485模式 |
 | :---: | :---- |
 | 参数说明 | RS485params.msg<br>int32 mode: 0-设置工具端RS485端口为RTU主站，1-灵巧手模式，2-夹爪模式。<br>int32 baudrate: 当前支持9600，115200，460800。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/set_tool_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200}" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_tool_rs485_mode_result |
-#### 查询工具端RS485模式
+#### 查询工具端RS485模式-四代控制器
 | 功能描述 | 查询工具端RS485模式 |
 | :---: | :---- |
 | 参数说明 | ROS官方msg std_msgs::msg::Empty |
 | 命令示例 | ros2 topic pub --once /rm_driver/get_tool_rs485_mode_cmd std_msgs/msg/Empty "{}" |
 | 返回值 | RS485params.msg<br>int32 mode     # 0-设置工具端RS485端口为RTU主站，1-灵巧手模式，2-夹爪模式。<br>int32 baudrate # 波特率(当前支持9600 19200 38400 57600 115200 230400 460800)<br>bool state     # 查询状态 true查询成功 false查询失败。 |
-| 返回查询示例 | ros2 topic echo /rm_driver/get_tool_rs485_mode_result（三代控制器）<br>ros2 topic echo /rm_driver/get_tool_rs485_mode_v4_result（四代控制器） |
+| 返回查询示例 | ros2 topic echo /rm_driver/get_tool_rs485_mode_result |
+#### 配置通讯端口ModbusRTU模式-三代控制器
+| 功能描述 | 配置控制器通讯端口RS485模式 |
+| :---: | :---- |
+| 参数说明 | RS485params.msg<br>int32 mode: 0-控制器RS485端口为RTU主站，1-末端接口板RS485接口为RTU主站，2-控制器RS485端口为RTU从站。<br>int32 baudrate: 当前支持9600,115200,460800。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200, state: false}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/set_controller_rs485_mode_result |
+#### 关闭通讯端口ModbusRTU模式-三代控制器
+| 功能描述 | 关闭控制器通讯端口RS485模式 |
+| :---: | :---- |
+| 参数说明 | std_msgs::msg::Uint16<br>uint16 data: 0-控制器RS485端口为RTU主站，1-末端接口板RS485接口为RTU主站，2-控制器RS485端口为RTU从站。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/close_controller_rtu_modbus_cmd std_msgs/msg/UInt16 "data: 0" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/close_controller_rtu_modbus_result |
+
 ### ModbusTCP主站
-#### 新增ModbusTCP主站
+#### 新增ModbusTCP主站-四代控制器
 | 功能描述 | 新增ModbusTCP主站 |
 | :---: | :---- |
 | 参数说明 | Modbustcpmasterinfo.msg<br>string master_name: Modbus主站名称。<br>string ip: TCP主站IP地址。<br>int32 port: TCP主站端口号。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/add_modbus_tcp_master_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '1',ip: '127.0.0.1',port: 502}" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/add_modbus_tcp_master_result  |
-#### 更新ModbusTCP主站
+#### 更新ModbusTCP主站-四代控制器
 | 功能描述 | 更新ModbusTCP主站 |
 | :---: | :---- |
 | 参数说明 | Modbustcpmasterinfo.msg<br>string master_name: Modbus原本的主站名称。<br>string new_master_name: Modbus新的主站名称。<br>string ip: TCP主站IP地址。<br>int32 port: TCP主站端口号。 |
 | 命令示例 | ros2 topic pub /rm_driver/update_modbus_tcp_master_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '1'，new_master_name: '125',ip: '127.0.0.1',port: 502}" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/update_modbus_tcp_master_result  |
-#### 删除ModbusTCP主站
+#### 删除ModbusTCP主站-四代控制器
 | 功能描述 | 删除ModbusTCP主站 |
 | :---: | :---- |
 | 参数说明 | Mastername.msg<br>string master_name: Modbus主站名称。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/delete_modbus_tcp_master_cmd rm_ros_interfaces/msg/Mastername "master_name: '321'" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/delete_modbus_tcp_master_result |
-#### 查询指定Modbus主站
+#### 查询指定Modbus主站-四代控制器
 | 功能描述 | 查询指定Modbus主站 |
 | :---: | :---- |
 | 参数说明 | Mastername.msg<br>string master_name: Modbus主站名称。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/get_modbus_tcp_master_cmd rm_ros_interfaces/msg/Mastername "master_name: '321'" |
 | 返回值 | Modbustcpmasterinfo.msg<br>string master_name # Modbus主站名称，最大长度15个字符，不超过15个字符<br>string ip          # TCP主站IP地址<br>int32 port         # TCP主站端口号<br> bool state         # 查询状态信息，失败为false,成功为true<br>失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_modbus_tcp_master_result |
-#### 查询Modbus主站列表
+#### 查询Modbus主站列表-四代控制器
 | 功能描述 | 查询Modbus主站列表 |
 | :---: | :---- |
 | 参数说明 | Getmodbustcpmasterlist.msg<br>int32 page_num: 页码。<br>int32 page_size: 每页大小。<br>string vague_search: 模糊搜索，若输入为空则返回所有主站列表。 |
 | 命令示例 | ros2 topic pub --once /rm_driver/get_modbus_tcp_master_list_cmd rm_ros_interfaces/msg/Getmodbustcpmasterlist "{page_num: 1,page_size: 10,vague_search: '1'}" |
 | 返回值 | Modbustcpmasterlist.msg<br>uint8 page_num       # 页码<br>uint8 page_size      # 每页大小<br>uint8 total_size     # 列表长度<br>string vague_search  # 模糊搜索	<br>Modbustcpmasterinfo[] master_list   # 返回符合的TCP主站列表<br>bool state           # 查询状态 成功true 失败false<br>失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_modbus_tcp_master_list_result  |
+#### 设置ModbusTCP主站连接-三代控制器
+| 功能描述 | 设置ModbusTCP主站连接 |
+| :---: | :---- |
+| 参数说明 | Modbustcpmasterinfo.msg<br>string master_name: Modbus主站名称(三代控制器无需配置)。<br>string ip: TCP主站IP地址。<br>int32 port: TCP主站端口号。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_controller_tcp_mode_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '', ip: '192.168.1.18', port: 502, state: false}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/set_controller_tcp_mode_result  |
+#### 关闭ModbusTCP主站连接-三代控制器
+| 功能描述 | 关闭ModbusTCP主站连接 |
+| :---: | :---- |
+| 参数说明 | Empty.msg |
+| 命令示例 | ros2 topic pub --once /rm_driver/close_controller_tcp_modbus_cmd std_msgs/msg/Empty "{}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/close_controller_tcp_modbus_result  |
+
 
 ### 工具端控制器端ModbusRTU协议读写数据
-#### ModbusRTU协议读线圈
+#### ModbusRTU协议读线圈-四代控制器
 | 功能描述 | ModbusRTU协议读线圈 |
 | :---: | :---- |
 | 参数说明 | Modbusrtureadparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址	。<br>int32 type: 0-控制器端Modbus主机；1-工具端Modbus主机。<br>int32 num: 要读的数据的数量，数据长度不超过100。 |
-| 命令示例 | ros2 topic pub /rm_driver/read_modbus_rtu_coils_cmd rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 1, type: 0, num: 1}" |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_rtu_coils_cmd rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 1, type: 0, num: 1}" |
 | 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_rtu_coils_result |
-#### ModbusRTU协议写线圈
+#### ModbusRTU协议写线圈-四代控制器
 | 功能描述 | ModbusRTU协议写线圈 |
 | :---: | :---- |
 | 参数说明 | Modbusrtuwriteparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址。<br>int32 type: 0-控制器端modbus主机；1-工具端modbus主机。<br>int32 num: 要写的数据的数量，最大不超过100。<br>int32[] data: 要写的数据，数据长度与num对应。 |
 | 命令示例 | ros2 topic pub /rm_driver/write_modbus_rtu_coils_cmd rm_ros_interfaces/msg/Modbusrtuwriteparams "{address: 0, device: 1, type: 0, num: 2, data: [1,1]}" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/write_modbus_rtu_coils_result |
-#### ModbusRTU协议读离散量输入
+#### ModbusRTU协议读离散量输入-四代控制器
 | 功能描述 | ModbusRTU协议读离散量输入 |
 | :---: | :---- |
-| 参数说明 | Modbusrtureadparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址	。<br>int32 type: 0-控制器端modbus主机；1-工具端modbus主机。。<br>int32 num: 要读的数据的数量，数据长度不超过100。 |
-| 命令示例 | ros2 topic pub /rm_driver/read_modbus_rtu_input_status_cmd  rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 0, type: 0, num: 1}" |
+| 参数说明 | Modbusrtureadparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址	。<br>int32 type: 0-控制器端modbus主机；1-工具端modbus主机。<br>int32 num: 要读的数据的数量，数据长度不超过100。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_rtu_input_status_cmd  rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 2, type: 0, num: 8}" |
 | 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_rtu_input_status_result |
-#### ModbusRTU协议读保持寄存器
+#### ModbusRTU协议读保持寄存器-四代控制器
 | 功能描述 | ModbusRTU协议读保持寄存器 |
 | :---: | :---- |
 | 参数说明 | Modbusrtureadparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址	。<br>int32 type: 0-控制器端Modbus主机；1-工具端Modbus主机。。<br>int32 num: 要读的数据的数量，数据长度不超过100。 |
-| 命令示例 | ros2 topic pub /rm_driver/read_modbus_rtu_holding_registers_cmd rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 0, type: 0, num: 1}" |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_rtu_holding_registers_cmd rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 2, type: 0, num: 1}" |
 | 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_rtu_holding_registers_result |
-#### ModbusRTU协议写保持寄存器
+#### ModbusRTU协议写保持寄存器-四代控制器
 | 功能描述 | ModbusRTU协议写保持寄存器 |
 | :---: | :---- |
 | 参数说明 | Modbusrtuwriteparams.msg<br>int32 address: 数据起始地址<br>int32 device: 外设设备地址<br>int32 type: 0-控制器端Modbus主机；1-工具端Modbus主机。<br>int32 num: 要写的数据的数量，最大不超过100<br>int32[] data: 要写的数据，数据长度与num对应。 |
 | 命令示例 | ros2 topic pub /rm_driver/write_modbus_rtu_registers_cmd rm_ros_interfaces/msg/Modbusrtuwriteparams "{address: 0, device: 0, type: 0, num: 2, data: [1,1]}" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/write_modbus_rtu_registers_result |
-#### ModbusRTU协议读输入寄存器
+#### ModbusRTU协议读输入寄存器-四代控制器
 | 功能描述 | ModbusRTU协议读输入寄存器 |
 | :---: | :---- |
-| 参数说明 | Modbusrtureadparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址	。<br>int32 type: 0-控制器端modbus主机；1-工具端modbus主机。。<br>int32 num: 要读的数据的数量，数据长度不超过100。 |
+| 参数说明 | Modbusrtureadparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址	。<br>int32 type: 0-控制器端modbus主机；1-工具端modbus主机。。<br>int32 num: 要读的数据的数量，数据长度不超过8。 |
 | 命令示例 | ros2 topic pub /rm_driver/read_modbus_rtu_input_registers_cmd  rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 0, type: 0, num: 1}" |
 | 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_rtu_input_registers_result |
+#### ModbusRTU协议读线圈-三代控制器
+| 功能描述 | ModbusRTU协议读线圈 |
+| :---: | :---- |
+| 参数说明 | Modbusrtureadparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址	。<br>int32 type: 0-控制器端Modbus主机；1-工具端Modbus主机。<br>int32 num: 要读的线圈的数量，该指令最多一次性支持读120个线圈数据，显示为15个byte。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_rtu_coils_cmd rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 1, type: 0, num: 1}" |
+| 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据,(读取时，8位数据会被合并为byte位返回)<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_rtu_coils_result |
+#### ModbusRTU协议写线圈-三代控制器
+| 功能描述 | ModbusRTU协议写线圈 |
+| :---: | :---- |
+| 参数说明 | Modbusrtuwriteparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址。<br>int32 type: 0-控制器端modbus主机；1-工具端modbus主机。<br>int32 num: 要写的数据的数量，最大不超过160。<br>int32[] data: 要写的数据，类型：byte。(写入时，8位数据需被合并为byte位写入)；否则，则为多个数据。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/write_modbus_rtu_coils_cmd rm_ros_interfaces/msg/Modbusrtuwriteparams "{address: 0, device: 1, type: 0, num: 8, data: [3]}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/write_modbus_rtu_coils_result |
+#### ModbusRTU协议读离散量输入-三代控制器
+| 功能描述 | ModbusRTU协议读离散量输入 |
+| :---: | :---- |
+| 参数说明 | Modbusrtureadparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址	。<br>int32 type: 0-控制器端modbus主机；1-工具端modbus主机。<br>int32 num: 要读的数据的数量，数据长度不超过8。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_rtu_input_status_cmd  rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 2, type: 0, num: 1}" |
+| 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据,(读取时，8位数据会被合并为byte位返回)。 <br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_rtu_input_status_result |
+#### ModbusRTU协议读保持寄存器-三代控制器
+| 功能描述 | ModbusRTU协议读保持寄存器 |
+| :---: | :---- |
+| 参数说明 | Modbusrtureadparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址	。<br>int32 type: 0-控制器端Modbus主机；1-工具端Modbus主机。。<br>int32 num: 要读的数据的数量，数据长度不超过12,该指令最多一次性支持读12个寄存器数据，即24个byte(读取数量大于1时，数据会被拆分为两个8位返回)。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_rtu_holding_registers_cmd rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 2, type: 0, num: 1}" |
+| 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据，该指令最多一次性支持读12个寄存器数据， 即 24 个 byte(一个数据时为一个16位数据，其他以两位八进制显示)<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_rtu_holding_registers_result |
+#### ModbusRTU协议写保持寄存器-三代控制器
+| 功能描述 | ModbusRTU协议写保持寄存器 |
+| :---: | :---- |
+| 参数说明 | Modbusrtuwriteparams.msg<br>int32 address: 数据起始地址<br>int32 device: 外设设备地址<br>int32 type: 0-控制器端Modbus主机；1-工具端Modbus主机。<br>int32 num: 要写的数据的数量，最大不超过10(写多个时需要将一个16位拆为两个8位写入)。<br>int32[] data: 要写的数据，数据长度与num对应。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/write_modbus_rtu_registers_cmd rm_ros_interfaces/msg/Modbusrtuwriteparams "{address: 0, device: 2, type: 0, num: 2, data: [1,1,2,3]}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/write_modbus_rtu_registers_result |
+#### ModbusRTU协议读输入寄存器-三代控制器
+| 功能描述 | ModbusRTU协议读输入寄存器 |
+| :---: | :---- |
+| 参数说明 | Modbusrtureadparams.msg<br>int32 address: 数据起始地址。<br>int32 device: 外设设备地址	。<br>int32 type: 0-控制器端modbus主机；1-工具端modbus主机。<br>int32 num: 要读的数据的数量，数据长度不超过12,该指令最多一次性支持读12个寄存器数据，即24个byte(读取数量大于1时，数据会被拆分为两个8位返回)。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_rtu_input_registers_cmd  rm_ros_interfaces/msg/Modbusrtureadparams "{address: 0, device: 2, type: 0, num: 1}" |
+| 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_rtu_input_registers_result |
 ### 控制器ModbusTCP协议读写数据
-#### ModbusTCP协议读线圈
+#### ModbusTCP协议读线圈-四代控制器
 | 功能描述 | ModbusTCP协议读线圈 |
 | :---: | :---- |
 | 参数说明 | Modbustcpreadparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符。<br>string ip: 主机连接的 IP 地址。<br>int32 port: 主机连接的端口号。<br>int32 num: 读取数据数量，最大不超过100。 |
-| 命令示例 | ros2 topic pub /rm_driver/read_modbus_tcp_coils_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_tcp_coils_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
 | 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_tcp_coils_result |
-#### ModbusTCP协议写线圈
+#### ModbusTCP协议写线圈-四代控制器
 | 功能描述 | ModbusTCP协议写线圈 |
 | :---: | :---- |
 | 参数说明 | Modbustcpwriteparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符。<br>string ip: 主机连接的 IP 地址。<br>int32 port: 主机连接的端口号。<br>int32 num: 写入数据数量，最大不超过100。<br>int32[] data: 写入的数据，数据长度与num对应。 |
 | 命令示例 | ros2 topic pub /rm_driver/write_modbus_tcp_coils_cmd rm_ros_interfaces/msg/Modbustcpwriteparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502, num: 2, data: [1,1]}" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/write_modbus_tcp_coils_result |
-#### ModbusTCP协议读离散量输入
+#### ModbusTCP协议读离散量输入-四代控制器
 | 功能描述 | ModbusTCP协议读离散量输入 |
 | :---: | :---- |
 | 参数说明 | Modbustcpreadparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符。<br>string ip: 主机连接的 IP 地址。<br>int32 port: 主机连接的端口号。<br>int32 num: 读取数据数量，最大不超过100。 |
 | 命令示例 | ros2 topic pub /rm_driver/read_modbus_tcp_input_status_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
 | 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_tcp_input_status_result |
-#### ModbusTCP协议读保持寄存器
+#### ModbusTCP协议读保持寄存器-四代控制器
 | 功能描述 | ModbusTCP协议读保持寄存器 |
 | :---: | :---- |
 | 参数说明 | Modbustcpreadparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符。<br>string ip: 主机连接的 IP 地址。<br>int32 port: 主机连接的端口号。<br>int32 num: 读取数据数量，最大不超过100。 |
 | 命令示例 | ros2 topic pub /rm_driver/read_modbus_tcp_holding_registers_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
 | 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_tcp_holding_registers_result |
-#### ModbusTCP协议写保持寄存器
+#### ModbusTCP协议写保持寄存器-四代控制器
 | 功能描述 | ModbusTCP协议写保持寄存器 |
 | :---: | :---- |
 | 参数说明 | Modbustcpwriteparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符。<br>string ip: 主机连接的 IP 地址。<br>int32 port: 主机连接的端口号。<br>int32 num: 写入数据数量，最大不超过100。<br>int32[] data: 写入的数据，数据长度与num对应。 |
 | 命令示例 | ros2 topic pub /rm_driver/write_modbus_tcp_registers_cmd rm_ros_interfaces/msg/Modbustcpwriteparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502, num: 2, data: [1,1]}" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/write_modbus_tcp_registers_result |
-#### ModbusTCP协议读输入寄存器
+#### ModbusTCP协议读输入寄存器-四代控制器
 | 功能描述 | ModbusTCP协议读输入寄存器 |
 | :---: | :---- |
 | 参数说明 | Modbustcpreadparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符。<br>string ip: 主机连接的 IP 地址。<br>int32 port: 主机连接的端口号。<br>int32 num: 读取数据数量，最大不超过100。 |
 | 命令示例 | ros2 topic pub /rm_driver/read_modbus_tcp_input_registers_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
 | 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_tcp_input_registers_result |
+#### ModbusTCP协议读线圈-三代控制器
+| 功能描述 | ModbusTCP协议读线圈 |
+| :---: | :---- |
+| 参数说明 | Modbustcpreadparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符（三代控制器无效）。<br>string ip: 主机连接的 IP 地址（三代控制器无效）。<br>int32 port: 主机连接的端口号（三代控制器无效）。<br>int32 num: 读取数据数量，该指令最多一次性支持读120个线圈数据。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_tcp_coils_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
+| 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据，(读取时，8位数据会被合并为byte位返回)<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_tcp_coils_result |
+#### ModbusTCP协议写线圈-三代控制器
+| 功能描述 | ModbusTCP协议写线圈 |
+| :---: | :---- |
+| 参数说明 | Modbustcpwriteparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符（三代控制器无效）。<br>string ip: 主机连接的 IP 地址（三代控制器无效）。<br>int32 port: 主机连接的端口号（三代控制器无效）。<br>int32 num: 写入数据数量，最大不超过160，即20个字节。<br>int32[] data: 要写入线圈的数据组，(写入时，需要将8位数据合并为byte写入)；否则，则为多个数据的数组。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/write_modbus_tcp_coils_cmd rm_ros_interfaces/msg/Modbustcpwriteparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502, num: 10, data: [2,3]}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/write_modbus_tcp_coils_result |
+#### ModbusTCP协议读离散量输入-三代控制器
+| 功能描述 | ModbusTCP协议读离散量输入 |
+| :---: | :---- |
+| 参数说明 | Modbustcpreadparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符（三代控制器无效）。<br>string ip: 主机连接的 IP 地址（三代控制器无效）。<br>int32 port: 主机连接的端口号（三代控制器无效）。<br>int32 num: 读取数据数量，最大不超过8。 |
+| 命令示例 |  |
+| 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据,(读取时，8位数据会被合并为byte位返回)。<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_tcp_input_status_result |
+#### ModbusTCP协议读保持寄存器-三代控制器
+| 功能描述 | ModbusTCP协议读保持寄存器 |
+| :---: | :---- |
+| 参数说明 | Modbustcpreadparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符（三代控制器无效）。<br>string ip: 主机连接的 IP 地址（三代控制器无效）。<br>int32 port: 主机连接的端口号（三代控制器无效）。<br>int32 num: 读取数据数量，数据长度不超过12,该指令最多一次性支持读12个寄存器数据，即24个byte(读取数量大于1时，数据会被拆分为两个8位返回)。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_tcp_holding_registers_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
+| 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据，该指令最多一次性支 持读 12 个寄存器数据， 即 24 个 byte(读取数量大于1时，数据会被拆分为两个byte位返回)<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_tcp_holding_registers_result |
+#### ModbusTCP协议写保持寄存器-三代控制器
+| 功能描述 | ModbusTCP协议写保持寄存器 |
+| :---: | :---- |
+| 参数说明 | Modbustcpwriteparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符（三代控制器无效）。<br>string ip: 主机连接的 IP 地址（三代控制器无效）。<br>int32 port: 主机连接的端口号（三代控制器无效）。<br>int32 num: 写入数据数量，最大不超过10。<br>int32[] data: 要写入线圈的数据,(写多个时需要将一个16位拆为两个8位写入)。 |
+| 命令示例 | 写多个寄存器,需要将寄存器内容拆为高、低位，如写入257，应输入1，1<br>ros2 topic pub --once /rm_driver/write_modbus_tcp_registers_cmd rm_ros_interfaces/msg/Modbustcpwriteparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502, num: 2, data: [100,100,100,200]}"<br>写单个寄存器直接输入对应数值 <br> ros2 topic pub --once /rm_driver/write_modbus_tcp_registers_cmd rm_ros_interfaces/msg/Modbustcpwriteparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502, num: 1, data: [1000]}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/write_modbus_tcp_registers_result |
+#### ModbusTCP协议读输入寄存器-三代控制器
+| 功能描述 | ModbusTCP协议读输入寄存器 |
+| :---: | :---- |
+| 参数说明 | Modbustcpreadparams.msg<br>int32 address: 数据起始地址。<br>string master_name: Modbus 主站名称，最大长度15个字符（三代控制器无效）。<br>string ip: 主机连接的 IP 地址（三代控制器无效）。<br>int32 port: 主机连接的端口号（三代控制器无效）。<br>int32 num: 读取数据数量，数据长度不超过12,该指令最多一次性支持读12个寄存器数据，即24个byte(读取数量大于1时，数据会被拆分为两个8位返回)。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/read_modbus_tcp_input_registers_cmd rm_ros_interfaces/msg/Modbustcpreadparams "{address: 0,master_name: '3',ip: '127.0.0.6',port: 502,num: 1}" |
+| 返回值 | Modbusreaddata.msg<br>int32[] read_data    # 读取到的modbus数据<br>bool state           # 反馈查询状态信息，失败为false，成功true<br>失败driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/read_modbus_tcp_input_registers_result |
+
+
 ### 末端工具IO配置
 #### 设置工具端电源输出
 | 功能描述 | 设置工具端电源输出 |
@@ -724,13 +889,35 @@
 | 命令示例 | ros2 topic pub /rm_driver/get_lift_state_cmd std_msgs/msg/Empty "{}" |
 | 返回值 | 成功返回：升降机构当前状态；失败返回：driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_lift_state_result |
+### 通用扩展关节配置
+#### 扩展关节状态获取
+| 功能描述 | 扩展关节状态获取 |
+| :---: | :---- |
+| 参数说明 | std_msgs/msg/Empty |
+| 命令示例 | ros2 topic pub /rm_driver/get_expand_state_cmd std_msgs/msg/Empty "{}" |
+| 返回值 | Expandstate.msg<br>int16 pos：当前位置。<br>int16 current：当前电流。<br>uint16 err_flag：驱动错误代码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/get_expand_state_result |
+#### 扩展关节速度环控制
+| 功能描述 | 扩展关节速度环控制 |
+| :---: | :---- |
+| 参数说明 | std_msgs::msg::Int32<br>Int32 data：速度百分比，1-100。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_expand_speed_cmd std_msgs/msg/Int32 "data: 10" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/set_expand_speed_result |
+#### 扩展关节位置环控制
+| 功能描述 | 扩展关节位置环控制 |
+| :---: | :---- |
+| 参数说明 | Expandpos.msg<br>uint16 pos：目标位置，单位度，数值1000代表1度。<br>uint16 speed：速度百分比，1-100。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 命令示例 | ros2 topic pub --once /rm_driver/set_expand_pos_cmd rm_ros_interfaces/msg/Expandpos "{pos: 100000, speed: 20, block: true}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/set_expand_pos_result |
 ### 末端生态协议
 末端生态协议支持下的末端设备基础信息与实时信息的读取。
 #### 设置末端生态协议模式
 | 功能描述 | 设置末端生态协议模式 |
 | :---: | :---- |
 | 参数说明 | std_msgs::msg::Int32 <br>0-禁用协议；<br>9600-开启协议（波特率9600）；<br>115200-开启协议（波特率115200）；<br>256000-开启协议（波特率256000）；<br>460800-开启协议（波特率460800）。|
-| 命令示例 | ros2 topic pub --once /rm_driver/set_rm_plus_mode_cmd std_msgs/msg/UInt32 "data: 115200" |
+| 命令示例 | ros2 topic pub /rm_driver/set_rm_plus_mode_cmd std_msgs/msg/Int32 "data: 0" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_rm_plus_mode_result |
 #### 查询末端生态协议模式
@@ -744,14 +931,14 @@
 | 功能描述 | 设置触觉传感器模式 |
 | :---: | :---- |
 | 参数说明 | std_msgs::msg::Int32<br>0-关闭触觉传感器；<br>1-打开触觉传感器（返回处理后数据）；<br>2-打开触觉传感器（返回原始数据）。 |
-| 命令示例 | ros2 topic pub --once /rm_driver/set_rm_plus_touch_cmd std_msgs/msg/UInt32 "data: 0" |
+| 命令示例 | ros2 topic pub /rm_driver/set_rm_plus_touch_cmd std_msgs::msg::Int32 "data: 0" |
 | 返回值 | 成功无返回；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_rm_plus_touch_result |
 #### 获取触觉传感器模式
 | 功能描述 | 获取触觉传感器模式 |
 | :---: | :---- |
 | 参数说明 | std_msgs::msg::Empty |
-| 命令示例 | ros2 topic pub /rm_driver/get_rm_plus_touch_cmd std_msgs/msg/Empty "{}" |
+| 命令示例 | ros2 topic pub /rm_driver/get_rm_plus_touch_cmd std_msgs::msg::Empty "{}" |
 | 返回值 | std_msgs::msg::Int32<br>0-关闭触觉传感器；<br>1-打开触觉传感器（返回处理后数据）；<br>2-打开触觉传感器（返回原始数据）。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_rm_plus_touch_result |
 ### 透传力位混合控制补偿
@@ -783,6 +970,21 @@
 | 参数说明 | Forcepositionmovepose.msg<br>geometry_msgs/Pose pose：目标位姿，x、y、z坐标(float类型，单位：m)+四元数。<br>uint8 sensor：所使用传感器类型，0-一维力，1-六维力<br>uint8 mode：模式，0-沿基坐标系，1-沿工具端坐标系<br>int16 dir：力控方向，0~5分别代表X/Y/Z/Rx/Ry/Rz，其中一维力类型时默认方向为Z方向<br>float32 force：力的大小 单位0.1N<br>bool follow：是否高跟随，true:高跟随，false：低跟随。 |
 | 命令示例 | 需要是大量(10个以上)位置连续 的点，以2ms以上的周期持续发布。<br>ros2 topic pub /rm_driver/force_position_move_pose_cmd rm_ros_interfaces/msg/Forcepositionmovepose "pose:<br>  position:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>  orientation:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>    w: 1.0<br>sensor: 0<br>mode: 0<br>dir: 0<br>force: 0<br>follow: false" |
 | 返回值 | 成功无返回；失败返回：false，driver终端返回错误码。
+#### 透传力位混合补偿
+| 功能描述 | 透传力位混合补偿 |
+| :---: | :---- |
+| 参数说明 | Forcepositionmove.msg<br>geometry_msgs/Pose pose   #当前坐标系下的目标位姿，支持四元数/欧拉角表示姿态。位置精度：0.001mm，欧拉角表示姿态，姿态精度：0.001rad，四元数方式表示姿态，姿态精度：0.000001<br>float32[] joint           #目标关节角度，单位：°，精度：0.001°<br>uint8 flag                #0-下发目标角度，1-下发目标位姿<br>uint8 sensor              #0-一维力；1-六维力<br>uint8 mode                #0-基坐标系力控；1-工具坐标系力控；<br>uint8[6] control_mode     #6个力控方向（Fx Fy Fz Mx My Mz）的模式 0-固定模式 1-浮动模式 2-弹簧模式 3-运动模式 4-力跟踪模式 8-力跟踪+姿态自适应模式<br>bool follow               #表示驱动器的运动跟随效果，true 为高跟随，false 为低跟随。<br>float32[6] desired_force  #力控轴维持的期望力/力矩，力控轴的力控模式为力跟踪模式时，期望力/力矩设置才会生效 ，精度0.1N。<br>float32[6] limit_vel      #力控轴的最大线速度和最大角速度限制，只对开启力控方向生效。（x、y、z）轴的最大线速度，精度为0.001 m/s，（rx、ry、rz）轴的最大角速度，精度为0001 °/s<br>uint8 trajectory_mode     #高跟随模式下，0-完全透传模式、1-曲线拟合模式、2-滤波模式<br>uint16 radio              #曲线拟合模式时radio是平滑系数（0-100），滤波模式时radio是滤波参数（范围在0至1000之间） |
+| 命令示例 | 需要是大量(10个以上)位置连续的点，以2ms以上的周期持续发布。<br>ros2 topic pub /rm_driver/force_position_move_cmd rm_ros_interfaces/msg/Forcepositionmove "pose:<br>  position:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>  orientation:<br>    x: 0.0<br>    y: 0.0<br>    z: 0.0<br>    w: 1.0<br>joint: []<br>flag: 0<br>sensor: 0<br>mode: 0<br>control_mode: <br>- 0<br>- 0<br>- 0<br>- 0<br>- 0<br>- 0<br>follow: false<br>desired_force:<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>limit_vel:<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>- 0.0<br>trajectory_mode: 0<br>radio: 0" |
+| 返回值 | 成功无返回；失败返回：false，driver终端返回错误码。 |
+### 系统配置
+#### 清除系统错误
+| 功能描述 | 清除系统错误 |
+| :---: | :---- |
+| 参数说明 | std_msgs::msg::Empty |
+| 命令示例 | ros2 topic pub --once /rm_driver/clear_system_err_cmd std_msgs/msg/Empty "{}" |
+| 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
+| 返回查询示例 | ros2 topic echo /rm_driver/clear_system_err_result |
+
 ### 机械臂状态主动上报
 #### 设置UDP机械臂状态主动上报配置
 | 功能描述 | 设置UDP 机械臂状态主动上报配置 |
@@ -816,24 +1018,17 @@
 
 * 机械臂错误
 
-| 功能描述 | 机械臂错误代码 |
-| :---: | :---- |
-| 参数说明 | uint8 err_len  : 错误代码个数<br>int32[] err  : 错误代码数组 |
-| 查询示例 | ros2 topic echo /rm_driver/udp_rm_err |
-<!-- * 机械臂错误
-
 | 功能描述 | 机械臂错误 |
 | :---: | :---- |
 | 参数说明 | std_msgs::msg::UInt16<br>uint16 data：机械臂报错信息。 |
-| 查询示例 | ros2 topic echo /rm_driver/udp_arm_err | -->
+| 查询示例 | ros2 topic echo /rm_driver/udp_arm_err |
 
-
-<!-- * 系统错误
+* 系统错误
 
 | 功能描述 | 系统错误 |
 | :---: | :---- |
 | 参数说明 | std_msgs::msg::UInt16<br>uint16 data：系统报错信息。 |
-| 查询示例 | ros2 topic echo /rm_driver/udp_sys_err | -->
+| 查询示例 | ros2 topic echo /rm_driver/udp_sys_err |
 
 * 关节错误
 
@@ -930,6 +1125,25 @@
 | :----: | :---- |
 | 参数说明 | rm_ros_interfaces::msg::Jointvoltage.msg<br>float32[] joint_voltage: 当前关节电压，精度 0.001V|
 | 查询示例 | ros2 topic echo /rm_driver/udp_joint_voltage |
+* 升降关节状态
+
+| 功能描述 | 升降关节状态 |
+| :----: | :---- |
+| 参数说明 | rm_ros_interfaces::msg::Udpliftstate.msg<br>int32 height	#当前高度 单位：mm，精度：1mm<br>float32 pos       #当前角度 精度 0.001°，单位：°<br>int16 current	#当前电流 单位：mA，精度：1mA<br>bool en_flag    #当前关节使能状态 1 为上使能，0 为掉使能<br>uint16 err_flag	#驱动错误代码|
+| 查询示例 | ros2 topic echo /rm_driver/udp_lift_state |
+* 拓展关节状态
+
+| 功能描述 | 拓展关节状态 |
+| :----: | :---- |
+| 参数说明 | rm_ros_interfaces::msg::Udpexpandstate.msg<br>int32 pos	    #当前角度 精度 0.001°，单位：°<br>int32 current	#当前电流 单位：mA，精度：1mA<br>uint16 err_flag	#驱动错误代码<br>bool en_flag    #1 为上使能，0 为掉使能<br>uint8 joint_id  #关节id号int16 mode      #当前升降状态，0-空闲，1-正方向速度运动，2-正方向位置运动，3-负方向速度运动，4-负方向位置运动 |
+| 查询示例 | ros2 topic echo /rm_driver/udp_expand_state |
+* aloha状态
+
+| 功能描述 | aloha状态 |
+| :----: | :---- |
+| 参数说明 | rm_ros_interfaces::msg::Alohastate.msg<br>int16 io1_state  #IO1状态（手柄光电检测），0为按键未触发，1为按键触发。<br>int16 io2_state  #IO2状态（手柄光电检测），0为按键未触发，1为按键触发。 |
+| 查询示例 | ros2 topic echo /rm_driver/udp_aloha_state |
+
 * 末端设备基础信息
 
 | 功能描述 | 末端设备基础信息(末端生态协议支持) |

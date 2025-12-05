@@ -8,8 +8,8 @@
 # ros2_rm_robot
 该功能包的主要作用为提供机械臂的ROS2支持，以下为使用环境。
 * 当前支持的机械臂有RM65系列、RM75系列、ECO65系列、RML63系列，GEN72系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
-* 版本1.5.0。
-* 支持第四代机械臂控制器版本1.以上。
+* 版本1.6.0。
+* 基于第三代机械臂控制器版本1.7.3。
 * 基于的Ubuntu版本为20.04。
 * ROS2版本为foxy。
 
@@ -27,7 +27,7 @@
 ```
 sudo bash ros2_install.sh
 ```
-如果不想使用脚本安装也可以参考网址 [ROS2_INSTALL](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)。
+如果不想使用脚本安装也可以参考网址 [ROS2_INSTALL](https://docs.ros.org/en/foxy/Installation/Alternatives/Ubuntu-Install-Binary.html)。
 ### 安装Moveit2
 ----
 我们提供了Moveit2的安装脚本moveit2_install.sh，该脚本位于rm_install功能包中的scripts文件夹下，在实际使用时我们需要移动到该路径执行如下指令。
@@ -88,7 +88,7 @@ source ~/ros2_ws/install/setup.bash
 ros2 launch rm_gazebo gazebo_<arm_type>_demo.launch.py
 ros2 launch rm_<arm_type>_config gazebo_moveit_demo.launch.py
 ```
-<arm_type>需要使用65、75、eco65、eco63、63、gen72、gen72_II 字符进行代替，如使用RM65机械臂时，命令如下。
+<arm_type>需要使用65、75、eco65、eco63、63、63_III、gen72、gen72_II 字符进行代替，如使用RM65机械臂时，命令如下。
 ```
 ros2 launch rm_gazebo gazebo_65_demo.launch.py
 ros2 launch rm_65_config gazebo_moveit_demo.launch.py
@@ -101,7 +101,7 @@ ros2 launch rm_65_config gazebo_moveit_demo.launch.py
 source ~/ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ```
-<arm_type>需要使用65、75、eco65、eco63、63、gen72、gen72_II 字符进行代替，如使用RM65机械臂时，命令如下。
+<arm_type>需要使用65、75、eco65、eco63、63、63_III、gen72、gen72_II 字符进行代替，如使用RM65机械臂时，命令如下。
 ```
 ros2 launch rm_bringup rm_65_bringup.launch.py
 ```
