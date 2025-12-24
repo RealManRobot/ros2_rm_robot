@@ -28,7 +28,7 @@ if [ $(uname -m) = "x86_64" ]; then
         exit 1
     fi
 else
-    if [ -f "./linux_arm64_c++_V1.1.3/libapi_cpp.so" ];then
+    if [ -f "./linux_arm64_c++_v1.1.3/libapi_cpp.so" ];then
         echo "find arm file"
         cd linux_arm64_c++*
         sudo cp ./libapi_cpp.so /usr/local/lib/
