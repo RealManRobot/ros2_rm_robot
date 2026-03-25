@@ -538,8 +538,8 @@
 #### 更新ModbusTCP主站-四代控制器
 | 功能描述 | 更新ModbusTCP主站 |
 | :---: | :---- |
-| 参数说明 | Modbustcpmasterinfo.msg<br>string master_name: Modbus原本的主站名称。<br>string new_master_name: Modbus新的主站名称。<br>string ip: TCP主站IP地址。<br>int32 port: TCP主站端口号。 |
-| 命令示例 | ros2 topic pub /rm_driver/update_modbus_tcp_master_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '1'，new_master_name: '125',ip: '127.0.0.1',port: 502}" |
+| 参数说明 | Modbustcpmasterupdata.msg<br>string master_name: Modbus原本的主站名称。<br>string new_master_name: Modbus新的主站名称。<br>string ip: TCP主站IP地址。<br>int32 port: TCP主站端口号。 |
+| 命令示例 | ros2 topic pub /rm_driver/update_modbus_tcp_master_cmd rm_ros_interfaces/msg/Modbustcpmasterupdata "{master_name: '1'，new_master_name: '125',ip: '127.0.0.1',port: 502}" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/update_modbus_tcp_master_result  |
 #### 删除ModbusTCP主站-四代控制器
@@ -871,7 +871,7 @@
 #### 升降机构速度开环控制
 | 功能描述 | 升降机构速度开环控制 |
 | :---: | :---- |
-| 参数说明 | Liftspeed.msg<br>int16 speed：速度百分比，-100~100，Speed < 0:升降机构向下运动，Speed > 0:升降机构向上运动，Speed = 0:升降机构停止运动。<br>bool data：是否为阻塞模式，true:阻塞，false:非阻塞。 |
+| 参数说明 | Liftspeed.msg<br>int16 speed：速度百分比，-100~100，Speed < 0:升降机构向下运动，Speed > 0:升降机构向上运动，Speed = 0:升降机构停止运动。 |
 | 命令示例 | ros2 topic pub /rm_driver/set_lift_speed_cmd rm_ros_interfaces/msg/Liftspeed "speed: 100" |
 | 返回值 | 成功返回：true；失败返回：false，driver终端返回错误码。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_lift_speed_result |
