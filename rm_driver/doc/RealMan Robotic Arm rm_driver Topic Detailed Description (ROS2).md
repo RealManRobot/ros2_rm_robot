@@ -628,7 +628,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 
 | Function description | Update_Modbus_TCP_Master |
 | :---: | :---- |
-| Parameter description | Modbustcpmasterinfo.msg<br>string master_name: Modbus old master station name.<br>string new_master_name: Modbus new master station name. <br>String ip: TCP master IP address. <br>Int32 port: TCP primary port number. |
+| Parameter description | Modbustcpmasterupdata.msg<br>string master_name: Modbus old master station name.<br>string new_master_name: Modbus new master station name. <br>String ip: TCP master IP address. <br>Int32 port: TCP primary port number. |
 | Command example | ros2 topic pub /rm_driver/update_modbus_tcp_master_cmd rm_ros_interfaces/msg/Modbustcpmasterupdata "{"master_name: '1',new_master_name: '125',ip: '127.0.0.1',port: 502"}" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code.  |
 | Return example | ros2 topic echo /rm_driver/update_modbus_tcp_master_result |
@@ -1057,7 +1057,7 @@ The RealMan robotic arm can be integrated with the self-developed lifting mechan
 
 | Function description | Speed open-loop control of the lifting mechanism |
 | :---: | :---- |
-| Parameter description | Liftspeed.msg<br>int16 speed: speed percentage, -100-100, Speed < 0: the lifting mechanism moves downward, Speed > 0: the lifting mechanism moves upward, Speed = 0: the lifting mechanism stops.<br>bool data: whether it is a blocking mode, bool type, true: blocking, false: non-blocking. |
+| Parameter description | Liftspeed.msg<br>int16 speed: speed percentage, -100-100, Speed < 0: the lifting mechanism moves downward, Speed > 0: the lifting mechanism moves upward, Speed = 0: the lifting mechanism stops.|
 | Command example | ros2 topic pub /rm_driver/set_lift_speed_cmd rm_ros_interfaces/msg/Liftspeed "speed: 100" |
 | Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_lift_speed_result |

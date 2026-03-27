@@ -36,7 +36,7 @@ else
 
     if [ -f "/usr/local/lib/linux_arm_service_release*" ];then
         sudo rm /usr/local/lib/libRM_Service.so*
-        sudo rm /usr/local/lib/inux_arm_service_release*
+        sudo rm /usr/local/lib/linux_arm_service_release*
     fi
     sudo cp linux_arm_service_release* /usr/local/lib
     cd /usr/local/lib
