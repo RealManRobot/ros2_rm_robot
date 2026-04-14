@@ -24,9 +24,9 @@ def generate_launch_description():
 
     doc = xacro.parse(open(urdf_model_path))
     xacro.process_doc(doc)
-    params = {'robot_description': doc.toxml()}
+    params = {'robot_description': doc.toxml()} # type: ignore
 
-    print("urdf", doc.toxml())
+    print("urdf", doc.toxml()) # type: ignore
 
     # 启动gazebo
     gazebo =  ExecuteProcess(

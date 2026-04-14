@@ -277,14 +277,14 @@ Rm_Control::Rm_Control(std::string name) : Node(name)
         std::bind(&Rm_Control::timer_callback,this));
 
     this->action_server_ = rclcpp_action::create_server<FollowJointTrajectory>(
-                this, "/rm_group_controller/follow_joint_trajectory",
+                this, "rm_group_controller/follow_joint_trajectory",
                 std::bind(&Rm_Control::handle_goal, this, _1, _2),
                 std::bind(&Rm_Control::handle_cancel, this, _1),
                 std::bind(&Rm_Control::handle_accepted, this, _1));
 
     rclcpp::QoS qos(10);
 
-    joint_pos_publisher = this->create_publisher<rm_ros_interfaces::msg::Jointpos>("/rm_driver/movej_canfd_cmd", qos);
+    joint_pos_publisher = this->create_publisher<rm_ros_interfaces::msg::Jointpos>("rm_driver/movej_canfd_cmd", qos);
 
     Get_Move_Stop_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/move_stop_cmd",rclcpp::ParametersQoS(),
         std::bind(&Rm_Control::get_move_stop_callback,this,std::placeholders::_1));
