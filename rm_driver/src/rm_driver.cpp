@@ -135,13 +135,51 @@ void Arm_Close(void)
 
 void RmArm::Arm_MoveJ_Callback(rm_ros_interfaces::msg::Movej::SharedPtr msg)
 {
-    float joint[7];
+    float joint[7] = {0.0f};
     int v;
     int block;
     int32_t res;
     std_msgs::msg::UInt32 movej_data;
     std_msgs::msg::Bool movej_result;
     int trajectory_connect;
+    const auto joint_size = msg->joint.size();
+    const size_t expected_joint_size = (msg->dof == 7) ? 7u : 6u;
+
+    if (msg->dof != 6 && msg->dof != 7)
+    {
+        movej_result.data = false;
+        this->MoveJ_Cmd_Result->publish(movej_result);
+        RCLCPP_ERROR(
+            this->get_logger(),
+            "MoveJ rejected: unsupported dof=%u, only 6 or 7 are valid.",
+            msg->dof);
+        return;
+    }
+
+    if (joint_size < expected_joint_size)
+    {
+        movej_result.data = false;
+        this->MoveJ_Cmd_Result->publish(movej_result);
+        RCLCPP_ERROR(
+            this->get_logger(),
+            "MoveJ rejected: dof=%u requires %zu joint values, but only %zu were provided.",
+            msg->dof,
+            expected_joint_size,
+            joint_size);
+        return;
+    }
+
+    if (msg->dof != arm_dof_g)
+    {
+        movej_result.data = false;
+        this->MoveJ_Cmd_Result->publish(movej_result);
+        RCLCPP_ERROR(
+            this->get_logger(),
+            "MoveJ rejected: message dof=%u does not match configured arm_dof=%d.",
+            msg->dof,
+            arm_dof_g);
+        return;
+    }
 
     for(int i = 0; i < 6; i++)
     {

@@ -4,14 +4,14 @@
 
 ## **1.项目介绍**
 
-本项目是一个基于RM65、RM75机械臂和ROS功能包实现力位混合控制规划运动功能（该功能适用于类似于MoveL的笛卡尔运动，不适用与MoveJ等关节运动），程序在执行时会依次执行开启力位混合控制，进行笛卡尔运动，关闭力位混合控制的操作，目的是使ROS开发者迅速掌握并灵活运用机械臂。
+本项目是一个基于RM65、RM75、ECO62、ECO63机械臂和ROS功能包实现力位混合控制规划运动功能（该功能适用于类似于MoveL的笛卡尔运动，不适用与MoveJ等关节运动），程序在执行时会依次执行开启力位混合控制，进行笛卡尔运动，关闭力位混合控制的操作，目的是使ROS开发者迅速掌握并灵活运用机械臂。
 
 ## **2. 代码结构**
 
 ```
 ├── CMakeLists.txt                           <-CMake编译文件
 ├── launch                                   <-启动文件夹
-│   └── force_position_control_demo.launch   <-启动文件
+│   └── force_position_control_demo.launch.py<-启动文件
 ├── LICENSE                                  <-版本说明
 ├── package.xml                              <-依赖描述文件夹
 ├── README.md                                <-说明文档
@@ -68,6 +68,7 @@
     再次声明环境变量
     ```
     source ./install/setup.bash
+    ```
 
 ## **5. 使用指南**
 
@@ -77,12 +78,12 @@
     ```
     ros2 launch rm_driver rm_<arm_type>_driver.launch.py
     ```
-    <arm_type>可以为65、63、eco65、75、gen72，可对照自己使用的设备进行实际选择
+    <arm_type>可以为65、63、eco62、eco63、eco65、75、gen72，可对照自己使用的设备进行实际选择
     我们需要在另一个终端中启动机械臂的force_position_control功能包。
     ```
     ros2 launch force_position_control force_position_control_demo.launch.py
     ```
-    若非RM65、RM75机械臂可能会出现无法到达点位的情况，为正常现象。
+    若非RM65、RM75、ECO62、ECO63机械臂可能会出现无法到达点位的情况，为正常现象。
 * **返回信息**：
 
     在程序成功运行时将会出现以下提示信息。

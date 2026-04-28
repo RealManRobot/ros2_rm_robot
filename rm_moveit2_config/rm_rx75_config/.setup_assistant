@@ -1,7 +1,7 @@
 moveit_setup_assistant_config:
   urdf:
     package: rm_description
-    relative_path: urdf/rm_rx75_dual.urdf.xacro
+    relative_path: urdf/rm_rx75-6fb.urdf.xacro
   srdf:
     relative_path: config/rm_rx75_dual_description.srdf
   package_settings:

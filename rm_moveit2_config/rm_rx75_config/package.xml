@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>rm_rx75_dual_config</name>
+  <name>rm_rx75_config</name>
   <version>0.1.0</version>
-  <description>MoveIt2 configuration for the dual-arm RX75 platform.</description>
+  <description>MoveIt2 configuration for the dual-arm RX75 6FB-V platform.</description>
 
   <maintainer email="rm@todo.todo">rm</maintainer>
   <license>BSD</license>

@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robotic Arm rm_moveit2_config User Manual V1.4
+# RealMan Robotic Arm rm_moveit2_config User Manual V1.6
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -14,11 +14,13 @@ Revision History:
 
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
-|V1.0	  | 2/19/2024 | Draft |
-|V1.1	  | 7/3 /2024 | Amend(Add GEN72 adapter files) |
-|V1.2	  | 10/9/2024 | Amend(Add ECO63 adapter files) |
-|V1.3   | 25/12/2024 | Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
-|V1.4    |2025-4-3 | Amend(AddGen72_IIadapter files) |
+|V1.0	  | 2024-2-19 | Draft |
+|V1.1	  | 2024-7-8 | Amend(Add GEN72 adaptation) |
+|V1.2	  | 2024-9-10 | Amend(Add ECO63 adaptation) |
+|V1.3   | 2024-12-25 | Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
+|V1.4    | 2025-4-3 | Amend(Add Gen72_II adapter files) |
+|V1.5    | 2025-11-13 | Amend(Add RML63_III adapter files) |
+|V1.6    | 2026-4-16 | Amend(Add ECO62 and RX75 adapter files) |
 
 </div>
 
@@ -49,15 +51,15 @@ First, after configuring the environment and completing the connection, we can d
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo.launch.py
 ```
-The command to start the six-axis force version of the manipulator is (note: eco63 is not available):
+The command to start the six-axis force version is currently available for 63, 65, 75, and eco65:
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6f.launch.py
 ```
-The command to start the integrated six-axis force version of the manipulator is :
+The command to start the integrated six-axis force version is currently available for 63, 63_III, 65, 75, eco63, and eco65:
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6fb.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, 63_III,  eco65, eco63, 75, and gen72、gen72_II.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models are 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, gen72_II, and RX75. RX75 uses dedicated launch files under `rm_rx75_config`: `ros2 launch rm_rx75_config demo_6fb_v.launch.py` for RX75-6FB-V and `ros2 launch rm_rx75_config demo_6fb.launch.py` for RX75-6FB.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_65_config demo.launch.py
@@ -78,11 +80,11 @@ Next, run the rm_description package file.
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
 ```
-The command to start the six-axis force version of the manipulator is (note: eco63 is not available):
+The command to start the six-axis force version is currently available for 63, 65, 75, and eco65:
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6f_display.launch.py
 ```
-The command to start the integrated six-axis force version of the manipulator is :
+The command to start the integrated six-axis force version is currently available for 63, 63_III, 65, 75, eco63, and eco65:
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6fb_display.launch.py
 ```
@@ -94,15 +96,15 @@ Finally, launch the moveit2 node that controls the real robotic arm.
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo.launch.py
 ```
-The command to start the six-axis force version of the manipulator is (note: eco63 is not available):
+The command to start the six-axis force version is currently available for 63, 65, 75, and eco65:
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6f.launch.py
 ```
-The command to start the integrated six-axis force version of the manipulator is :
+The command to start the integrated six-axis force version is currently available for 63, 63_III, 65, 75, eco63, eco65, and rx75:
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 ```
-Note that the above commands need to replace <arm_type> with the corresponding robotic arm model, which can be selected as 65, 63, eco65, eco63, 75, and gen72.  
+Note that the above commands need to replace <arm_type> with the corresponding robotic arm model, which can be selected as 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, and gen72_II. RX75 uses dedicated launch files under `rm_rx75_config`: `ros2 launch rm_rx75_config real_moveit_demo_6fb_v.launch.py` for RX75-6FB-V and `ros2 launch rm_rx75_config real_moveit_demo_6fb.launch.py` for RX75-6FB.  
 After completing the above operations, the following interface appears, and we can control the movement of the robotic arm by dragging the control ball.  
 **Note: The newly added gen72_II and 63_III models are both included in their respective model files. The difference lies in the fact that during startup, it is necessary to append the identifier II or III after "demo"**
 The start command for 63_III is as follows:
@@ -225,6 +227,7 @@ The current rm_moveit2_config package is composed of the following files.
 │   │   ├── static_virtual_joint_tfs.launch.py
 │   │   └── warehouse_db.launch.py
 │   └── package.xml
+├── rm_eco62_config             #eco62 robotic arm moveit2 package (structure follows rm_63_config)
 ├── rm_eco65_config              #eco65 robotic arm moveit2 package (file explanation reference 63)
 │   ├── CMakeLists.txt
 │   ├── config
@@ -286,7 +289,7 @@ The current rm_moveit2_config package is composed of the following files.
 │   │   ├── static_virtual_joint_tfs.launch.py
 │   │   └── warehouse_db.launch.py
 │   └── package.xml
-└── rm_gen72_config             #gen72 robotic arm moveit2 package (file explanation reference 63)
+├── rm_gen72_config             #gen72 robotic arm moveit2 package (file explanation reference 63)
     ├── CMakeLists.txt
     ├── config
     │   ├── initial_positions.yaml
@@ -315,6 +318,7 @@ The current rm_moveit2_config package is composed of the following files.
     │   ├── static_virtual_joint_tfs.launch.py
     │   └── warehouse_db.launch.py
     └── package.xml
+└── rm_rx75_config              #RX75 dual-arm moveit2 package for RX75-6FB and RX75-6FB-V
 ```
 ## rm_moveit2_config_Topic_Description
 About the topic description of moveit2, to make its topic structure clearer, we will view and explain it here in the form of a data flow graph of node topics.  

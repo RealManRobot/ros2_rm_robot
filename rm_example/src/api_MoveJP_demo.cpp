@@ -44,13 +44,10 @@ void MoveJPDemo::movejp_demo()
 {
 
     rm_ros_interfaces::msg::Movejp moveJ_P_TargetPose;
-    moveJ_P_TargetPose.pose.position.x = -0.317239;
-    moveJ_P_TargetPose.pose.position.y = 0.120903;
-    moveJ_P_TargetPose.pose.position.z = 0.255765 + 0.04;
-    moveJ_P_TargetPose.pose.orientation.x = -0.983404;
-    moveJ_P_TargetPose.pose.orientation.y = -0.178432;
-    moveJ_P_TargetPose.pose.orientation.z = 0.032271;
-    moveJ_P_TargetPose.pose.orientation.w = 0.006129;
+    moveJ_P_TargetPose.pose.position.x = -0.36969;
+    moveJ_P_TargetPose.pose.position.y = 0.420903;
+    moveJ_P_TargetPose.pose.position.z = 0.075765;
+
     moveJ_P_TargetPose.speed = 20;
     moveJ_P_TargetPose.trajectory_connect = 0;
     moveJ_P_TargetPose.block = true;

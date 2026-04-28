@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_example使用说明书V1.1
+# 睿尔曼机器人rm_example使用说明书V1.2
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -15,6 +15,7 @@
 | :---: | :-----: | :---: |
 |V1.0    |2024-2-19  |拟制 |
 |V1.1    |2024-7-8   |修订（添加GEN72适配文件） |
+|V1.2    |2026-4-16  |修订（添加双臂适配文件） |
 
 </div>
 
@@ -36,7 +37,7 @@
 * 4.5[movel_demo话题说明](#movel_demo话题说明)
 
 ## rm_example功能包说明
-rm_bringup功能包为实现了一些基本的机械臂功能，通过该功能包我们可以实现机械臂的一些基本的控制功能，还可以参考代码，实现其他的机械臂功能。
+rm_example功能包为实现了一些基本的机械臂功能，通过该功能包我们可以实现机械臂的一些基本的控制功能，还可以参考代码，实现其他的机械臂功能。
 * 1.功能包使用。
 * 2.功能包架构说明。
 * 3.功能包话题说明。  
@@ -50,7 +51,7 @@ rm_bringup功能包为实现了一些基本的机械臂功能，通过该功能�
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、eco62、75、gen72、rx75。
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
 ```
@@ -75,7 +76,7 @@ rm@rm-desktop:~$ ros2 topic pub --once /rm_driver/get_curr_workFrame_cmd std_msg
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、eco62、75、gen72、rx75。  
 例如65机械臂的启动命令：
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -93,7 +94,7 @@ rm@rm-desktop:~$ ros2 run rm_example rm_get_state
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、eco62、75、gen72、rx75。  
 例如65机械臂的启动命令：
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -102,10 +103,14 @@ rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_example rm_<dof>_movej.launch.py
 ```
-命令中的dof代表机械当前的自由度信息，可以选的参数有6dof和7dof。  
+命令中的dof代表机械当前的自由度信息，可以选的参数有6dof、7dof和7dof_dual。  
 例如启动7轴的机械臂时需要使用如下指令。
 ```
 rm@rm-desktop:~$ ros2 launch rm_example rm_7dof_movej.launch.py
+```
+若为双臂机械臂时可使用如下指令。
+```
+rm@rm-desktop:~$ ros2 launch rm_example rm_7dof_dual_movej.launch.py
 ```
 运行成功后，机械臂的关节将发生转动，且界面将显示如下信息。
 ![image](doc/rm_example3.png)
@@ -115,7 +120,7 @@ rm@rm-desktop:~$ ros2 launch rm_example rm_7dof_movej.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、eco62、75、gen72、rx75。  
 例如65机械臂的启动命令：
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -136,7 +141,7 @@ rm@rm-desktop:~$ ros2 run rm_example movejp_gen72_demo
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、eco62、75、gen72、rx75。  
 例如65机械臂的启动命令：
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -171,6 +176,7 @@ rm@rm-desktop:~$ ros2 run rm_example movel_gen72_demo
 │   └── rm_example9.png
 ├── launch
 │   ├── rm_6dof_movej.launch.py                 #6自由度MoveJ运动启动文件
+│   ├── rm_7dof_dual_movej.launch.py            #7自由度双臂MoveJ运动启动文件
 │   └── rm_7dof_movej.launch.py                 #7自由度MoveJ运动启动文件
 ├── package.xml
 └── src

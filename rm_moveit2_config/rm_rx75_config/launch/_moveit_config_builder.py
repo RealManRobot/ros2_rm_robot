@@ -5,20 +5,10 @@ from moveit_configs_utils import MoveItConfigsBuilder
 
 
 def _base_builder():
-    description_path = os.path.join(
-        get_package_share_directory("rm_description"),
-        "urdf",
-        "rm_rx75_dual.urdf.xacro",
-    )
-
     return (
         MoveItConfigsBuilder(
-            "rm_rx75_dual_description",
-            package_name="rm_rx75_dual_config",
-        )
-        .robot_description(file_path=description_path)
-        .robot_description_semantic(
-            file_path="config/rm_rx75_dual_description.srdf",
+            "rm_rx75_dual",
+            package_name="rm_rx75_config",
         )
         .robot_description_kinematics(file_path="config/kinematics.yaml")
         .planning_pipelines(
@@ -34,6 +24,16 @@ def _base_builder():
 def build_real_moveit_config():
     return (
         _base_builder()
+        .robot_description(
+            file_path=os.path.join(
+                get_package_share_directory("rm_description"),
+                "urdf",
+                "rm_rx75-6fb.urdf.xacro",
+            )
+        )
+        .robot_description_semantic(
+            file_path="config/rm_rx75_6fb_description.srdf",
+        )
         .trajectory_execution(
             file_path="config/moveit_controllers.yaml",
             moveit_manage_controllers=False,
@@ -45,6 +45,16 @@ def build_real_moveit_config():
 def build_sim_moveit_config():
     return (
         _base_builder()
+        .robot_description(
+            file_path=os.path.join(
+                get_package_share_directory("rm_description"),
+                "urdf",
+                "rm_rx75-6fb_v.urdf.xacro",
+            )
+        )
+        .robot_description_semantic(
+            file_path="config/rm_rx75_6fb_v_description.srdf",
+        )
         .trajectory_execution(
             file_path="config/moveit_controllers_gazebo.yaml",
             moveit_manage_controllers=False,

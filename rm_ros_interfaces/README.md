@@ -15,14 +15,14 @@
 
 RealMan Intelligent Technology (Beijing) Co., Ltd.
  
-Revision History-
+Revision History:
 
 | No. | Date| Comment |
 | -----| -----| -----|
-|V1.0 | 2-18-2024 | Draft |
-|V1.1 | 7-8-2024  | Amend(Add teaching message) |
-|V1.2 | 12-25-2024  | Amend(Add UDP report message) |
-|V1.3 | 04-07-2025  | Amend(API2 Adaptation) |
+|V1.0 | 2024-2-18 | Draft |
+|V1.1 | 2024-7-8 | Amend(Add teaching messages) |
+|V1.2 | 2024-12-25 | Amend(Add UDP reporting messages) |
+|V1.3 | 2025-4-3 | Amend(Adapt to API2) |
 
 
 </div>

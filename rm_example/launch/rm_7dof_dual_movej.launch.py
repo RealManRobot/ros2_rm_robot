@@ -21,7 +21,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        left_move_node,
+        
         right_move_node,
     ])
 
