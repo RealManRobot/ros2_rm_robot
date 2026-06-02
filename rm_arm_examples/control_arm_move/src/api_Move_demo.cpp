@@ -134,13 +134,13 @@ void MoveDemoPub::looppub_timer_callback()
     }
     if(arm_dof_ == 7)
     {
-      movej_way.joint[0] = 0.176278;
+      movej_way.joint[0] = 0.0;
       movej_way.joint[1] = 0.0;
-      movej_way.joint[2] = 0.3543;
-      movej_way.joint[3] = 0.53;
-      movej_way.joint[4] = 0.00873;
-      movej_way.joint[5] = 0.3595;
-      movej_way.joint[6] = 0.3595;
+      movej_way.joint[2] = 0.0;
+      movej_way.joint[3] = 0.0;
+      movej_way.joint[4] = 0.0;
+      movej_way.joint[5] = 0.0;
+      movej_way.joint[6] = 0.0;
       movej_way.speed = 20;
       movej_way.dof = 7;
     }

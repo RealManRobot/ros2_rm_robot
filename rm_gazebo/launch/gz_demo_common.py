@@ -25,11 +25,14 @@ def generate_gz_demo_launch(
     robot_name_in_model,
     controller_names,
     xacro_mappings=None,
+    static_transforms=None,
+    clock_topic_default="/clock",
     joint_states_topic_default="/joint_states",
 ):
     package_name = "rm_gazebo"
     world_name = "empty"
     start_gazebo = LaunchConfiguration("start_gazebo")
+    clock_topic = LaunchConfiguration("clock_topic")
     joint_states_topic = LaunchConfiguration("joint_states_topic")
 
     try:
@@ -74,16 +77,40 @@ def generate_gz_demo_launch(
         executable="robot_state_publisher",
         parameters=[{"use_sim_time": True}, params, {"publish_frequency": 15.0}],
         remappings=[
+            ("/clock", clock_topic),
             ("/joint_states", joint_states_topic),
             ("joint_states", joint_states_topic),
         ],
         output="screen",
     )
 
+    static_transform_nodes = [
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            arguments=[
+                str(transform["x"]),
+                str(transform["y"]),
+                str(transform["z"]),
+                str(transform["roll"]),
+                str(transform["pitch"]),
+                str(transform["yaw"]),
+                transform["parent"],
+                transform["child"],
+            ],
+            output="screen",
+        )
+        for transform in (static_transforms or [])
+    ]
+
     clock_bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
         arguments=["/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock"],
+        remappings=[
+            ("/clock", clock_topic),
+            ("clock", clock_topic),
+        ],
         output="screen",
     )
 
@@ -154,6 +181,10 @@ def generate_gz_demo_launch(
         [
             DeclareLaunchArgument("start_gazebo", default_value="true"),
             DeclareLaunchArgument(
+                "clock_topic",
+                default_value=clock_topic_default,
+            ),
+            DeclareLaunchArgument(
                 "joint_states_topic",
                 default_value=joint_states_topic_default,
             ),
@@ -162,6 +193,7 @@ def generate_gz_demo_launch(
             close_evt2,
             gazebo,
             node_robot_state_publisher,
+            *static_transform_nodes,
             clock_bridge,
             spawn_entity,
         ]

@@ -44,8 +44,7 @@
   <exec_depend>rm_eco63_config</exec_depend>
   <exec_depend>rm_eco65_config</exec_depend>
   <exec_depend>rm_gen72_config</exec_depend>
-  <exec_depend>rm_rx75_6fb_v_config</exec_depend>
-  <exec_depend>rm_rx75_6fb_config</exec_depend>
+  <exec_depend>rm_rx75_config</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>rviz_common</exec_depend>

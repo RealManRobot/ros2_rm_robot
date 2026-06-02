@@ -48,9 +48,9 @@ def generate_launch_description():
     rm_rx75_moveit = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(
-                get_package_share_directory("rm_rx75_6fb_v_config"),
+                get_package_share_directory("rm_rx75_config"),
                 "launch",
-                "real_moveit_demo.launch.py",
+                "real_moveit_demo_6fb_v.launch.py",
             )
         ),
         launch_arguments={

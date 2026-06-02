@@ -28,9 +28,9 @@ def generate_launch_description():
     rm_rx75_gazebo_moveit = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(
-                get_package_share_directory("rm_rx75_6fb_v_config"),
+                get_package_share_directory("rm_rx75_config"),
                 "launch",
-                "gazebo_moveit_demo.launch.py",
+                "gazebo_moveit_demo_6fb_v.launch.py",
             )
         ),
         launch_arguments={

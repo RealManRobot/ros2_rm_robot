@@ -141,7 +141,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm/Link2.STL" />
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm/Link2L.STL" />
       </geometry>
       <material
         name="">
@@ -155,7 +155,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm/Link2.STL" />
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm/Link2L.STL" />
       </geometry>
     </collision>
   </link>
@@ -170,10 +170,10 @@
     <child
       link="left_Link2" />
     <axis
-      xyz="0 0 -1" />
+      xyz="0 0 1" />
     <limit
-      lower="-3.837"
-      upper="0.697"
+      lower="-0.697"
+      upper="3.837"
       effort="60"
       velocity="3.14" />
   </joint>

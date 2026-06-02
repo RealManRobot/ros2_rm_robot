@@ -110,6 +110,10 @@ ros2 launch rm_63_config demo_III.launch.py
 //六维力6FB版本
 ros2 launch rm_63_config demo_III_6fb.launch.py
 ```
+也可以使用rm_bringup功能包一键启动这四个功能包(强烈建议)
+```
+rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_bringup/gazebo.launch.py
+```
 完成以上操作后将会出现以下界面，我们可以通过拖动控制球的方式控制机械臂运动。  
 ![image](doc/rm_moveit2_config4.png)
 ## rm_moveit2_config架构说明

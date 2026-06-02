@@ -202,7 +202,7 @@
 
     <gazebo>
         <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-            <parameters>$(find rm_rx75_6fb_v_config)/config/ros2_controllers.yaml</parameters>
+            <parameters>$(find rm_rx75_config)/config/ros2_controllers.yaml</parameters>
             <robot_param>robot_description</robot_param>
             <robot_param_node>robot_state_publisher</robot_param_node>
         </plugin>

@@ -19,7 +19,7 @@ Visualization Manager:
         Loop Animation: true
         State Display Time: 0.05 s
         Trajectory Topic: display_planned_path
-      Planning Scene Topic: monitored_planning_scene
+      Planning Scene Topic: /rm_eco63/monitored_planning_scene
       Robot Description: robot_description
       Scene Geometry:
         Scene Alpha: 1
@@ -27,7 +27,7 @@ Visualization Manager:
         Robot Alpha: 0.5
       Value: true
   Global Options:
-    Fixed Frame: base_link
+    Fixed Frame: base_root
   Tools:
     - Class: rviz_default_plugins/Interact
     - Class: rviz_default_plugins/MoveCamera
@@ -43,7 +43,7 @@ Visualization Manager:
         Z: 0.30
       Name: Current View
       Pitch: 0.5
-      Target Frame: base_link
+      Target Frame: base_root
       Yaw: -0.623
 Window Geometry:
   Height: 975

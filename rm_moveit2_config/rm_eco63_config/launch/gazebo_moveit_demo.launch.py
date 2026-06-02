@@ -40,6 +40,24 @@ def my_generate_move_group_launch(ld, moveit_config):
     ld.add_action(DeclareLaunchArgument("capabilities", default_value=""))
     # inhibit these default MoveGroup capabilities (space separated)
     ld.add_action(DeclareLaunchArgument("disable_capabilities", default_value=""))
+    ld.add_action(
+        DeclareLaunchArgument(
+            "joint_states_topic",
+            default_value="/joint_state_broadcaster/joint_states",
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "clock_topic",
+            default_value="/rm_eco63/clock",
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "monitored_planning_scene_topic",
+            default_value="/rm_eco63/monitored_planning_scene",
+        )
+    )
 
     # do not copy dynamics information from /joint_states to internal robot monitoring
     # default to false, because almost nothing in move_group relies on this information
@@ -65,11 +83,19 @@ def my_generate_move_group_launch(ld, moveit_config):
         "monitor_dynamics": False,
     }
 
+    trajectory_execution = {
+        "moveit_manage_controllers": False,
+        "trajectory_execution.allowed_execution_duration_scaling": 1.2,
+        "trajectory_execution.allowed_goal_duration_margin": 0.5,
+        "trajectory_execution.allowed_start_tolerance": 0.15,
+    }
+
     move_group_params = [
         moveit_config.to_dict(),
         move_group_configuration,
+        trajectory_execution,
+        {"use_sim_time": True},
     ]
-    move_group_params.append({"use_sim_time": True})
 
     add_debuggable_node(
         ld,
@@ -78,6 +104,13 @@ def my_generate_move_group_launch(ld, moveit_config):
         commands_file=str(moveit_config.package_path / "launch" / "gdb_settings.gdb"),
         output="screen",
         parameters=move_group_params,
+        remappings=[
+            ("/clock", LaunchConfiguration("clock_topic")),
+            ("/joint_states", LaunchConfiguration("joint_states_topic")),
+            ("joint_states", LaunchConfiguration("joint_states_topic")),
+            ("/monitored_planning_scene", LaunchConfiguration("monitored_planning_scene_topic")),
+            ("monitored_planning_scene", LaunchConfiguration("monitored_planning_scene_topic")),
+        ],
         extra_debug_args=["--debug"],
         # Set the display variable, in case OpenGL code is used internally
         additional_env={"DISPLAY": ":0"},
@@ -109,6 +142,13 @@ def my_generate_moveit_rviz_launch(ld, moveit_config):
         respawn=False,
         arguments=["-d", LaunchConfiguration("rviz_config")],
         parameters=rviz_parameters,
+        remappings=[
+            ("/clock", LaunchConfiguration("clock_topic")),
+            ("/joint_states", LaunchConfiguration("joint_states_topic")),
+            ("joint_states", LaunchConfiguration("joint_states_topic")),
+            ("/monitored_planning_scene", LaunchConfiguration("monitored_planning_scene_topic")),
+            ("monitored_planning_scene", LaunchConfiguration("monitored_planning_scene_topic")),
+        ],
     )
 
     return ld

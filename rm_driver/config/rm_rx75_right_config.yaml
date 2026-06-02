@@ -4,7 +4,7 @@ rm_driver:
     arm_ip: "192.168.1.19"        # 右臂 TCP 连接 IP，按实际设备修改
     tcp_port: 8080                # 设置 TCP 连接时的端口
 
-    arm_type: "RM_75"             # 机械臂型号设置
+    arm_type: "RXR75"             # 机械臂型号设置
     arm_dof: 7                    # 机械臂自由度设置
 
     udp_ip: "192.168.1.10"        # 设置 udp 主动上报 IP

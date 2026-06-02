@@ -18,12 +18,12 @@ def build_moveit_config():
 
     return (
         MoveItConfigsBuilder(
-            "rm_rx75_dual_description",
-            package_name="rm_rx75_6fb_v_config",
+            "rm_rx75_6fb_description",
+            package_name="rm_rx75_config",
         )
         .robot_description(file_path=description_path)
         .robot_description_semantic(
-            file_path="config/rm_rx75_dual_description.srdf",
+            file_path="config/rm_rx75_6fb_description.srdf",
         )
         .robot_description_kinematics(file_path="config/kinematics.yaml")
         .trajectory_execution(

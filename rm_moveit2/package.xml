@@ -21,8 +21,7 @@
   <exec_depend>rm_description</exec_depend>
   <exec_depend>rm_eco63_config</exec_depend>
   <exec_depend>rm_75_config</exec_depend>
-  <exec_depend>rm_rx75_6fb_config</exec_depend>
-  <exec_depend>rm_rx75_6fb_v_config</exec_depend>
+  <exec_depend>rm_rx75_config</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

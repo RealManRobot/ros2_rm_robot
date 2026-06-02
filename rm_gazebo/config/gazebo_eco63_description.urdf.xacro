@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rm_eco63_description">
+    <xacro:arg name="link6_type" default="Link6" />
 
     <!-- Used for fixing robot to Gazebo 'base_link' 将机械手的基座固定在世界坐标上-->
     <link name="world"/>
@@ -8,8 +9,11 @@
         <child link="base_link"/>
     </joint>
 
-    <!-- Import claw_description urdf file -->
-    <xacro:include filename="$(find rm_description)/urdf/rm_eco63_gazebo.urdf" />
+    <!-- Import ECO63 robot description. Use the xacro variant so Gazebo gets valid joint limits. -->
+    <xacro:property name="link6_type" value="$(arg link6_type)" />
+    <xacro:include filename="$(find rm_description)/urdf/rm_eco63_gazebo.urdf.xacro" >
+        link6_type:=$(arg link6_type)
+    </xacro:include>
 
 
     <!-- 对一些link进行gazebo的属性设置 -->
@@ -109,4 +113,3 @@
 
 
 </robot>
-
