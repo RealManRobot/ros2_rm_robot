@@ -20,28 +20,28 @@
 ```
 ## **3.项目下载**
 
-通过项目链接下载本项目工程文件到本地：[ros2_rm_robot](https://github.com/RealManRobot/ros2_rm_robot/tree/humble)
+通过项目链接下载本项目工程文件到本地：[ros2_rm_robot](https://github.com/RealManRobot/ros2_rm_robot/tree/foxy)
 
 ## **4.环境配置**
 
 | 项目 | 内容 |
 | :-- | :-- |
-| 系统 | Ubuntu22.04 |
-| ROS版本 | humble |
-| 依赖 | 机械臂的ROS2-humble功能包 |
+| 系统 | Ubuntu20.04 |
+| ROS版本 | foxy |
+| 依赖 | 机械臂的ROS2-foxy功能包 |
 
 **配置过程**
 
-1. 首先需要准备好Ubuntu22.04操作系统的虚拟机或其他设备。
-2. 安装ROS2环境[humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html),也可参考ROS2-humble功能包中的安装说明进行安装。
-3. ROS2-Humble功能包安装
+1. 首先需要准备好Ubuntu20.04操作系统的虚拟机或其他设备。
+2. 安装ROS2环境[foxy](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html),也可参考ROS2-foxy功能包中的安装说明进行安装。
+3. ROS2-Foxy功能包安装  
 
     新建工作空间和src文件
     ```
     mkdir -p ~/ros2_ws/src
     ```
 
-    将ROS2文件放入src中
+    将ROS2文件复制到src文件夹中
     ```
     cp -r ros2_rm_robot ~/ros2_ws/src
     ```
@@ -55,6 +55,7 @@
     ```
     colcon build --packages-select rm_ros_interfaces
     ```
+
     声明环境变量
     ```
     source ./install/setup.bash
@@ -64,10 +65,11 @@
     ```
     colcon build
     ```
-
+    
     再次声明环境变量
     ```
     source ./install/setup.bash
+    ```
 
 ## **5. 使用指南**
 

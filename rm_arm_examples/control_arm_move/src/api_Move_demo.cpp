@@ -146,9 +146,8 @@ void MoveDemoPub::looppub_timer_callback()
     }
     movej_way.block = true;
     this->movej_publisher_->publish(movej_way);
-    first_run = false;
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    
+    first_run = false;
   }
   if(movej_state == true)
   {
@@ -257,4 +256,3 @@ int main(int argc, char** argv)
   rclcpp::shutdown();
   return 0;
 }
-

@@ -2,11 +2,11 @@
 
 ---
 
-## 1.项目介绍
+## **1.项目介绍**
 
 本项目是一个基于机械臂机械臂本体和ROS功能包实现获取机械臂当前控制器版本、关节状态、位姿状态、六维力信息功能，程序将依次执行获取控制器版本信息，获取机械臂状态，获取六维力数据信息的指令，程序执行时，对应的数据信息会打印在终端中，该示例目的是使ROS开发者迅速掌握并灵活运用机械臂。
 
-## 2. 代码结构
+## **2. 代码结构**
 
 ```
 ├── CMakeLists.txt                           <-CMake编译文件
@@ -19,23 +19,25 @@
     └── api_Get_Arm_State_demo.cpp           <-源码文件
 ```
 
-## 3.项目下载
+## **3.项目下载**
 
-通过项目链接下载本项目工程文件到本地：[ros2_rm_robot](https://github.com/RealManRobot/ros2_rm_robot/tree/humble)
+通过项目链接下载本项目工程文件到本地：[ros2_rm_robot](https://github.com/RealManRobot/ros2_rm_robot/tree/foxy)
 
-## 4.环境配置
+## **4.环境配置**
 
 | 项目 | 内容 |
 | :-- | :-- |
-| 系统 | Ubuntu22.04 |
-| ROS版本 | humble |
-| 依赖 | 机械臂的ROS2-humble功能包 |
+| 系统 | Ubuntu20.04 |
+| ROS版本 | foxy |
+| 依赖 | 机械臂的ROS2-foxy功能包 |
 
-1. 首先需要准备好Ubuntu22.04操作系统的虚拟机或其他设备。
-2. 安装ROS2环境[humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html),也可参考ROS2-humble功能包中的安装说明进行安装。
-3. ROS2-Humble功能包安装
+**配置过程**
 
-    新建工作空间和src文件夹
+1. 首先需要准备好Ubuntu20.04操作系统的虚拟机或其他设备。
+2. 安装ROS2环境[foxy](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html),也可参考ROS2-foxy功能包中的安装说明进行安装。
+3. ROS2-Foxy功能包安装  
+
+    新建工作空间和src文件，
     ```
     mkdir -p ~/ros2_ws/src
     ```
@@ -64,13 +66,13 @@
     ```
     colcon build
     ```
-
+    
     再次声明环境变量
     ```
     source ./install/setup.bash
     ```
 
-## 5. 使用指南
+## **5. 使用指南**
 
 * **命令行使用**：
 
@@ -137,108 +139,55 @@
     [rm_get_arm_state_demo-1] tool-zero_mx is 0.000000
     [rm_get_arm_state_demo-1] tool-zero_my is 0.000000
     [rm_get_arm_state_demo-1] tool-zero_mz is 0.000000
-    ```
 
-## 6.关键代码说明
+    ```
+### 关键代码说明：
 
 下面是 `api_Get_Arm_State_demo.cpp` 文件的主要功能：
 
 - **初始化**
 相关发布订阅信息初始化
     
-    机械臂关节状态发布器
+    ```ROS
+    rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr arm_state_publisher_;                                 //机械臂关节状态发布器
+    rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr arm_software_version_publisher_;                      //机械臂软件版本发布器
+    rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr get_force_data_publisher_;                            //机械臂六维力状态发布器
+    rclcpp::Subscription<rm_ros_interfaces::msg::Armoriginalstate>::SharedPtr subscription_original_state;   //关节原始状态订阅器
+    rclcpp::Subscription<rm_ros_interfaces::msg::Armstate>::SharedPtr subscription_arm_state;                //关节状态订阅器
+    rclcpp::Subscription<rm_ros_interfaces::msg::Armsoftversion>::SharedPtr subscription_software_version;   //控制器版本订阅器
+    rclcpp::Subscription<rm_ros_interfaces::msg::Sixforce>::SharedPtr subscription_force_data;               //六维力传感器状态订阅器
+    rclcpp::Subscription<rm_ros_interfaces::msg::Sixforce>::SharedPtr subscription_zero_force_data;          //六维力系统受力状态订阅器
+    rclcpp::Subscription<rm_ros_interfaces::msg::Sixforce>::SharedPtr subscription_work_force_data;          //六维力工作坐标系受力状态订阅器
+    rclcpp::Subscription<rm_ros_interfaces::msg::Sixforce>::SharedPtr subscription_tool_force_data;          //六维力工具坐标系受力状态订阅器
     ```
-    rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr arm_state_publisher_;
-    ```
-
-    机械臂软件版本发布器
-    ```
-    rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr arm_software_version_publisher_;
-    ```
-
-    机械臂六维力状态发布器
-    ```
-    rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr get_force_data_publisher_;
-    ```
-
-    关节原始状态订阅器
-    ```
-    rclcpp::Subscription<rm_ros_interfaces::msg::Armoriginalstate>::SharedPtr subscription_original_state;
-    ```
-
-    关节状态订阅器
-    ```
-    rclcpp::Subscription<rm_ros_interfaces::msg::Armstate>::SharedPtr subscription_arm_state;
-    ```
-
-    控制器版本订阅器
-    ```
-    rclcpp::Subscription<rm_ros_interfaces::msg::Armsoftversion>::SharedPtr subscription_software_version;
-    ```
-
-    六维力传感器状态订阅器
-    ```
-    rclcpp::Subscription<rm_ros_interfaces::msg::Sixforce>::SharedPtr subscription_force_data;
-    ```
-
-    六维力系统受力状态订阅器
-    ```
-    rclcpp::Subscription<rm_ros_interfaces::msg::Sixforce>::SharedPtr subscription_zero_force_data;
-    ```
-
-    六维力工作坐标系受力状态订阅器
-    ```
-    rclcpp::Subscription<rm_ros_interfaces::msg::Sixforce>::SharedPtr subscription_work_force_data;
-    ```
-
-    六维力工具坐标系受力状态订阅器
-    ```
-    rclcpp::Subscription<rm_ros_interfaces::msg::Sixforce>::SharedPtr subscription_tool_force_data;
-    ```
-
 - **回调函数**
 接收机械臂版本信息，进入消息回调函数
 
-    改变工作坐标系函数
-    ```
-    void get_arm_state();
-    ```
-
-    机械臂状态原始结果回调函数
-    ```
-    void GetArmOriginalState_Callback(const rm_ros_interfaces::msg::Armoriginalstate::SharedPtr msg);
-    ```
-
-    机械臂状态结果回调函数
-    ```
-    void GetArmState_Callback(const rm_ros_interfaces::msg::Armstate::SharedPtr msg);
+    ```ROS
+    void get_arm_state();                                                                                    //改变工作坐标系函数
+    void GetArmOriginalState_Callback(const rm_ros_interfaces::msg::Armoriginalstate::SharedPtr msg);        //机械臂状态原始结果回调函数
+    void GetArmState_Callback(const rm_ros_interfaces::msg::Armstate::SharedPtr msg);                        //机械臂状态结果回调函数
+    void GetArmSoftwareVersion_Callback(const rm_ros_interfaces::msg::Armsoftversion::SharedPtr msg);        //控制器版本结果回调函数
+    void ForceData_Callback(const rm_ros_interfaces::msg::Sixforce::SharedPtr msg);                          //六维力传感器结果回调函数
+    void ZeroForceData_Callback(const rm_ros_interfaces::msg::Sixforce::SharedPtr msg);                      //六维力结果回调函数
+    void WorkForceData_Callback(const rm_ros_interfaces::msg::Sixforce::SharedPtr msg);                      //六维力工作坐标结果回调函数
+    void ToolForceData_Callback(const rm_ros_interfaces::msg::Sixforce::SharedPtr msg);                      //六维力工具坐标结果回调函数
     ```
 
-    控制器版本结果回调函数
-    ```
-    void GetArmSoftwareVersion_Callback(const rm_ros_interfaces::msg::Armsoftversion::SharedPtr msg);
-    ```
+* **支持渠道**：
 
-    六维力传感器结果回调函数
-    ```
-    void ForceData_Callback(const rm_ros_interfaces::msg::Sixforce::SharedPtr msg);
-    ```
+    自定义锚点： # 自定义锚点名称 {#my-anchor}
 
-    六维力结果回调函数
-    ```
-    void ZeroForceData_Callback(const rm_ros_interfaces::msg::Sixforce::SharedPtr msg);
-    ```
-
-    六维力工作坐标结果回调函数
-    ```
-    void WorkForceData_Callback(const rm_ros_interfaces::msg::Sixforce::SharedPtr msg);
-    ```
-
-    六维力工具坐标结果回调函数
-    ```
-    void ToolForceData_Callback(const rm_ros_interfaces::msg::Sixforce::SharedPtr msg);
-    ```
-
-## 7.许可证信息
+## **6. 许可证信息**
 
 * 具体许可证内容请参见`LICENSE`文件。
+
+## **7. 常见问题解答（FAQ）**
+
+- **Q1：机械臂连接失败**
+
+  答案：修改过机械臂IP
+
+- **Q2：UDP数据推送接口收不到数据**
+
+  答案：检查线程模式、是否使能推送数据、IP以及防火墙

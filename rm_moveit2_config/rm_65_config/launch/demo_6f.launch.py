@@ -1,292 +1,212 @@
+import os
+import yaml
 from launch import LaunchDescription
-from launch_ros.actions import Node
-from moveit_configs_utils import MoveItConfigsBuilder
-from launch.conditions import IfCondition
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
-from moveit_configs_utils.launch_utils import (
-    add_debuggable_node,
-    DeclareBooleanLaunchArg,
-)
-from launch.actions import (
-    DeclareLaunchArgument,
-    IncludeLaunchDescription,
-)
-from srdfdom.srdf import SRDF
-from launch_ros.parameter_descriptions import ParameterValue
+from launch.conditions import IfCondition, UnlessCondition
+from launch_ros.actions import Node
+from launch.actions import ExecuteProcess
+from ament_index_python.packages import get_package_share_directory
+import xacro
+
+
+def load_file(package_name, file_path):
+    package_path = get_package_share_directory(package_name)
+    absolute_file_path = os.path.join(package_path, file_path)
+
+    try:
+        with open(absolute_file_path, "r") as file:
+            return file.read()
+    except EnvironmentError:  # parent of IOError, OSError *and* WindowsError where available
+        return None
+
+
+def load_yaml(package_name, file_path):
+    package_path = get_package_share_directory(package_name)
+    absolute_file_path = os.path.join(package_path, file_path)
+
+    try:
+        with open(absolute_file_path, "r") as file:
+            return yaml.safe_load(file)
+    except EnvironmentError:  # parent of IOError, OSError *and* WindowsError where available
+        return None
+
 
 def generate_launch_description():
-    """
-    Launches a self contained demo
 
-    Includes
-     * static_virtual_joint_tfs
-     * robot_state_publisher
-     * move_group
-     * moveit_rviz
-     * warehouse_db (optional)
-     * ros2_control_node + controller spawners
-    """
-
-    moveit_config = (
-        MoveItConfigsBuilder("rm_65_description", package_name="rm_65_config")
-        .robot_description(file_path="config/rm_65_6fb_description.urdf.xacro", mappings={"link6_type": "Link6_6f"})
-        .to_moveit_configs()
-    )
-    ld = LaunchDescription()
-
-    ld.add_action(
-        DeclareBooleanLaunchArg(
-            "db",
-            default_value=False,
-            description="By default, we do not start a database (it can be large)",
-        )
-    )
-    ld.add_action(
-        DeclareBooleanLaunchArg(
-            "debug",
-            default_value=False,
-            description="By default, we are not in debug mode",
-        )
-    )
-    ld.add_action(DeclareBooleanLaunchArg("use_rviz", default_value=True))
-
-    # If there are virtual joints, broadcast static tf by including virtual_joints launch
-    generate_static_virtual_joint_tfs_launch(ld,moveit_config)
-    # Given the published joint states, publish tf for the robot links
-    generate_rsp_launch(ld,moveit_config)
-
-    generate_move_group_launch(ld, moveit_config)
-
-    generate_moveit_rviz_launch(ld, moveit_config)
-
-    # generate_warehouse_db_launch(ld, moveit_config)
-    # Warehouse mongodb server
-    db_config = LaunchConfiguration("db")
-    ld.add_action(
-        Node(
-        package="warehouse_ros_mongo",
-        executable="mongo_wrapper_ros.py",
-        parameters=[
-            {"warehouse_port": 33829},
-            {"warehouse_host": "localhost"},
-            {"warehouse_plugin": "warehouse_ros_mongo::MongoDatabaseConnection"},
-        ],
-        output="screen",
-        condition=IfCondition(db_config),
-    )
-    )
-    
-    # Fake joint driver
-    ld.add_action(
-        Node(
-            package="controller_manager",
-            executable="ros2_control_node",
-            parameters=[
-                moveit_config.robot_description,
-                str(moveit_config.package_path / "config/ros2_controllers.yaml"),
-            ],
-        )
+    # Command-line arguments
+    tutorial_arg = DeclareLaunchArgument(
+        "rviz_tutorial", default_value="False", description="Tutorial flag"
     )
 
-    generate_spawn_controllers_launch(ld, moveit_config)
-
-
-    return ld
-    
-
-def generate_static_virtual_joint_tfs_launch(ld, moveit_config):
-
-    name_counter = 0
-
-    for key, xml_contents in moveit_config.robot_description_semantic.items():
-        srdf = SRDF.from_xml_string(xml_contents)
-        for vj in srdf.virtual_joints:
-            ld.add_action(
-                Node(
-                    package="tf2_ros",
-                    executable="static_transform_publisher",
-                    name=f"static_transform_publisher{name_counter}",
-                    output="log",
-                    arguments=[
-                        "--frame-id",
-                        vj.parent_frame,
-                        "--child-frame-id",
-                        vj.child_link,
-                    ],
-                )
-            )
-            name_counter += 1
-    return ld
-
-def generate_rsp_launch(ld, moveit_config):
-    """Launch file for robot state publisher (rsp)"""
-
-    ld.add_action(DeclareLaunchArgument("publish_frequency", default_value="15.0"))
-
-    # Given the published joint states, publish tf for the robot links and the robot description
-    rsp_node = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        respawn=True,
-        output="screen",
-        parameters=[
-            moveit_config.robot_description,
-            {
-                "publish_frequency": LaunchConfiguration("publish_frequency"),
-            },
-        ],
-    )
-    ld.add_action(rsp_node)
-
-    return ld
-
-def generate_move_group_launch(ld, moveit_config):
-
-    ld.add_action(DeclareBooleanLaunchArg("debug", default_value=False))
-    ld.add_action(
-        DeclareBooleanLaunchArg("allow_trajectory_execution", default_value=True)
-    )
-    ld.add_action(
-        DeclareBooleanLaunchArg("publish_monitored_planning_scene", default_value=True)
-    )
-    # load non-default MoveGroup capabilities (space separated)
-    ld.add_action(DeclareLaunchArgument("capabilities", default_value=""))
-    # inhibit these default MoveGroup capabilities (space separated)
-    ld.add_action(DeclareLaunchArgument("disable_capabilities", default_value=""))
-
-    # do not copy dynamics information from /joint_states to internal robot monitoring
-    # default to false, because almost nothing in move_group relies on this information
-    ld.add_action(DeclareBooleanLaunchArg("monitor_dynamics", default_value=False))
-
-    should_publish = LaunchConfiguration("publish_monitored_planning_scene")
-
-    move_group_configuration = {
-        "publish_robot_description_semantic": True,
-        "allow_trajectory_execution": LaunchConfiguration("allow_trajectory_execution"),
-        # Note: Wrapping the following values is necessary so that the parameter value can be the empty string
-        "capabilities": ParameterValue(
-            LaunchConfiguration("capabilities"), value_type=str
+    # planning_context
+    xacro_args = {"link6_type": "Link6_6f"}
+    robot_description_config = xacro.process_file(
+        os.path.join(
+            get_package_share_directory("rm_65_config"),
+            "config",
+            "rm_65_description.urdf.xacro",
         ),
-        "disable_capabilities": ParameterValue(
-            LaunchConfiguration("disable_capabilities"), value_type=str
-        ),
-        # Publish the planning scene of the physical robot so that rviz plugin can know actual robot
-        "publish_planning_scene": should_publish,
-        "publish_geometry_updates": should_publish,
-        "publish_state_updates": should_publish,
-        "publish_transforms_updates": should_publish,
-        "monitor_dynamics": False,
+        mappings=xacro_args
+    )
+
+    robot_description = {"robot_description": robot_description_config.toxml()}
+
+    robot_description_semantic_config = load_file(
+        "rm_65_config", "config/rm_65_description.srdf"
+    )
+
+    robot_description_semantic = {
+        "robot_description_semantic": robot_description_semantic_config
     }
 
-    move_group_params = [
-        moveit_config.to_dict(),
-        move_group_configuration,
-    ]
+    kinematics_yaml = load_yaml(
+        "rm_65_config", "config/kinematics.yaml"
+    )
+    robot_description_kinematics = {"robot_description_kinematics": kinematics_yaml}
 
-    add_debuggable_node(
-        ld,
+    # Planning Functionality
+    ompl_planning_pipeline_config = {
+        "move_group": {
+            "planning_plugin": "ompl_interface/OMPLPlanner",
+            "request_adapters": """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
+            "start_state_max_bounds_error": 0.1,
+        }
+    }
+    ompl_planning_yaml = load_yaml(
+        "moveit_resources_panda_moveit_config", "config/ompl_planning.yaml"
+    )
+    ompl_planning_pipeline_config["move_group"].update(ompl_planning_yaml)
+
+    # Trajectory Execution Functionality
+    moveit_simple_controllers_yaml = load_yaml(
+        "rm_65_config", "config/moveit_controllers.yaml"
+    )
+
+    moveit_controllers = {
+        "moveit_simple_controller_manager": moveit_simple_controllers_yaml,
+        "moveit_controller_manager": "moveit_simple_controller_manager/MoveItSimpleControllerManager",
+    }
+
+    trajectory_execution = {
+        "moveit_manage_controllers": True,
+        "trajectory_execution.allowed_execution_duration_scaling": 1.2,
+        "trajectory_execution.allowed_goal_duration_margin": 0.5,
+        "trajectory_execution.allowed_start_tolerance": 0.01,
+    }
+
+    planning_scene_monitor_parameters = {
+        "publish_planning_scene": True,
+        "publish_geometry_updates": True,
+        "publish_state_updates": True,
+        "publish_transforms_updates": True,
+    }
+
+    # Start the actual move_group node/action server
+    run_move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
-        commands_file=str(moveit_config.package_path / "launch" / "gdb_settings.gdb"),
         output="screen",
-        parameters=move_group_params,
-        extra_debug_args=["--debug"],
-        # Set the display variable, in case OpenGL code is used internally
-        additional_env={"DISPLAY": ":0"},
-    )
-    return ld
-
-def generate_moveit_rviz_launch(ld, moveit_config):
-    """Launch file for rviz"""
-
-    ld.add_action(DeclareBooleanLaunchArg("debug", default_value=False))
-    ld.add_action(
-        DeclareLaunchArgument(
-            "rviz_config",
-            default_value=str(moveit_config.package_path / "config/moveit.rviz"),
-        )
+        parameters=[
+            robot_description,
+            robot_description_semantic,
+            kinematics_yaml,
+            ompl_planning_pipeline_config,
+            trajectory_execution,
+            moveit_controllers,
+            planning_scene_monitor_parameters,
+        ],
     )
 
-    rviz_parameters = [
-        moveit_config.planning_pipelines,
-        moveit_config.robot_description_kinematics,
-    ]
+    # RViz
+    tutorial_mode = LaunchConfiguration("rviz_tutorial")
+    rviz_base = os.path.join(get_package_share_directory("rm_65_config"), "rviz")
+    rviz_full_config = os.path.join(rviz_base, "moveit.rviz")
+    rviz_empty_config = os.path.join(rviz_base, "panda_moveit_config_demo_empty.rviz")
 
-    add_debuggable_node(
-        ld,
+    rviz_node = Node(
         package="rviz2",
         executable="rviz2",
+        name="rviz2",
         output="log",
-        respawn=False,
-        arguments=["-d", LaunchConfiguration("rviz_config")],
-        parameters=rviz_parameters,
+        arguments=["-d", rviz_full_config],
+        parameters=[
+            robot_description,
+            robot_description_semantic,
+            ompl_planning_pipeline_config,
+            kinematics_yaml,
+        ],
+        # condition=UnlessCondition(tutorial_mode),
     )
 
-    return ld
-
-def generate_warehouse_db_launch(ld, moveit_config):
-    """Launch file for warehouse database"""
-    ld.add_action(
-        DeclareLaunchArgument(
-            "moveit_warehouse_database_path",
-            default_value=str(
-                moveit_config.package_path / "default_warehouse_mongo_db"
-            ),
-        )
-    )
-    ld.add_action(DeclareBooleanLaunchArg("reset", default_value=False))
-
-    # The default DB port for moveit (not default MongoDB port to avoid potential conflicts)
-    ld.add_action(DeclareLaunchArgument("moveit_warehouse_port", default_value="33829"))
-
-    # The default DB host for moveit
-    ld.add_action(
-        DeclareLaunchArgument("moveit_warehouse_host", default_value="localhost")
+    # Static TF
+    static_tf = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="static_transform_publisher",
+        output="log",
+        arguments=["0.0", "0.0", "0.0", "0.0", "0.0", "0.0", "world", "base_link"],
     )
 
-    # Load warehouse parameters
-    db_parameters = [
-        {
-            "overwrite": False,
-            "database_path": LaunchConfiguration("moveit_warehouse_database_path"),
-            "warehouse_port": LaunchConfiguration("moveit_warehouse_port"),
-            "warehouse_host": LaunchConfiguration("moveit_warehouse_host"),
-            "warehouse_exec": "mongod",
-            "warehouse_plugin": "warehouse_ros_mongo::MongoDatabaseConnection",
+    # Publish TF
+    robot_state_publisher = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        name="robot_state_publisher",
+        output="both",
+        parameters=[robot_description],
+    )
+
+    # ros2_control using FakeSystem as hardware
+    ros2_controllers_path = os.path.join(
+        get_package_share_directory("rm_65_config"),
+        "config",
+        "ros_controllers.yaml",
+    )
+    
+    ros2_control_node = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[robot_description, ros2_controllers_path],
+        output={
+            "stdout": "screen",
+            "stderr": "screen",
         },
-    ]
-    # Run the DB server
-    db_node = Node(
-        package="warehouse_ros_mongo",
-        executable="mongo_wrapper_ros.py",
-        # TODO(dlu): Figure out if this needs to be run in a specific directory
-        # (ROS 1 version set cwd="ROS_HOME")
-        parameters=db_parameters,
     )
-    ld.add_action(db_node)
 
-    # If we want to reset the database, run this node
-    reset_node = Node(
-        package="moveit_ros_warehouse",
-        executable="moveit_init_demo_warehouse",
-        output="screen",
-        condition=IfCondition(LaunchConfiguration("reset")),
-    )
-    ld.add_action(reset_node)
-
-    return ld
-
-def generate_spawn_controllers_launch(ld, moveit_config):
-    controller_names = moveit_config.trajectory_execution.get(
-        "moveit_simple_controller_manager", {}
-    ).get("controller_names", [])
-    for controller in controller_names + ["joint_state_broadcaster"]:
-        ld.add_action(
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[controller],
+    # Load controllers
+    
+    load_controllers = []
+    for controller in [
+        "joint_state_broadcaster","rm_group_controller"]:
+        load_controllers += [
+            ExecuteProcess(
+                cmd=["ros2 run controller_manager spawner.py {}".format(controller)],
+                shell=True,
                 output="screen",
             )
-        )
-    return ld
+        ]
+
+    # Warehouse mongodb server
+    mongodb_server_node = Node(
+       package="warehouse_ros_mongo",
+       executable="mongo_wrapper_ros.py",
+       parameters=[
+           {"warehouse_port": 33829},
+           {"warehouse_host": "localhost"},
+           {"warehouse_plugin": "warehouse_ros_mongo::MongoDatabaseConnection"},
+       ],
+       output="screen",
+    )
+
+    return LaunchDescription(
+        [
+            tutorial_arg,
+            rviz_node,
+            static_tf,
+            robot_state_publisher,
+            run_move_group_node,
+            ros2_control_node,
+        ]
+        + load_controllers
+    )

@@ -1,0 +1,180 @@
+============================================
+ROS2 foxy installation started!
+Current user: yifei
+User home: /home/yifei
+Ubuntu version: Ubuntu 20.04.6 LTS
+Ubuntu codename: focal
+Log file: /home/yifei/realman/ros2_rm/src/ros2_rm_robot/rm_install/scripts/ros2_foxy_install.log
+Error file: /home/yifei/realman/ros2_rm/src/ros2_rm_robot/rm_install/scripts/ros2_foxy_install.err
+============================================
+System architecture: x86_64
+Ubuntu mirror: https://mirrors.tuna.tsinghua.edu.cn/ubuntu/
+Removing old ROS source list files...
+Backing up /etc/apt/sources.list...
+Writing Ubuntu focal sources...
+Cleaning apt cache...
+Fixing possible broken dpkg state...
+正在读取软件包列表...
+正在分析软件包的依赖关系树...
+正在读取状态信息...
+升级了 0 个软件包，新安装了 0 个软件包，要卸载 0 个软件包，有 0 个软件包未被升级。
+Updating apt index...
+获取:1 http://security.ubuntu.com/ubuntu focal-security InRelease [128 kB]
+获取:2 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal InRelease [265 kB]
+获取:3 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates InRelease [128 kB]
+获取:4 http://security.ubuntu.com/ubuntu focal-security/main i386 Packages [890 kB]
+获取:5 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports InRelease [128 kB]
+获取:6 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/main amd64 Packages [970 kB]
+获取:7 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/main i386 Packages [718 kB]
+获取:8 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/main Translation-en [506 kB]
+获取:9 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/main Translation-zh_CN [113 kB]
+获取:10 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/main amd64 DEP-11 Metadata [494 kB]
+获取:11 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/main DEP-11 48x48 Icons [98.4 kB]
+获取:12 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/main DEP-11 64x64 Icons [163 kB]
+获取:13 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/main DEP-11 64x64@2 Icons [15.8 kB]
+获取:14 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/main amd64 c-n-f Metadata [29.5 kB]
+获取:15 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/restricted i386 Packages [8,112 B]
+获取:16 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/restricted amd64 Packages [22.0 kB]
+获取:17 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/restricted Translation-en [6,212 B]
+获取:18 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/restricted Translation-zh_CN [1,324 B]
+获取:19 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/restricted amd64 c-n-f Metadata [392 B]
+获取:20 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/universe i386 Packages [4,642 kB]
+获取:21 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/universe amd64 Packages [8,628 kB]
+获取:22 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [3,610 kB]
+获取:23 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/universe Translation-zh_CN [388 kB]
+获取:24 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/universe Translation-en [5,124 kB]
+获取:25 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/universe amd64 DEP-11 Metadata [3,603 kB]
+获取:26 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/universe DEP-11 48x48 Icons [3,016 kB]
+获取:27 http://security.ubuntu.com/ubuntu focal-security/main Translation-en [518 kB]
+获取:28 http://security.ubuntu.com/ubuntu focal-security/main amd64 DEP-11 Metadata [74.9 kB]
+获取:29 http://security.ubuntu.com/ubuntu focal-security/main DEP-11 48x48 Icons [27.5 kB]
+获取:30 http://security.ubuntu.com/ubuntu focal-security/main DEP-11 64x64 Icons [47.5 kB]
+获取:31 http://security.ubuntu.com/ubuntu focal-security/main DEP-11 64x64@2 Icons [29 B]
+获取:32 http://security.ubuntu.com/ubuntu focal-security/main amd64 c-n-f Metadata [14.4 kB]
+获取:33 http://security.ubuntu.com/ubuntu focal-security/restricted i386 Packages [42.8 kB]
+获取:34 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [3,828 kB]
+获取:35 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/universe DEP-11 64x64 Icons [7,794 kB]
+获取:36 http://security.ubuntu.com/ubuntu focal-security/restricted Translation-en [527 kB]
+获取:37 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 DEP-11 Metadata [212 B]
+获取:38 http://security.ubuntu.com/ubuntu focal-security/restricted DEP-11 48x48 Icons [29 B]
+获取:39 http://security.ubuntu.com/ubuntu focal-security/restricted DEP-11 64x64 Icons [29 B]
+获取:40 http://security.ubuntu.com/ubuntu focal-security/restricted DEP-11 64x64@2 Icons [29 B]
+获取:41 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 c-n-f Metadata [584 B]
+获取:42 http://security.ubuntu.com/ubuntu focal-security/universe i386 Packages [705 kB]
+获取:43 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [1,052 kB]
+获取:44 http://security.ubuntu.com/ubuntu focal-security/universe Translation-en [220 kB]
+获取:45 http://security.ubuntu.com/ubuntu focal-security/universe amd64 DEP-11 Metadata [160 kB]
+获取:46 http://security.ubuntu.com/ubuntu focal-security/universe DEP-11 48x48 Icons [95.4 kB]
+获取:47 http://security.ubuntu.com/ubuntu focal-security/universe DEP-11 64x64 Icons [166 kB]
+获取:48 http://security.ubuntu.com/ubuntu focal-security/universe DEP-11 64x64@2 Icons [29 B]
+获取:49 http://security.ubuntu.com/ubuntu focal-security/universe amd64 c-n-f Metadata [22.4 kB]
+获取:50 http://security.ubuntu.com/ubuntu focal-security/multiverse i386 Packages [7,184 B]
+获取:51 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 Packages [26.7 kB]
+获取:52 http://security.ubuntu.com/ubuntu focal-security/multiverse Translation-en [6,416 B]
+获取:53 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 DEP-11 Metadata [940 B]
+获取:54 http://security.ubuntu.com/ubuntu focal-security/multiverse DEP-11 48x48 Icons [1,867 B]
+获取:55 http://security.ubuntu.com/ubuntu focal-security/multiverse DEP-11 64x64 Icons [2,497 B]
+获取:56 http://security.ubuntu.com/ubuntu focal-security/multiverse DEP-11 64x64@2 Icons [29 B]
+获取:57 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 c-n-f Metadata [604 B]
+获取:58 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/universe DEP-11 64x64@2 Icons [44.3 kB]
+获取:59 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/universe amd64 c-n-f Metadata [265 kB]
+获取:60 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/multiverse i386 Packages [74.7 kB]
+获取:61 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/multiverse amd64 Packages [144 kB]
+获取:62 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/multiverse Translation-en [104 kB]
+获取:63 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/multiverse Translation-zh_CN [4,612 B]
+获取:64 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/multiverse amd64 DEP-11 Metadata [48.4 kB]
+获取:65 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/multiverse DEP-11 48x48 Icons [23.1 kB]
+获取:66 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/multiverse DEP-11 64x64 Icons [192 kB]
+获取:67 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/multiverse DEP-11 64x64@2 Icons [214 B]
+获取:68 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal/multiverse amd64 c-n-f Metadata [9,136 B]
+获取:69 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/main amd64 Packages [4,004 kB]
+获取:70 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/main i386 Packages [1,127 kB]
+获取:71 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/main Translation-en [601 kB]
+获取:72 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/main amd64 DEP-11 Metadata [276 kB]
+获取:73 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/main DEP-11 48x48 Icons [64.2 kB]
+获取:74 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/main DEP-11 64x64 Icons [103 kB]
+获取:75 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/main DEP-11 64x64@2 Icons [29 B]
+获取:76 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/main amd64 c-n-f Metadata [18.0 kB]
+获取:77 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/restricted i386 Packages [44.3 kB]
+获取:78 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/restricted amd64 Packages [3,983 kB]
+获取:79 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/restricted Translation-en [548 kB]
+获取:80 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/restricted amd64 DEP-11 Metadata [212 B]
+获取:81 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/restricted DEP-11 48x48 Icons [29 B]
+获取:82 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/restricted DEP-11 64x64 Icons [29 B]
+获取:83 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/restricted DEP-11 64x64@2 Icons [29 B]
+获取:84 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/restricted amd64 c-n-f Metadata [604 B]
+获取:85 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/universe amd64 Packages [1,275 kB]
+获取:86 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/universe i386 Packages [832 kB]
+获取:87 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/universe Translation-en [302 kB]
+获取:88 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/universe amd64 DEP-11 Metadata [446 kB]
+获取:89 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/universe DEP-11 48x48 Icons [297 kB]
+获取:90 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/universe DEP-11 64x64 Icons [520 kB]
+获取:91 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/universe DEP-11 64x64@2 Icons [29 B]
+获取:92 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/universe amd64 c-n-f Metadata [29.3 kB]
+获取:93 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/multiverse amd64 Packages [29.8 kB]
+获取:94 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/multiverse i386 Packages [8,416 B]
+获取:95 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/multiverse Translation-en [8,284 B]
+获取:96 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/multiverse amd64 DEP-11 Metadata [940 B]
+获取:97 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/multiverse DEP-11 48x48 Icons [1,867 B]
+获取:98 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/multiverse DEP-11 64x64 Icons [2,497 B]
+获取:99 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/multiverse DEP-11 64x64@2 Icons [29 B]
+获取:100 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/multiverse amd64 c-n-f Metadata [688 B]
+获取:101 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/main amd64 Packages [46.1 kB]
+获取:102 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/main i386 Packages [36.3 kB]
+获取:103 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/main Translation-en [16.2 kB]
+获取:104 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/main amd64 DEP-11 Metadata [7,980 B]
+获取:105 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/main DEP-11 48x48 Icons [7,156 B]
+获取:106 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/main DEP-11 64x64 Icons [10.7 kB]
+获取:107 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/main DEP-11 64x64@2 Icons [29 B]
+获取:108 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/main amd64 c-n-f Metadata [1,420 B]
+获取:109 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/restricted amd64 DEP-11 Metadata [216 B]
+获取:110 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/restricted DEP-11 48x48 Icons [29 B]
+获取:111 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/restricted DEP-11 64x64 Icons [29 B]
+获取:112 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/restricted DEP-11 64x64@2 Icons [29 B]
+获取:113 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/restricted amd64 c-n-f Metadata [116 B]
+获取:114 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/universe amd64 Packages [25.0 kB]
+获取:115 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/universe i386 Packages [13.9 kB]
+获取:116 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/universe Translation-en [16.3 kB]
+获取:117 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/universe amd64 DEP-11 Metadata [30.4 kB]
+获取:118 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/universe DEP-11 48x48 Icons [13.3 kB]
+获取:119 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/universe DEP-11 64x64 Icons [22.7 kB]
+获取:120 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/universe DEP-11 64x64@2 Icons [29 B]
+获取:121 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/universe amd64 c-n-f Metadata [880 B]
+获取:122 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/multiverse amd64 DEP-11 Metadata [212 B]
+获取:123 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/multiverse DEP-11 48x48 Icons [29 B]
+获取:124 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/multiverse DEP-11 64x64 Icons [29 B]
+获取:125 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/multiverse DEP-11 64x64@2 Icons [29 B]
+获取:126 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-backports/multiverse amd64 c-n-f Metadata [116 B]
+已下载 64.7 MB，耗时 1分 43秒 (628 kB/s)
+正在读取软件包列表...
+Installing basic tools...
+正在读取软件包列表...
+正在分析软件包的依赖关系树...
+正在读取状态信息...
+lsb-release 已经是最新版 (11.1.0ubuntu2)。
+lsb-release 已设置为手动安装。
+curl 已经是最新版 (7.68.0-1ubuntu2.25)。
+software-properties-common 已经是最新版 (0.99.9.12)。
+gnupg2 已经是最新版 (2.2.19-3ubuntu2.5)。
+下列软件包将被升级：
+  ca-certificates
+升级了 1 个软件包，新安装了 0 个软件包，要卸载 0 个软件包，有 331 个软件包未被升级。
+需要下载 159 kB 的归档。
+解压缩后会消耗 32.8 kB 的额外空间。
+获取:1 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/main amd64 ca-certificates all 20240203~20.04.1 [159 kB]
+正在预设定软件包 ...
+已下载 159 kB，耗时 4秒 (40.6 kB/s)
+(正在读取数据库 ... (正在读取数据库 ... 5%(正在读取数据库 ... 10%(正在读取数据库 ... 15%(正在读取数据库 ... 20%(正在读取数据库 ... 25%(正在读取数据库 ... 30%(正在读取数据库 ... 35%(正在读取数据库 ... 40%(正在读取数据库 ... 45%(正在读取数据库 ... 50%(正在读取数据库 ... 55%(正在读取数据库 ... 60%(正在读取数据库 ... 65%(正在读取数据库 ... 70%(正在读取数据库 ... 75%(正在读取数据库 ... 80%(正在读取数据库 ... 85%(正在读取数据库 ... 90%(正在读取数据库 ... 95%(正在读取数据库 ... 100%(正在读取数据库 ... 系统当前共安装有 378908 个文件和目录。)
+准备解压 .../ca-certificates_20240203~20.04.1_all.deb  ...
+正在解压 ca-certificates (20240203~20.04.1) 并覆盖 (20211016ubuntu0.20.04.1) ...
+正在设置 ca-certificates (20240203~20.04.1) ...
+Updating certificates in /etc/ssl/certs...
+rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+30 added, 8 removed; done.
+正在处理用于 man-db (2.9.1-1) 的触发器 ...
+正在处理用于 ca-certificates (20240203~20.04.1) 的触发器 ...
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+Downloading ROS key...

@@ -1,12 +1,12 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_control/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_control/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_control/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_control/README.md)
  
 </div>
 
 <div align="center">
 
-# RealMan Robot rm_control User Manual V1.2
+# RealMan Robotrm_controlUser Manual V1.2
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -16,7 +16,8 @@ Revision History:
 | :---: | :----: | :---:   |
 |V1.0	  | 2/19/2024 | Draft |
 |V1.1	  | 7/8 /2024 | Amend(Add GEN72 adapter files) |
-|V1.2   | 9/10 /2024| Amend(Add ECO63 adapter files) |
+|V1.2 | 9/11 /2024| Amend(Add ECO63 adapter files) |
+
 </div>
 
 ## Content
@@ -44,7 +45,7 @@ First, after configuring the environment and completing the connection, we can d
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_<arm_type>_control.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65、eco63, 75, and gen72.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65、eco63, gen72, and 75.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_65_control.launch.py
@@ -57,7 +58,7 @@ Some parameters can be configured in the rm_control package. Because there are n
 ![image](doc/rm_control2.png)
 As shown in the figure above, the position of the first red box is the file path, and the position of the second box is the current configurable parameter.  
 Parameter follows: represents the following mode used by the current transmission, where true is high following and false is low following. The high following indicates that the robotic arm's movement mode is consistent with the transmission. It must do detailed calculations based on its transmission rate, speed, and acceleration. The threshold is set too high, but the control is fine. The low following indicates that the robotic arm moves to the transmission point based on its transmission rate, speed, and acceleration. If there are points that cannot be reached in time, there may be abandonment. The threshold is set low, and the control is not very fine but meets the use.  
-Parameter arm_type: represents the current model of the robotic arm. The parameters that can be selected are 65 (RM65 series), 651 (ECO65 series), 634 (ECO63 series), 632 (RM63 series), 75 (RM75 series) and 72 (GEN72 series).  
+Parameter arm_type: represents the current model of the robotic arm. The parameters that can be selected are 65 (65 series), 651 (eco65), 632 (63 series), gen72 (gen72 series), and 75 (75 series).  
 In practice, we choose the corresponding launch file to start, which will automatically select the correct model. If there are special requirements, you can modify the corresponding parameters here. After modification, recompile the configuration in the workspace directory, and then the modified configuration will take effect.  
 Run colcon build command in the workspace directory.  
 ```
@@ -66,7 +67,7 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 After successful compilation, follow the above commands to start the package.
 ## rm_control_Package_Architecture_Description
 ### Overview_of_package_files
-The current rm_control package is composed of the following files.
+The current rm_driver package is composed of the following files.
 ```
 ├── CMakeLists.txt                     # compilation rule file
 ├── doc
@@ -93,7 +94,6 @@ The following is the topic description of the package.
 ```
   Subscribers:
     /parameter_events: rcl_interfaces/msg/ParameterEvent
-    /rm_driver/move_stop_cmd: std_msgs::msg::Bool
   Publishers:
     /parameter_events: rcl_interfaces/msg/ParameterEvent
     /rm_driver/movej_canfd_cmd: rm_ros_interfaces/msg/Jointpos

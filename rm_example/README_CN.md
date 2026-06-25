@@ -1,6 +1,6 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_example/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_example/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_example/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_example/README.md)
 
 </div>
 
@@ -50,7 +50,8 @@ rm_bringup功能包为实现了一些基本的机械臂功能，通过该功能�
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72。  
+例如65机械臂的启动命令：
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
 ```
@@ -75,7 +76,7 @@ rm@rm-desktop:~$ ros2 topic pub --once /rm_driver/get_curr_workFrame_cmd std_msg
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72。  
 例如65机械臂的启动命令：
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -93,7 +94,7 @@ rm@rm-desktop:~$ ros2 run rm_example rm_get_state
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72。  
 例如65机械臂的启动命令：
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -154,8 +155,7 @@ rm@rm-desktop:~$ ros2 run rm_example movel_gen72_demo
 
 ## rm_example功能包架构说明
 ### 功能包文件总览
-当前rm_example功能包文件构成如下。
-```
+当前rm_driver功能包的文件构成如下。
 ├── CMakeLists.txt                             #编译规则文件
 ├── doc
 │   ├── rm_example10.png
@@ -181,7 +181,6 @@ rm@rm-desktop:~$ ros2 run rm_example movel_gen72_demo
     ├── api_MoveJP_Gen72_demo.cpp           #适用于Gen72的MoveJP运动源文件
     └── api_MoveL_demo.cpp                  #MoveL运动源文件
     └── api_MoveL_Gen72_demo.cpp            #适用于Gen72的MoveL运动源文件
-```
 ## rm_example话题说明
 ### rm_change_work_frame话题说明
 以下为该节点的数据通信图：

@@ -3645,6 +3645,32 @@ RM_INTERFACE_EXPORT int rm_set_virtual_wall_config(rm_robot_handle *handle, rm_f
             - -3: 返回值解析失败，接收到的数据格式不正确或不完整。 
  */
 RM_INTERFACE_EXPORT int rm_get_virtual_wall_config(rm_robot_handle *handle, rm_fence_config_t *config);
+/**
+ * @brief 设置Web服务器使能状态
+ * @attention 仅支持四代控制器
+ * @param handle 机械臂控制句柄 
+ * @param state Web服务器使能状态(默认状态是使能)：非0代表使能，0代表禁使能
+ * @return int 函数执行的状态码。  
+            - 0: 成功。  
+            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。  
+            - -1: 数据发送失败，通信过程中出现问题。
+            - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。  
+            - -3: 返回值解析失败，接收到的数据格式不正确或不完整。  
+ */
+RM_INTERFACE_EXPORT int rm_set_webserver_enabled(rm_robot_handle *handle, int state);
+/**
+ * @brief 获取Web服务器使能状态
+ * @attention 仅支持四代控制器
+ * @param handle 机械臂控制句柄 
+ * @param state 输出参数，存储Web服务器当前使能状态(默认状态是使能)：非0代表使能，0代表禁使能
+ * @return int 函数执行的状态码。  
+            - 0: 成功。  
+            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。  
+            - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。  
+            - -3: 返回值解析失败，接收到的数据格式不正确或不完整。 
+ */
+RM_INTERFACE_EXPORT int rm_get_webserver_enabled(rm_robot_handle *handle, int *state);
+
 /** @} */ // 结束电子围栏组的定义
 
 /**  
@@ -3771,6 +3797,32 @@ RM_INTERFACE_EXPORT int rm_get_rm_plus_base_info(rm_robot_handle *handle, rm_plu
             - -3: 返回值解析失败，接收到的数据格式不正确或不完整。
 */
 RM_INTERFACE_EXPORT int rm_get_rm_plus_state_info(rm_robot_handle *handle, rm_plus_state_info_t *info);
+
+/**
+ * @brief 手动关闭碰撞解除模式指令（仅支持三代控制器）
+ * @param handle 机械臂控制句柄
+ * @param set_enable true为手动关闭指令，false为取消关闭指令（即恢复默认状态）
+ * @return int 函数执行的状态码。
+            - 0: 成功。
+            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。
+            - -1: 数据发送失败，通信过程中出现问题。
+            - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。
+            - -3: 返回值解析失败，接收到的数据格式不正确或不完整。
+*/
+RM_INTERFACE_EXPORT int rm_set_collision_remove_enable(rm_robot_handle *handle, bool set_enable);
+
+/**
+ * @brief 获取手动关闭碰撞解除使能状态（仅支持三代控制器）
+ * @param handle 机械臂控制句柄
+ * @param set_enable true为手动关闭指令，false为取消关闭指令（即恢复默认状态）
+ * @return int 函数执行的状态码。
+            - 0: 成功。
+            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。
+            - -1: 数据发送失败，通信过程中出现问题。
+            - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。
+            - -3: 返回值解析失败，接收到的数据格式不正确或不完整。
+*/
+RM_INTERFACE_EXPORT int rm_get_collision_remove_enable(rm_robot_handle *handle, bool *enable_state);
 
 /******************************************算法接口*******************************************************/
 /**  
@@ -3906,6 +3958,77 @@ RM_INTERFACE_EXPORT void rm_algo_get_joint_max_acc(float* joint_alim_max);
               false：单步模式，自动调整冗余参数的求解策略。适于当前位姿跟要求解的位姿差别特别小、连续周期控制的场景，如笛卡尔空间规划的位姿求解等，耗时短
  */
 RM_INTERFACE_EXPORT void rm_algo_set_redundant_parameter_traversal_mode(bool mode);
+/**
+ * @brief ik_remote_init 初始化遥操作运动学结构体
+ * 
+ * @param dT 用户下发周期设置
+ * @param tool_or_work 0: 相对工具坐标系 1: 相对工作坐标系
+ */
+RM_INTERFACE_EXPORT void rm_algo_ik_remote_init(float dT ,int tool_or_endeffector);
+/**
+ * @brief Set the error weight object
+ * 
+ * @param weight 为一个数组,元素个数为6,分别对应末端位姿的x,y,z,,rx,ry,rz,取值为0~1,权重越大对应的位姿到达精确度越高,反之则相反
+ */
+RM_INTERFACE_EXPORT void rm_algo_set_error_weight(float *weight);
+/**
+ * @brief Set the dq weight object
+ *
+ * @param dq_weight 为一个数组,元素个数为自由度个数,为本身关节的最大限速乘以权重,取值为0~1,权重越大则跟踪效果越好
+ */
+RM_INTERFACE_EXPORT void rm_algo_set_dq_weight(float *dq_weight);
+/**
+ * @brief Enable q3 tracker 使能七轴机械臂肘部追踪功能
+ * 
+ * @param is_open  1: OPEN TARCKER 0: CLOSE TRACKER
+ */
+RM_INTERFACE_EXPORT void rm_algo_enable_q3_tracker(int is_open);
+/**
+ * @brief Set the q3 tracker velocity level object
+ * 
+ * @param level 设置七轴机械臂肘部追踪等级,取值0~1,等级越高,追踪速度越快
+ */
+RM_INTERFACE_EXPORT void rm_algo_set_q3_tracker_velocity_level(float level);
+/**
+ * @brief Set the enable limit holdon object
+ * 
+ * @param enable 0: 关闭限位保持  1: 开启限位保持 若客户不调用此接口则默认为0即关闭限位保持功能, 当调用ik_remote_init时自动初始化为0
+ */
+RM_INTERFACE_EXPORT void rm_algo_set_enable_limit_holdon(int enable);
+/**
+ * @brief Set the 7dof q3 track angle object
+ * 
+ * @param obj_angle 设置七轴机械臂肘部追踪下的关节3的追踪角度
+ * @return int -2: angle is over joint_limit   0:success
+ */
+RM_INTERFACE_EXPORT int rm_algo_set_7dof_q3_track_angle(float obj_angle);
+/**
+ * @brief 统一的关节角度限位设置接口（新增算法限位判断）
+ *
+ * @param dof_type  [in]     机械臂自由度类型 (DOF_TYPE_6 或 DOF_TYPE_7)
+ * @param joint     [in]     要设置的关节 (JOINT_Q3 或 JOINT_Q4；七轴支持设置关节3和关节4，六轴仅支持关节3)
+ * @param limit     [in]     限位类型 (LIMIT_MAX 或 LIMIT_MIN)
+ * @param angle     [in]     要设置的角度值
+ *
+ * @return int 错误码
+ *         -1: 无效的参数 (自由度、关节、限位类型错误或指针为空)
+ *         -2: 设置的角度值超出硬件/系统限制（原始函数返回）
+ *         -3: 输入角度超出算法固有关节限位
+ *          0: 成功
+ */
+RM_INTERFACE_EXPORT int rm_algo_set_joint_limit_angle(rm_dofType_e dof_type, rm_jointType_e joint, rm_limitType_e limit, float angle);
+/**
+ * @brief ik remote 正式的逆解函数
+ * 
+ * @param T06d 目标末端位姿
+ * @param q_in 当前关节角度
+ * @param q_out 求解结果
+ * @return int -4: UNKNOW ROBOT TYPE  -1: IK FAILED -2: IK LIMITED 0:IK_SUCCESSFUL
+ * @attention 1.建议客户在仿真模式下先验证自己下发的数据是否有异常后再开启真机使用
+ *            2.机械臂肘关节限位防护：禁止关节4（7轴）/关节3（6轴）完全打直为0，否则边界奇异易引发机械臂震荡、回移困难等异常；需通过限位设置接口或示教器安全配置设置非0软限位（限位值可在仿真模式下调试确定）
+ *            3.机械臂关节软限位防护：功能自带关节软限位效果，但应避免运动至软限位；若到位姿下发后关节仍需向限位外转动以满足位姿要求，易引发机械臂震荡等异常
+ */
+RM_INTERFACE_EXPORT int rm_algo_ik_remote(const rm_Mat_t rm_T06d,  float * const q_in, float *q_out);
 /**
  * @brief 逆解函数，默认遍历模式，可使用Algo_Set_Redundant_Parameter_Traversal_Mode接口设置逆解求解模式
  * 

@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<robot  name="rm_eco63_description" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot  name="rm_eco63" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- link6_type -->
     <xacro:arg name="link6_type" default="Link6" />
     <!-- arg->property -->
     <xacro:property name="link6_type" value="$(arg link6_type)" />
+    <!-- KDL cannot use an inertial root link, so keep base_link under a massless root. -->
+    <link name="base_root" />
+    <joint name="base_root_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="base_root" />
+      <child link="base_link" />
+    </joint>
     <link
     name="base_link">
     <inertial>
@@ -86,7 +93,7 @@
   </link>
   <joint
     name="joint1"
-    type="revolute">
+    type="continuous">
     <origin
       xyz="0 0 0.1625"
       rpy="0 0 0" />
@@ -97,8 +104,6 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.105"
-      upper="3.105"
       effort="60"
       velocity="3.14" />
   </joint>
@@ -260,7 +265,7 @@
   </link>
   <joint
     name="joint4"
-    type="revolute">
+    type="continuous">
     <origin
       xyz="0.38049 0 -0.054981"
       rpy="-0.0087266 0 1.5708" />
@@ -271,8 +276,6 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.105"
-      upper="3.105"
       effort="10"
       velocity="3.14" />
   </joint>
@@ -318,7 +321,7 @@
   </link>
   <joint
     name="joint5"
-    type="revolute">
+    type="continuous">
     <origin
       xyz="0 -0.11 -0.0006"
       rpy="1.5708 0 0" />
@@ -329,8 +332,6 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.105"
-      upper="3.105"
       effort="10"
       velocity="3.14" />
   </joint>
@@ -377,7 +378,7 @@
   </link>
   <joint
     name="joint6"
-    type="revolute">
+    type="continuous">
     <origin
       xyz="-0.00010641 0.0797 -0.00010731"
       rpy="-1.5708 0 0" />
@@ -388,8 +389,6 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-6.28"
-      upper="6.28"
       effort="10"
       velocity="3.14" />
   </joint>
@@ -437,7 +436,7 @@
   </link>
   <joint
     name="joint6"
-    type="revolute">
+    type="continuous">
     <origin
       xyz="0 0.0967 0"
       rpy="-1.5708 0 0" />
@@ -448,8 +447,6 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-6.28"
-      upper="6.28"
       effort="10"
       velocity="3.14" />
   </joint>

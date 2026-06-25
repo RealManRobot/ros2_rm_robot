@@ -44,6 +44,10 @@ typedef enum{
     RM_MODEL_ZM7R_E,        ///< ZM7R,
     RM_MODEL_RXL75_E,    ///< 人型机器人左臂
     RM_MODEL_RXR75_E,    ///< 人型机器人右臂
+    RM_MODEL_ZPFL74_E,    ///< ZM7LII
+    RM_MODEL_ZPFR74_E,    ///< ZM7RII
+    RM_MODEL_RXL75II_E,    ///< 人型机器人左臂II
+    RM_MODEL_RXR75II_E,    ///< 人型机器人右臂II
 }rm_robot_arm_model_e;
 
 /**
@@ -55,6 +59,8 @@ typedef enum{
     RM_MODEL_RM_ZF_E,   ///< 一维力版
     RM_MODEL_RM_SF_E,   ///< 六维力版
     RM_MODEL_RM_ISF_E,   ///< 一体化六维力版
+    RM_MODEL_RM_BV_E,   ///< 标准末端+视觉
+    RM_MODEL_RM_ISFV_E, ///<  一体化六维力传感器(新版)+视觉
 }rm_force_type_e;
 
 /**
@@ -94,6 +100,7 @@ typedef enum
     RM_CARTESIAN_ARC_PLANNING_E,        ///< 笛卡尔空间圆弧规划
     RM_SPLINE_CURVE_MOTION_PLANNING_E,  ///< 样条曲线运动规划
     RM_TRAJECTORY_REPLAY_PLANNING_E,    ///< 示教轨迹复现规划
+    RM_BLEND_TRAJECTORY_PLANNING_E,
 }rm_arm_current_trajectory_e;
 
 typedef struct
@@ -863,6 +870,7 @@ typedef struct
 {
     int errCode;                        ///< 数据解析错误码，-3为数据解析错误，代表推送的数据不完整或格式不正确
     char arm_ip[16];                    ///< 推送数据的机械臂的IP地址
+    int arm_port;                       ///< 机械臂的port
     rm_joint_status_t joint_status;     ///< 关节状态
     rm_force_sensor_t force_sensor;     ///< 力数据（六维力或一维力版本支持）
     rm_err_t err;                       ///< 错误码
@@ -1066,11 +1074,43 @@ typedef struct{
     rm_tool_action_info_t act_list[100];   ///< 返回符合的动作列表
 }rm_tool_action_list_t;
 
+/**
+ * @brief 目标末端位姿结构体
+ * 
+ */
+typedef struct
+{
+    int row;
+    int col;
+    float data[18][18];
+} rm_Mat_t;
 
+/**
+ * @brief 统一的关节角度限位设置接口自由度数量枚举
+ * 
+ */
+typedef enum {
+    DOF_TYPE_6 = 6,
+    DOF_TYPE_7 = 7
+} rm_dofType_e;
 
+/**
+ * @brief 统一的关节角度限位设置接口指定关节枚举
+ * 
+ */
+typedef enum {
+    JOINT_Q3,        // 关节3
+    JOINT_Q4     // 肘部关节4
+} rm_jointType_e;
 
-
-
+/**
+ * @brief 统一的关节角度限位设置接口角度限位枚举
+ * 
+ */
+typedef enum {
+    LIMIT_MAX,       // 最大角度限位
+    LIMIT_MIN        // 最小角度限位
+} rm_limitType_e;
 
 #ifdef __cplusplus
 }

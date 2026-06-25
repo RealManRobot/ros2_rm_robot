@@ -1,4 +1,4 @@
-# This config file is used by ros2_control
+# This config file is loaded by gazebo_ros2_control in Gazebo 11.
 controller_manager:
   ros__parameters:
     update_rate: 100  # Hz
@@ -6,12 +6,16 @@ controller_manager:
     rm_group_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
-
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
 rm_group_controller:
   ros__parameters:
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
     joints:
       - joint1
       - joint2
@@ -20,8 +24,3 @@ rm_group_controller:
       - joint5
       - joint6
       - joint7
-    command_interfaces:
-      - position
-    state_interfaces:
-      - position
-      - velocity

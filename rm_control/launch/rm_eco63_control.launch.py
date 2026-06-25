@@ -7,7 +7,7 @@ def generate_launch_description():
     executable='rm_control', #表示要运行的可执行文件名或脚本名字.py
     parameters= [
                     {'follow': False},
-                    {'arm_type': 634}
+                    {'arm_type': 631}
                 ],             #接入参数文件
     output='screen', #用于将话题信息打印到屏幕
     )

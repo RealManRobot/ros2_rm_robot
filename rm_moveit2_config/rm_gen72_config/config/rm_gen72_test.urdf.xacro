@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="panda">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+
+    <!-- Import panda urdf file -->
+    <xacro:include filename="$(find rm_description)/urdf/rm_gen72_test.urdf" />
+
+    <!-- Import panda ros2_control description -->
+    <xacro:include filename="rm_gen72_description.ros2_control.xacro" />
+    <!-- <xacro:include filename="panda_hand.ros2_control.xacro" /> -->
+
+    <xacro:rm_gen72_description_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+</robot>

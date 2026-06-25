@@ -261,11 +261,10 @@ Rm_Control::Rm_Control(std::string name) : Node(name)
     this->declare_parameter<bool>("follow", follow_);
     this->get_parameter("follow", follow_);
 
-    if((arm_type_ == 75)||(arm_type_ == 72))
+    if((arm_type_ == 75) || (arm_type_ == 72))
     {
         joint_msg.joint.resize(7);
         joint_msg.dof = 7;
-        arm_type_ = 75;
     }
     else
     {
@@ -277,7 +276,7 @@ Rm_Control::Rm_Control(std::string name) : Node(name)
         std::bind(&Rm_Control::timer_callback,this));
 
     this->action_server_ = rclcpp_action::create_server<FollowJointTrajectory>(
-                this, "/rm_group_controller/follow_joint_trajectory",
+                this, "rm_group_controller/follow_joint_trajectory",
                 std::bind(&Rm_Control::handle_goal, this, _1, _2),
                 std::bind(&Rm_Control::handle_cancel, this, _1),
                 std::bind(&Rm_Control::handle_accepted, this, _1));
@@ -286,7 +285,7 @@ Rm_Control::Rm_Control(std::string name) : Node(name)
 
     joint_pos_publisher = this->create_publisher<rm_ros_interfaces::msg::Jointpos>("/rm_driver/movej_canfd_cmd", qos);
 
-    Get_Move_Stop_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/move_stop_cmd",rclcpp::ParametersQoS(),
+    Get_Move_Stop_Cmd = this->create_subscription<std_msgs::msg::Bool>("rm_driver/move_stop_cmd",rclcpp::ParametersQoS(),
         std::bind(&Rm_Control::get_move_stop_callback,this,std::placeholders::_1));
 
 }
@@ -378,7 +377,7 @@ void Rm_Control::execute_move(const std::shared_ptr<GoalHandleFJT> goal_handle)
             p_joint4[i] = goal->trajectory.points[i].positions[3];
             p_joint5[i] = goal->trajectory.points[i].positions[4];
             p_joint6[i] = goal->trajectory.points[i].positions[5];
-            if(arm_type_ == 75)
+            if((arm_type_ == 75) || (arm_type_ == 72))
             {
                 p_joint7[i] = goal->trajectory.points[i].positions[6];
             }
@@ -390,7 +389,7 @@ void Rm_Control::execute_move(const std::shared_ptr<GoalHandleFJT> goal_handle)
             v_joint4[i] = goal->trajectory.points[i].velocities[3];
             v_joint5[i] = goal->trajectory.points[i].velocities[4];
             v_joint6[i] = goal->trajectory.points[i].velocities[5];
-            if(arm_type_ == 75)
+            if((arm_type_ == 75) || (arm_type_ == 72))
             {
                 v_joint7[i] = goal->trajectory.points[i].velocities[6];
             }
@@ -401,7 +400,7 @@ void Rm_Control::execute_move(const std::shared_ptr<GoalHandleFJT> goal_handle)
             a_joint4[i] = goal->trajectory.points[i].accelerations[3];
             a_joint5[i] = goal->trajectory.points[i].accelerations[4];
             a_joint6[i] = goal->trajectory.points[i].accelerations[5];
-            if(arm_type_ == 75)
+            if((arm_type_ == 75) || (arm_type_ == 72))
             {
                 a_joint7[i] = goal->trajectory.points[i].accelerations[6];
             }
@@ -508,7 +507,7 @@ void Rm_Control::execute_move(const std::shared_ptr<GoalHandleFJT> goal_handle)
                                 }
 
                                 // joint7
-                                if(arm_type_ == 75)
+                                if((arm_type_ == 75) || (arm_type_ == 72))
                                 {
                                     if (spline.loadData(time_from_start, p_joint7, point_num, 0, 0, cubicSpline::BoundType_First_Derivative))
                                     {
@@ -594,7 +593,7 @@ void Rm_Control::execute_move(const std::shared_ptr<GoalHandleFJT> goal_handle)
         p_joint6_.clear();
         v_joint6_.clear();
         a_joint6_.clear();
-        if(arm_type_ == 75)
+        if((arm_type_ == 75) || (arm_type_ == 72))
         {
             p_joint7_.clear();
             v_joint7_.clear();
@@ -619,7 +618,7 @@ void Rm_Control::execute_move(const std::shared_ptr<GoalHandleFJT> goal_handle)
             p_joint6_.push_back(goal->trajectory.points[i].positions[5]);
             v_joint6_.push_back(goal->trajectory.points[i].velocities[5]);
             a_joint6_.push_back(goal->trajectory.points[i].accelerations[5]);
-            if(arm_type_ == 75)
+            if((arm_type_ == 75) || (arm_type_ == 72))
             {
                 p_joint7_.push_back(goal->trajectory.points[i].positions[6]);
                 v_joint7_.push_back(goal->trajectory.points[i].velocities[6]);
@@ -663,7 +662,7 @@ void Rm_Control::timer_callback()
         if(p2.vector_cnt < p2.vector_len)
         {
             // RCLCPP_INFO(this->get_logger(), "Pos:[%f, %f, %f, %f, %f, %f]",  p_joint1_.at(p2.vector_cnt), p_joint2_.at(p2.vector_cnt), p_joint3_.at(p2.vector_cnt), p_joint4_.at(p2.vector_cnt), p_joint5_.at(p2.vector_cnt), p_joint6_.at(p2.vector_cnt));
-            if(arm_type_ == 75)
+            if((arm_type_ == 75) || (arm_type_ == 72))
             {
                 joint_msg.joint[0] = p_joint1_.at(p2.vector_cnt);
                 joint_msg.joint[1] = p_joint2_.at(p2.vector_cnt);
@@ -691,7 +690,7 @@ void Rm_Control::timer_callback()
         {
             if(count_final_joint <= count_keep_send)
             {
-                if(arm_type_ == 75)
+                if((arm_type_ == 75) || (arm_type_ == 72))
                 {
                     joint_msg.joint[0] = p_joint1_.at(p2.vector_cnt-1);
                     joint_msg.joint[1] = p_joint2_.at(p2.vector_cnt-1);
@@ -725,10 +724,10 @@ void Rm_Control::timer_callback()
     }
 }
 
-void Rm_Control::get_move_stop_callback(const std_msgs::msg::Empty::SharedPtr msg)
+void Rm_Control::get_move_stop_callback(const std_msgs::msg::Bool::SharedPtr msg)
 {
-    // bool result;
-    // result = msg->data;
+    bool result;
+    result = msg->data;
     point_changed=false;
     //RCLCPP_INFO(this->get_logger(), "move stop is true!!! ");
 }

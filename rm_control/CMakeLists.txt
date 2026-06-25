@@ -51,7 +51,7 @@ if(BUILD_TESTING)
 endif()
 add_executable(rm_control src/rm_control.cpp)
 
-ament_target_dependencies(rm_control rclcpp std_msgs sensor_msgs rm_ros_interfaces rclcpp_action actionlib_msgs control_msgs)
+ament_target_dependencies(rm_control rclcpp std_msgs rm_ros_interfaces rclcpp_action actionlib_msgs control_msgs)
 
 install(TARGETS
 rm_control

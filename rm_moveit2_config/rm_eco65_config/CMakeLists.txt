@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.5)
 project(rm_eco65_config)
 
 find_package(ament_cmake REQUIRED)
 
-ament_package()
+install(
+  DIRECTORY config srdf rviz launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
-install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}
-  PATTERN "setup_assistant.launch" EXCLUDE)
-install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
-install(FILES .setup_assistant DESTINATION share/${PROJECT_NAME})
+ament_package()

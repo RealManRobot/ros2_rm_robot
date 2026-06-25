@@ -52,8 +52,7 @@
 
 
     <gazebo>
-        <is_static>true</is_static>
-        <self_collide>true</self_collide>
+                <self_collide>true</self_collide>
     </gazebo>
 
 

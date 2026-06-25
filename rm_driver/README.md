@@ -1,12 +1,12 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/README.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README.md)
  
 </div>
 
 <div align="center">
 
-# RealMan Robot rm_driver User Manual V1.5
+# RealMan Robot rm_driver User Manual V1.7
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -14,13 +14,15 @@ Revision History:
 
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
-|V1.0	  | 2/7/2024  | Draft |
-|V1.1	  | 7/8/2024  | Amend（Add GEN72 adapter files） |
-|V1.2	  | 9/10/2024 | Amend（Add ECO63 adapter files） |
-|V1.2.1 | 10/31/2024| Amend（Add dexterous hand udp topic） |
-|V1.3   | 12/25/2024 | Amend（Add UDP reporting adaptation） |
-|V1.4   | 4/7/2025  | Amend（Add UDP reporting adaptation） |
-|V1.5   | 5/29/2025 | Revision (adapted to fourth generation controllers, added version query interface, added Cartesian space linear offset motion interface, added Modbus interface, added trajectory list interface. Please refer to the topic interface description document for details) |
+|V1.0	  | 2024-2-7 | Draft |
+|V1.1	  | 2024-7-8 | Amend(Add GEN72 adapter files) |
+|V1.2	  | 2024-9-10 | Amend(Add ECO63 adapter files) |
+|V1.2.1 | 2024-10-31 | Amend(Add dexterous hand high-speed adaptation) |
+|V1.3   | 2024-12-25 | Amend(Add UDP reporting adaptation) |
+|V1.4   | 2024-12-25 | Amend(Add UDP reporting adaptation) |
+|V1.5   | 2025-5-29 | Amend(Adapt to fourth-generation controllers, add a version query interface, Cartesian space linear offset motion interface, Modbus interface, and trajectory list interface; see the topic interface description document for details) |
+|V1.6   | 2025-11-13 | Amend(Add basic UDP enable configurations) |
+|V1.7   | 2026-4-16 | Amend(Add ECO62 and RX75 adapter files) |
 
 </div>
 
@@ -54,7 +56,7 @@ Source code address:https://github.com/RealManRobot/ros2_rm_robot.git.
 First, after configuring the environment and completing the connection, we can directly start the node and control the robotic arm through the following command.
 The current control is based on the fact that we have not changed the IP of the robotic arm, which is still 192.168.1.18.
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65、eco63, gen72 and 75.
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, eco62, gen72, 75, and rx75.
 The following screen will appear if the underlying driver is successfully started.
 ![image](doc/rm_driver1.png)  
 ### 2.2 Advanced use of the package
@@ -94,7 +96,7 @@ rm_driver:
 There are mainly the following parameters.
 * arm_ip: This parameter represents the current IP of the robotic arm
 * tcp_port: set the port when TCP is connected.
-* arm_type: This parameter represents the current model of the robotic arm. The parameters that can be selected are RM_65 (65 series), RM_eco65 (ECO65 series), RM_eco63 (ECO63 series), RM_63 (63 series),GEN_72 (GEN72 series) and RM_75 (75 series).
+* arm_type: This parameter represents the current model of the robotic arm. The parameters that can be selected are RM_65 (65 series), RM_eco65 (ECO65 series), RM_eco63 (ECO63 series), RM_eco62 (ECO62 series), RM_63 (63 series), GEN_72 (GEN72 series), and RM_75 (75 series; the RX75 dual-arm configuration also uses this model type for each arm).
 * arm_dof: set the degree of freedom of the robotic arm. 6 is 6 degrees of freedom, and 7 is 7 degrees of freedom.
 * udp_ip: set the udp active reporting IP address.
 * udp_cycle: the active reporting cycle of UDP, which needs to be a multiple of 5.
@@ -128,9 +130,12 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_63_config.yaml         # 63 configuration file
 │   ├── rm_65_config.yaml         # 65 configuration file
 │   ├── rm_75_config.yaml         # 75 configuration file
+│   ├── rm_eco62_config.yaml      # eco62 configuration file
 │   ├── rm_eco65_config.yaml      # eco65 configuration file
 │   ├── rm_eco63_config.yaml      # eco63 configuration file
-│   └── rm_gen72_config.yaml      # gen72 configuration file
+│   ├── rm_gen72_config.yaml      # gen72 configuration file
+│   ├── rm_rx75_left_config.yaml  # RX75 left-arm configuration file
+│   └── rm_rx75_right_config.yaml # RX75 right-arm configuration file
 ├── doc
 │   ├── RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2).md
 │   ├── rm_driver1.png
@@ -156,9 +161,11 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_63_driver.launch.py     # 63 launch file
 │   ├── rm_65_driver.launch.py     # 65 launch file
 │   ├── rm_75_driver.launch.py     # 75 launch file
+│   ├── rm_eco62_driver.launch.py  # eco62 launch file
 │   ├── rm_eco65_driver.launch.py  # eco65 launch file
 │   ├── rm_eco63_driver.launch.py  # eco63 launch file
-│   └── rm_gen72_driver.launch.py  # gen72 launch file
+│   ├── rm_gen72_driver.launch.py  # gen72 launch file
+│   └── rm_rx75_driver.launch.py   # RX75 launch file
 ├── lib
 │   ├── libRM_Service.so -> libRM_Service.so.1.0.0        # API library file
 │   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      # API library file
@@ -177,4 +184,4 @@ The current rm_driver package is composed of the following files.
 rm_driver has many topics, and you can learn about the topic information through the following commands.
 ![image](doc/rm_driver2.png)
 ![image](doc/rm_driver3.png)  
-It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".
+It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".

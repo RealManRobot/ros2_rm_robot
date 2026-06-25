@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rm_eco63_description">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+
+    <!-- Import rm_65_description urdf file -->
+    <xacro:include filename="$(find rm_description)/urdf/rm_eco63.urdf" />
+
+    <!-- Import control_xacro -->
+    <xacro:include filename="rm_eco63_description.ros2_control.xacro" />
+
+
+    <xacro:rm_eco63_description_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+
+</robot>
