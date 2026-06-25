@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rm_rx75_dual">
+
+    <link name="world"/>
+    <joint name="fixed" type="fixed">
+        <parent link="world"/>
+        <child link="base_root"/>
+    </joint>
+
+    <xacro:include filename="$(find rm_description)/urdf/rm_rx75-6fb.urdf.xacro" />
+
+    <gazebo reference="base_root">
+        <self_collide>false</self_collide>
+        <gravity>false</gravity>
+    </gazebo>
+
+    <gazebo reference="left_base_link">
+        <material>Gazebo/White</material>
+        <self_collide>false</self_collide>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="left_Link1">
+        <material>Gazebo/White</material>
+        <self_collide>false</self_collide>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="left_Link2">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="left_Link3">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="left_Link4">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="left_Link5">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="left_Link6">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="left_Link7">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="left_tool0">
+        <gravity>false</gravity>
+    </gazebo>
+
+    <gazebo reference="right_base_link">
+        <material>Gazebo/White</material>
+        <self_collide>false</self_collide>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="right_Link1">
+        <material>Gazebo/White</material>
+        <self_collide>false</self_collide>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="right_Link2">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="right_Link3">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="right_Link4">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="right_Link5">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="right_Link6">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="right_Link7">
+        <material>Gazebo/White</material>
+        <gravity>false</gravity>
+    </gazebo>
+    <gazebo reference="right_tool0">
+        <gravity>false</gravity>
+    </gazebo>
+
+    <gazebo>
+        <self_collide>true</self_collide>
+    </gazebo>
+
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
+            <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+        </hardware>
+
+        <joint name="left_joint1">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="left_joint2">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="left_joint3">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="left_joint4">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="left_joint5">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="left_joint6">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="left_joint7">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="right_joint1">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="right_joint2">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="right_joint3">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="right_joint4">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="right_joint5">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="right_joint6">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="right_joint7">
+            <command_interface name="position"/>
+            <state_interface name="position">
+                <param name="initial_value">0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+    </ros2_control>
+
+    <gazebo>
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+            <parameters>$(find rm_rx75_config)/config/ros2_controllers.yaml</parameters>
+            <robot_param>robot_description</robot_param>
+            <robot_param_node>robot_state_publisher</robot_param_node>
+        </plugin>
+    </gazebo>
+
+</robot>

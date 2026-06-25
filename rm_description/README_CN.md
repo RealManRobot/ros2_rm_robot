@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_description使用说明书V1.5
+# 睿尔曼机器人rm_description使用说明书V1.6
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -19,6 +19,7 @@
 | V1.3  |2024-12-25 |修订(添加了63、65、75、ECO65的六维力适配文件，以及63、65、75、ECO63、ECO65的一体化六维力适配文件) |
 | V1.4  |2025-4-7 |修订(添加了GEN72_II适配文件) |
 | V1.5  |2025-11-13 |修订(添加了RML63_III适配文件) |
+| V1.6  |2026-4-16 |修订(添加ECO62、RX75适配文件) |
 
 </div>
 
@@ -43,14 +44,18 @@ rm_description功能包为显示机器人模型和TF变换的功能包，通过�
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、 63_III、eco65, eco63、75、gen72。  
-启动六维力版本机械臂的命令为(注意：eco63不可用)：
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II、rx75。  
+启动六维力版本机械臂的命令为（当前支持63、65、75、eco65）：
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6f_display.launch.py
 ```
-启动一体化六维力版本机械臂的命令为：
+启动一体化六维力版本机械臂的命令为（当前支持63、63_III、65、75、eco63、eco65、rx75）：
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6fb_display.launch.py
+```
+启动带视觉方案的六维力版本机械臂的命令为（当前仅支持rx75）：
+```
+rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6fb_v_display.launch.py
 ```
 例如65机械臂的启动命令：  
 ```
@@ -89,12 +94,16 @@ rm@rm-desktop:~$ rviz2
 │   ├── rm_75_6f_display.launch.py  #75六维力启动文件
 │   ├── rm_75_6fb_display.launch.py #75一体化六维力启动文件
 │   ├── rm_75_display.launch.py     #75启动文件
+│   ├── rm_eco62_display.launch.py  #eco62启动文件
 │   ├── rm_eco63_6fb_display.launch.py #eco63一体化六维力启动文件
 │   ├── rm_eco63_display.launch.py  #eco63启动文件
 │   ├── rm_eco65_6f_display.launch.py  #eco65六维力启动文件
 │   ├── rm_eco65_6fb_display.launch.py #eco65一体化六维力启动文件
 │   ├── rm_eco65_display.launch.py  #eco65启动文件
-│   └── rm_gen72_display.launch.py  #gen72启动文件
+│   ├── rm_gen72_II_display.launch.py #gen72_II启动文件
+│   ├── rm_gen72_display.launch.py  #gen72启动文件
+│   ├── rm_rx75_6fb_display.launch.py   #RX75-6FB双臂启动文件
+│   └── rm_rx75_6fb_v_display.launch.py #RX75-6FB-V双臂启动文件
 ├── meshes                       #模型文件存放文件夹
 │   ├── rm_63_arm                 #63机械臂模型文件存放文件夹
 │   │   ├── base_link.STL
@@ -127,7 +136,15 @@ rm@rm-desktop:~$ rviz2
 │   │   ├── link7_6f.STL
 │   │   ├── link7_6fb.STL
 │   │   └── link7.STL
-│   └── rm_eco65_arm              #eco65机械臂模型文件存放文件夹
+│   ├── rm_eco62_arm              #eco62机械臂模型文件存放文件夹
+│   │   ├── base_link.STL
+│   │   ├── Link1.STL
+│   │   ├── Link2.STL
+│   │   ├── Link3.STL
+│   │   ├── Link4.STL
+│   │   ├── Link5.STL
+│   │   └── Link6.STL
+│   ├── rm_eco65_arm              #eco65机械臂模型文件存放文件夹
 │   │   ├── baselink.STL
 │   │   ├── Link1.STL
 │   │   ├── Link2.STL
@@ -137,8 +154,8 @@ rm@rm-desktop:~$ rviz2
 │   │   ├── Link6_6f.STL
 │   │   ├── Link6_6fb.STL
 │   │   └── Link6.STL
-│   └── rm_eco63_arm              #eco63机械臂模型文件存放文件夹
-│   │   ├── baselink.STL
+│   ├── rm_eco63_arm              #eco63机械臂模型文件存放文件夹
+│   │   ├── base_link.STL
 │   │   ├── Link1.STL
 │   │   ├── Link2.STL
 │   │   ├── Link3.STL
@@ -146,26 +163,85 @@ rm@rm-desktop:~$ rviz2
 │   │   ├── Link5.STL
 │   │   ├── Link6_6fb.STL
 │   │   └── Link6.STL
-│   └── rm_gen72_arm              #gen72机械臂模型文件存放文件夹
-│       ├── base_link.STL
-│       ├── Link1.STL
-│       ├── Link2.STL
-│       ├── Link3.STL
-│       ├── Link4.STL
-│       ├── Link5.STL
-│       ├── Link6.STL
-│       └── Link7.STL
+│   ├── rm_gen72_II_arm           #gen72_II机械臂模型文件存放文件夹
+│   │   ├── base_link.STL
+│   │   ├── Link1.STL
+│   │   ├── Link2.STL
+│   │   ├── Link3.STL
+│   │   ├── Link4.STL
+│   │   ├── Link5.STL
+│   │   ├── Link6.STL
+│   │   └── Link7.STL
+│   ├── rm_gen72_arm              #gen72机械臂模型文件存放文件夹
+│   │   ├── base_link.STL
+│   │   ├── Link1.STL
+│   │   ├── Link2.STL
+│   │   ├── Link3.STL
+│   │   ├── Link4.STL
+│   │   ├── Link5.STL
+│   │   ├── Link6.STL
+│   │   └── Link7.STL
+│   └── rm_rx75_arm               #RX75双臂模型文件存放文件夹
+│       ├── rm_rx75_left_arm
+│       │   ├── base_link.STL
+│       │   ├── Link1.STL
+│       │   ├── Link2L.STL
+│       │   ├── Link3.STL
+│       │   ├── Link4.STL
+│       │   ├── Link5.STL
+│       │   ├── Link6.STL
+│       │   ├── Link7.STL
+│       │   └── Link8.STL
+│       ├── rm_rx75_left_arm_v
+│       │   ├── base_link.STL
+│       │   ├── Link1.STL
+│       │   ├── Link2.STL
+│       │   ├── Link3.STL
+│       │   ├── Link4.STL
+│       │   ├── Link5.STL
+│       │   ├── Link6.STL
+│       │   ├── Link7.STL
+│       │   └── Link8.STL
+│       ├── rm_rx75_right_arm
+│       │   ├── base_link.STL
+│       │   ├── Link1.STL
+│       │   ├── Link2.STL
+│       │   ├── Link3.STL
+│       │   ├── Link4.STL
+│       │   ├── Link5.STL
+│       │   ├── Link6.STL
+│       │   ├── Link7.STL
+│       │   └── Link8.STL
+│       └── rm_rx75_right_arm_v
+│           ├── base_link.STL
+│           ├── Link1.STL
+│           ├── Link2.STL
+│           ├── Link3.STL
+│           ├── Link4.STL
+│           ├── Link5.STL
+│           ├── Link6.STL
+│           ├── Link7.STL
+│           └── Link8.STL
 ├── package.xml
 ├── rviz                          #rviz2配置文件存放文件夹
 │   ├── rm_63.rviz
 │   ├── rm_65.rviz
 │   ├── rm_75.rviz
+│   ├── rm_eco62.rviz
 │   ├── rm_eco65.rviz
 │   ├── rm_eco63.rviz
-│   └── rm_gen72.rviz
+│   ├── rm_gen72.rviz
+│   └── rm_rx75.rviz
+├── scripts
+│   └── dual_arm_joint_state_bridge.py  #RX75双臂关节状态桥接脚本
 ├── textures
 └── urdf
     ├── display_arm.rviz
+    ├── rm_eco62.csv
+    ├── rm_eco62_gazebo.urdf            #eco62 gazebo仿真urdf描述文件
+    ├── rm_eco62_gazebo.urdf.xacro      #eco62 gazebo仿真xacro描述文件
+    ├── rm_eco62.urdf                   #eco62 urdf描述文件
+    ├── rm_eco62.urdf.xacro             #eco62 xacro描述文件
     ├── rm_65_6f.urdf                   #65 六维力urdf描述文件
     ├── rm_65_6fb.urdf                  #65 一体化六维力urdf描述文件   
     ├── rm_65_description.csv
@@ -194,8 +270,20 @@ rm@rm-desktop:~$ rviz2
     ├── rm_eco63.urdf                   #eco63 urdf描述文件
     ├── rm_eco63.urdf.xacro             #eco63 xacro描述文件
     ├── rm_gen72.csv
+    ├── rm_gen72_II.urdf                #gen72_II urdf描述文件
+    ├── rm_gen72_II_gazebo.urdf         #gen72_II gazebo仿真urdf描述文件
     ├── rm_gen72_gazebo.urdf            #gen72gazebo仿真urdf描述文件
     ├── rm_gen72.urdf                   #gen72 urdf描述文件
+    ├── rm_rx75-6fb.urdf.xacro          #RX75-6FB双臂xacro描述文件
+    ├── rm_rx75-6fb_v.urdf.xacro        #RX75-6FB-V双臂xacro描述文件
+    ├── rm_rx75l-6fb.csv
+    ├── rm_rx75l-6fb.urdf               #RX75-6FB左臂urdf描述文件
+    ├── rm_rx75l-6fb_v.csv
+    ├── rm_rx75l-6fb_v.urdf             #RX75-6FB-V左臂urdf描述文件
+    ├── rm_rx75r-6fb.csv
+    ├── rm_rx75r-6fb.urdf               #RX75-6FB右臂urdf描述文件
+    ├── rm_rx75r-6fb_v.csv
+    ├── rm_rx75r-6fb_v.urdf             #RX75-6FB-V右臂urdf描述文件
     ├── rml_63_6f.urdf                  #63 六维力urdf描述文件
     ├── rml_63_6fb.urdf                 #63 一体化六维力urdf描述文件  
     ├── rml_63_description.csv

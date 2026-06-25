@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_moveit2_config使用说明书V1.5
+# 睿尔曼机器人rm_moveit2_config使用说明书V1.6
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -19,6 +19,7 @@
 |V1.3    |2024-12-25 |修订(添加了63、65、75、ECO65的六维力适配文件，以及63、65、75、ECO63、ECO65的一体化六维力适配文件) |
 |V1.4    |2025-4-3 |修订(添加了Gen72_II型适配文件) |
 |V1.5    |2025-11-13 |修订(添加了RML63_III型适配文件) |
+|V1.6    |2026-4-16 |修订(添加ECO62、RX75适配文件) |
 
 </div>
 
@@ -46,15 +47,15 @@ rm_moveit2_config文件夹为实现moveit2控制真实机械臂的功能包，�
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo.launch.py
 ```
-启动六维力版本机械臂的命令为(注意：eco63不可用)：
+启动六维力版本机械臂的命令为（当前支持63、65、75、eco65）：
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6f.launch.py
 ```
-启动一体化六维力版本机械臂的命令为：
+启动一体化六维力版本机械臂的命令为（当前支持63、63_III、65、75、eco63、eco65）：
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6fb.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II、RX75 。  
 例如65机械臂的启动命令：  
 ```
 rm@rm-desktop:~$ ros2 launch rm_65_config demo.launch.py
@@ -76,11 +77,11 @@ rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
 ```
 注意：
-启动六维力版本机械臂的命令为(注意：eco63不可用)：
+启动六维力版本机械臂的命令为（当前支持63、65、75、eco65）：
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6f_display.launch.py
 ```
-启动一体化六维力版本机械臂的命令为：
+启动一体化六维力版本机械臂的命令为（当前支持63、63_III、65、75、eco63、eco65）：
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6fb_display.launch.py
 ```
@@ -92,15 +93,15 @@ rm@rm-desktop:~$ ros2 launch rm_control rm_<arm_type>_control.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo.launch.py
 ```
-启动六维力版本机械臂的命令为(注意：eco63不可用)：
+启动六维力版本机械臂的命令为（当前支持63、65、75、eco65）：
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6f.launch.py
 ```
-启动一体化六维力版本机械臂的命令为：
+启动一体化六维力版本机械臂的命令为（当前支持63、63_III、65、75、eco63、eco65、rx75）：
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 ```
-注意以上指令均需要将<arm_type>更换为对应的机械臂型号，可选择的型号有65、63、eco65、eco63、75、gen72。  
+注意以上指令均需要将<arm_type>更换为对应的机械臂型号，可选择的型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II。RX75 请使用 `rm_rx75_config` 下的专用 launch：RX75-6FB-V 执行 `ros2 launch rm_rx75_config real_moveit_demo_6fb_v.launch.py`，RX75-6FB 执行 `ros2 launch rm_rx75_config real_moveit_demo_6fb.launch.py`。  
 **注：新添加的gen72_II型和63_III型均在对应的型号文件下，区别在于启动时需要在demo后面添加II或III的标识**  
 如63_III启动命令如下：
 ``` C++
@@ -229,6 +230,7 @@ ros2 launch rm_63_config demo_III_6fb.launch.py
 │   │   ├── static_virtual_joint_tfs.launch.py
 │   │   └── warehouse_db.launch.py
 │   └── package.xml
+├── rm_eco62_config                                   #eco62机械臂moveit2功能包（结构与说明参考63）
 ├── rm_eco65_config              #eco65机械臂moveit2功能包（文件解释参考63）
 │   ├── CMakeLists.txt
 │   ├── config
@@ -290,7 +292,7 @@ ros2 launch rm_63_config demo_III_6fb.launch.py
 │   │   ├── static_virtual_joint_tfs.launch.py
 │   │   └── warehouse_db.launch.py
 │   └── package.xml
-└── rm_gen72_config             #gen72机械臂moveit2功能包（文件解释参考63）
+├── rm_gen72_config             #gen72机械臂moveit2功能包（文件解释参考63）
     ├── CMakeLists.txt
     ├── config
     │   ├── initial_positions.yaml
@@ -319,6 +321,7 @@ ros2 launch rm_63_config demo_III_6fb.launch.py
     │   ├── static_virtual_joint_tfs.launch.py
     │   └── warehouse_db.launch.py
     └── package.xml
+└── rm_rx75_config               #RX75双臂moveit2功能包（包含 RX75-6FB 与 RX75-6FB-V 的规划、Gazebo 与真实机械臂启动文件）
 ```
 ## rm_moveit2_config话题说明
 关于moveit2的话题说明，为使其话题结构更加清晰明白在这里以节点话题的数据流图的方式进行查看和讲解。

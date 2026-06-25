@@ -49,15 +49,14 @@
 
 
     <gazebo>
-        <is_static>true</is_static>
-        <self_collide>true</self_collide>
+                <self_collide>true</self_collide>
     </gazebo>
 
 
     <!-- 声明ros2_control -->
     <ros2_control name="GazeboSystem" type="system">
         <hardware>
-            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+            <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </hardware>
         <joint name="joint1">
             <command_interface name="position"/>
@@ -105,7 +104,7 @@
 
     <!-- 加载ros2_control插件 -->
     <gazebo>
-        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
             <parameters>$(find rm_63_config)/config/ros2_controllers.yaml</parameters>
             <robot_param>robot_description</robot_param>
             <robot_param_node>robot_state_publisher</robot_param_node>

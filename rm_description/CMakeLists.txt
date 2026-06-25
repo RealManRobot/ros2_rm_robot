@@ -22,8 +22,13 @@ find_package(ament_cmake REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 install(
-  DIRECTORY launch urdf meshes
+  DIRECTORY launch urdf meshes rviz
   DESTINATION share/${PROJECT_NAME}
+)
+
+install(
+  PROGRAMS scripts/dual_arm_joint_state_bridge.py
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)

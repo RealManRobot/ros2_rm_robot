@@ -44,13 +44,10 @@ void MoveJPDemo::movejp_demo()
 {
 
     rm_ros_interfaces::msg::Movejp moveJ_P_TargetPose;
-    moveJ_P_TargetPose.pose.position.x = -0.317239;
-    moveJ_P_TargetPose.pose.position.y = 0.120903;
-    moveJ_P_TargetPose.pose.position.z = 0.255765 + 0.04;
-    moveJ_P_TargetPose.pose.orientation.x = -0.983404;
-    moveJ_P_TargetPose.pose.orientation.y = -0.178432;
-    moveJ_P_TargetPose.pose.orientation.z = 0.032271;
-    moveJ_P_TargetPose.pose.orientation.w = 0.006129;
+    moveJ_P_TargetPose.pose.position.x = -0.36969;
+    moveJ_P_TargetPose.pose.position.y = 0.420903;
+    moveJ_P_TargetPose.pose.position.z = 0.075765;
+
     moveJ_P_TargetPose.speed = 20;
     moveJ_P_TargetPose.trajectory_connect = 0;
     moveJ_P_TargetPose.block = true;
@@ -62,8 +59,8 @@ void MoveJPDemo::movejp_demo()
 MoveJPDemo::MoveJPDemo():rclcpp::Node("Movejp_demo_node")
 {
 
-  movejp_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movej_p_result", rclcpp::ParametersQoS(), std::bind(&MoveJPDemo::MoveJPDemo_Callback, this,_1));
-  movejp_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movejp>("/rm_driver/movej_p_cmd", rclcpp::ParametersQoS());
+  movejp_subscription_ = this->create_subscription<std_msgs::msg::Bool>("rm_driver/movej_p_result", rclcpp::ParametersQoS(), std::bind(&MoveJPDemo::MoveJPDemo_Callback, this,_1));
+  movejp_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movejp>("rm_driver/movej_p_cmd", rclcpp::ParametersQoS());
   std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   movejp_demo();
 }

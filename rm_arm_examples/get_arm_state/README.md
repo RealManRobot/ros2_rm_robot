@@ -78,7 +78,7 @@
     ```
     ros2 launch rm_driver rm_<arm_type>_driver.launch.py
     ```
-    <arm_type>可以为65、63、eco65、75、gen72，可对照自己使用的设备进行实际选择
+    <arm_type>可以为65、63、eco62、eco63、eco65、75、gen72，可对照自己使用的设备进行实际选择
     我们需要在另一个终端中启动机械臂的get_arm_state功能包。
     ```
     ros2 launch get_arm_state get_arm_state_demo.launch.py
