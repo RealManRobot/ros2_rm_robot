@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="RXL-6FB-V">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="3.53515085052307E-05 -0.000344112995119898 0.0504743485121994"
+        rpy="0 0 0" />
+      <mass
+        value="0.651913537431184" />
+      <inertia
+        ixx="0.000695985861740614"
+        ixy="2.06881020271026E-06"
+        ixz="2.11905962706535E-06"
+        iyy="0.000681094463816854"
+        iyz="-6.8398972367929E-06"
+        izz="0.000727115124180861" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="Link1">
+    <inertial>
+      <origin
+        xyz="-0.000290039965074493 -0.017324479063518 -0.0195297930889112"
+        rpy="0 0 0" />
+      <mass
+        value="0.851539025255045" />
+      <inertia
+        ixx="0.00161691934372323"
+        ixy="-8.95170264050262E-06"
+        ixz="3.54023443014755E-06"
+        iyy="0.00155955305368666"
+        iyz="0.000290448081740522"
+        izz="0.000931373436376791" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.925490196078431 0.925490196078431 0.905882352941176 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J1"
+    type="revolute">
+    <origin
+      xyz="0 0 0.191500058118611"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link1" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.105"
+      upper="3.105"
+      effort="60"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="Link2">
+    <inertial>
+      <origin
+        xyz="-0.000198065601723252 -0.121926317726403 0.0072587186335575"
+        rpy="0 0 0" />
+      <mass
+        value="0.870077465148622" />
+      <inertia
+        ixx="0.00342065901382288"
+        ixy="5.08107324203785E-06"
+        ixz="4.6897776824868E-07"
+        iyy="0.000757976929562103"
+        iyz="-0.000468041558256912"
+        izz="0.00341269847558394" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.925490196078431 0.925490196078431 0.905882352941176 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J2"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.57079632679489 -1.5707963267949 0" />
+    <parent
+      link="Link1" />
+    <child
+      link="Link2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.697"
+      upper="3.837"
+      effort="60"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="Link3">
+    <inertial>
+      <origin
+        xyz="-0.000185688342147207 0.0189545043853434 -0.0222212911462448"
+        rpy="0 0 0" />
+      <mass
+        value="0.593225766113055" />
+      <inertia
+        ixx="0.000987322499389567"
+        ixy="5.33226956673084E-06"
+        ixz="2.46957622944146E-06"
+        iyy="0.000924038544676145"
+        iyz="-0.000182195069939146"
+        izz="0.000522426034777855" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J3"
+    type="revolute">
+    <origin
+      xyz="0 -0.322 0"
+      rpy="1.5707963267949 -1.5707963267949 0" />
+    <parent
+      link="Link2" />
+    <child
+      link="Link3" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.105"
+      upper="3.105"
+      effort="30"
+      velocity="3.925" />
+  </joint>
+  <link
+    name="Link4">
+    <inertial>
+      <origin
+        xyz="-1.56713806214975E-06 0.070361505538576 0.00824535562548243"
+        rpy="0 0 0" />
+      <mass
+        value="0.395483565870343" />
+      <inertia
+        ixx="0.000610265900032592"
+        ixy="-1.23566834166975E-09"
+        ixz="8.8946527472201E-09"
+        iyy="0.000225904948310313"
+        iyz="0.000115003375900826"
+        izz="0.000613899218313925" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J4"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="Link3" />
+    <child
+      link="Link4" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-2.355"
+      upper="2.355"
+      effort="30"
+      velocity="3.925" />
+  </joint>
+  <link
+    name="Link5">
+    <inertial>
+      <origin
+        xyz="-1.06801658796215E-06 -0.0178419575517058 -0.076517474887456"
+        rpy="0 0 0" />
+      <mass
+        value="0.845200261498234" />
+      <inertia
+        ixx="0.00155701312924725"
+        ixy="2.10574893252017E-08"
+        ixz="-3.0288997460395E-08"
+        iyy="0.00141119231348779"
+        iyz="0.000269335537553634"
+        izz="0.00070954635319368" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J5"
+    type="revolute">
+    <origin
+      xyz="0 0.2755 0"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="Link4" />
+    <child
+      link="Link5" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.105"
+      upper="3.105"
+      effort="10"
+      velocity="3.925" />
+  </joint>
+  <link
+    name="Link6">
+    <inertial>
+      <origin
+        xyz="0.012330807376007 0.00135452616166095 0.00645399584433975"
+        rpy="0 0 0" />
+      <mass
+        value="0.280942850777542" />
+      <inertia
+        ixx="0.000122186285621494"
+        ixy="-2.28189014024603E-06"
+        ixz="8.22069567209981E-06"
+        iyy="0.000141918728413125"
+        iyz="3.15709541385663E-06"
+        izz="0.000122117670908298" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J6"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.57079632679489 -1.5707963267949 0" />
+    <parent
+      link="Link5" />
+    <child
+      link="Link6" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-1.046"
+      upper="1.046"
+      effort="10"
+      velocity="3.925" />
+  </joint>
+  <link
+    name="Link7">
+    <inertial>
+      <origin
+        xyz="0.021978 -0.044563 0.0088555"
+        rpy="0 0 0" />
+      <mass
+        value="0.23898" />
+      <inertia
+        ixx="0.00016177"
+        ixy="2.0217E-06"
+        ixz="-3.4508E-07"
+        iyy="0.00014303"
+        iyz="-4.0084E-05"
+        izz="0.00013696" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.89804 0.91765 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J7"
+    type="revolute">
+    <origin
+      xyz="0.0155 0 0"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="Link6" />
+    <child
+      link="Link7" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-1.988"
+      upper="0.697"
+      effort="10"
+      velocity="3.925" />
+  </joint>
+  <link
+    name="Link8">
+    <inertial>
+      <origin
+        xyz="-0.00022351 8.8364E-05 -0.017157"
+        rpy="0 0 0" />
+      <mass
+        value="0.16582" />
+      <inertia
+        ixx="4.8849E-05"
+        ixy="-9.4591E-08"
+        ixz="3.0619E-07"
+        iyy="4.9461E-05"
+        iyz="8.0268E-09"
+        izz="7.6902E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link8.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.89804 0.91765 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_rx75_arm/rm_rx75_left_arm_v/Link8.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J8"
+    type="revolute">
+    <origin
+      xyz="0 -0.119000004117148 0"
+      rpy="1.57079632679489 0 0" />
+    <parent
+      link="Link7" />
+    <child
+      link="Link8" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>

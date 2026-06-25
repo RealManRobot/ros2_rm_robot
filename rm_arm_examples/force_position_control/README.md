@@ -4,14 +4,14 @@
 
 ## **1.项目介绍**
 
-本项目是一个基于RM65、RM75机械臂和ROS功能包实现力位混合控制规划运动功能（该功能适用于类似于MoveL的笛卡尔运动，不适用与MoveJ等关节运动），程序在执行时会依次执行开启力位混合控制，进行笛卡尔运动，关闭力位混合控制的操作，目的是使ROS开发者迅速掌握并灵活运用机械臂。
+本项目是一个基于RM65、RM75、ECO62、ECO63机械臂和ROS功能包实现力位混合控制规划运动功能（该功能适用于类似于MoveL的笛卡尔运动，不适用与MoveJ等关节运动），程序在执行时会依次执行开启力位混合控制，进行笛卡尔运动，关闭力位混合控制的操作，目的是使ROS开发者迅速掌握并灵活运用机械臂。
 
 ## **2. 代码结构**
 
 ```
 ├── CMakeLists.txt                           <-CMake编译文件
 ├── launch                                   <-启动文件夹
-│   └── force_position_control_demo.launch   <-启动文件
+│   └── force_position_control_demo.launch.py<-启动文件
 ├── LICENSE                                  <-版本说明
 ├── package.xml                              <-依赖描述文件夹
 ├── README.md                                <-说明文档
@@ -20,21 +20,21 @@
 ```
 ## **3.项目下载**
 
-通过项目链接下载本项目工程文件到本地：[ros2_rm_robot](https://github.com/RealManRobot/ros2_rm_robot/tree/humble)
+通过项目链接下载本项目工程文件到本地：[ros2_rm_robot](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy)
 
 ## **4.环境配置**
 
 | 项目 | 内容 |
 | :-- | :-- |
-| 系统 | Ubuntu22.04 |
-| ROS版本 | humble |
-| 依赖 | 机械臂的ROS2-humble功能包 |
+| 系统 | Ubuntu24.04 |
+| ROS版本 | jazzy |
+| 依赖 | 机械臂的ROS2-jazzy功能包 |
 
 **配置过程**
 
-1. 首先需要准备好Ubuntu22.04操作系统的虚拟机或其他设备。
-2. 安装ROS2环境[humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html),也可参考ROS2-humble功能包中的安装说明进行安装。
-3. ROS2-Humble功能包安装
+1. 首先需要准备好Ubuntu24.04操作系统的虚拟机或其他设备。
+2. 安装ROS2环境[jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html),也可参考ROS2-jazzy功能包中的安装说明进行安装。
+3. ROS2-Jazzy功能包安装
 
     新建工作空间和src文件
     ```
@@ -68,6 +68,7 @@
     再次声明环境变量
     ```
     source ./install/setup.bash
+    ```
 
 ## **5. 使用指南**
 
@@ -77,12 +78,12 @@
     ```
     ros2 launch rm_driver rm_<arm_type>_driver.launch.py
     ```
-    <arm_type>可以为65、63、eco65、75、gen72，可对照自己使用的设备进行实际选择
+    <arm_type>可以为65、63、eco62、eco63、eco65、75、gen72，可对照自己使用的设备进行实际选择
     我们需要在另一个终端中启动机械臂的force_position_control功能包。
     ```
     ros2 launch force_position_control force_position_control_demo.launch.py
     ```
-    若非RM65、RM75机械臂可能会出现无法到达点位的情况，为正常现象。
+    若非RM65、RM75、ECO62、ECO63机械臂可能会出现无法到达点位的情况，为正常现象。
 * **返回信息**：
 
     在程序成功运行时将会出现以下提示信息。

@@ -21,12 +21,12 @@
         izz="0.000904023422915791" />
     </inertial> -->
     <inertia
-        ixx="0"
+        ixx="1e-6"
         ixy="0"
         ixz="0"
-        iyy="0"
+        iyy="1e-6"
         iyz="0"
-        izz="0" />
+        izz="1e-6" />
     </inertial>
     <visual>
       <origin
@@ -69,12 +69,12 @@
         izz="0.00056135241627747" />
     </inertial> -->
     <inertia
-        ixx="0"
+        ixx="1e-6"
         ixy="0"
         ixz="0"
-        iyy="0"
+        iyy="1e-6"
         iyz="0"
-        izz="0" />
+        izz="1e-6" />
     </inertial>
     <visual>
       <origin
@@ -135,12 +135,12 @@
         izz="0.00697869103915473" />
     </inertial> -->
     <inertia
-        ixx="0"
+        ixx="1e-6"
         ixy="0"
         ixz="0"
-        iyy="0"
+        iyy="1e-6"
         iyz="0"
-        izz="0" />
+        izz="1e-6" />
     </inertial>
     <visual>
       <origin
@@ -201,12 +201,12 @@
         izz="0.000614178164773085" />
     </inertial> -->
     <inertia
-        ixx="0"
+        ixx="1e-6"
         ixy="0"
         ixz="0"
-        iyy="0"
+        iyy="1e-6"
         iyz="0"
-        izz="0" />
+        izz="1e-6" />
     </inertial>
     <visual>
       <origin
@@ -267,12 +267,12 @@
         izz="0.000119888082791859" />
     </inertial>-->
     <inertia
-        ixx="0"
+        ixx="1e-6"
         ixy="0"
         ixz="0"
-        iyy="0"
+        iyy="1e-6"
         iyz="0"
-        izz="0" />
+        izz="1e-6" />
     </inertial>
     <visual>
       <origin
@@ -333,12 +333,12 @@
         izz="0.000334482418423629" />
     </inertial> -->
     <inertia
-        ixx="0"
+        ixx="1e-6"
         ixy="0"
         ixz="0"
-        iyy="0"
+        iyy="1e-6"
         iyz="0"
-        izz="0" />
+        izz="1e-6" />
     </inertial>
     <visual>
       <origin
@@ -400,12 +400,12 @@
           izz="3.17885459163081E-05" />
       </inertial> -->
       <inertia
-        ixx="0"
+        ixx="1e-6"
         ixy="0"
         ixz="0"
-        iyy="0"
+        iyy="1e-6"
         iyz="0"
-        izz="0" />
+        izz="1e-6" />
     </inertial>
       <visual>
         <origin
@@ -468,12 +468,12 @@
         izz="6.1463E-05" />
       </inertial> -->
       <inertia
-        ixx="0"
+        ixx="1e-6"
         ixy="0"
         ixz="0"
-        iyy="0"
+        iyy="1e-6"
         iyz="0"
-        izz="0" />
+        izz="1e-6" />
       </inertial>
       <visual>
         <origin
@@ -536,12 +536,12 @@
           izz="0.00305546066386606" />
       </inertial> -->
       <inertia
-        ixx="0"
+        ixx="1e-6"
         ixy="0"
         ixz="0"
-        iyy="0"
+        iyy="1e-6"
         iyz="0"
-        izz="0" />
+        izz="1e-6" />
       </inertial>
       <visual>
         <origin

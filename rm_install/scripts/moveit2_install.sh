@@ -3,8 +3,8 @@
 # Date: 2023-07-19
 # Author: Herman Ye @Realman Robotics
 #
-# Warning: This script assumes that the ubuntu20.04 system and ROS2 Foxy have been installed correctly
-# If not, please execute ROS2_Foxy_install.sh first.
+# Warning: This script is ONLY for ROS2 Jazzy in Ubuntu 24.04.
+# If ROS2 has not been installed, please execute ros2_install.sh first.
 #
 # set -x
 set -e
@@ -23,24 +23,22 @@ if [ "$(id -u)" != "0" ]; then
 fi
 echo "sudo privileges check passed"
 
-# Check if script is run in ubuntu20.04
-if [ "$(lsb_release -sc)" != "focal" ]; then
-    if [ "$(lsb_release -sc)" != "jammy" ]; then
-        echo "This script must be run in ubuntu20.04 or 22.04"
-        read -p "Press any key to exit..."
-        exit 1
-    fi
+UBUNTU_CODENAME=$(lsb_release -sc)
+ROS_DISTRO="jazzy"
+
+if [ "$UBUNTU_CODENAME" != "noble" ]; then
+    echo "This script must be run in Ubuntu 24.04"
+    read -p "Press any key to exit..."
+    exit 1
 fi
 
 echo "Ubuntu version check passed"
 
-# Check if script is run in ROS2 Foxy
-if [[ "$(sudo -u $USERNAME dpkg -l ros-foxy-desktop)" == *ii* ]]; then
-    echo "ROS2 foxy check passed"
-elif [[ "$(sudo -u $USERNAME dpkg -l ros-humble-desktop)" == *ii* ]]; then
-    echo "ROS2 humble check passed"
+# Check if the matching ROS2 desktop package has been installed.
+if dpkg -l "ros-${ROS_DISTRO}-desktop" 2>/dev/null | grep -q "^ii"; then
+    echo "ROS2 ${ROS_DISTRO} check passed"
 else
-    echo "This script must be run with ROS2 HumbleorFoxy-desktop-full"
+    echo "This script must be run with ROS2 ${ROS_DISTRO}-desktop"
     read -p "Press any key to exit..."
     exit 1
 fi
@@ -69,24 +67,22 @@ sleep 5
 # Install wstool
 sudo apt-get install python3-wstool -y
 
-if [ "$(lsb_release -sc)" = "focal" ]; then
-    # Install moveit
-    sudo apt-get install ros-foxy-moveit -y
-    # sudo apt-get install ros-foxy-moveit-visual-tools -y
-    # Warning: Installing all subpackages of moveit may cause dependency conflicts, please do so with caution.
-    sudo apt-get install ros-foxy-moveit-* -y
-    # Install ros_control
-    sudo apt-get install ros-foxy-controller-interface ros-foxy-controller-manager-msgs ros-foxy-controller-manager
-elif [ "$(lsb_release -sc)" = "jammy" ]; then
-    # Install moveit
-    sudo apt-get install ros-humble-moveit -y
-    # sudo apt-get install ros-foxy-moveit-visual-tools -y
-    # Warning: Installing all subpackages of moveit may cause dependency conflicts, please do so with caution.
-    sudo apt-get install ros-humble-moveit-* -y
-    # Install ros_control
-    sudo apt-get install ros-humble-controller-interface ros-humble-controller-manager-msgs ros-humble-controller-manager
-fi
-# Create A Catkin Workspace and Download MoveIt Source
+# Install moveit
+sudo apt-get install ros-${ROS_DISTRO}-moveit -y
+# sudo apt-get install ros-${ROS_DISTRO}-moveit-visual-tools -y
+# Warning: Installing all subpackages of moveit may cause dependency conflicts, please do so with caution.
+sudo apt-get install ros-${ROS_DISTRO}-moveit-* -y
+# Install ros2_control and Gazebo dependencies used by rm_gazebo demos.
+sudo apt-get install \
+    ros-${ROS_DISTRO}-controller-interface \
+    ros-${ROS_DISTRO}-controller-manager-msgs \
+    ros-${ROS_DISTRO}-controller-manager \
+    ros-${ROS_DISTRO}-joint-state-broadcaster \
+    ros-${ROS_DISTRO}-joint-trajectory-controller \
+    ros-${ROS_DISTRO}-ros-gz-sim \
+    ros-${ROS_DISTRO}-ros-gz-bridge \
+    ros-${ROS_DISTRO}-gz-ros2-control \
+    -y
 
 
 clear
@@ -124,84 +120,5 @@ echo -e "${GREEN}$(printf '%*s' $TEXT1_PADDING)${TEXT1} ${NC}"
 echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT0} ${NC}"
 echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT0} ${NC}"
 echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT0} ${NC}"
-# read -rp "Do you want to download the tutorial code? (y/n)  " confirm
-#   if [[ "$confirm" =~ ^[Yy]$ ]]; then
-#     # Download Example Code(already in the moveit.rosinstall)
-#     # cd /home/$USERNAME/ws_moveit/src  
-#     sudo rm -rf /home/$USERNAME/ws_moveit
-#     mkdir -p /home/$USERNAME/ws_moveit/src
-#     cd  /home/$USERNAME/ws_moveit/src
-#     clear
-#     echo "Connecting to GitHub, please wait..."
-#     echo "If the download stuck here for a long time"
-#     echo "please check your network connection and rerun this script"
-#     # install franka robot as demo
-#     sudo apt-get install ros-foxy-franka-* -y
-#     git clone https://github.com/ros-planning/moveit_tutorials.git -b master
-#     git clone https://github.com/ros-planning/panda_moveit_config.git -b Foxy-devel
-
-#     # git clone https://github.com/ros-controls/ros_control.git -b Foxy-devel
-
-#     # Clone MoveIt packages from source
-#     # git clone https://github.com/ros-planning/moveit_msgs.git
-#     # git clone https://github.com/ros-planning/moveit_resources.git
-#     # git clone https://github.com/ros-planning/geometric_shapes.git --branch Foxy-devel
-#     # git clone https://github.com/ros-planning/srdfdom.git --branch Foxy-devel
-#     # git clone https://github.com/ros-planning/moveit.git
-#     # git clone https://github.com/PickNikRobotics/rviz_visual_tools.git
-#     # git clone https://github.com/ros-planning/moveit_visual_tools.git
-#     # git clone https://github.com/ros-planning/moveit_tutorials.git
-#     # git clone https://github.com/ros-planning/panda_moveit_config.git --branch Foxy-devel
-#         # Rosdepc install
-#     cd /home/$USERNAME/ws_moveit/src
-#     rosdepc install -y --from-paths . --ignore-src --rosdistro Foxy > /dev/null
-#     echo "Rosdep install finished"
-
-#     # Build the Workspace
-#     cd /home/$USERNAME/ws_moveit
-#     catkin config --extend /opt/ros/Foxy --cmake-args -DCMAKE_BUILD_TYPE=Release
-#     catkin init
-#     catkin build
-
-#     # Environment setup
-#     if ! grep -q "/home/$USERNAME/ws_moveit/devel/setup.bash" /home/$USERNAME/.bashrc; then
-
-#         echo "# ws_moveit Environment Setting" | sudo tee -a /home/$USERNAME/.bashrc
-#         echo "source /home/$USERNAME/ws_moveit/devel/setup.bash" >> /home/$USERNAME/.bashrc
-#         echo "ws_moveit environment setup added to /home/$USERNAME/.bashrc"
-#     else
-#         echo "ws_moveit environment is already set in /home/$USERNAME/.bashrc"
-#     fi
-#     source /home/$USERNAME/.bashrc
-
-#     # Verifying Moveit1 installation
-#     clear
-
-
-#     # Print the text in the center of the screen in the desired colors
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT1_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT1_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT0} ${NC}"
-#     echo -e "${GREEN}$(printf '%*s' $TEXT1_PADDING)${TEXT1} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT2} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT1_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT0} ${NC}"
-#     echo -e "${RED}$(printf '%*s' $TEXT3_PADDING)${TEXT3} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT1_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT4} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT5} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT6} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT7} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT8} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT1_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT1_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT2_PADDING)${TEXT0} ${NC}"
-#     echo -e "${NC}$(printf '%*s' $TEXT1_PADDING)${TEXT0} ${NC}"
-#   else
 read -p "Ok. The installation is complete. Press any key to exit..."
 exit 0
-#   fi

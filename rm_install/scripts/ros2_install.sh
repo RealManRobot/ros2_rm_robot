@@ -2,7 +2,7 @@
 # Version: 1.4
 # Date: 2023-06-19
 # Author: Herman Ye @Realman Robotics
-# Warning: This script is ONLY for ROS2 Humble in ubuntu 20.04
+# Warning: This script is ONLY for ROS2 Jazzy in Ubuntu 24.04.
 # set -x
 set -e
 
@@ -12,7 +12,7 @@ set -e
 
 # Check if script is run as root (sudo)
 if [ "$(id -u)" != "0" ]; then
-    echo "This script must be run with sudo privileges. for example: sudo bash ros2_humble_install.sh"
+    echo "This script must be run with sudo privileges. for example: sudo bash ros2_install.sh"
     read -p "Press any key to exit..."
     exit 1
 fi
@@ -21,10 +21,19 @@ SCRIPT_DIR=$(dirname "$0")
 # Get the username of the non-root user
 USERNAME=$SUDO_USER
 Ubuntu_version=$(lsb_release -r --short)
+UBUNTU_CODENAME="noble"
+ROS_DISTRO="jazzy"
+
+if [ "$Ubuntu_version" != "24.04" ]; then
+    echo "This script must be run with Ubuntu 24.04"
+    read -p "Press any key to exit..."
+    exit 1
+fi
+
 echo "Current user is: $USERNAME"
 # Save logs to files
-LOG_FILE="${SCRIPT_DIR}/ros2_humble_install.log"
-ERR_FILE="${SCRIPT_DIR}/ros2_humble_install.err"
+LOG_FILE="${SCRIPT_DIR}/ros2_${ROS_DISTRO}_install.log"
+ERR_FILE="${SCRIPT_DIR}/ros2_${ROS_DISTRO}_install.err"
 rm -f ${LOG_FILE}
 rm -f ${ERR_FILE}
 
@@ -33,7 +42,7 @@ exec 1> >(tee -a ${LOG_FILE} )
 exec 2> >(tee -a ${ERR_FILE} >&2)
 
 # Output log info to console
-echo "ROS2 Humble installation started!"  
+echo "ROS2 ${ROS_DISTRO} installation started!"  
 echo "Installation logs will be saved to ${LOG_FILE}"
 echo "Installation errors will be saved to ${ERR_FILE}"
 
@@ -48,51 +57,27 @@ else
 fi
 echo "Current system architecture is: $(uname -m)"
 echo "Current mirror is: $MIRROR"
-if [ $Ubuntu_version = "20.04" ]; then
 
 # Backup original software sources
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.d/realman_ros2.list
+if [ -f /etc/apt/sources.list ]; then
+  sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
+else
+  sudo touch /etc/apt/sources.list
+fi
 # Clear original software sources
-sudo echo "" > /etc/apt/sources.list
-sudo echo "" > /etc/apt/sources.list.d/realman_ros2.list
+sudo sh -c ': > /etc/apt/sources.list'
+sudo sh -c ': > /etc/apt/sources.list.d/realman_ros2.list'
 
 # Replace software sources
-echo "deb $MIRROR focal main restricted universe multiverse" >> /etc/apt/sources.list
-echo "deb $MIRROR focal-updates main restricted universe multiverse" >> /etc/apt/sources.list
-echo "deb $MIRROR focal-backports main restricted universe multiverse" >> /etc/apt/sources.list
-echo "deb [arch=$(dpkg --print-architecture)] https://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" >> /etc/apt/sources.list.d/realman_ros2.list
-
+echo "deb $MIRROR ${UBUNTU_CODENAME} main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb $MIRROR ${UBUNTU_CODENAME}-updates main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb $MIRROR ${UBUNTU_CODENAME}-backports main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] https://mirrors.ustc.edu.cn/ros2/ubuntu ${UBUNTU_CODENAME} main" >> /etc/apt/sources.list.d/realman_ros2.list
 
 if [ $(uname -m) = "x86_64" ]; then
-  echo "deb http://security.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse" >> /etc/apt/sources.list
+  echo "deb http://security.ubuntu.com/ubuntu/ ${UBUNTU_CODENAME}-security main restricted universe multiverse" >> /etc/apt/sources.list
 else
-  echo "deb http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted universe multiverse" >> /etc/apt/sources.list
-fi
-
-elif [ $Ubuntu_version = "22.04" ]; then
-# Backup original software sources
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.d/realman_ros2.list
-# Clear original software sources
-sudo echo "" > /etc/apt/sources.list
-sudo echo "" > /etc/apt/sources.list.d/realman_ros2.list
-
-# Replace software sources
-echo "deb $MIRROR jammy main restricted universe multiverse" >> /etc/apt/sources.list
-echo "deb $MIRROR jammy-updates main restricted universe multiverse" >> /etc/apt/sources.list
-echo "deb $MIRROR jammy-backports main restricted universe multiverse" >> /etc/apt/sources.list
-echo "deb [arch=$(dpkg --print-architecture)] https://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu jammy main" >> /etc/apt/sources.list.d/realman_ros2.list
-if [ $(uname -m) = "x86_64" ]; then
-  echo "deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe multiverse" >> /etc/apt/sources.list
-else
-  echo "deb http://ports.ubuntu.com/ubuntu-ports/ jammy-security main restricted universe multiverse" >> /etc/apt/sources.list
-fi
-
-else
-    echo "This script must be run with Ubuntu 20.04 or 22.04"
-    read -p "Press any key to exit..."
-    exit 1
+  echo "deb http://ports.ubuntu.com/ubuntu-ports/ ${UBUNTU_CODENAME}-security main restricted universe multiverse" >> /etc/apt/sources.list
 fi
 
 # Install Curl
@@ -107,7 +92,7 @@ sudo apt-get upgrade -y
 
 # Install pip
 sudo apt-get install python3-dev -y
-sudo apt-get install pip -y # If you haven't already installed pip
+sudo apt-get install python3-pip -y # If you haven't already installed pip
 
 # Install gnome-terminal
 sudo apt-get install gnome-terminal -y # If you haven't already installed gnome-terminal
@@ -130,46 +115,38 @@ sudo add-apt-repository universe
 
 sudo apt-get update
 
-# Install ROS2 Humble
-if [ $Ubuntu_version = "20.04" ]; then
-  sudo apt-get install ros-foxy-desktop python3-argcomplete -y
-  sudo apt-get install gazebo11 -y
-  sudo apt-get install ros-foxy-gazebo-* -y
-elif [ $Ubuntu_version = "22.04" ]; then
-  sudo apt-get install ros-humble-desktop -y
-  sudo apt-get install gazebo -y
-  sudo apt-get install ros-humble-gazebo-* -y
-fi
+# Install ROS2 Jazzy
+sudo apt-get install ros-${ROS_DISTRO}-desktop -y
+sudo apt-get install ros-${ROS_DISTRO}-ros-gz -y
+sudo apt-get install \
+  ros-${ROS_DISTRO}-ros-gz-sim \
+  ros-${ROS_DISTRO}-ros-gz-bridge \
+  ros-${ROS_DISTRO}-gz-ros2-control \
+  -y
 
 sudo apt-get install ros-dev-tools -y
 
 # Environment setup
-if [ $Ubuntu_version = "20.04" ]; then
-  if ! grep -q "source /opt/ros/foxy/setup.bash" /home/$USERNAME/.bashrc; then
+if ! grep -q "source /opt/ros/${ROS_DISTRO}/setup.bash" /home/$USERNAME/.bashrc; then
 
-      echo "# ROS2 foxy Environment Setting" | sudo tee -a /home/$USERNAME/.bashrc
-      echo "source /opt/ros/foxy/setup.bash" | sudo tee -a /home/$USERNAME/.bashrc
-      echo "ROS2 foxy environment setup added to /home/$USERNAME/.bashrc"
-  else
-      echo "ROS2 foxy environment is already set in /home/$USERNAME/.bashrc"
-  fi
-elif [ $Ubuntu_version = "22.04" ]; then
-  if ! grep -q "source /opt/ros/humble/setup.bash" /home/$USERNAME/.bashrc; then
-
-      echo "# ROS2 humble Environment Setting" | sudo tee -a /home/$USERNAME/.bashrc
-      echo "source /opt/ros/humble/setup.bash" | sudo tee -a /home/$USERNAME/.bashrc
-      echo "ROS2 humble environment setup added to /home/$USERNAME/.bashrc"
-  else
-      echo "ROS2 humble environment is already set in /home/$USERNAME/.bashrc"
-  fi
+    echo "# ROS2 ${ROS_DISTRO} Environment Setting" | sudo tee -a /home/$USERNAME/.bashrc
+    echo "source /opt/ros/${ROS_DISTRO}/setup.bash" | sudo tee -a /home/$USERNAME/.bashrc
+    echo "ROS2 ${ROS_DISTRO} environment setup added to /home/$USERNAME/.bashrc"
+else
+    echo "ROS2 ${ROS_DISTRO} environment is already set in /home/$USERNAME/.bashrc"
 fi
 
 source /home/$USERNAME/.bashrc
 
 # Initialize rosdepc by fishros under BSD License
 # https://pypi.org/project/rosdepc/#files
-sudo pip install rosdep
-sudo pip install rosdepc
+if python3 -m pip install --help | grep -q -- "--break-system-packages"; then
+  sudo python3 -m pip install --break-system-packages rosdep
+  sudo python3 -m pip install --break-system-packages rosdepc
+else
+  sudo python3 -m pip install rosdep
+  sudo python3 -m pip install rosdepc
+fi
 # sudo pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -U rosdep
 # Init & update rosdep 
 sudo rosdepc init > /dev/null

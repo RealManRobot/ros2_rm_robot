@@ -1,7 +1,7 @@
 rm_driver:
   ros__parameters:
     #robot param
-    arm_ip: "192.168.1.25"        #设置TCP连接时的IP
+    arm_ip: "192.168.1.19"        #设置TCP连接时的IP
     tcp_port: 8080                #设置TCP连接时的端口
     
     arm_type: "RM_65"             #机械臂型号设置       

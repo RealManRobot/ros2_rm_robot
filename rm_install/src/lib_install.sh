@@ -2,7 +2,7 @@
 # Version: 1.4
 # Date: 2023-06-19
 # Author: Herman Ye @Realman Robotics
-# Warning: This script is ONLY for ROS2 Humble in ubuntu 20.04
+# Warning: This script installs the RealMan service library.
 # set -x
 set -e
 
@@ -12,7 +12,7 @@ set -e
 
 # Check if script is run as root (sudo)
 if [ "$(id -u)" != "0" ]; then
-    echo "This script must be run with sudo privileges. for example: sudo bash ros2_humble_install.sh"
+    echo "This script must be run with sudo privileges. for example: sudo bash lib_install.sh"
     read -p "Press any key to exit..."
     exit 1
 fi
@@ -50,6 +50,9 @@ fi
 sudo /sbin/ldconfig
 cd ~
 TEXT1="Lib installation completed!"
+GREEN='\033[1;32m'
+NC='\033[0m'
+TERMINAL_WIDTH=$(tput cols)
 TEXT1_PADDING=$((($TERMINAL_WIDTH-${#TEXT1})/2))
 echo ""
 echo ""

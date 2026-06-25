@@ -21,19 +21,19 @@
 
 ## 3.项目下载
 
-通过项目链接下载本项目工程文件到本地：[ros2_rm_robot](https://github.com/RealManRobot/ros2_rm_robot/tree/humble)
+通过项目链接下载本项目工程文件到本地：[ros2_rm_robot](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy)
 
 ## 4.环境配置
 
 | 项目 | 内容 |
 | :-- | :-- |
-| 系统 | Ubuntu22.04 |
-| ROS版本 | humble |
-| 依赖 | 机械臂的ROS2-humble功能包 |
+| 系统 | Ubuntu24.04 |
+| ROS版本 | jazzy |
+| 依赖 | 机械臂的ROS2-jazzy功能包 |
 
-1. 首先需要准备好Ubuntu22.04操作系统的虚拟机或其他设备。
-2. 安装ROS2环境[humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html),也可参考ROS2-humble功能包中的安装说明进行安装。
-3. ROS2-Humble功能包安装
+1. 首先需要准备好Ubuntu24.04操作系统的虚拟机或其他设备。
+2. 安装ROS2环境[jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html),也可参考ROS2-jazzy功能包中的安装说明进行安装。
+3. ROS2-Jazzy功能包安装
 
     新建工作空间和src文件夹
     ```
@@ -78,7 +78,7 @@
     ```
     ros2 launch rm_driver rm_<arm_type>_driver.launch.py
     ```
-    <arm_type>可以为65、63、eco65、75、gen72，可对照自己使用的设备进行实际选择
+    <arm_type>可以为65、63、eco62、eco63、eco65、75、gen72，可对照自己使用的设备进行实际选择
     我们需要在另一个终端中启动机械臂的get_arm_state功能包。
     ```
     ros2 launch get_arm_state get_arm_state_demo.launch.py

@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com)
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="rm_eco62">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.00133682761157797 -8.82763422017089E-05 0.0439834418774717"
+        rpy="0 0 0" />
+      <mass
+        value="0.584825481285431" />
+      <inertia
+        ixx="0.000775925119945014"
+        ixy="2.98148797430621E-06"
+        ixz="-2.52746653512818E-05"
+        iyy="0.000790075378837822"
+        iyz="2.12739218651747E-06"
+        izz="0.000587764326506914" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="link_1">
+    <inertial>
+      <origin
+        xyz="-0.0382156936663754 -0.00545476263009575 -0.00248189073126664"
+        rpy="0 0 0" />
+      <mass
+        value="0.384569120432882" />
+      <inertia
+        ixx="0.00022257753835175"
+        ixy="-7.70372317374323E-05"
+        ixz="4.37635506114307E-05"
+        iyy="0.000605579716850644"
+        iyz="4.05126631912246E-06"
+        izz="0.000631817968488901" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_1"
+    type="revolute">
+    <origin
+      xyz="0 0 0.136000000000009"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link_1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.1067"
+      upper="3.1067"
+      effort="10"
+      velocity="3.927" />
+  </joint>
+  <link
+    name="link_2">
+    <inertial>
+      <origin
+        xyz="0.0876574260013383 7.06115941204177E-07 -0.0582757120216016"
+        rpy="0 0 0" />
+      <mass
+        value="1.33623855048231" />
+      <inertia
+        ixx="0.000782439324383488"
+        ixy="3.30138611119598E-08"
+        ixz="-0.000592670610886331"
+        iyy="0.00567774731360305"
+        iyz="-1.48333937024788E-08"
+        izz="0.0056479745580982" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_2"
+    type="revolute">
+    <origin
+      xyz="-0.0700000000000007 0 0"
+      rpy="-1.5707963267949 -1.5707963267949 0" />
+    <parent
+      link="link_1" />
+    <child
+      link="link_2" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-1.8151"
+      upper="2.9496"
+      effort="10"
+      velocity="3.927" />
+  </joint>
+  <link
+    name="link_3">
+    <inertial>
+      <origin
+        xyz="0.064390668361978 1.69820375292562E-06 0.00482231553499824"
+        rpy="0 0 0" />
+      <mass
+        value="0.332154099628179" />
+      <inertia
+        ixx="0.000128065855853166"
+        ixy="3.73125577149301E-09"
+        ixz="5.57695241071185E-05"
+        iyy="0.00114220860014717"
+        iyz="-1.28387853936544E-09"
+        izz="0.00116351274597718" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_3"
+    type="revolute">
+    <origin
+      xyz="0.148000000000001 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="link_2" />
+    <child
+      link="link_3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.6354"
+      upper="2.3213"
+      effort="10"
+      velocity="3.927" />
+  </joint>
+  <link
+    name="link_4">
+    <inertial>
+      <origin
+        xyz="1.37711279149522E-06 -0.009725196668249 0.00396013823109714"
+        rpy="0 0 0" />
+      <mass
+        value="0.110752178156894" />
+      <inertia
+        ixx="4.91297766773849E-05"
+        ixy="1.12199756370538E-09"
+        ixz="-1.03735450320981E-09"
+        iyy="3.42721993306208E-05"
+        iyz="-5.21925020486496E-06"
+        izz="4.57514364497173E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_4"
+    type="revolute">
+    <origin
+      xyz="0.136 0 -0.058513"
+      rpy="0 0 1.5708" />
+    <parent
+      link="link_3" />
+    <child
+      link="link_4" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.002"
+      upper="3.002"
+      effort="2"
+      velocity="3.927" />
+  </joint>
+  <link
+    name="link_5">
+    <inertial>
+      <origin
+        xyz="5.08842681060107E-07 0.00420077719178583 -0.00358941394658707"
+        rpy="0 0 0" />
+      <mass
+        value="0.153716854003785" />
+      <inertia
+        ixx="9.76286576153493E-05"
+        ixy="-5.77416162886506E-09"
+        ixz="1.60382177530514E-09"
+        iyy="5.13289975047188E-05"
+        iyz="-2.87378837336067E-06"
+        izz="9.08724519634991E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_5"
+    type="revolute">
+    <origin
+      xyz="0 -0.0709999970209708 0"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="link_4" />
+    <child
+      link="link_5" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.002"
+      upper="3.002"
+      effort="2"
+      velocity="3.927" />
+  </joint>
+  <link
+    name="link_6">
+    <inertial>
+      <origin
+        xyz="-7.72448794437025E-05 -2.38414868461989E-05 -0.0139344966930892"
+        rpy="0 0 0" />
+      <mass
+        value="0.0471960682349858" />
+      <inertia
+        ixx="9.48227136591617E-06"
+        ixy="5.23848349048734E-09"
+        ixz="1.6103674761691E-08"
+        iyy="9.4363237926155E-06"
+        iyz="1.3729123698332E-08"
+        izz="1.30412862089912E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rm_description/meshes/rm_eco62_arm/Link6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_6"
+    type="revolute">
+    <origin
+      xyz="0 0.0706999977831763 0"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="link_5" />
+    <child
+      link="link_6" />
+    <axis
+      xyz="0 0 0.999999999999983" />
+    <limit
+      lower="-6.2832"
+      upper="6.2832"
+      effort="2"
+      velocity="3.927" />
+  </joint>
+</robot>

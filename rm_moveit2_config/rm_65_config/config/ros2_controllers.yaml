@@ -24,3 +24,28 @@ rm_group_controller:
     state_interfaces:
       - position
       - velocity
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: false
+    interpolate_from_desired_state: true
+    allow_nonzero_velocity_at_trajectory_end: true
+    constraints:
+      stopped_velocity_tolerance: 0.01
+      goal_time: 0.0
+      joint1:
+        trajectory: 0.05
+        goal: 0.03
+      joint2:
+        trajectory: 0.05
+        goal: 0.03
+      joint3:
+        trajectory: 0.05
+        goal: 0.03
+      joint4:
+        trajectory: 0.05
+        goal: 0.03
+      joint5:
+        trajectory: 0.05
+        goal: 0.03
+      joint6:
+        trajectory: 0.05
+        goal: 0.03

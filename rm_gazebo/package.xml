@@ -24,19 +24,28 @@
   <exec_depend>moveit_simple_controller_manager</exec_depend>
   <exec_depend>joint_state_publisher</exec_depend>
   <exec_depend>joint_state_publisher_gui</exec_depend>
+  <exec_depend>joint_trajectory_controller</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>xacro</exec_depend>
-  <!-- The next 2 packages are required for the gazebo simulation.
-       We don't include them by default to prevent installing gazebo and all its dependencies. -->
-  <!-- <exec_depend>joint_trajectory_controller</exec_depend> -->
-  <!-- <exec_depend>gazebo_ros_control</exec_depend> -->
+  <exec_depend condition="$ROS_DISTRO == 'humble'">ign_ros2_control</exec_depend>
+  <exec_depend condition="$ROS_DISTRO != 'humble'">gz_ros2_control</exec_depend>
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>moveit_configs_utils</exec_depend>
   <exec_depend>moveit_ros_move_group</exec_depend>
   <exec_depend>moveit_ros_visualization</exec_depend>
   <exec_depend>moveit_ros_warehouse</exec_depend>
   <exec_depend>moveit_setup_assistant</exec_depend>
-  <exec_depend>rm_65_description</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>rm_63_config</exec_depend>
+  <exec_depend>rm_65_config</exec_depend>
+  <exec_depend>rm_75_config</exec_depend>
+  <exec_depend>rm_description</exec_depend>
+  <exec_depend>rm_eco62_config</exec_depend>
+  <exec_depend>rm_eco63_config</exec_depend>
+  <exec_depend>rm_eco65_config</exec_depend>
+  <exec_depend>rm_gen72_config</exec_depend>
+  <exec_depend>rm_rx75_config</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>rviz_common</exec_depend>

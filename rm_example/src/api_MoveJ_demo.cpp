@@ -57,13 +57,13 @@ void MoveJDemo::movej_demo()
     }
     if(arm_dof_ == 7)
     {
-      movej_way.joint[0] = 0.176278;
+      movej_way.joint[0] = 0.0;
       movej_way.joint[1] = 0.0;
-      movej_way.joint[2] = 0.3543;
-      movej_way.joint[3] = 0.53;
-      movej_way.joint[4] = 0.00873;
-      movej_way.joint[5] = 0.3595;
-      movej_way.joint[6] = 0.3595;
+      movej_way.joint[2] = 0.0;
+      movej_way.joint[3] = 0.0;
+      movej_way.joint[4] = 0.0;
+      movej_way.joint[5] = 0.0;
+      movej_way.joint[6] = 0.0;
       movej_way.speed = 20;
       movej_way.dof = 7;
     }
@@ -83,8 +83,8 @@ MoveJDemo::MoveJDemo():rclcpp::Node("Movej_demo")
   {movej_way.joint.resize(6);}
   else if(arm_dof_ == 7)
   {movej_way.joint.resize(7);}
-  subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movej_result", rclcpp::ParametersQoS(), std::bind(&MoveJDemo::MovejDemo_Callback, this,_1));
-  publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movej>("/rm_driver/movej_cmd", rclcpp::ParametersQoS());
+  subscription_ = this->create_subscription<std_msgs::msg::Bool>("rm_driver/movej_result", rclcpp::ParametersQoS(), std::bind(&MoveJDemo::MovejDemo_Callback, this,_1));
+  publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movej>("rm_driver/movej_cmd", rclcpp::ParametersQoS());
   std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   movej_demo();
 }
