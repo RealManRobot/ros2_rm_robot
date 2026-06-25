@@ -1,7 +1,7 @@
 <div align="right">
 
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/jazzy/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/jazzy/README.md)
+[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/README_CN.md)|
+[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/README.md)
 
 </div>
 
@@ -12,7 +12,7 @@
 * 当前支持的机械臂有RM65系列、RM75系列、ECO62系列、ECO63系列、ECO65系列、RML63系列、GEN72系列、RX75人形双臂系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
 * 版本1.7.0.
 * 基于机械臂控制器版本1.7.3。
-* 基于的Ubuntu版本为24.04，ROS2版本为Jazzy。
+* 基于的Ubuntu版本为22.04，ROS2版本为Humble。
 
 下面为功能包安装使用教程。
 
@@ -37,7 +37,7 @@
 sudo bash ros2_install.sh
 ```
 
-如果不想使用脚本安装也可以参考网址 [ROS2_INSTALL](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)。
+如果不想使用脚本安装也可以参考网址 [ROS2_INSTALL](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html)。
 
 ### 安装Moveit2
 
@@ -84,47 +84,47 @@ colcon build
 
 功能包简介
 
-1. 安装与环境配置([rm_install](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_install))
+1. 安装与环境配置([rm_install](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_install))
 
 * 该功能包为机械臂使用辅助功能包，主要作用为介绍功能包使用环境安装与搭建方式，功能包的依赖库安装和功能包编译方法。
 
-3. 硬件驱动([rm_driver](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_driver))
+3. 硬件驱动([rm_driver](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_driver))
 
 * 该功能包为机械臂的ROS2底层驱动功能包，其作用为订阅和发布机械臂底层相关话题信息。
 
-5. 启动([rm_bringup](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_bringup))
+5. 启动([rm_bringup](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_bringup))
 
 * 该功能包为机械臂的节点启动功能包，其作用为快速启动多节点复合的机械臂功能。
 
-6. 模型描述([rm_description](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_description))
+6. 模型描述([rm_description](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_description))
 
 * 该功能包为机械臂模型描述功能包，其作用为提供机械臂模型文件和模型加载节点，并为其他功能包提供机械臂关节间的坐标变换关系。
 
-7. ROS消息接口([rm_ros_interfaces](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_ros_interfaces))
+7. ROS消息接口([rm_ros_interfaces](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_ros_interfaces))
 
 * 该功能包为机械臂的消息文件功能包，其作用为提供机械臂适配ROS2的所有控制消息和状态消息。
 
-8. MoveIt2控制程序([rm_moveit2](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_moveit2))
+8. MoveIt2控制程序([rm_moveit2](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_moveit2))
 
 * 该功能包提供基于MoveIt2的控制示例程序，支持真实机械臂与仿真机械臂的关节运动、位姿目标控制和笛卡尔轨迹控制。
 
-9. Moveit2配置([rm_moveit2_config](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_moveit2_config))
+9. Moveit2配置([rm_moveit2_config](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_moveit2_config))
 
 * 该功能包为机械臂的moveit2适配功能包，其作用为适配和实现各系列机械臂的moveit2规划控制功能，主要包括虚拟机械臂控制和真实机械臂控制两部分控制功能。
 
-10. Moveit2与硬件驱动通信连接([rm_config](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_control))
+10. Moveit2与硬件驱动通信连接([rm_config](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_control))
 
 * 该功能包为底层驱动功能包（rm_driver）和moveit2功能包（rm_moveit2_config）之间的通信连接功能包，主要功能为将moveit2的规划点进行细分然后通过透传的形式传递给底层驱动功能包控制机械臂运动。
 
-11. Gazebo仿真机械臂控制([rm_gazebo](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_gazebo))
+11. Gazebo仿真机械臂控制([rm_gazebo](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_gazebo))
 
 * 该功能包为gazebo仿真机械臂功能包，主要功能为在gazebo仿真环境中显示机械臂模型，可通过moveit2对仿真的机械臂进行规划控制。
 
-12. 使用案例([rm_examples](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_example))
+12. 使用案例([rm_examples](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_example))
 
 * 该功能包为机械臂的一些使用案例，主要功能为实现机械臂的一些基本的控制功能和运动功能的使用案例。
 
-13. 技术文档([rm_docs](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy/rm_doc))
+13. 技术文档([rm_docs](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_doc))
 
 * 该功能包为介绍文档的功能包，其主要包括为对整体的功能包内容和使用方式进行总体介绍的文档和对每个功能包中的内容和使用方式进行详细介绍的文档。
 
