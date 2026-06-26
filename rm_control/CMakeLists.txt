@@ -22,7 +22,6 @@ endif()
 ## is used, also find other catkin packages
 find_package(ament_cmake REQUIRED) 
 find_package(rclcpp_action REQUIRED) 
-find_package(actionlib_msgs REQUIRED) 
 find_package(control_msgs REQUIRED) 
 find_package(rclcpp REQUIRED) 
 find_package(std_msgs REQUIRED) 
@@ -51,7 +50,7 @@ if(BUILD_TESTING)
 endif()
 add_executable(rm_control src/rm_control.cpp)
 
-ament_target_dependencies(rm_control rclcpp std_msgs sensor_msgs rm_ros_interfaces rclcpp_action actionlib_msgs control_msgs)
+ament_target_dependencies(rm_control rclcpp std_msgs sensor_msgs rm_ros_interfaces rclcpp_action control_msgs)
 
 install(TARGETS
 rm_control
