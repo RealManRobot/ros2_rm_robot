@@ -1,5 +1,6 @@
 from moveit_configs_utils import MoveItConfigsBuilder
 from moveit_configs_utils.launches import generate_moveit_rviz_launch
+import yaml
 
 from launch import LaunchDescription
 from launch.actions import (
@@ -12,6 +13,11 @@ from moveit_configs_utils.launch_utils import (
 )
 from launch.substitutions import LaunchConfiguration
 from launch_ros.parameter_descriptions import ParameterValue
+
+
+def load_yaml(path):
+    with open(path, "r") as file:
+        return yaml.safe_load(file)
 
 
 def generate_launch_description():
@@ -48,6 +54,7 @@ def my_generate_move_group_launch(ld, moveit_config):
     should_publish = LaunchConfiguration("publish_monitored_planning_scene")
 
     move_group_configuration = {
+        "publish_robot_description": True,
         "publish_robot_description_semantic": True,
         "allow_trajectory_execution": LaunchConfiguration("allow_trajectory_execution"),
         # Note: Wrapping the following values is necessary so that the parameter value can be the empty string
@@ -64,12 +71,24 @@ def my_generate_move_group_launch(ld, moveit_config):
         "publish_transforms_updates": should_publish,
         "monitor_dynamics": False,
     }
+    pilz_cartesian_limits = {
+        "robot_description_planning": load_yaml(
+            moveit_config.package_path / "config/pilz_cartesian_limits.yaml"
+        )
+    }
 
     move_group_params = [
-        moveit_config.to_dict(),
+        moveit_config.robot_description,
+        moveit_config.robot_description_semantic,
+        moveit_config.robot_description_kinematics,
+        moveit_config.planning_pipelines,
+        moveit_config.trajectory_execution,
+        moveit_config.planning_scene_monitor,
+        moveit_config.joint_limits,
+        pilz_cartesian_limits,
         move_group_configuration,
+        {"use_sim_time": True},
     ]
-    move_group_params.append({"use_sim_time": True})
 
     add_debuggable_node(
         ld,
@@ -96,6 +115,8 @@ def my_generate_moveit_rviz_launch(ld, moveit_config):
     )
 
     rviz_parameters = [
+        moveit_config.robot_description,
+        moveit_config.robot_description_semantic,
         moveit_config.planning_pipelines,
         moveit_config.robot_description_kinematics,
     ]

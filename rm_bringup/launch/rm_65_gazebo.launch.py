@@ -1,14 +1,11 @@
 import os
-from  ament_index_python.packages import get_package_share_directory
+
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import SetEnvironmentVariable
-from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration
-from launch.actions import DeclareLaunchArgument
-from launch.conditions import IfCondition
-from launch.actions import (DeclareLaunchArgument, GroupAction,
-                            IncludeLaunchDescription, SetEnvironmentVariable)
+from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.actions import SetParameter
+
 
 def generate_launch_description():
 
@@ -20,6 +17,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-    rm_65_gazebo_up,
-    rm_65_gazebo_moveit
+        SetParameter(name="use_sim_time", value=True),
+        rm_65_gazebo_up,
+        TimerAction(period=8.0, actions=[rm_65_gazebo_moveit]),
     ])

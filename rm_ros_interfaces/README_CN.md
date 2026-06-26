@@ -90,21 +90,31 @@ rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行
 ## rm_ros_interface功能包架构说明
 ### 功能包文件总览
 ```
-当前rm_driver功能包的文件构成如下。
-├── CMakeLists.txt                #编译规则文件
-├── include                       #依赖头文件文件夹
-│   └── rm_ros_interfaces
-├── msg                          #当前的消息文件（详细请看下方介绍）
+当前rm_ros_interfaces功能包的文件构成如下。
+├── CMakeLists.txt                # 编译规则文件
+├── README.md                     # 英文说明文档
+├── README_CN.md                  # 中文说明文档
+├── msg                           # 当前的消息文件（详细请看下方介绍）
+│   ├── Alohastate.msg
 │   ├── Armcurrentstatus.msg
 │   ├── Armoriginalstate.msg
+│   ├── Armsoftversion.msg
+│   ├── Armsoftversionv3.msg
+│   ├── Armsoftversionv4.msg
 │   ├── Armstate.msg
 │   ├── Cartepos.msg
 │   ├── Carteposcustom.msg
+│   ├── Expandpos.msg
+│   ├── Expandstate.msg
+│   ├── Flowchartrunstate.msg
+│   ├── Force_Position_State.msg
+│   ├── Forcepositionmove.msg
 │   ├── Forcepositionmovejoint.msg
 │   ├── Forcepositionmovepose.msg
-│   ├── Force_Position_State.msg
-│   ├── Getallframe.msg
 │   ├── GetArmState_Command.msg
+│   ├── Getallframe.msg
+│   ├── Getmodbustcpmasterlist.msg
+│   ├── Gettrajectorylist.msg
 │   ├── Gripperpick.msg
 │   ├── Gripperset.msg
 │   ├── Handangle.msg
@@ -117,31 +127,52 @@ rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行
 │   ├── Jointenflag.msg
 │   ├── Jointerrclear.msg
 │   ├── Jointerrorcode.msg
-│   ├── Jointposeeuler.msg
 │   ├── Jointpos.msg
 │   ├── Jointposcustom.msg
+│   ├── Jointposeeuler.msg
 │   ├── Jointspeed.msg
 │   ├── Jointteach.msg
 │   ├── Jointtemperature.msg
+│   ├── Jointversion.msg
 │   ├── Jointvoltage.msg
 │   ├── Liftheight.msg
 │   ├── Liftspeed.msg
 │   ├── Liftstate.msg
+│   ├── Mastername.msg
+│   ├── Modbusreaddata.msg
+│   ├── Modbusrtureadparams.msg
+│   ├── Modbusrtuwriteparams.msg
+│   ├── Modbustcpmasterinfo.msg
+│   ├── Modbustcpmasterlist.msg
+│   ├── Modbustcpmasterupdata.msg
+│   ├── Modbustcpreadparams.msg
+│   ├── Modbustcpwriteparams.msg
 │   ├── Movec.msg
 │   ├── Movej.msg
 │   ├── Movejp.msg
 │   ├── Movel.msg
+│   ├── Moveloffset.msg
 │   ├── Ortteach.msg
 │   ├── Posteach.msg
+│   ├── Programrunstate.msg
+│   ├── RS485params.msg
 │   ├── Rmerr.msg
 │   ├── Rmplusbase.msg
 │   ├── Rmplusstate.msg
+│   ├── Rmversion.msg
+│   ├── RobotInfo.msg
+│   ├── Sendproject.msg
 │   ├── Setforceposition.msg
 │   ├── Setrealtimepush.msg
 │   ├── Sixforce.msg
-│   └── Stop.msg
-├── package.xml                       #依赖声明文件
-└── src
+│   ├── Softwarebuildinfo.msg
+│   ├── Stop.msg
+│   ├── Toolsoftwareversionv4.msg
+│   ├── Trajectoryinfo.msg
+│   ├── Trajectorylist.msg
+│   ├── Udpexpandstate.msg
+│   └── Udpliftstate.msg
+└── package.xml                   # 依赖声明文件
 ```
 ## rm_ros_interface消息说明
 ### 关节错误代码Jointerrorcode_msg

@@ -22,14 +22,14 @@ find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rm_ros_interfaces REQUIRED)
+
+set(RM_API_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/lib/libapi_cpp.so")
+
 include_directories(
   ${PROJECT_SOURCE_DIR}  
   ${PROJECT_SOURCE_DIR}/include
   ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
 )
-link_directories(${catkin_LIB_DIRS} ${PROJECT_SOURCE_DIR}/lib)
-
-include_directories("/usr/local/lib")
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -42,20 +42,17 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 add_executable(rm_driver src/rm_driver.cpp)
+target_link_libraries(rm_driver ${RM_API_LIBRARY})
 
-
-set(RM_STATIC_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/lib")
- 
-# link_directories(${catkin_LIB_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/lib/RM_Service)
-link_directories(${RM_STATIC_LIBRARY})
-
-target_link_libraries(${PROJECT_NAME}
-  ${PROJECT_SOURCE_DIR}/lib/libapi_cpp.so
+set_target_properties(rm_driver PROPERTIES
+  BUILD_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/lib"
+  INSTALL_RPATH "$ORIGIN/.."
 )
 
 ament_target_dependencies(rm_driver rclcpp std_msgs sensor_msgs rm_ros_interfaces)
 
 install(TARGETS  rm_driver  DESTINATION lib/${PROJECT_NAME})
+install(FILES ${RM_API_LIBRARY} DESTINATION lib)
 
 install(DIRECTORY launch config
   DESTINATION share/${PROJECT_NAME})

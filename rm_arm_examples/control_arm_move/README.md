@@ -4,7 +4,7 @@
 
 ## 1.项目介绍
 
-本项目是一个基于RM65、RM75机械臂和ROS功能包实现MoveJ、MoveJ_P、MoveL、MoveC规划运动功能，在程序执行时将依次执行关节运动MoveJ指令，位姿运动MoveJ_P指令、直线运动MoveL指令，圆弧运动MoveC指令，在执行成功或失败时终端都会收到相关提示，目的是使ROS开发者迅速掌握并灵活运用机械臂。
+本项目是一个基于RM65、RM75、RX75机械臂和ROS功能包实现MoveJ、MoveJ_P、MoveL、MoveC规划运动功能，在程序执行时将依次执行关节运动MoveJ指令，位姿运动MoveJ_P指令、直线运动MoveL指令，圆弧运动MoveC指令，在执行成功或失败时终端都会收到相关提示，目的是使ROS开发者迅速掌握并灵活运用机械臂。
 
 ## 2.代码结构
 
@@ -12,7 +12,8 @@
 ├── CMakeLists.txt                           <-CMake编译文件
 ├── launch                                   <-启动文件夹
 │   ├── rm_65_move.launch.py               <-启动文件(RM65)
-│   └── rm_75_move.launch.py               <-启动文件(RM75)
+│   ├── rm_75_move.launch.py               <-启动文件(RM75)
+│   └── rm_rx75_move.launch.py             <-启动文件(RX75)
 ├── LICENSE                                  <-版本说明
 ├── package.xml                              <-依赖描述文件夹
 ├── README.md                                <-说明文档
@@ -22,21 +23,21 @@
 
 ## 3.项目下载
 
-通过项目链接下载本项目工程文件到本地：[ros2_rm_robot](https://github.com/RealManRobot/ros2_rm_robot/tree/humble)
+通过项目链接下载本项目工程文件到本地：[ros2_rm_robot](https://github.com/RealManRobot/ros2_rm_robot/tree/jazzy)
 
 ## 4.环境配置
 
 | 项目 | 内容 |
 | :-- | :-- |
-| 系统 | Ubuntu22.04 |
-| ROS版本 | humble |
-| 依赖 | 机械臂的ROS2-humble功能包 |
+| 系统 | Ubuntu24.04 |
+| ROS版本 | jazzy |
+| 依赖 | 机械臂的ROS2-jazzy功能包 |
 
 **配置过程**
 
-1. 首先需要准备好Ubuntu22.04操作系统的虚拟机或其他设备。
-2. 安装ROS2环境[humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html),也可参考ROS2-humble功能包中的安装说明进行安装。
-3. ROS2-Humble功能包安装
+1. 首先需要准备好Ubuntu24.04操作系统的虚拟机或其他设备。
+2. 安装ROS2环境[jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html),也可参考ROS2-jazzy功能包中的安装说明进行安装。
+3. ROS2-Jazzy功能包安装
 
     新建工作空间和src文件
     ```
@@ -82,7 +83,7 @@
     ros2 launch rm_driver rm_<arm_type>_driver.launch.py
     ```
 
-    <arm_type>可以为65、63、eco65、75、gen72，可对照自己使用的设备进行实际选择
+    <arm_type>可以为65、63、eco62、eco63、eco65、75、gen72、rx75，可对照自己使用的设备进行实际选择
     若我们的机械臂为RM65机械臂时应使用如下启动指令。
 
     ```
@@ -95,7 +96,13 @@
     ros2 launch control_arm_move rm_75_move.launch.py
     ```
 
-    > 若非RM65、RM75机械臂可能会出现无法到达点位的情况，为正常现象。
+    若为RX75双臂机械臂时应使用如下启动指令。
+
+    ```
+    ros2 launch control_arm_move rm_rx75_move.launch.py
+    ```
+
+    > 若非RM65、RM75、RX75机械臂可能会出现无法到达点位的情况，为正常现象。
     
 * **返回信息**：
 
@@ -217,3 +224,5 @@
 ## 7.许可证信息
 
 * 具体许可证内容请参见`LICENSE`文件。
+
+<!-- v1.7.0 -->

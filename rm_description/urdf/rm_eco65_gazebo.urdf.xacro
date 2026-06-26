@@ -12,21 +12,13 @@
         rpy="0 0 0" />
       <mass
         value="0.61127" />
-      <!-- <inertia
+      <inertia
         ixx="0.00080212"
         ixy="3.0281E-06"
         ixz="-2.8747E-05"
         iyy="0.00080502"
         iyz="1.9749E-06"
         izz="0.00066167" />
-      </inertial> -->
-      <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
     </inertial>
     <visual>
       <origin
@@ -60,21 +52,13 @@
         rpy="0 0 0" />
       <mass
         value="0.74247" />
-      <!-- <inertia
+      <inertia
         ixx="0.00081398"
         ixy="-1.9024E-05"
         ixz="0.00022746"
         iyy="0.001848"
         iyz="2.0444E-06"
         izz="0.0015286" />
-    </inertial> -->
-    <inertia
-      ixx="0"
-      ixy="0"
-      ixz="0"
-      iyy="0"
-      iyz="0"
-      izz="0" />
     </inertial>
     <visual>
       <origin
@@ -126,21 +110,13 @@
         rpy="0 0 0" />
       <mass
         value="1.3502" />
-      <!-- <inertia
+      <inertia
         ixx="0.012821"
         ixy="-7.2979E-08"
         ixz="1.1499E-08"
         iyy="0.0011237"
         iyz="-0.00033755"
         izz="0.012933" />
-    </inertial> -->
-    <inertia
-      ixx="0"
-      ixy="0"
-      ixz="0"
-      iyy="0"
-      iyz="0"
-      izz="0" />
     </inertial>
     <visual>
       <origin
@@ -192,21 +168,13 @@
         rpy="0 0 0" />
       <mass
         value="1.0422" />
-      <!-- <inertia
+      <inertia
         ixx="0.00084115"
         ixy="-2.2514E-08"
         ixz="-0.00068613"
         iyy="0.0094046"
         iyz="-3.3287E-09"
         izz="0.0092482" />
-    </inertial> -->
-    <inertia
-      ixx="0"
-      ixy="0"
-      ixz="0"
-      iyy="0"
-      iyz="0"
-      izz="0" />
     </inertial>
     <visual>
       <origin
@@ -258,21 +226,13 @@
         rpy="0 0 0" />
       <mass
         value="0.27383" />
-      <!-- <inertia
+      <inertia
         ixx="0.00024751"
         ixy="-5.6849E-09"
         ixz="5.4838E-10"
         iyy="0.00017648"
         iyz="-2.8552E-05"
         izz="0.00019295"/>
-    </inertial> -->
-    <inertia
-      ixx="0"
-      ixy="0"
-      ixz="0"
-      iyy="0"
-      iyz="0"
-      izz="0" />
     </inertial>
     <visual>
       <origin
@@ -324,21 +284,13 @@
         rpy="0 0 0" />
       <mass
         value="0.27794" />
-      <!-- <inertia
+      <inertia
         ixx="0.00024751"
         ixy="-5.6849E-09"
         ixz="5.4838E-10"
         iyy="0.00017648"
         iyz="-2.8552E-05"
         izz="0.00019295" />
-    </inertial> -->
-    <inertia
-      ixx="0"
-      ixy="0"
-      ixz="0"
-      iyy="0"
-      iyz="0"
-      izz="0" />
     </inertial>
     <visual>
       <origin
@@ -391,21 +343,13 @@
                 rpy="0 0 0" />
             <mass
                 value="0.033025" />
-            <!-- <inertia
+            <inertia
                 ixx="1.2968E-05"
                 ixy="-7.8692E-07"
                 ixz="8.451E-08"
                 iyy="1.1583E-05"
                 iyz="-1.2002E-07"
                 izz="2.0405E-05" />
-            </inertial> -->
-            <inertia
-              ixx="0"
-              ixy="0"
-              ixz="0"
-              iyy="0"
-              iyz="0"
-              izz="0" />
             </inertial>
             <visual>
             <origin
@@ -459,21 +403,13 @@
                 rpy="0 0 0" />
                 <mass
                 value="0.14611108984048" />
-                <!-- <inertia
+                <inertia
                 ixx="7.05928109974802E-05"
                 ixy="-1.19201783223218E-06"
                 ixz="-8.08327801418456E-07"
                 iyy="6.9259426871958E-05"
                 iyz="4.34362652271675E-07"
                 izz="6.18079595264477E-05" />
-            </inertial> -->
-            <inertia
-              ixx="0"
-              ixy="0"
-              ixz="0"
-              iyy="0"
-              iyz="0"
-              izz="0" />
             </inertial>
             <visual>
                 <origin
@@ -481,7 +417,7 @@
                 rpy="0 0 0" />
                 <geometry>
                 <mesh
-                    filename="file://$(find rm_description)/meshes/rm_eco65_arm/Link6_6f.STL" />
+                    filename="file://$(find rm_description)/meshes/rm_eco65_arm/Link6_6f.STL"/>
                 </geometry>
                 <material
                 name="">
@@ -495,7 +431,7 @@
                 rpy="0 0 0" />
                 <geometry>
                 <mesh
-                    filename="file://$(find rm_description)/meshes/rm_eco65_arm/Link6_6f.STL "/>
+                    filename="file://$(find rm_description)/meshes/rm_eco65_arm/Link6_6f.STL" />
                 </geometry>
             </collision>
         </link>
@@ -527,21 +463,13 @@
                 rpy="0 0 0" />
             <mass
                 value="0.305602477849543" />
-            <!-- <inertia
+            <inertia
                 ixx="0.000113828576086565"
                 ixy="-3.65320556215084E-08"
                 ixz="1.14192955580674E-07"
                 iyy="0.000114694733259546"
                 iyz="-4.34359001412421E-08"
                 izz="0.000126193153799782" />
-            </inertial> -->
-            <inertia
-              ixx="0"
-              ixy="0"
-              ixz="0"
-              iyy="0"
-              iyz="0"
-              izz="0" />
             </inertial>
             <visual>
             <origin
