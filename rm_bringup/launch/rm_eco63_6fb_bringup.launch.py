@@ -16,6 +16,10 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(('rm_driver')),'launch', 'rm_eco63_driver.launch.py'))
     )
 
+    rm_eco63_description = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('rm_description'), 'launch', 'rm_eco63_6fb_display.launch.py')),
+    )
+
     rm_eco63_control = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(('rm_control')),'launch', 'rm_eco63_control.launch.py'))
     )
@@ -26,6 +30,7 @@ def generate_launch_description():
 
     return LaunchDescription([
     rm_eco63_driver,
+    rm_eco63_description,
     rm_eco63_control,
     rm_eco63_moveit_config
     ])

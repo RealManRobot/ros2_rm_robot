@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rm_eco62">
+    <xacro:arg name="link6_type" default="Link6" />
+    <xacro:include filename="$(find rm_description)/urdf/rm_eco62_gazebo.urdf.xacro">
+        link6_type:=$(arg link6_type)
+    </xacro:include>
+</robot>

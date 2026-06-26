@@ -276,7 +276,7 @@ Rm_Control::Rm_Control(std::string name) : Node(name)
         std::bind(&Rm_Control::timer_callback,this));
 
     this->action_server_ = rclcpp_action::create_server<FollowJointTrajectory>(
-                this, "/rm_group_controller/follow_joint_trajectory",
+                this, "rm_group_controller/follow_joint_trajectory",
                 std::bind(&Rm_Control::handle_goal, this, _1, _2),
                 std::bind(&Rm_Control::handle_cancel, this, _1),
                 std::bind(&Rm_Control::handle_accepted, this, _1));

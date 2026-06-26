@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robot rm_description User Manual V1.5
+# RealMan Robot rm_description User Manual V1.6
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -14,12 +14,13 @@ Revision History:
 
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
-|V1.0	  | 2/19/2024 | Draft |
-|V1.1	  | 7/8 /2024 | Amend(Add GEN72 adapter files) |
-|V1.2	  | 9/11 /2024| Amend(Add ECO63 adapter files) |
-|V1.3 	| 25/12/2024| Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
-|V1.4   | 4/7/2025 |Amend(AddGEN72_II adapter files) |
-|V1.5 	  | 13/11/2025| Amend(Add RML63_III adapter files) |
+|V1.0	  | 2024-2-19 | Draft |
+|V1.1	  | 2024-7-3 | Amend(Add GEN72 adapter files) |
+|V1.2	  | 2024-9-11 | Amend(Add ECO63 adapter files) |
+|V1.3 	| 2024-12-25 | Amend(Add 63, 65, 75, ECO65 six-axis force adapter files and 63, 65, 75, ECO63, ECO65 integrated six-axis force adapter files) |
+|V1.4   | 2025-4-7 | Amend(Add GEN72_II adapter files) |
+|V1.5   | 2025-11-13 | Amend(Add RML63_III adapter files) |
+|V1.6   | 2026-4-16 | Amend(Add ECO62 and RX75 adapter files) |
 
 </div>
 
@@ -45,15 +46,19 @@ First, after configuring the environment and completing the connection, we can d
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, 63_III, eco65, eco63, 75, gen72, gen72_II.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models are 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, gen72_II, and rx75. For RX75, explicitly use `rm_rx75_6fb_display.launch.py` for RX75-6FB and `rm_rx75_6fb_v_display.launch.py` for RX75-6FB-V.  
 
-The command to start the six-axis force version of the manipulator is (note: eco63 is not available):
+The command to start the six-axis force version is currently available for 63, 65, 75, and eco65:
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6f_display.launch.py
 ```
-The command to start the integrated six-axis force version of the manipulator is :
+The command to start the integrated six-axis force version is currently available for 63, 63_III, 65, 75, eco63, eco65, and rx75:
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6fb_display.launch.py
+```
+The command to start the vision-enabled integrated six-axis force version is currently only available for rx75:
+```
+rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6fb_v_display.launch.py
 ```
 For example, the launch command of 65 robotic arm:  
 ```
@@ -77,7 +82,7 @@ After loading, you can see the current state of the robotic arm in the interface
 ![image](doc/rm_description1.png)
 ## rm_description_Package_Architecture_Description
 ### Overview_of_package_files
-The current rm_driver package is composed of the following files.  
+The current rm_description package is composed of the following files.  
 ```
 ├── CMakeLists.txt                # compilation rule file
 ├── launch
@@ -92,12 +97,16 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_75_6f_display.launch.py  # 75 six-axis force launch file
 │   ├── rm_75_6fb_display.launch.py # 75 integrated six-axis force launch file
 │   ├── rm_75_display.launch.py     # 75 launch file
+│   ├── rm_eco62_display.launch.py  # eco62 launch file
 │   ├── rm_eco65_6f_display.launch.py  # eco65 six-axis force launch file
 │   ├── rm_eco65_6fb_display.launch.py # eco65 integrated six-axis force launch file
 │   ├── rm_eco65_display.launch.py  # eco65 launch file
 │   ├── rm_eco63_6fb_display.launch.py # eco63 integrated six-axis force launch file
 │   ├── rm_eco63_display.launch.py  # eco63 launch file
-│   └── rm_gen72_display.launch.py  # gen72 launch file
+│   ├── rm_gen72_II_display.launch.py # gen72_II launch file
+│   ├── rm_gen72_display.launch.py  # gen72 launch file
+│   ├── rm_rx75_6fb_display.launch.py   # RX75-6FB dual-arm launch file
+│   └── rm_rx75_6fb_v_display.launch.py # RX75-6FB-V dual-arm launch file
 ├── meshes                       # model file storage folder
 │   ├── rm_63_arm                 #63 robotic arm model file storage folder
 │   │   ├── base_link.STL
@@ -130,7 +139,15 @@ The current rm_driver package is composed of the following files.
 │   │   ├── link7_6f.STL
 │   │   ├── link7_6fb.STL
 │   │   └── link7.STL
-│   └── rm_eco65_arm                 #eco65 robotic arm model file storage folder
+│   ├── rm_eco62_arm                 #eco62 robotic arm model file storage folder
+│   │   ├── base_link.STL
+│   │   ├── Link1.STL
+│   │   ├── Link2.STL
+│   │   ├── Link3.STL
+│   │   ├── Link4.STL
+│   │   ├── Link5.STL
+│   │   └── Link6.STL
+│   ├── rm_eco65_arm                 #eco65 robotic arm model file storage folder
 │   │   ├── baselink.STL
 │   │   ├── Link1.STL
 │   │   ├── Link2.STL
@@ -140,8 +157,8 @@ The current rm_driver package is composed of the following files.
 │   │   ├── Link6_6f.STL
 │   │   ├── Link6_6fb.STL
 │   │   └── Link6.STL
-│   └── rm_eco63_arm                 #eco63 robotic arm model file storage folder
-│   │   ├── baselink.STL
+│   ├── rm_eco63_arm                 #eco63 robotic arm model file storage folder
+│   │   ├── base_link.STL
 │   │   ├── Link1.STL
 │   │   ├── Link2.STL
 │   │   ├── Link3.STL
@@ -149,15 +166,65 @@ The current rm_driver package is composed of the following files.
 │   │   ├── Link5.STL
 │   │   ├── Link6_6fb.STL
 │   │   └── Link6.STL
-│   └── rm_gen72_arm                 #gen72 robotic arm model file storage folder
-│       ├── base_link.STL
-│       ├── Link1.STL
-│       ├── Link2.STL
-│       ├── Link3.STL
-│       ├── Link4.STL
-│       ├── Link5.STL
-│       ├── Link6.STL
-│       └── Link7.STL
+│   ├── rm_gen72_II_arm              #gen72_II robotic arm model file storage folder
+│   │   ├── base_link.STL
+│   │   ├── Link1.STL
+│   │   ├── Link2.STL
+│   │   ├── Link3.STL
+│   │   ├── Link4.STL
+│   │   ├── Link5.STL
+│   │   ├── Link6.STL
+│   │   └── Link7.STL
+│   ├── rm_gen72_arm                 #gen72 robotic arm model file storage folder
+│   │   ├── base_link.STL
+│   │   ├── Link1.STL
+│   │   ├── Link2.STL
+│   │   ├── Link3.STL
+│   │   ├── Link4.STL
+│   │   ├── Link5.STL
+│   │   ├── Link6.STL
+│   │   └── Link7.STL
+│   └── rm_rx75_arm                  #RX75 dual-arm model file storage folder
+│       ├── rm_rx75_left_arm
+│       │   ├── base_link.STL
+│       │   ├── Link1.STL
+│       │   ├── Link2L.STL
+│       │   ├── Link3.STL
+│       │   ├── Link4.STL
+│       │   ├── Link5.STL
+│       │   ├── Link6.STL
+│       │   ├── Link7.STL
+│       │   └── Link8.STL
+│       ├── rm_rx75_left_arm_v
+│       │   ├── base_link.STL
+│       │   ├── Link1.STL
+│       │   ├── Link2.STL
+│       │   ├── Link3.STL
+│       │   ├── Link4.STL
+│       │   ├── Link5.STL
+│       │   ├── Link6.STL
+│       │   ├── Link7.STL
+│       │   └── Link8.STL
+│       ├── rm_rx75_right_arm
+│       │   ├── base_link.STL
+│       │   ├── Link1.STL
+│       │   ├── Link2.STL
+│       │   ├── Link3.STL
+│       │   ├── Link4.STL
+│       │   ├── Link5.STL
+│       │   ├── Link6.STL
+│       │   ├── Link7.STL
+│       │   └── Link8.STL
+│       └── rm_rx75_right_arm_v
+│           ├── base_link.STL
+│           ├── Link1.STL
+│           ├── Link2.STL
+│           ├── Link3.STL
+│           ├── Link4.STL
+│           ├── Link5.STL
+│           ├── Link6.STL
+│           ├── Link7.STL
+│           └── Link8.STL
 ├── package.xml
 ├── README_CN.md
 ├── README.md
@@ -165,12 +232,21 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_63.rviz
 │   ├── rm_65.rviz
 │   ├── rm_75.rviz
-│   └── rm_eco65.rviz
-│   └── rm_eco63.rviz
-│   └── rm_gen72.rviz
+│   ├── rm_eco62.rviz
+│   ├── rm_eco65.rviz
+│   ├── rm_eco63.rviz
+│   ├── rm_gen72.rviz
+│   └── rm_rx75.rviz
+├── scripts
+│   └── dual_arm_joint_state_bridge.py  # RX75 dual-arm joint state bridge
 ├── textures
 └── urdf
     ├── display_arm.rviz
+    ├── rm_eco62.csv
+    ├── rm_eco62_gazebo.urdf            #eco62 gazebo simulation urdf description file
+    ├── rm_eco62_gazebo.urdf.xacro      #eco62 gazebo simulation xacro description file
+    ├── rm_eco62.urdf                   #eco62 urdf description file
+    ├── rm_eco62.urdf.xacro             #eco62 xacro description file
     ├── rm_65_6f.urdf                   #65 six-axis force urdf description file
     ├── rm_65_6fb.urdf                  #65 integrated six-axis force urdf description file
     ├── rm_65_description.csv
@@ -199,8 +275,20 @@ The current rm_driver package is composed of the following files.
     ├── rm_eco63.urdf                   #eco63 urdf description file
     ├── rm_eco63.urdf.xacro             #eco63 xacro description file
     ├── rm_gen72.csv
+    ├── rm_gen72_II.urdf                #gen72_II urdf description file
+    ├── rm_gen72_II_gazebo.urdf         #gen72_II gazebo simulation urdf description file
     ├── rm_gen72_gazebo.urdf            #gen72 gazebo simulation urdf description file
     ├── rm_gen72.urdf                   #gen72 urdf description file
+    ├── rm_rx75-6fb.urdf.xacro          #RX75-6FB dual-arm xacro description file
+    ├── rm_rx75-6fb_v.urdf.xacro        #RX75-6FB-V dual-arm xacro description file
+    ├── rm_rx75l-6fb.csv
+    ├── rm_rx75l-6fb.urdf               #RX75-6FB left-arm urdf description file
+    ├── rm_rx75l-6fb_v.csv
+    ├── rm_rx75l-6fb_v.urdf             #RX75-6FB-V left-arm urdf description file
+    ├── rm_rx75r-6fb.csv
+    ├── rm_rx75r-6fb.urdf               #RX75-6FB right-arm urdf description file
+    ├── rm_rx75r-6fb_v.csv
+    ├── rm_rx75r-6fb_v.urdf             #RX75-6FB-V right-arm urdf description file
     ├── rml_63_6f.urdf                  #63 six-axis force urdf description file
     ├── rml_63_6fb.urdf                 #63 integrated six-axis force urdf description file
     ├── rml_63_description.csv

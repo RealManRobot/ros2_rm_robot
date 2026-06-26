@@ -63,7 +63,6 @@ def generate_launch_description():
     kinematics_yaml = load_yaml(
         "rm_eco63_config", "config/kinematics.yaml"
     )
-    robot_description_kinematics = {"robot_description_kinematics": kinematics_yaml}
 
     # Planning Functionality
     ompl_planning_pipeline_config = {
@@ -74,7 +73,7 @@ def generate_launch_description():
         }
     }
     ompl_planning_yaml = load_yaml(
-        "moveit_resources_panda_moveit_config", "config/ompl_planning.yaml"
+        "rm_eco63_config", "config/ompl_planning.yaml"
     )
     ompl_planning_pipeline_config["move_group"].update(ompl_planning_yaml)
 

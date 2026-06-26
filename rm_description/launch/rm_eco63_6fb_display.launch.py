@@ -8,14 +8,12 @@ from launch.substitutions import Command, FindExecutable, LaunchConfiguration
 import xacro
 
 def generate_launch_description():
-
      # 声明参数 link6_type
     declare_link6_type_arg = DeclareLaunchArgument(
         'link6_type',
         default_value='Link6_6fb',
         description='Type of link6'
     )
-
     realman_xacro_file = os.path.join(get_package_share_directory('rm_description'), 'urdf',
                                         'rm_eco63.urdf.xacro')
     robot_description = Command(
