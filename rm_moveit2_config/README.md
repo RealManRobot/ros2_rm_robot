@@ -334,3 +334,5 @@ As we can see from the figure, rm_driver also subscribes to the topic of /rm_dri
 rm_control is the bridge of communication between rm_driver and moveit2. It communicates with /moveit_simple_controller_manager through the action of /rm_group_controller/follow_joint_trajectory to obtain the planned points and perform interpolation operations. Give interpolated data to rm_driver through transmission.  
 ![image](doc/rm_moveit2_config9.png)
 The nodes involved in moveit2 include move_group, move_group_private and moveit_simple_controller_manager. The main function is to realize the movement planning of the robotic arm and to display the planning information and other data in rviz. On the other hand, the planning data need to be passed to rm_control for further subdivision.
+
+<!-- v1.7.0 -->
