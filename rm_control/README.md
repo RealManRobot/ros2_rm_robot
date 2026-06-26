@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robot rm_control User Manual V1.2
+# RealMan Robot rm_control User Manual V1.3
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -14,9 +14,10 @@ Revision History:
 
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
-|V1.0	  | 2/19/2024 | Draft |
-|V1.1	  | 7/8 /2024 | Amend(Add GEN72 adapter files) |
-|V1.2   | 9/10 /2024| Amend(Add ECO63 adapter files) |
+|V1.0	  | 2024-2-19 | Draft |
+|V1.1	  | 2024-7-3 | Amend(Add GEN72 related adapter files) |
+|V1.2   | 2024-9-10 | Amend(Add ECO63 related adapter files) |
+|V1.3   | 2026-4-16 | Amend(Add ECO62 and RX75 related adapter files) |
 </div>
 
 ## Content
@@ -44,7 +45,7 @@ First, after configuring the environment and completing the connection, we can d
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_<arm_type>_control.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65、eco63, 75, and gen72.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, eco62, 75, gen72, and rx75.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_65_control.launch.py
@@ -57,7 +58,7 @@ Some parameters can be configured in the rm_control package. Because there are n
 ![image](doc/rm_control2.png)
 As shown in the figure above, the position of the first red box is the file path, and the position of the second box is the current configurable parameter.  
 Parameter follows: represents the following mode used by the current transmission, where true is high following and false is low following. The high following indicates that the robotic arm's movement mode is consistent with the transmission. It must do detailed calculations based on its transmission rate, speed, and acceleration. The threshold is set too high, but the control is fine. The low following indicates that the robotic arm moves to the transmission point based on its transmission rate, speed, and acceleration. If there are points that cannot be reached in time, there may be abandonment. The threshold is set low, and the control is not very fine but meets the use.  
-Parameter arm_type: represents the current model of the robotic arm. The parameters that can be selected are 65 (RM65 series), 651 (ECO65 series), 634 (ECO63 series), 632 (RM63 series), 75 (RM75 series) and 72 (GEN72 series).  
+Parameter arm_type: represents the current model of the robotic arm. The parameters that can be selected are 65 (RM65 series), 651 (ECO65 series), 634 (ECO63 series), 632 (RM63 series), 621 (ECO62 series), 75 (RM75 series and RX75 series), and 72 (GEN72 series).  
 In practice, we choose the corresponding launch file to start, which will automatically select the correct model. If there are special requirements, you can modify the corresponding parameters here. After modification, recompile the configuration in the workspace directory, and then the modified configuration will take effect.  
 Run colcon build command in the workspace directory.  
 ```
@@ -79,9 +80,11 @@ The current rm_control package is composed of the following files.
 │   ├── rm_63_control.launch.py        # 63 launch file
 │   ├── rm_65_control.launch.py        # 65 launch file
 │   ├── rm_75_control.launch.py        # 75 launch file
+│   ├── rm_eco62_control.launch.py     # eco62 launch file
 │   ├── rm_eco65_control.launch.py     # eco65 launch file
 │   ├── rm_eco63_control.launch.py     # eco63 launch file
-│   └── rm_gen72_control.launch.py     # gen72 launch file
+│   ├── rm_gen72_control.launch.py     # gen72 launch file
+│   └── rm_rx75_control.launch.py      # RX75 launch file
 ├── package.xml                        # dependency declaration file
 ├── README_CN.md
 ├── README.md

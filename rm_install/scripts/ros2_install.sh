@@ -137,8 +137,8 @@ if [ $Ubuntu_version = "20.04" ]; then
   sudo apt-get install ros-foxy-gazebo-* -y
 elif [ $Ubuntu_version = "22.04" ]; then
   sudo apt-get install ros-humble-desktop -y
-  sudo apt-get install gazebo -y
-  sudo apt-get install ros-humble-gazebo-* -y
+  sudo apt-get install ros-humble-ros-gz -y
+  sudo apt-get install ros-humble-gz-ros2-control -y
 fi
 
 sudo apt-get install ros-dev-tools -y

@@ -1,0 +1,77 @@
+# joint_limits.yaml allows the dynamics properties specified in the URDF
+# to be overwritten or augmented as needed.
+
+default_velocity_scaling_factor: 0.1
+default_acceleration_scaling_factor: 0.1
+
+joint_limits:
+  left_joint1:
+    has_velocity_limits: true
+    max_velocity: 3.14
+    has_acceleration_limits: false
+    max_acceleration: 0
+  left_joint2:
+    has_velocity_limits: true
+    max_velocity: 3.14
+    has_acceleration_limits: false
+    max_acceleration: 0
+  left_joint3:
+    has_velocity_limits: true
+    max_velocity: 3.92
+    has_acceleration_limits: false
+    max_acceleration: 0
+  left_joint4:
+    has_velocity_limits: true
+    max_velocity: 3.92
+    has_acceleration_limits: false
+    max_acceleration: 0
+  left_joint5:
+    has_velocity_limits: true
+    max_velocity: 3.92
+    has_acceleration_limits: false
+    max_acceleration: 0
+  left_joint6:
+    has_velocity_limits: true
+    max_velocity: 3.92
+    has_acceleration_limits: false
+    max_acceleration: 0
+  left_joint7:
+    has_velocity_limits: true
+    max_velocity: 3.92
+    has_acceleration_limits: false
+    max_acceleration: 0
+  right_joint1:
+    has_velocity_limits: true
+    max_velocity: 3.14
+    has_acceleration_limits: false
+    max_acceleration: 0
+  right_joint2:
+    has_velocity_limits: true
+    max_velocity: 3.14
+    has_acceleration_limits: false
+    max_acceleration: 0
+  right_joint3:
+    has_velocity_limits: true
+    max_velocity: 3.92
+    has_acceleration_limits: false
+    max_acceleration: 0
+  right_joint4:
+    has_velocity_limits: true
+    max_velocity: 3.92
+    has_acceleration_limits: false
+    max_acceleration: 0
+  right_joint5:
+    has_velocity_limits: true
+    max_velocity: 3.92
+    has_acceleration_limits: false
+    max_acceleration: 0
+  right_joint6:
+    has_velocity_limits: true
+    max_velocity: 3.92
+    has_acceleration_limits: false
+    max_acceleration: 0
+  right_joint7:
+    has_velocity_limits: true
+    max_velocity: 3.92
+    has_acceleration_limits: false
+    max_acceleration: 0

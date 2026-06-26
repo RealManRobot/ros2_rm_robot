@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# RealMan Robotrm_exampleUser Manual V1.1
+# RealMan Robot rm_example User Manual V1.2
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -14,8 +14,9 @@ Revision History:
 
 |No.	  | Date   |	Comment |
 | :---: | :----: | :---:   |
-|V1.0	  | 2/19/2024 | Draft |
-|V1.1	  | 7/3 /2024 | Amend(Add GEN72 adapter files) |
+|V1.0	  | 2024-2-19 | Draft |
+|V1.1	  | 2024-7-8 | Amend(Add GEN72 adapter files) |
+|V1.2   | 2026-4-16 | Amend(Add dual-arm adapter files) |
 
 </div>
 
@@ -37,7 +38,7 @@ Revision History:
 * 4.5[movel_demo topic description](#movel_demo_topic_description)
 
 ## rm_example_Package_Description
-rm_bringup package is used for realizing some basic robotic arm functions. And we can also refer to the code to realize other robotic arm functions. This package is introduced in detail in the following aspects.
+rm_example package is used for realizing some basic robotic arm functions. And we can also refer to the code to realize other robotic arm functions. This package is introduced in detail in the following aspects.
 * 1.Package use.
 * 2.Package architecture description.
 * 3.Package topic description.  
@@ -52,7 +53,7 @@ First, we need to run the underlying driver node of the robotic arm rm_driver.
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, and 75.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, eco62, 75, gen72, and rx75.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -78,7 +79,7 @@ First, we need to run the underlying driver node of the robotic arm rm_driver.
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, and 75.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, eco62, 75, gen72, and rx75.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -96,7 +97,7 @@ First, we need to run the underlying driver node of the robotic arm rm_driver.
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, and 75.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, eco62, 75, gen72, and rx75.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -105,10 +106,14 @@ After successfully launching the node, execute the following commands to control
 ```
 rm@rm-desktop:~$ ros2 launch rm_example rm_<dof>_movej.launch.py
 ```
-dof represents the current degree of freedom message of the arm, and the parameters can be selected as 6dof and 7dof.  
+dof represents the current degree of freedom message of the arm, and the available parameters are 6dof, 7dof, and 7dof_dual.  
 For example, when starting the 7-axis robotic arm, the following commands are needed.
 ```
 rm@rm-desktop:~$ ros2 launch rm_example rm_7dof_movej.launch.py
+```
+For RX75 dual-arm robotic arm, you can use the following command.
+```
+rm@rm-desktop:~$ ros2 launch rm_example rm_7dof_dual_movej.launch.py
 ```
 After successful running, the joint of the robotic arm rotates and the interface displays as follows.
 ![image](doc/rm_example3.png)
@@ -118,7 +123,7 @@ First, we need to run the underlying driver node of the robotic arm rm_driver.
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, and 75.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, eco62, 75, gen72, and rx75.  
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -139,7 +144,7 @@ First, we need to run the underlying driver node of the robotic arm rm_driver.
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, and 75.
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, eco62, 75, gen72, and rx75.
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_driver rm_65_driver.launch.py
@@ -176,6 +181,7 @@ The current rm_example package is composed of the following files.
 │   └── rm_example
 ├── launch
 │   ├── rm_6dof_movej.launch.py              # 6 degrees of freedom MoveJ movement launch file
+│   ├── rm_7dof_dual_movej.launch.py         # 7 degrees of freedom dual-arm MoveJ movement launch file
 │   └── rm_7dof_movej.launch.py              # 7 degrees of freedom MoveJ movement launch file
 ├── package.xml
 └── src

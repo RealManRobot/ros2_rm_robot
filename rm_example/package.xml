@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>rm_example</name>
-  <version>0.0.0</version>
+  <version>1.7.0</version>
   <description>TODO: Package description</description>
   <maintainer email="2209099554@qq.com">rm</maintainer>
   <license>TODO: License declaration</license>

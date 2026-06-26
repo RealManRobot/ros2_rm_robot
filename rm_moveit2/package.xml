@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>rm_moveit2</name>
+  <version>1.7.0</version>
+  <description>Simple MoveIt2 pose target demo for RealMan robots.</description>
+
+  <maintainer email="rm@todo.todo">yifei</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>geometry_msgs</depend>
+  <depend>moveit_msgs</depend>
+  <depend>moveit_ros_planning_interface</depend>
+  <depend>rclcpp</depend>
+  <depend>rm_ros_interfaces</depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>moveit_configs_utils</exec_depend>
+  <exec_depend>rm_description</exec_depend>
+  <exec_depend>rm_eco63_config</exec_depend>
+  <exec_depend>rm_75_config</exec_depend>
+  <exec_depend>rm_rx75_config</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

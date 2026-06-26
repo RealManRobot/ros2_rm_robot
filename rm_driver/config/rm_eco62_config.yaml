@@ -1,0 +1,26 @@
+rm_driver:
+  ros__parameters:
+    #robot param
+    arm_ip: "192.168.1.45"        #设置TCP连接时的IP
+    tcp_port: 8080                #设置TCP连接时的端口
+
+    arm_type: "RM_eco62"          #机械臂型号设置    
+    arm_dof: 6                    #机械臂自由度设置
+
+    udp_ip: "192.168.1.10"        #设置udp主动上报IP
+    udp_cycle: 5                  #udp主动上报周期，需要是5的倍数。
+    udp_port: 8089                #设置udp主动上报端口
+    udp_force_coordinate: 0       #设置系统受力时六维力的基准坐标，0为传感器坐标系 1为当前工作坐标系 2为当前工具坐标系
+    udp_hand: false               #设置灵巧手udp主动上报使能
+    udp_plus_base: false          #设置末端设备基础信息udp主动上报使能
+    udp_plus_state: true          #设置末端设备实时信息udp主动上报使能
+    udp_joint_speed_state: true   #设置关节速度主动上报
+    udp_lift_state: false         #设置升降关节主动上报
+    udp_expand_state: false       #设置拓展关节主动上报
+    udp_arm_current_status: false #设置机械臂状态主动上报
+    udp_aloha_state: false        #aloha状态主动上报
+
+    trajectory_mode: 0            #设置高跟随模式下，支持多种模式，0-完全透传模式、1-曲线拟合模式、2-滤波模式
+    radio: 0                      #设置曲线拟合模式下平滑系数（范围0-100）或者滤波模式下的滤波参数（范围0-1000），数值越大表示平滑效果越好
+
+    arm_joints: ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6"]

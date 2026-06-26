@@ -1,0 +1,26 @@
+rm_driver:
+  ros__parameters:
+    # robot param
+    arm_ip: "192.168.1.18"        # 左臂 TCP 连接 IP，按实际设备修改
+    tcp_port: 8080                # 设置 TCP 连接时的端口
+
+    arm_type: "RXL75"             # 机械臂型号设置
+    arm_dof: 7                    # 机械臂自由度设置
+
+    udp_ip: "192.168.1.10"        # 设置 udp 主动上报 IP
+    udp_cycle: 5                  # udp 主动上报周期，需要是 5 的倍数
+    udp_port: 8091                # 左臂 udp 主动上报端口，需与右臂不同
+    udp_force_coordinate: 0       # 六维力基准坐标系，0 传感器 1 工作坐标系 2 工具坐标系
+    udp_hand: false               # 设置灵巧手 udp 主动上报使能
+    udp_plus_base: false          # 设置末端设备基础信息 udp 主动上报使能
+    udp_plus_state: false         # 设置末端设备实时信息 udp 主动上报使能
+    udp_joint_speed_state: true   # 设置关节速度主动上报
+    udp_lift_state: false         # 设置升降关节主动上报
+    udp_expand_state: false       # 设置拓展关节主动上报
+    udp_arm_current_status: false # 设置机械臂状态主动上报
+    udp_aloha_state: false        # aloha 状态主动上报
+
+    trajectory_mode: 0            # 0 透传模式、1 曲线拟合模式、2 滤波模式
+    radio: 0                      # 曲线拟合或滤波平滑参数
+
+    arm_joints: ["left_joint1", "left_joint2", "left_joint3", "left_joint4", "left_joint5", "left_joint6", "left_joint7"]
