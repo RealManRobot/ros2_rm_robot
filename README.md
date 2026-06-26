@@ -179,3 +179,5 @@ Please refer to the following operation specifications when using the robotic ar
 * During the running of the robotic arm, no person shall be in the falling or working range of the robotic arm, nor shall any other object be placed in the robot arm's safety range.
 * Place the robotic arm in a safe location when not in use to avoid it from falling down and damaging or injuring other objects during vibration.
 * Disconnect the robotic arm from the power supply in time when not in use.
+
+<!-- v1.7.0 -->
