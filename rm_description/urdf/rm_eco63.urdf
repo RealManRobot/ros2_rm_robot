@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot
   name="rm_eco63">
+  <!-- KDL cannot use an inertial root link, so keep base_link under a massless root. -->
+  <link name="base_root" />
+  <joint
+    name="base_root_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_root" />
+    <child
+      link="base_link" />
+  </joint>
   <link
     name="base_link">
     <inertial>

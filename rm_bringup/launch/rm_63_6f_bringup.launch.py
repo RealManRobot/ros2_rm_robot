@@ -16,6 +16,10 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(('rm_driver')),'launch', 'rm_63_driver.launch.py'))
     )
 
+    rm_63_description = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('rm_description'), 'launch', 'rm_63_6f_display.launch.py')),
+    )
+
     rm_63_control = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(('rm_control')),'launch', 'rm_63_control.launch.py'))
     )
@@ -26,6 +30,7 @@ def generate_launch_description():
 
     return LaunchDescription([
     rm_63_driver,
+    rm_63_description,
     rm_63_control,
     rm_63_moveit_config
     ])

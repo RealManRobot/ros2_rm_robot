@@ -17,7 +17,7 @@ def generate_launch_description():
     )
 
     realman_xacro_file = os.path.join(get_package_share_directory('rm_description'), 'urdf',
-                                        'rm_eco65.urdf.xacro')
+                                        'rm_eco65.urdf')
     robot_description = Command(
         [FindExecutable(name='xacro'), ' ', realman_xacro_file,' ','link6_type:=',LaunchConfiguration('link6_type')])
 

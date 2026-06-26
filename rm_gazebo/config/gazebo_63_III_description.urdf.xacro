@@ -16,7 +16,6 @@
         base_type:=$(arg base_type)
     </xacro:include>
 
-
     <!-- 对一些link进行gazebo的属性设置 -->
     <gazebo reference="base_link">
         <self_collide>false</self_collide>
@@ -50,8 +49,7 @@
 
 
     <gazebo>
-        <is_static>true</is_static>
-        <self_collide>true</self_collide>
+                <self_collide>true</self_collide>
     </gazebo>
 
 
@@ -107,7 +105,7 @@
     <!-- 加载ros2_control插件 -->
     <gazebo>
         <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-            <parameters>$(find rm_63_config)/config/gazebo_controllers.yaml</parameters>
+            <parameters>$(find rm_63_config)/config/ros2_controllers.yaml</parameters>
             <robot_param>robot_description</robot_param>
             <robot_param_node>robot_state_publisher</robot_param_node>
         </plugin>
@@ -115,3 +113,4 @@
 
 
 </robot>
+

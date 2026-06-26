@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 睿尔曼机器人rm_driver使用说明书V1.5
+# 睿尔曼机器人rm_driver使用说明书V1.7
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -21,6 +21,7 @@
 |V1.4    |2024-12-25|修订(添加UDP上报适配) |
 |V1.5    |2025-05-29|修订（适配四代控制器、添加版本查询接口、添加笛卡尔空间直线偏移运动接口、添加Modbus接口、添加轨迹列表接口详见话题接口说明文档）|
 |V1.6    |2025-11-13|修订（添加UDP所有基础使能配置）|
+|V1.7    |2026-4-16 |修订（添加ECO62、RX75适配文件）|
 
 </div>
 
@@ -48,7 +49,7 @@ rm_driver功能包在机械臂ROS2功能包中是十分重要的，该功能包�
 首先配置好环境完成连接后我们可以通过以下命令直接启动节点，控制机械臂。  
 当前的控制基于我们没有改变过机械臂的IP即当前机械臂的IP仍为192.168.1.18。  
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py  
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、75、gen72。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、eco65、eco63、eco62、75、gen72、rx75。  
 底层驱动启动成功后，将显示以下画面。  
 ![image](doc/rm_driver1.png)  
 ### 功能包进阶使用
@@ -87,7 +88,7 @@ rm_driver:
 其中主要有以下几个参数。
 * arm_ip：改参数代表机械臂当前的IP
 * tcp_port：设置TCP连接时的端口。
-* arm_type：该参数代表机械臂当前的型号，可以选择的参数有RM_65（65系列）、RM_eco65（ECO65系列）、RM_eco63（ECO63系列）、RML_63（63系列）、RM_75（75系列）、GEN_72（GEN72系列）。
+* arm_type：该参数代表机械臂当前的型号，可以选择的参数有RM_65（65系列）、RM_eco65（ECO65系列）、RM_eco63（ECO63系列）、RM_eco62（ECO62系列）、RML_63（63系列）、RM_75（75系列，RX75双臂配置文件中左右臂均使用该型号）、GEN_72（GEN72系列）。
 * arm_dof: 机械臂自由度设置。6为6自由度，7为7自由度。
 * udp_ip: 设置udp主动上报目标IP。
 * udp_cycle：udp主动上报周期，需要是5的倍数。
@@ -121,9 +122,12 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_63_config.yaml          #63配置文件
 │   ├── rm_65_config.yaml          #65配置文件
 │   ├── rm_75_config.yaml          #75配置文件
+│   ├── rm_eco62_config.yaml       #eco62配置文件
 │   ├── rm_eco65_config.yaml       #eco65配置文件
 │   ├── rm_eco63_config.yaml       #eco63配置文件
-│   └── rm_gen72_config.yaml       #gen725配置文件
+│   ├── rm_gen72_config.yaml       #gen72配置文件
+│   ├── rm_rx75_left_config.yaml   #RX75左臂配置文件
+│   └── rm_rx75_right_config.yaml  #RX75右臂配置文件
 ├── doc
 │   ├── RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2).md
 │   ├── rm_driver1.png
@@ -149,9 +153,11 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_63_driver.launch.py     #63启动文件
 │   ├── rm_65_driver.launch.py     #65启动文件
 │   ├── rm_75_driver.launch.py     #75启动文件
+│   ├── rm_eco62_driver.launch.py  #eco62启动文件
 │   ├── rm_eco65_driver.launch.py  #eco65启动文件
 │   ├── rm_eco63_driver.launch.py  #eco63启动文件
-│   └── rm_gen72_driver.launch.py  #gen72启动文件
+│   ├── rm_gen72_driver.launch.py  #gen72启动文件
+│   └── rm_rx75_driver.launch.py   #RX75启动文件
 ├── lib
 │   ├── libRM_Service.so -> libRM_Service.so.1.0.0        #API库文件
 │   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      #API库文件
