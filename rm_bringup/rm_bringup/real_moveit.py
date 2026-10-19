@@ -1,18 +1,14 @@
-"""Offline MoveIt entry point using the selected model without a hardware driver."""
+"""MoveIt nodes used by the unified real-robot bringup."""
 
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from moveit_configs_utils import MoveItConfigsBuilder
 
 from rm_bringup.variant_catalog import resolve_model
-from rm_description.variant_catalog import (
-    MODEL_FORMATS, resolve_model as resolve_description,
-)
+from rm_description.variant_catalog import resolve_model as resolve_description
 
 
 def build_moveit_config(arm_type, model="auto", mount_mappings=None):
@@ -52,28 +48,24 @@ def build_moveit_config(arm_type, model="auto", mount_mappings=None):
     )
 
 
-def value(context, name):
-    return LaunchConfiguration(name).perform(context)
-
-
-def boolean(context, name):
-    text = value(context, name).strip().casefold()
-    if text not in ("true", "false"):
-        raise RuntimeError(f"'{name}' must be true or false, received '{text}'.")
-    return text == "true"
-
-
-def launch_setup(context):
+def build_real_moveit_actions(
+    context, arm_type, model, joint_states_topic, *, allow_execution, use_rviz,
+):
+    mount_defaults = {
+        "left_xyz": "0 -0.075 0.5",
+        "left_rpy": "3.14 1.57 1.5707963267949",
+        "right_xyz": "0 0.075 0.5",
+        "right_rpy": "3.14 1.57 -1.5707963267949",
+    }
     try:
         config = build_moveit_config(
-            value(context, "arm_type"), value(context, "model"),
-            {name: value(context, name) for name in (
-                "left_xyz", "left_rpy", "right_xyz", "right_rpy"
-            )},
+            arm_type, model,
+            {name: LaunchConfiguration(name, default=default).perform(context)
+             for name, default in mount_defaults.items()},
         )
     except ValueError as exc:
         raise RuntimeError(str(exc)) from exc
-    topic = value(context, "joint_states_topic").strip()
+    topic = joint_states_topic.strip()
     if not topic:
         raise RuntimeError("joint_states_topic must not be empty")
     remappings = [("joint_states", topic)]
@@ -81,7 +73,7 @@ def launch_setup(context):
         package="moveit_ros_move_group", executable="move_group",
         output="screen", remappings=remappings,
         parameters=[config.to_dict(), {
-            "allow_trajectory_execution": boolean(context, "allow_trajectory_execution"),
+            "allow_trajectory_execution": allow_execution,
             "publish_robot_description": True,
             "publish_robot_description_semantic": True,
             "publish_planning_scene": True,
@@ -94,19 +86,7 @@ def launch_setup(context):
             "trajectory_execution.allowed_start_tolerance": 0.15,
         }],
     )]
-    if boolean(context, "use_robot_state_publisher"):
-        actions.append(Node(
-            package="robot_state_publisher", executable="robot_state_publisher",
-            parameters=[config.robot_description], remappings=remappings,
-            output="screen",
-        ))
-    if boolean(context, "use_joint_state_publisher_gui"):
-        actions.append(Node(
-            package="joint_state_publisher_gui", executable="joint_state_publisher_gui",
-            parameters=[config.robot_description], remappings=remappings,
-            output="screen",
-        ))
-    if boolean(context, "use_rviz"):
+    if use_rviz:
         rviz_file = Path(config.package_path) / "config" / "moveit.rviz"
         actions.append(Node(
             package="rviz2", executable="rviz2", name="rviz2",
@@ -117,27 +97,3 @@ def launch_setup(context):
             remappings=remappings,
         ))
     return actions
-
-
-def generate_launch_description():
-    arguments = {
-        "allow_trajectory_execution": "false",
-        "use_rviz": "true",
-        "use_robot_state_publisher": "true",
-        "use_joint_state_publisher_gui": "false",
-        "joint_states_topic": "/joint_states",
-        "left_xyz": "0 -0.075 0.5",
-        "left_rpy": "3.14 1.57 1.5707963267949",
-        "right_xyz": "0 0.075 0.5",
-        "right_rpy": "3.14 1.57 -1.5707963267949",
-    }
-    return LaunchDescription([
-        DeclareLaunchArgument(
-            "arm_type",
-            description="Robot model including end-link version, e.g. 65-6f or eco63-6fb",
-        ),
-        DeclareLaunchArgument("model", default_value="auto", choices=MODEL_FORMATS),
-        *(DeclareLaunchArgument(name, default_value=default)
-          for name, default in arguments.items()),
-        OpaqueFunction(function=launch_setup),
-    ])

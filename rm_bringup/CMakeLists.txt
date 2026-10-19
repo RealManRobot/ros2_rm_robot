@@ -19,6 +19,10 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
+install(CODE
+  "file(REMOVE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/launch/rm_moveit.launch.py\")"
+)
+
 if(BUILD_TESTING)
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
   find_package(ament_lint_auto REQUIRED)

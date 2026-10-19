@@ -74,26 +74,22 @@ def _resolved_joint_states_topic(context, plan):
 
 
 def _moveit_action(context, plan, joint_states_topic, model):
-    moveit_arguments = {
-        'allow_trajectory_execution': str(_boolean_value(
-            'allow_trajectory_execution',
-            _value(context, 'allow_trajectory_execution'),
-        )).lower(),
-        'use_rviz': str(_boolean_value(
-            'use_rviz', _value(context, 'use_rviz')
-        )).lower(),
-    }
+    allow_execution = _boolean_value(
+        'allow_trajectory_execution',
+        _value(context, 'allow_trajectory_execution'),
+    )
+    use_rviz = _boolean_value('use_rviz', _value(context, 'use_rviz'))
     if model == 'glb' and plan.mode == 'real':
-        moveit_arguments.update({
-            'arm_type': plan.arm_type,
-            'model': model,
-            'joint_states_topic': joint_states_topic,
-            'use_robot_state_publisher': 'false',
-        })
-        return _include(
-            LaunchReference('rm_bringup', 'rm_moveit.launch.py'),
-            moveit_arguments,
-        )
+        from rm_bringup.real_moveit import build_real_moveit_actions
+
+        return GroupAction(actions=build_real_moveit_actions(
+            context, plan.arm_type, model, joint_states_topic,
+            allow_execution=allow_execution, use_rviz=use_rviz,
+        ))
+    moveit_arguments = {
+        'allow_trajectory_execution': str(allow_execution).lower(),
+        'use_rviz': str(use_rviz).lower(),
+    }
     if plan.arm_profile.topology == 'dual' and plan.mode == 'gazebo':
         moveit_arguments['joint_states_topic'] = joint_states_topic
     if plan.mode == 'gazebo' and plan.arm_type in GLB_MODELS:
