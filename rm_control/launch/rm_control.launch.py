@@ -38,7 +38,7 @@ _CONTROL_PROFILES = {
         'namespaces': (None,),
     },
     '63_iii': {
-        'suffixes': ('6fb',),
+        'suffixes': ('6f', '6fb'),
         'arm_type_code': 632,
         'default_follow': False,
         'namespaces': (None,),
@@ -52,7 +52,7 @@ _CONTROL_PROFILES = {
     '75': {
         'suffixes': ('6f', '6fb'),
         'arm_type_code': 75,
-        'default_follow': True,
+        'default_follow': False,
         'namespaces': (None,),
     },
     'eco62': {
@@ -61,7 +61,7 @@ _CONTROL_PROFILES = {
         'namespaces': (None,),
     },
     'eco63': {
-        'suffixes': ('6fb',),
+        'suffixes': ('6f', '6fb'),
         'arm_type_code': 634,
         'default_follow': False,
         'namespaces': (None,),
@@ -74,18 +74,18 @@ _CONTROL_PROFILES = {
     },
     'gen72': {
         'arm_type_code': 72,
-        'default_follow': True,
+        'default_follow': False,
         'namespaces': (None,),
     },
     'gen72_ii': {
         'arm_type_code': 72,
-        'default_follow': True,
+        'default_follow': False,
         'namespaces': (None,),
     },
     'rx75': {
-        'suffixes': ('6fb', '6fb-v'),
+        'suffixes': ('6f', '6f-v', '6fb', '6fb-v'),
         'arm_type_code': 75,
-        'default_follow': True,
+        'default_follow': False,
         'namespaces': ('left_arm', 'right_arm'),
     },
 }
@@ -195,7 +195,7 @@ def generate_launch_description():
                 default_value='auto',
                 description=(
                     'Trajectory following mode: auto, true, or false. '
-                    'auto preserves the model default.'
+                    'auto selects low-follow mode for every model.'
                 ),
             ),
             OpaqueFunction(function=_launch_setup),

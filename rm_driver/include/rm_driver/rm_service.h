@@ -1922,30 +1922,32 @@ RM_INTERFACE_EXPORT int rm_set_IO_mode(rm_robot_handle *handle, int io_num, int 
  */
 RM_INTERFACE_EXPORT int rm_set_DO_state(rm_robot_handle *handle, int io_num, int state);
 /**
- * @brief 设置 SN 号
+ * @brief 设置末端按钮使能，需要重启 ctrl-core 或机械臂后生效
  * 
  * @param handle 机械臂控制句柄
- * @param sn SN 号字符串
+ * @param drag_teach_enabled 绿色拖动示教按钮，1：启用，0：禁用
+ * @param trajectory_replay_enabled 蓝色轨迹复现按钮，1：启用，0：禁用
  * @return int 函数执行的状态码。  
  *            - 0: 成功。  
- *            - 1: 控制器返回false，SN为空字符串或参数错误。  
+ *            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。
  *            - -1: 数据发送失败，通信过程中出现问题。
  *            - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。  
  *            - -3: 返回值解析失败，接收到的数据格式不正确或不完整。 
  */
-RM_INTERFACE_EXPORT int rm_set_sn(rm_robot_handle *handle, const char *sn);
+RM_INTERFACE_EXPORT int rm_set_end_button_enabled(rm_robot_handle *handle, int drag_teach_enabled, int trajectory_replay_enabled);
 /**
- * @brief 获取 SN 号
+ * @brief 获取末端按钮使能，读取当前 communication 内存状态
  * 
  * @param handle 机械臂控制句柄
- * @param sn SN 号字符串，长度不超过28字节
+ * @param drag_teach_enabled 绿色拖动示教按钮，1：启用，0：禁用
+ * @param trajectory_replay_enabled 蓝色轨迹复现按钮，1：启用，0：禁用
  * @return int 函数执行的状态码。  
  *            - 0: 成功。  
  *            - -1: 数据发送失败，通信过程中出现问题。
  *            - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。  
  *            - -3: 返回值解析失败，接收到的数据格式不正确或不完整。 
  */
-RM_INTERFACE_EXPORT int rm_get_sn(rm_robot_handle *handle, char *sn);
+RM_INTERFACE_EXPORT int rm_get_end_button_enabled(rm_robot_handle *handle, int *drag_teach_enabled, int *trajectory_replay_enabled);
 /**
  * @brief 
  * 
@@ -3942,6 +3944,7 @@ RM_INTERFACE_EXPORT int rm_force_impedence_position_move(rm_robot_handle *handle
                                       const int control_mode[],
                                       bool *state);
 
+                                                               /**
 /**
  * @brief 设置位姿力控MBK参数
  * @param handle 机械臂控制句柄

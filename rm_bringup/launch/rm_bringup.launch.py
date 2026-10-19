@@ -1,5 +1,6 @@
 """Unified component-level bringup for all supported RealMan arms."""
 
+import asyncio
 import os
 import runpy
 import re
@@ -8,16 +9,20 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    GroupAction,
+    OpaqueCoroutine,
     IncludeLaunchDescription,
     OpaqueFunction,
     TimerAction,
 )
+from launch.events import IncludeLaunchDescription as IncludeLaunchDescriptionEvent
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
 
 _TRUE_VALUES = {"1", "true", "yes", "on"}
 _FALSE_VALUES = {"0", "false", "no", "off"}
+_CONTROLLER_INFO_TIMEOUT = 10.0
 
 _ARM_TYPE_ALIASES = {
     "63": "63",
@@ -151,9 +156,14 @@ def _compact_token(value):
     return normalized.replace("_", "")
 
 
-def _normalize_arm_type(value):
+def _normalize_arm_type(value, controller_version=3):
+    if controller_version not in (3, 4):
+        raise RuntimeError("controller_version must be 3 or 4.")
     raw_value = value.strip() if isinstance(value, str) else ""
-    arm_type = _ARM_TYPE_ALIASES.get(_compact_token(raw_value))
+    token = _compact_token(raw_value)
+    if controller_version == 4:
+        token = re.sub(r"6f(v?)$", r"6fb\1", token)
+    arm_type = _ARM_TYPE_ALIASES.get(token)
     if arm_type not in _MODELS:
         valid = ", ".join(_MODELS)
         raise RuntimeError(
@@ -162,8 +172,8 @@ def _normalize_arm_type(value):
     return arm_type
 
 
-def _resolve_selection(arm_type, mode):
-    canonical_type = _normalize_arm_type(arm_type)
+def _resolve_selection(arm_type, mode, controller_version=3):
+    canonical_type = _normalize_arm_type(arm_type, controller_version)
     canonical_mode = mode.strip().casefold()
     if canonical_mode not in ("real", "gazebo"):
         raise RuntimeError(
@@ -234,6 +244,91 @@ def _moveit_action(
     )
 
 
+def _driver_action(context, arm_type):
+    return _include("rm_driver", "rm_driver.launch.py", {
+        "arm_type": arm_type,
+        "driver_config": _value(context, "driver_config"),
+        "left_driver_config": _value(context, "left_driver_config"),
+        "right_driver_config": _value(context, "right_driver_config"),
+    })
+
+
+async def _read_controller_version(context, arm_type):
+    import rclpy
+    from rclpy.context import Context
+    from rclpy.executors import SingleThreadedExecutor
+    from rm_ros_interfaces.msg import RobotInfo
+    from std_msgs.msg import Empty
+
+    ros_context = Context()
+    rclpy.init(context=ros_context)
+    node = None
+    executor = None
+    try:
+        node = rclpy.create_node(
+            'rm_bringup_controller_info', context=ros_context,
+            use_global_arguments=False,
+        )
+        executor = SingleThreadedExecutor(context=ros_context)
+        executor.add_node(node)
+        parent_namespace = context.launch_configurations.get(
+            'ros_namespace', ''
+        ).strip('/')
+        parent_namespace = '/' + parent_namespace if parent_namespace else ''
+        namespaces = (
+            ('/left_arm', '/right_arm')
+            if arm_type.startswith('rx75-') else ('',)
+        )
+        replies = {}
+        publishers = []
+        for namespace in namespaces:
+            topic = parent_namespace + namespace + '/rm_driver/get_robot_info'
+            node.create_subscription(
+                RobotInfo, topic + '_result',
+                lambda message, key=namespace: replies.update({key: message}), 1,
+            )
+            publishers.append(node.create_publisher(Empty, topic + '_cmd', 1))
+
+        deadline = asyncio.get_running_loop().time() + _CONTROLLER_INFO_TIMEOUT
+        while asyncio.get_running_loop().time() < deadline:
+            for publisher in publishers:
+                if publisher.get_subscription_count():
+                    publisher.publish(Empty())
+            executor.spin_once(timeout_sec=0)
+            if len(replies) == len(namespaces):
+                versions = {
+                    message.robot_controller_version for message in replies.values()
+                }
+                if not all(message.state for message in replies.values()) or len(versions) != 1:
+                    raise RuntimeError(
+                        'Cannot determine a consistent controller generation from rm_driver.'
+                    )
+                version, = versions
+                if version not in (3, 4):
+                    raise RuntimeError(
+                        'Unsupported controller generation reported by rm_driver: '
+                        f'{version}.'
+                    )
+                return version
+            await asyncio.sleep(0.1)
+        raise RuntimeError(
+            'Timed out reading controller information from rm_driver; '
+            'model selection was not guessed.'
+        )
+    finally:
+        if executor is not None:
+            executor.shutdown()
+        if node is not None:
+            node.destroy_node()
+        rclpy.try_shutdown(context=ros_context)
+
+
+async def _finish_real_bringup(context, arm_type):
+    version = await _read_controller_version(context, arm_type)
+    actions = _compose_bringup(context, controller_version=version, driver_started=True)
+    context.emit_event_sync(IncludeLaunchDescriptionEvent(LaunchDescription(actions)))
+
+
 def _build_real_actions(
     context,
     arm_type,
@@ -241,16 +336,6 @@ def _build_real_actions(
     use_moveit,
 ):
     actions = [
-        _include(
-            "rm_driver",
-            "rm_driver.launch.py",
-            {
-                "arm_type": arm_type,
-                "driver_config": _value(context, "driver_config"),
-                "left_driver_config": _value(context, "left_driver_config"),
-                "right_driver_config": _value(context, "right_driver_config"),
-            },
-        ),
         _include(
             "rm_description",
             "rm_description.launch.py",
@@ -338,11 +423,23 @@ def _build_gazebo_actions(
     return actions
 
 
-def _compose_bringup(context):
-    arm_type, mode, moveit_spec = _resolve_selection(
-        _value(context, "arm_type"),
-        _value(context, "mode"),
-    )
+def _compose_bringup(context, controller_version=None, driver_started=False):
+    requested = _value(context, "arm_type")
+    requested_mode = _value(context, "mode")
+    needs_controller_info = False
+    if requested_mode.strip().casefold() == "real" and controller_version is None:
+        integrated = _resolve_selection(requested, requested_mode, 4)
+        try:
+            original = _resolve_selection(requested, requested_mode)
+        except RuntimeError:
+            original = None
+        needs_controller_info = original is None or original[0] != integrated[0]
+        arm_type, mode, moveit_spec = integrated if needs_controller_info else original
+    else:
+        arm_type, mode, moveit_spec = _resolve_selection(
+            requested, requested_mode,
+            controller_version if controller_version is not None else 3,
+        )
     model = _value(context, "model").strip().casefold()
     description = runpy.run_path(os.path.join(
         get_package_share_directory("rm_description"), "launch", "rm_description.launch.py",
@@ -372,12 +469,13 @@ def _compose_bringup(context):
         )
 
     if mode == "real":
-        return _build_real_actions(
-            context,
-            arm_type,
-            moveit_spec,
-            use_moveit,
-        )
+        if needs_controller_info:
+            return [
+                GroupAction(actions=[_driver_action(context, arm_type)]),
+                OpaqueCoroutine(coroutine=_finish_real_bringup, kwargs={"arm_type": arm_type}),
+            ]
+        actions = _build_real_actions(context, arm_type, moveit_spec, use_moveit)
+        return actions if driver_started else [_driver_action(context, arm_type), *actions]
     return _build_gazebo_actions(
         context,
         arm_type,
