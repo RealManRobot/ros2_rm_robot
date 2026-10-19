@@ -5,7 +5,7 @@
   <version>0.9.0</version>
   <description>MoveIt2 configuration and launch files for Realman Rizon robots</description>
   <maintainer email="kaola@kaola.com">kaola</maintainer>
-  <license>Apache 2.0</license>
+  <license>Apache-2.0</license>
   <author email="kaola@kaola.com">kaola</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
