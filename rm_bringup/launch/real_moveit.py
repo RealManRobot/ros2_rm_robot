@@ -1,13 +1,11 @@
-"""Offline MoveIt using the selected model and Foxy's existing YAML configs."""
+"""Internal MoveIt actions for Foxy real-robot bringup."""
 
 from pathlib import Path
 import runpy
-
 import xacro
 import yaml
 from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, EmitEvent, OpaqueFunction
+from launch.actions import EmitEvent
 from launch.events import Shutdown
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
@@ -64,27 +62,16 @@ def build_moveit_config(arm_type, model="auto", mount_mappings=None):
     }
 
 
-def value(context, name):
-    return LaunchConfiguration(name).perform(context)
-
-
-def boolean(context, name):
-    text = value(context, name).strip().casefold()
-    if text not in ("true", "false", "1", "0", "yes", "no", "on", "off"):
-        raise RuntimeError(f"'{name}' must be a boolean, received '{text}'.")
-    return text in ("true", "1", "yes", "on")
-
-
-def launch_setup(context):
-    flags = {name: boolean(context, name) for name in (
-        "allow_trajectory_execution", "use_rviz", "use_robot_state_publisher",
-        "use_joint_state_publisher_gui",
-    )}
-    topic = value(context, "joint_states_topic").strip()
+def build_real_moveit_actions(
+    context, arm_type, model, joint_states_topic, *, allow_execution, use_rviz,
+):
+    mount_defaults = {'left_xyz': '0 -0.075 0.5', 'left_rpy': '3.14 1.57 1.5707963267949', 'right_xyz': '0 0.075 0.5', 'right_rpy': '3.14 1.57 -1.5707963267949'}
+    topic = joint_states_topic.strip()
     if not topic:
         raise RuntimeError("joint_states_topic must not be empty")
-    config = build_moveit_config(value(context, "arm_type"), value(context, "model"), {
-        name: value(context, name) for name in ("left_xyz", "left_rpy", "right_xyz", "right_rpy")
+    config = build_moveit_config(arm_type, model, {
+        name: LaunchConfiguration(name, default=default).perform(context)
+        for name, default in mount_defaults.items()
     })
     remappings = [("joint_states", topic)]
     common = [config[key] for key in ("description", "semantic", "kinematics", "limits", "pipeline")]
@@ -93,7 +80,7 @@ def launch_setup(context):
         on_exit=[EmitEvent(event=Shutdown(reason="move_group exited"))],
         remappings=remappings,
         parameters=[*common, config["controllers"], {
-            "allow_trajectory_execution": flags["allow_trajectory_execution"],
+            "allow_trajectory_execution": allow_execution,
             "publish_robot_description": True,
             "publish_robot_description_semantic": True,
             "publish_planning_scene": True,
@@ -106,35 +93,8 @@ def launch_setup(context):
             "trajectory_execution.allowed_start_tolerance": 0.15,
         }],
     )]
-    for flag, package in (
-        ("use_robot_state_publisher", "robot_state_publisher"),
-        ("use_joint_state_publisher_gui", "joint_state_publisher_gui"),
-    ):
-        if flags[flag]:
-            actions.append(Node(package=package, executable=package, output="screen",
-                                parameters=[config["description"]], remappings=remappings))
-    if flags["use_rviz"]:
+    if use_rviz:
         actions.append(Node(package="rviz2", executable="rviz2", name="rviz2",
                             arguments=["-d", config["rviz"]], output="screen",
                             parameters=common, remappings=remappings))
     return actions
-
-
-def generate_launch_description():
-    arguments = {
-        "allow_trajectory_execution": "false",
-        "use_rviz": "true",
-        "use_robot_state_publisher": "true",
-        "use_joint_state_publisher_gui": "false",
-        "joint_states_topic": "/joint_states",
-        "left_xyz": "0 -0.075 0.5",
-        "left_rpy": "3.14 1.57 1.5707963267949",
-        "right_xyz": "0 0.075 0.5",
-        "right_rpy": "3.14 1.57 -1.5707963267949",
-    }
-    return LaunchDescription([
-        DeclareLaunchArgument("arm_type", description="Robot model, e.g. 65-6f or eco63-6fb"),
-        DeclareLaunchArgument("model", default_value="auto", choices=["auto", "stl", "dae"]),
-        *(DeclareLaunchArgument(name, default_value=default) for name, default in arguments.items()),
-        OpaqueFunction(function=launch_setup),
-    ])

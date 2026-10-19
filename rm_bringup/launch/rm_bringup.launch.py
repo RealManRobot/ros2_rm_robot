@@ -226,13 +226,14 @@ def _moveit_action(
     if mode == "real" and _value(context, "model").strip().casefold() != "stl" and package in (
         "rm_65_config", "rm_75_config", "rm_eco62_config", "rm_eco63_config", "rm_eco65_config", "rm_rx75_config"
     ):
-        arguments.update({
-            "arm_type": arm_type,
-            "model": _value(context, "model"),
-            "use_robot_state_publisher": "false",
-            "joint_states_topic": joint_states_topic,
-        })
-        return _include("rm_bringup", "rm_moveit.launch.py", arguments)
+        helper = runpy.run_path(os.path.join(
+            get_package_share_directory("rm_bringup"), "launch", "real_moveit.py",
+        ))
+        return GroupAction(actions=helper["build_real_moveit_actions"](
+            context, arm_type, _value(context, "model"), joint_states_topic,
+            allow_execution=_boolean_value("allow_trajectory_execution", arguments["allow_trajectory_execution"]),
+            use_rviz=_boolean_value("use_rviz", arguments["use_rviz"]),
+        ))
     if arm_type.startswith("rx75-"):
         arguments["joint_states_topic"] = joint_states_topic
     if mode == "gazebo":
