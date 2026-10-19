@@ -27,6 +27,23 @@ Revision History:
 
 </div>
 
+## Launch examples
+
+After building and sourcing the workspace, for an RM65 with integrated force sensing:
+
+```bash
+# Connect to the real robot (generation 3 and 4 both use the base model)
+ros2 launch rm_driver rm_driver.launch.py \
+  arm_type:=65
+
+# Note: Generation 4 software 1.0.6 and later names the former 6fb end link 6f.
+# rm_driver and rm_control only need a base model, such as 63, 65, 75, eco63 or eco65.
+# The naming difference does not change these launch arguments.
+```
+
+This package is part of the real-robot control chain; Gazebo uses simulation controllers. `arm_type` selects the base-family configuration. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
+
+
  
 
 ## Content
@@ -54,9 +71,14 @@ Through the introduction of the three parts, it can help you:
 Source code address:https://github.com/RealManRobot/ros2_rm_robot.git.
 ## 2. rm_driver package use
 ### 2.1 Basic use of the package
+The bundled C++ SDK is `1.1.7.T2`, supporting both generation 4 `6F/6F-V` names
+and the old `6FB/6FB-V` names while retaining ISF/ISFV enum values. Driver selects
+the base-family configuration; see the [unified entry](../rm_bringup/README.md#unified-launch-entry)
+for controller generation and model selection.
+
 The unified entry point is recommended:
 ```bash
-ros2 launch rm_driver rm_driver.launch.py arm_type:=65-6fb
+ros2 launch rm_driver rm_driver.launch.py arm_type:=65
 ```
 
 Unified launch arguments:

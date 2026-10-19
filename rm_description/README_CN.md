@@ -24,6 +24,22 @@
 
 </div>
 
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 的模型显示为例：
+
+```bash
+# 仿真预览 / 三代或四代旧软件的模型显示（GUI 调整关节）
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=true
+
+# 真机状态显示（四代控制器软件 > 1.0.5；先启动 rm_driver）
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true
+```
+
+四代控制器软件从 `1.0.6` 起将原 `6fb` 末端命名为 `6f`；本包不读取控制器代际，单独启动时仍使用 `65-6fb` 选择同一模型。真机显示使用驱动上报的关节状态，不启用 GUI 关节发布器。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
+
 ## 目录
 * 1.[rm_description功能包说明](#rm_description功能包说明)
 * 2.[rm_description功能包使用](#rm_description功能包使用)
