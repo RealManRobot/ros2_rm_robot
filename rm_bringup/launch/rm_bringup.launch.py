@@ -1,15 +1,19 @@
 """Unified, component-level bringup for every supported RealMan arm."""
 
+import asyncio
 import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    GroupAction,
     IncludeLaunchDescription,
+    OpaqueCoroutine,
     OpaqueFunction,
     TimerAction,
 )
+from launch.events import IncludeLaunchDescription as IncludeLaunchDescriptionEvent
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
@@ -23,6 +27,7 @@ from rm_description.variant_catalog import (
 
 _TRUE_VALUES = {'1', 'true', 'yes', 'on'}
 _FALSE_VALUES = {'0', 'false', 'no', 'off'}
+_CONTROLLER_INFO_TIMEOUT = 10.0
 
 
 def _value(context, name):
@@ -97,21 +102,93 @@ def _moveit_action(context, plan, joint_states_topic, model):
     return _include(plan.moveit, moveit_arguments)
 
 
+def _driver_action(context, plan):
+    return _include(plan.driver, {
+        'arm_type': plan.arm_type,
+        'driver_config': _value(context, 'driver_config'),
+        'left_driver_config': _value(context, 'left_driver_config'),
+        'right_driver_config': _value(context, 'right_driver_config'),
+    })
+
+
+async def _read_controller_version(context, plan):
+    import rclpy
+    from rclpy.context import Context
+    from rclpy.executors import SingleThreadedExecutor
+    from rm_ros_interfaces.msg import RobotInfo
+    from std_msgs.msg import Empty
+
+    ros_context = Context()
+    rclpy.init(context=ros_context)
+    node = None
+    executor = None
+    try:
+        node = rclpy.create_node(
+            'rm_bringup_controller_info', context=ros_context,
+            use_global_arguments=False,
+        )
+        executor = SingleThreadedExecutor(context=ros_context)
+        executor.add_node(node)
+        parent_namespace = context.launch_configurations.get(
+            'ros_namespace', ''
+        ).strip('/')
+        parent_namespace = '/' + parent_namespace if parent_namespace else ''
+        namespaces = (
+            ('/left_arm', '/right_arm')
+            if plan.arm_profile.topology == 'dual' else ('',)
+        )
+        replies = {}
+        publishers = []
+        for namespace in namespaces:
+            topic = parent_namespace + namespace + '/rm_driver/get_robot_info'
+            node.create_subscription(
+                RobotInfo, topic + '_result',
+                lambda message, key=namespace: replies.update({key: message}), 1,
+            )
+            publishers.append(node.create_publisher(Empty, topic + '_cmd', 1))
+
+        deadline = asyncio.get_running_loop().time() + _CONTROLLER_INFO_TIMEOUT
+        while asyncio.get_running_loop().time() < deadline:
+            for publisher in publishers:
+                if publisher.get_subscription_count():
+                    publisher.publish(Empty())
+            executor.spin_once(timeout_sec=0)
+            if len(replies) == len(namespaces):
+                versions = {
+                    message.robot_controller_version for message in replies.values()
+                }
+                if not all(message.state for message in replies.values()) or len(versions) != 1:
+                    raise RuntimeError(
+                        'Cannot determine a consistent controller generation from rm_driver.'
+                    )
+                version, = versions
+                if version not in (3, 4):
+                    raise RuntimeError(
+                        'Unsupported controller generation reported by rm_driver: '
+                        f'{version}.'
+                    )
+                return version
+            await asyncio.sleep(0.1)
+        raise RuntimeError(
+            'Timed out reading controller information from rm_driver; '
+            'model selection was not guessed.'
+        )
+    finally:
+        if executor is not None:
+            executor.shutdown()
+        if node is not None:
+            node.destroy_node()
+        rclpy.try_shutdown(context=ros_context)
+
+
+async def _finish_real_bringup(context, plan):
+    version = await _read_controller_version(context, plan)
+    actions = _compose_bringup(context, controller_version=version, driver_started=True)
+    context.emit_event_sync(IncludeLaunchDescriptionEvent(LaunchDescription(actions)))
+
+
 def _build_real_actions(context, plan, joint_states_topic, use_moveit, model):
     actions = [
-        _include(
-            plan.driver,
-            {
-                'arm_type': plan.arm_type,
-                'driver_config': _value(context, 'driver_config'),
-                'left_driver_config': _value(
-                    context, 'left_driver_config'
-                ),
-                'right_driver_config': _value(
-                    context, 'right_driver_config'
-                ),
-            },
-        ),
         _include(
             plan.description,
             {
@@ -176,12 +253,26 @@ def _build_gazebo_actions(context, plan, joint_states_topic, use_moveit, model):
     return actions
 
 
-def _compose_bringup(context):
+def _compose_bringup(context, controller_version=None, driver_started=False):
+    needs_controller_info = False
     try:
-        plan = resolve_model(
-            _value(context, 'arm_type'),
-            _value(context, 'mode'),
-        )
+        arm_type, mode = _value(context, 'arm_type'), _value(context, 'mode')
+        if mode.strip().casefold() == 'real' and controller_version is None:
+            integrated_plan = resolve_model(arm_type, mode, 4)
+            try:
+                plan = resolve_model(arm_type, mode)
+            except ValueError:
+                plan = None
+            needs_controller_info = (
+                plan is None or plan.arm_type != integrated_plan.arm_type
+            )
+            if needs_controller_info:
+                plan = integrated_plan
+        else:
+            plan = resolve_model(
+                arm_type, mode,
+                controller_version if controller_version is not None else 3,
+            )
     except ValueError as exc:
         raise RuntimeError(str(exc)) from exc
 
@@ -223,9 +314,16 @@ def _compose_bringup(context):
 
     joint_states_topic = _resolved_joint_states_topic(context, plan)
     if plan.mode == 'real':
-        return _build_real_actions(
+        if needs_controller_info:
+            return [
+                # Keep the driver's canonical selector from replacing the user's input.
+                GroupAction(actions=[_driver_action(context, plan)]),
+                OpaqueCoroutine(coroutine=_finish_real_bringup, kwargs={'plan': plan}),
+            ]
+        actions = _build_real_actions(
             context, plan, joint_states_topic, use_moveit, model
         )
+        return actions if driver_started else [_driver_action(context, plan), *actions]
     return _build_gazebo_actions(
         context, plan, joint_states_topic, use_moveit, model
     )
@@ -283,7 +381,10 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 'follow',
                 default_value='auto',
-                description='Driver-follow mode: auto, true, or false',
+                description=(
+                    'Driver-follow mode: auto selects false for all models; '
+                    'true or false overrides it'
+                ),
             ),
             DeclareLaunchArgument(
                 'joint_states_topic',

@@ -404,9 +404,10 @@ def normalize_mode(value: str | None) -> str:
 def resolve_model(
     arm_type: str | None,
     mode: str | None = 'real',
+    controller_version: int = 3,
 ) -> ResolvedBringupPlan:
     """Resolve public selector values to a component-level bringup plan."""
-    canonical_arm_type = normalize_arm_type(arm_type)
+    canonical_arm_type = normalize_arm_type(arm_type, controller_version)
     canonical_mode = normalize_mode(mode)
     entry = MODEL_CATALOG[canonical_arm_type]
     moveit_package, real_moveit_launch, gazebo_moveit_launch = (

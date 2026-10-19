@@ -146,11 +146,16 @@ _ARM_TYPE_ALIASES.update({
 })
 
 
-def normalize_arm_type(arm_type: str) -> str:
+def normalize_arm_type(arm_type: str, controller_version: int = 3) -> str:
     """Normalize a complete selector and reject unsupported end-link versions."""
+    if controller_version not in (3, 4):
+        raise ValueError("controller_version must be 3 or 4.")
     if not isinstance(arm_type, str) or not arm_type.strip():
         raise ValueError("arm_type must be a non-empty string.")
     token = re.sub(r"[\s_-]+", "", arm_type.strip().casefold())
+    if controller_version == 4:
+        # Fourth-generation 6F names reuse the existing integrated-force models.
+        token = re.sub(r"6f(v?)$", r"6fb\1", token)
     normalized = _ARM_TYPE_ALIASES.get(token)
     if normalized not in DESCRIPTION_MODELS:
         raise ValueError(
