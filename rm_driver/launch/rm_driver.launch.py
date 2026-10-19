@@ -58,7 +58,7 @@ _DRIVER_PROFILES = {
         'config': 'rm_63_config.yaml',
     },
     '63_iii': {
-        'suffixes': ('6fb',),
+        'suffixes': ('6f', '6fb'),
         'topology': 'single',
         'config': 'rm_63_config.yaml',
     },
@@ -77,7 +77,7 @@ _DRIVER_PROFILES = {
         'config': 'rm_eco62_config.yaml',
     },
     'eco63': {
-        'suffixes': ('6fb',),
+        'suffixes': ('6f', '6fb'),
         'topology': 'single',
         'config': 'rm_eco63_config.yaml',
     },
@@ -95,7 +95,7 @@ _DRIVER_PROFILES = {
         'config': 'rm_gen72_config.yaml',
     },
     'rx75': {
-        'suffixes': ('6fb', '6fb-v'),
+        'suffixes': ('6f', '6f-v', '6fb', '6fb-v'),
         'topology': 'dual',
         'left_config': 'rm_rx75_left_config.yaml',
         'right_config': 'rm_rx75_right_config.yaml',
