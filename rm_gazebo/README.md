@@ -26,6 +26,19 @@ Revision History:
 
 </div>
 
+## Launch examples
+
+After building and sourcing the workspace, simulate an RM65 with integrated force sensing in Gazebo:
+
+```bash
+# Simulation (generation 3 and 4 both retain the 6fb model name)
+ros2 launch rm_gazebo rm_gazebo.launch.py \
+  arm_type:=65-6fb
+```
+
+This package starts Gazebo simulation, which does not connect to a controller or depend on its software version. Generation 4 software 1.0.6 and later names the former `6fb` end link `6f`; keep `65-6fb` when simulating the same geometry. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
+
+
 ## Content
 * 1.[rm_gazebo Package Description](#rm_gazebo_Package_Description)
 * 2.[rm_gazebo Package Running](#rm_gazebo_Package_Running)

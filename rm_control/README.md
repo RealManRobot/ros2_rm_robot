@@ -21,6 +21,24 @@ Revision History:
 |V1.4   | 2026-8-11 | Amend(Add the unified control launch entry, follow override, and model-specific compatibility wrappers) |
 </div>
 
+## Launch examples
+
+After building and sourcing the workspace, for an RM65 with integrated force sensing:
+
+```bash
+# Start real-robot trajectory control (generation 3 or generation 4 controller software <= 1.0.5)
+ros2 launch rm_control rm_control.launch.py \
+  arm_type:=65-6fb
+
+# Start real-robot trajectory control (generation 4 controller software > 1.0.5)
+ros2 launch rm_control rm_control.launch.py \
+  arm_type:=65-6f
+
+# Note: Generation 4 controller software 1.0.6 and later names the former 6fb end link 6f.
+```
+
+This package is part of the real-robot control chain; Gazebo uses simulation controllers. End-link suffixes resolve to the base family, so both forms use the RM65 configuration. Start `rm_driver` first. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
+
 ## Content
 * 1.[rm_control Package Description](#rm_control_Package_Description)
 * 2.[rm_control Package Function](#rm_control_Package_Function)
@@ -50,9 +68,9 @@ ros2 launch rm_control rm_control.launch.py arm_type:=65-6fb
 Unified launch arguments:
 
 - `arm_type` (required): `63`, `63_iii`, `65`, `75`, `eco62`, `eco63`, `eco65`, `gen72`, `gen72_ii`, or `rx75`. Supported complete selectors such as `65-6fb`, `eco63-6fb`, and `rx75-6fb-v` are also accepted; see the [complete model table](../rm_bringup/README.md#unified-launch-entry).
-- `follow` (default: `auto`): accepts only `auto`, `true`, or `false`; `auto` preserves the model's existing default following mode.
+- `follow` (default: `auto`): accepts only `auto`, `true`, or `false`; `auto` selects low-follow mode (`false`) for all models; use `follow:=true` to select high-follow mode.
 
-Complete selectors retain their family hardware code and `follow` default. With `follow:=auto`, `75`, `gen72`, `gen72_ii`, and `rx75` use high-follow mode (`true`); other families use low-follow mode (`false`).
+Complete selectors retain their family hardware code. All models and supported end-link suffixes default to low-follow mode (`false`).
 
 Selecting `rx75`, `rx75-6fb`, or `rx75-6fb-v` creates both the `left_arm` and `right_arm` control nodes. The eight legacy model entry points (`63`, `65`, `75`, `eco62`, `eco63`, `eco65`, `gen72`, and `rx75`) are now compatibility wrappers, and their existing commands remain supported.
 
@@ -75,7 +93,7 @@ The following mode is configured directly through the unified launch entry; edit
 ros2 launch rm_control rm_control.launch.py arm_type:=65 follow:=true
 ```
 
-`follow:=true` selects high-follow mode, while `follow:=false` selects low-follow mode. High-follow mode tracks the transmitted trajectory more closely and requires suitable transmission rate, velocity, and acceleration settings. Low-follow mode has a lower usage threshold, but points that cannot be reached in time may be discarded. Use `follow:=auto` to preserve the selected model's historical default.
+`follow:=true` selects high-follow mode, while `follow:=false` selects low-follow mode. High-follow mode tracks the transmitted trajectory more closely and requires suitable transmission rate, velocity, and acceleration settings. Low-follow mode has a lower usage threshold, but points that cannot be reached in time may be discarded. The default and `follow:=auto` both select low-follow mode; use `follow:=true` to select high-follow mode explicitly.
 
 Pass a model string from the basic-use section as `arm_type`, such as `65`, `65-6fb`, or `eco65-6f`. The unified launch converts it to the numeric hardware code required by the node automatically.
 ## rm_control_Package_Architecture_Description

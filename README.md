@@ -7,6 +7,24 @@
 
 # ros2_rm_robot
 
+## Launch examples
+
+After building and sourcing the workspace, for an RM65 with integrated force sensing:
+
+```bash
+# Simulation (retains the 6fb model name used by generation 3 and older generation 4 software)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6fb mode:=gazebo
+
+# Real robot (generation 4 controller software > 1.0.5)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6f
+
+# Note: Generation 4 controller software 1.0.6 and later names the former 6fb end link 6f.
+```
+
+Simulation does not connect to a controller and retains the `6fb` model name for this geometry. For a generation 3 robot or older generation 4 software, use `arm_type:=65-6fb`. `mode` defaults to `real` and `allow_trajectory_execution` defaults to `true`. See the [generation-specific model table](rm_bringup/README.md#unified-launch-entry).
+
 The package is mainly used for providing ROS2 support for the robotic arm, and the following is the use environment.
 
 * Currently supported robotic arms include RM65, RM75, ECO62, ECO63, ECO65, RML63, GEN72, and RX75 dual-arm series. For details, refer to [RealMan robots](http://www.realman-robotics.com/).
@@ -136,27 +154,28 @@ The above are the current major packages. Each package has its own role. For mor
 The recommended entry point is `rm_bringup.launch.py`. `arm_type` is required
 and selects the robot model including its end-link version, e.g. `65`,
 `65-6f`, or `eco63-6fb`. RX75 requires an explicit suffix; other bare families
-select the standard version. Bringup, Description, and Gazebo use the same complete
-selector. Driver/Control accept the suffix and select the original family configuration
-and control defaults. `mode` selects a real robot or Gazebo and defaults to
+select the standard version. Real bringup resolves the selector using the actual
+controller generation before passing it to other components. Standalone display and
+Gazebo retain the original model names; Driver/Control select the base-family configuration. `mode` selects a real robot or Gazebo and defaults to
 `real`. For example:
 
 ```bash
-# Real robot
+# Simulation (retains the 6fb model name used by generation 3 and older generation 4 software)
 ros2 launch rm_bringup rm_bringup.launch.py \
-  arm_type:=65-6fb mode:=real allow_trajectory_execution:=false
+  arm_type:=65-6fb mode:=gazebo
 
-# Gazebo
+# Real robot (generation 4 controller software > 1.0.5)
 ros2 launch rm_bringup rm_bringup.launch.py \
-  arm_type:=65 mode:=gazebo
+  arm_type:=65-6f
+
+# Note: Generation 4 controller software 1.0.6 and later names the former 6fb end link 6f.
 ```
 
 `model` defaults to `auto`, preferring matching GLB, and also accepts `stl/glb`.
-Bringup defaults `allow_trajectory_execution` to `true`; the real-robot example
-explicitly disables execution. Offline planning uses `rm_bringup rm_moveit.launch.py`,
-where execution defaults to `false`.
+Bringup defaults `allow_trajectory_execution` to `true`, allowing MoveIt to execute
+planned trajectories.
 
-Unsupported complete selectors fail before any node starts.
+Unsupported complete selectors are rejected.
 The model-specific commands below are compatibility wrappers that forward to
 the unified entry, so their existing filenames and
 commands remain supported. See the [rm_bringup README](rm_bringup/README.md)

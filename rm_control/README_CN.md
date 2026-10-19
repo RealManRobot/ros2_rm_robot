@@ -21,6 +21,26 @@
 
 </div>
 
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 为例：
+
+```bash
+# 启动真机轨迹控制节点（三代 / 四代控制器软件 <= 1.0.5）
+ros2 launch rm_control rm_control.launch.py \
+  arm_type:=65-6fb
+
+# 启动真机轨迹控制节点（四代控制器软件 > 1.0.5）
+ros2 launch rm_control rm_control.launch.py \
+  arm_type:=65-6f
+
+# 注：四代控制器软件自 1.0.6 起将原 6fb 末端统一命名为 6f。
+# rm_driver 和 rm_control 的 arm_type 只需填写基础型号，如 63、65、75、eco63 或 eco65，无需添加末端后缀。
+# 这两个功能包的示例仅提示三、四代的命名差异，启动参数保持一致。
+```
+
+本包用于真机链路；Gazebo 使用仿真控制器。末端后缀解析到基础型号，两种写法均使用 RM65 的配置。 运行前需先启动 `rm_driver`。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
+
 ## 目录
 * 1.[rm_control功能包说明](#rm_control功能包说明)
 * 2.[rm_control功能包使用](#rm_control功能包使用)
@@ -49,9 +69,9 @@ ros2 launch rm_control rm_control.launch.py arm_type:=65-6fb
 统一入口参数：
 
 - `arm_type`（必填）：可选 `63`、`63_iii`、`65`、`75`、`eco62`、`eco63`、`eco65`、`gen72`、`gen72_ii` 或 `rx75`。同时接受受支持的完整型号，如 `65-6fb`、`eco63-6fb`、`rx75-6fb-v`；末端后缀支持范围见 [完整型号表](../rm_bringup/README_CN.md#统一启动入口)。
-- `follow`（默认 `auto`）：仅接受 `auto`、`true` 或 `false`；`auto` 保留对应型号原有的默认跟随模式。
+- `follow`（默认 `auto`）：仅接受 `auto`、`true` 或 `false`；`auto` 对所有型号均选择低跟随（`false`），可用 `follow:=true` 切换为高跟随。
 
-后缀型号使用基础型号的原硬件代码和 `follow` 默认值。`follow:=auto` 对 `75`、`gen72`、`gen72_ii`、`rx75` 为高跟随（`true`），其余型号为低跟随（`false`）。
+后缀型号使用基础型号的原硬件代码；所有型号及末端后缀的默认跟随模式均为低跟随（`false`）。
 
 选择 `rx75`、`rx75-6fb` 或 `rx75-6fb-v` 时会自动创建 `left_arm` 和 `right_arm` 两个控制节点。原有 8 个型号入口（`63`、`65`、`75`、`eco62`、`eco63`、`eco65`、`gen72`、`rx75`）现为兼容 wrapper，原命令仍可继续使用。
 
@@ -74,7 +94,7 @@ rm@rm-desktop:~$ ros2 launch  rm_control rm_65_control.launch.py
 ros2 launch rm_control rm_control.launch.py arm_type:=65 follow:=true
 ```
 
-`follow:=true` 表示高跟随，`follow:=false` 表示低跟随。高跟随对透传速率以及机械臂速度、加速度参数的匹配要求更高，但控制更精细；低跟随的使用门槛较低，但来不及到达的点可能被丢弃。使用 `follow:=auto` 可保留所选型号原有的默认跟随模式。
+`follow:=true` 表示高跟随，`follow:=false` 表示低跟随。高跟随对透传速率以及机械臂速度、加速度参数的匹配要求更高，但控制更精细；低跟随的使用门槛较低，但来不及到达的点可能被丢弃。`follow:=auto` 与默认设置均使用低跟随，可用 `follow:=true` 显式切换为高跟随。
 
 用户传入的 `arm_type` 应使用基础使用章节列出的型号字符串，例如 `65`、`65-6fb`、`eco65-6f`。节点使用的数值型号代码由统一 launch 自动转换，无需手动填写。
 ## rm_control功能包架构说明

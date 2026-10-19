@@ -24,6 +24,22 @@
 
 </div>
 
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 的模型显示为例：
+
+```bash
+# 仿真预览 / 三代或四代旧软件的模型显示（GUI 调整关节）
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=true
+
+# 真机状态显示（四代控制器软件 > 1.0.5；先启动 rm_driver）
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true
+```
+
+四代控制器软件从 `1.0.6` 起将原 `6fb` 末端命名为 `6f`；本包不读取控制器代际，单独启动时仍使用 `65-6fb` 选择同一模型。真机显示使用驱动上报的关节状态，不启用 GUI 关节发布器。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
+
 ## 目录
 * 1.[rm_description功能包说明](#rm_description功能包说明)
 * 2.[rm_description功能包使用](#rm_description功能包使用)
@@ -46,7 +62,7 @@ rm_description功能包为显示机器人模型和TF变换的功能包，通过�
 
 ```bash
 ros2 launch rm_description rm_description.launch.py \
-  arm_type:=65-6f use_rviz:=true use_joint_state_publisher_gui:=true
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=true
 ```
 
 统一入口显式支持能力表中的 21 个型号/末端组合。`model` 可设为 `auto/stl/glb`，
@@ -63,7 +79,7 @@ ros2 launch rm_description rm_description.launch.py \
 | `joint_states_topic` | `/joint_states` | 订阅的关节状态话题 |
 | `use_joint_state_bridge` | `auto` | 自动为 RX75 启用左右臂关节状态桥接 |
 | `use_joint_state_publisher_gui` | `false` | 启动关节状态 GUI |
-| `use_rviz` | `false` | 启动 RViz2 |
+| `use_rviz` | `false` | 启动 RViz2，如果需要启动moveit2建议关闭 |
 
 `eco65-6f` 和 `eco65-6fb` 在 `model:=stl` 时使用现有 `rm_eco65.urdf.xacro`，
 分别选择 `Link6_6f` 和 `Link6_6fb`。离线展开后，关节、惯量和碰撞参数与对应 GLB 一致。

@@ -26,6 +26,26 @@
 
 </div>
 
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 为例：
+
+```bash
+# 连接真实机械臂（三代 / 四代控制器软件 <= 1.0.5）
+ros2 launch rm_driver rm_driver.launch.py \
+  arm_type:=65-6fb
+
+# 连接真实机械臂（四代控制器软件 > 1.0.5）
+ros2 launch rm_driver rm_driver.launch.py \
+  arm_type:=65-6f
+
+# 注：四代控制器软件自 1.0.6 起将原 6fb 末端统一命名为 6f。
+# rm_driver 和 rm_control 的 arm_type 只需填写基础型号，如 63、65、75、eco63 或 eco65，无需添加末端后缀。
+# 这两个功能包的示例仅提示三、四代的命名差异，启动参数保持一致。
+```
+
+本包用于真机链路；Gazebo 使用仿真控制器。末端后缀解析到基础型号，两种写法均使用 RM65 的配置。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
+
 ## 目录
 * 1.[rm_driver功能包说明](#rm_driver功能包说明)
 * 2.[rm_driver功能包使用](#rm_driver功能包使用)
@@ -47,6 +67,10 @@ rm_driver功能包在机械臂ROS2功能包中是十分重要的，该功能包�
 * 3.熟悉功能包相关的话题，方便开发和使用  
 ## rm_driver功能包使用
 ### 功能包基础使用
+随包 C++ SDK 已更新为 `1.1.7.T2`，兼容四代 `6F/6F-V` 与旧 `6FB/6FB-V` 命名，
+内部仍使用 ISF/ISFV 枚举。Driver 只按基础臂型选择配置；模型代际用法见
+[统一启动入口](../rm_bringup/README_CN.md#统一启动入口)。
+
 推荐优先使用统一入口：
 ```bash
 ros2 launch rm_driver rm_driver.launch.py arm_type:=65-6fb

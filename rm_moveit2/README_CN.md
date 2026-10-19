@@ -17,6 +17,17 @@
 
 </div>
 
+## 启动示例
+
+构建并 source 工作区后，以本包提供的标准版 RM75 运动规划示例为例：
+
+```bash
+# 仿真 / 三代或四代真机：先启动对应的 RM75 标准版 MoveIt 环境，再在新终端运行
+ros2 launch rm_moveit2 moveit_rm75.launch.py
+```
+
+本包提供 ECO63、RM75 和 RX75 的运动规划示例，通过 launch 文件选择型号，不提供 `arm_type` 或 `mode` 参数。仿真与真机使用同一示例入口，由预先启动的 MoveIt 环境决定控制对象；本例使用标准版 RM75。四代 `6f`（原 `6fb`）的末端选择见统一入口型号表。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
+
 ## 目录
 
 * 1.[rm_moveit2功能包说明](#rm_moveit2功能包说明)

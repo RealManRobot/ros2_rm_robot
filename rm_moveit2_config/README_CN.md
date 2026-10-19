@@ -23,6 +23,20 @@
 
 </div>
 
+## 启动示例
+
+构建并 source 工作区后，以 `rm_65_config` 中的一体化六维力 RM65 配置为例：
+
+```bash
+# 仿真（虚拟关节控制器，launch 文件沿用 6fb 名称）
+ros2 launch rm_65_config demo_6fb.launch.py
+
+# 控制真实机械臂（四代控制器软件 > 1.0.5，末端称为 6f）
+ros2 launch rm_65_config real_moveit_demo_6fb.launch.py
+```
+
+四代控制器软件从 `1.0.6` 起将原 `6fb` 末端命名为 `6f`，本配置包的文件名仍保留 `6fb`。三代及四代旧软件的一体化六维力末端也使用上述文件；`real_moveit_demo_6f.launch.py` 对应原六维力结构。真机命令仅启动 MoveIt，需按下文先启动 `rm_driver`、`rm_description` 和 `rm_control`；`allow_trajectory_execution` 默认 `true`。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
+
 ## 目录
 * 1.[rm_moveit2_config说明](#rm_moveit2_config说明)
 * 2.[rm_moveit2_config使用](#rm_moveit2_config使用)

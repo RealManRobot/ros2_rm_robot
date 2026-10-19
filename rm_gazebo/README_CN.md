@@ -25,6 +25,18 @@
 
 </div>
 
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 的 Gazebo 仿真为例：
+
+```bash
+# 仿真（三代 / 四代均沿用 6fb 模型命名，在使用仿真是目前不专门做三四代的区别）
+ros2 launch rm_gazebo rm_gazebo.launch.py \
+  arm_type:=65-6fb
+```
+
+本包启动 Gazebo 仿真。仿真不连接控制器，也不受控制器软件版本限制；四代软件从 `1.0.6` 起将原 `6fb` 末端命名为 `6f`，仿真同一结构仍使用 `65-6fb`。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
+
 ## 目录
 * 1.[rm_gazebo功能包说明](#rm_gazebo功能包说明)
 * 2.[rm_gazebo功能包运行](#rm_gazebo功能包运行)

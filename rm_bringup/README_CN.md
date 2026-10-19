@@ -47,9 +47,18 @@ rm_bringup功能包为实现多个launch文件同时运行所设计的功能包�
 推荐使用 `rm_bringup.launch.py`，通过参数选择机械臂、末端版本和运行模式；原有按型号拆分的 launch 命令继续兼容。
 
 ```bash
+# 仿真（沿用三代 / 四代旧软件的 6fb 模型命名）
 ros2 launch rm_bringup rm_bringup.launch.py \
-  arm_type:=65-6f mode:=gazebo
+  arm_type:=65-6fb mode:=gazebo
+
+# 控制真实机械臂（四代控制器软件 > 1.0.5）
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6f
+
+# 注：四代控制器软件从 1.0.6 起将原 6fb 末端统一命名为 6f，四代真机按 6f 选择。
 ```
+
+仿真不连接控制器，同一结构始终使用 `6fb` 模型名。三代或四代旧软件的真机使用 `arm_type:=65-6fb`；`mode` 默认 `real`，`allow_trajectory_execution` 默认 `true`。
 
 | 参数 | 默认值 | 说明 |
 | :--- | :--- | :--- |
@@ -62,58 +71,41 @@ ros2 launch rm_bringup rm_bringup.launch.py \
 | `driver_config` | `auto` | 真机单臂 driver YAML；RX75 请使用左右两项 |
 | `left_driver_config` | `auto` | RX75 左臂 driver YAML |
 | `right_driver_config` | `auto` | RX75 右臂 driver YAML |
-| `follow` | `auto` | 真机控制跟随模式：`auto/true/false`；`auto` 对 `75/gen72/gen72_ii/rx75` 为 `true`，其余为 `false` |
+| `follow` | `auto` | 真机控制跟随模式：`auto/true/false`；`auto` 对所有型号均为 `false`，可手动设为 `true` |
 | `joint_states_topic` | `auto` | 当前仅支持 `auto`，按型号和模式选择默认 joint states Topic |
 | `start_gazebo` | `true` | Gazebo 模式下是否启动仿真进程 |
 
-支持 10 个系列、21 个完整 `arm_type`。除 RX75 必须指定后缀外，不带末端后缀时选择标准版：
+以下为 10 个系列的统一真机入口选择。四代新命名适用于 四代控制器软件 > `1.0.5`；旧软件继续使用 `6fb/6fb-v/6f`。不带后缀时选择标准版：
 
-| 型号 | arm_type 可选值 |
-| :--- | :--- |
-| `63` | `63`, `63-6f`, `63-6fb` |
-| `63_iii` | `63_iii`, `63_iii-6fb` |
-| `65` | `65`, `65-6f`, `65-6fb` |
-| `75` | `75`, `75-6f`, `75-6fb` |
-| `eco62` | `eco62` |
-| `eco63` | `eco63`, `eco63-6fb` |
-| `eco65` | `eco65`, `eco65-6f`, `eco65-6fb` |
-| `gen72` | `gen72` |
-| `gen72_ii` | `gen72_ii` |
-| `rx75` | `rx75-6fb`, `rx75-6fb-v` |
+| 型号 | 三代 arm_type 可选值 | 四代新命名 arm_type 可选值 |
+| :--- | :--- | :--- |
+| `63` | `63`, `63-6f`, `63-6fb` | `63`, `63-6f`；也可以使用 `63-6fb` |
+| `63_iii` | `63_iii`, `63_iii-6fb` | `63_iii`, `63_iii-6f`；也可以使用 `63_iii-6fb` |
+| `65` | `65`, `65-6f`, `65-6fb` | `65`, `65-6f`；也可以使用 `65-6fb` |
+| `75` | `75`, `75-6f`, `75-6fb` | `75`, `75-6f`；也可以使用 `75-6fb` |
+| `eco62` | `eco62` | `eco62` |
+| `eco63` | `eco63`, `eco63-6fb` | `eco63`, `eco63-6f`；也可以使用 `eco63-6fb` |
+| `eco65` | `eco65`, `eco65-6f`, `eco65-6fb` | `eco65`, `eco65-6f`；也可以使用 `eco65-6fb` |
+| `gen72` | `gen72` | `gen72` |
+| `gen72_ii` | `gen72_ii` | `gen72_ii` |
+| `rx75` | `rx75-6fb`, `rx75-6fb-v` | `rx75-6f`, `rx75-6f-v`；也可以使用 `rx75-6fb`, `rx75-6fb-v` |
 
-不支持的组合会在任何节点启动前直接报错。例如，ECO62 不提供 `6fb` 统一入口。真实机械臂联调时可临时传入 `allow_trajectory_execution:=false`，该设置不会修改默认值。
+三代的 `-6f` 表示旧六维力结构；四代同名 `-6f` 表示原一体化 `-6fb` 结构。
+单独显示和 Gazebo 不读取代际，仍按原模型名称选择；查看或仿真四代同款一体化结构时使用 `65-6fb`，不要用 `65-6f` 代替。
+不支持的组合会报错，例如 ECO62 不提供 `6fb`。`allow_trajectory_execution` 默认 `true`；需要禁止执行轨迹时，可手动设为 `false`。
 
 统一入口直接组合 `rm_driver`、`rm_description`、`rm_control` 和
-`rm_gazebo` 的通用 launch；各组件接收同一个完整 `arm_type`，例如 `65-6fb`。
+`rm_gazebo` 的通用 launch；各组件接收解析后的完整 `arm_type`，例如 `65-6fb`。
 Driver/Control 在内部选择基础型号的 YAML、硬件代码和跟随默认值。
 原有 42 个按型号入口已改成薄兼容 wrapper，旧命令及 RX75 的
 `use_moveit_rviz` 参数继续可用。Gazebo 仍按历史行为在 8 秒后启动
 MoveIt；controller readiness 时序优化将在后续独立实施。
 
-### 模型选择和离线规划
+### 模型选择
 
 `mode:=real` 默认 `model:=auto`，有配套 GLB 的 14 个变体使用彩色模型，TF 与 MoveIt
 读取相同的机器人描述。`model:=stl` 显式选择原 STL，`model:=glb` 强制使用 GLB；
 缺少该变体的 GLB 时会在启动节点前报错。
-
-离线规划使用统一入口 `rm_moveit.launch.py`，同样支持 `model:=auto/stl/glb`。
-默认关闭轨迹执行，不启动真实驱动或控制节点：
-
-```bash
-ros2 launch rm_bringup rm_moveit.launch.py \
-  arm_type:=eco65-6fb model:=stl use_joint_state_publisher_gui:=true
-```
-
-此离线入口的默认值为：
-
-| 参数 | 默认值 |
-| :--- | :--- |
-| `model` | `auto` |
-| `allow_trajectory_execution` | `false` |
-| `use_rviz` | `true` |
-| `use_robot_state_publisher` | `true` |
-| `use_joint_state_publisher_gui` | `false` |
-| `joint_states_topic` | `/joint_states` |
 
 `mode:=gazebo` 下，有配套 GLB 的 14 个型号/末端组合默认在 Gazebo 与 RViz2 中使用彩色 GLB；其余型号使用原 STL。添加 `model:=stl` 可切回原网格，碰撞和物理参数保持不变。
 
@@ -181,7 +173,6 @@ rm@rm-desktop:~$ ros2 launch rm_bringup rm_65_gazebo.launch.py
 │   └── rm_bringup3.png                 #图片3
 ├── launch                              #启动文件
 │   ├── rm_bringup.launch.py             #所有支持型号、末端版本和运行模式的统一启动入口
-│   ├── rm_moveit.launch.py              #GLB/STL 共用的离线规划入口
 │   ├── rm_63_6f_bringup.launch.py      #63臂六维力moveit2启动文件
 │   ├── rm_63_6f_gazebo.launch.py       #63臂六维力gazebo启动文件
 │   ├── rm_63_6fb_bringup.launch.py     #63臂一体化六维力moveit2启动文件
@@ -227,6 +218,7 @@ rm@rm-desktop:~$ ros2 launch rm_bringup rm_65_gazebo.launch.py
 ├── rm_bringup                         #统一启动入口使用的Python模块
 │   ├── __init__.py                      #Python包标记文件
 │   ├── legacy_bringup.py                #42个旧入口的兼容wrapper工厂
+│   ├── real_moveit.py                   #真机 GLB MoveIt 节点构造
 │   └── variant_catalog.py               #完整arm_type能力表、硬件profile和组件映射
 ├── package.xml                         #依赖说明文件
 ├── README_CN.md                        #中文说明文档
