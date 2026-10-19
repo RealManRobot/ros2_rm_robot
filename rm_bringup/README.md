@@ -52,9 +52,18 @@ driver, description, control, Gazebo Classic, and MoveIt launches. The 42
 historical model-specific files remain available as compatibility wrappers.
 
 ```bash
+# Simulation (retains the 6fb model name used by generation 3 and older generation 4 software)
 ros2 launch rm_bringup rm_bringup.launch.py \
-  arm_type:=65-6f mode:=gazebo
+  arm_type:=65-6fb mode:=gazebo
+
+# Real robot (generation 4 controller software > 1.0.5)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6f
+
+# Note: Generation 4 controller software 1.0.6 and later names the former 6fb end link 6f.
 ```
+
+Simulation does not connect to a controller and retains the `6fb` model name for this geometry. For a generation 3 robot or older generation 4 software, use `arm_type:=65-6fb`. `mode` defaults to `real` and `allow_trajectory_execution` defaults to `true`.
 
 | Argument | Default | Description |
 | :--- | :--- | :--- |
@@ -66,50 +75,43 @@ ros2 launch rm_bringup rm_bringup.launch.py \
 | `use_rviz` | `true` | Start MoveIt RViz |
 | `driver_config` | `auto` | Single-arm driver YAML in real mode |
 | `left_driver_config` / `right_driver_config` | `auto` | RX75 left/right driver YAML in real mode |
-| `follow` | `auto` | Real-mode control policy: `auto/true/false` |
+| `follow` | `auto` | Real follow mode: `auto/true/false`; `auto` is `false` for all models; set `true` to select high-follow mode |
 | `joint_states_topic` | `auto` | Only `auto` is public; it selects the model/mode default |
 | `start_gazebo` | `true` | Start Gazebo Classic in gazebo mode |
 | `use_gazebo_gui` | `true` | Start the Gazebo Classic GUI |
 
-Supported combinations:
+Real mode accepts new generation 4 names, such as `arm_type:=eco63-6f mode:=real`.
+The entry starts the driver and reads the API-reported generation through its existing
+`get_robot_info_cmd/result` topics before choosing the model. Generation 4 `6f/6f-v`
+inputs reuse existing `6fb/6fb-v` configurations; generation 3 retains the old 6F model.
+No manual generation argument is required. Failed or missing information after 10 seconds
+stops bringup before description, control and MoveIt are started; no generation is guessed.
+Disconnected description and simulation entries retain their original
+selection rules. Software versions above `1.0.5` change the name only, not ISF/ISFV geometry.
 
-| Model | arm_type values |
-| :--- | :--- |
-| `63` | `63`, `63-6f`, `63-6fb` |
-| `63_iii` | `63_iii`, `63_iii-6fb` |
-| `65` | `65`, `65-6f`, `65-6fb` |
-| `75` | `75`, `75-6f`, `75-6fb` |
-| `eco62` | `eco62` |
-| `eco63` | `eco63`, `eco63-6fb` |
-| `eco65` | `eco65`, `eco65-6f`, `eco65-6fb` |
-| `gen72` | `gen72` |
-| `gen72_ii` | `gen72_ii` |
-| `rx75` | `rx75-6fb`, `rx75-6fb-v` |
+The following table applies to unified real bringup for the 10 families. Generation 4 new names apply when communication software is > `1.0.5`; older software keeps `6fb/6fb-v`. Bare families select the standard version:
 
-Unsupported selections fail before nodes start. The 14 model/end-link combinations with DAE assets use the same colored visuals in Gazebo Classic and RViz2. Use `model:=stl` for the original meshes; collision and physics stay unchanged.
-
-Offline planning starts no driver or control nodes and disables trajectory execution by default:
-
-```bash
-ros2 launch rm_bringup rm_moveit.launch.py \
-  arm_type:=eco62 use_joint_state_publisher_gui:=true
-```
-
-**Offline planning arguments for `rm_moveit.launch.py`:**
-
-| Argument | Default | Description |
+| Model | Generation 3 arm_type values | Generation 4 arm_type values (new names) |
 | :--- | :--- | :--- |
-| `arm_type` | Required | Model and end-link version, e.g. `eco62`, `65-6f` or `rx75-6fb` |
-| `model` | `auto` | `auto` prefers matching DAE and falls back to STL; `stl` selects the original meshes, `dae` requires matching DAE |
-| `allow_trajectory_execution` | `false` | Allow MoveIt trajectory execution; disabled by default for offline planning |
-| `use_rviz` | `true` | Start MoveIt RViz |
-| `use_robot_state_publisher` | `true` | Start robot_state_publisher to publish model transforms |
-| `use_joint_state_publisher_gui` | `false` | Start the joint slider GUI to supply offline joint states |
-| `joint_states_topic` | `/joint_states` | Joint-state topic used by MoveIt and the model |
-| `left_xyz` | `0 -0.075 0.5` | RX75 only: left-arm mounting position `x y z`, in metres |
-| `left_rpy` | `3.14 1.57 1.5707963267949` | RX75 only: left-arm mounting orientation `roll pitch yaw`, in radians |
-| `right_xyz` | `0 0.075 0.5` | RX75 only: right-arm mounting position `x y z`, in metres |
-| `right_rpy` | `3.14 1.57 -1.5707963267949` | RX75 only: right-arm mounting orientation `roll pitch yaw`, in radians |
+| `63` | `63`, `63-6f`, `63-6fb` | `63`, `63-6f`; also accepts `63-6fb` |
+| `63_iii` | `63_iii`, `63_iii-6fb` | `63_iii`, `63_iii-6f`; also accepts `63_iii-6fb` |
+| `65` | `65`, `65-6f`, `65-6fb` | `65`, `65-6f`; also accepts `65-6fb` |
+| `75` | `75`, `75-6f`, `75-6fb` | `75`, `75-6f`; also accepts `75-6fb` |
+| `eco62` | `eco62` | `eco62` |
+| `eco63` | `eco63`, `eco63-6fb` | `eco63`, `eco63-6f`; also accepts `eco63-6fb` |
+| `eco65` | `eco65`, `eco65-6f`, `eco65-6fb` | `eco65`, `eco65-6f`; also accepts `eco65-6fb` |
+| `gen72` | `gen72` | `gen72` |
+| `gen72_ii` | `gen72_ii` | `gen72_ii` |
+| `rx75` | `rx75-6fb`, `rx75-6fb-v` | `rx75-6f`, `rx75-6f-v`; also accepts `rx75-6fb`, `rx75-6fb-v` |
+
+Generation 3 `-6f` selects the original force-sensor geometry. Generation 4 `-6f` selects the existing integrated `-6fb` geometry.
+Standalone display and Gazebo do not read controller generation and retain the original model names. Use `65-6fb`, rather than `65-6f`, to display or simulate the same integrated geometry.
+Unsupported combinations are rejected, such as ECO62 with `6fb`. `allow_trajectory_execution`
+defaults to `true`; set it to `false` when trajectory execution should be disabled.
+
+### Model selection
+
+The 14 model/end-link combinations with DAE assets use the same colored visuals in Gazebo Classic and RViz2. Use `model:=stl` for the original meshes; collision and physics stay unchanged.
 
 ### moveit2_Controlling_Real_Robotic_Arm
 First, after configuring the environment and completing the connection, we can directly launch the node and run the launch.py file in the rm_bringup package through the following command.
@@ -173,6 +175,7 @@ The current rm_bringup package is composed of the following files.
 │   ├── rm_bringup2.png                # pictures2
 │   └── rm_bringup3.png                # pictures3
 ├── launch
+│   ├── real_moveit.py                  # internal real-robot DAE MoveIt helper
 │   ├── rm_bringup.launch.py            # unified model/mode entry
 │   ├── rm_63_6f_bringup.launch.py     # 63 arm six-axis force moveit2 launch file
 │   ├── rm_63_6f_gazebo.launch.py      # 63 arm six-axis force gazebo launch file

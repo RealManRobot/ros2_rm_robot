@@ -22,6 +22,22 @@ Revision History:
 
 </div>
 
+## Launch examples
+
+After building and sourcing the workspace, for an RM65 with integrated force sensing:
+
+```bash
+# Start trajectory control (generation 3 and 4 both use the base model)
+ros2 launch rm_control rm_control.launch.py \
+  arm_type:=65
+
+# Note: Generation 4 software 1.0.6 and later names the former 6fb end link 6f.
+# rm_driver and rm_control only need a base model, such as 63, 65, 75, eco63 or eco65.
+# The naming difference does not change these launch arguments.
+```
+
+This package is part of the real-robot control chain; Gazebo uses simulation controllers. `arm_type` selects the base-family configuration. Start `rm_driver` first. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
+
 ## Content
 * 1.[rm_control Package Description](#rm_control_Package_Description)
 * 2.[rm_control Package Function](#rm_control_Package_Function)
@@ -46,7 +62,7 @@ Source code address: https://github.com/RealManRobot/ros2_rm_robot.git。
 The unified entry point is recommended:
 
 ```bash
-ros2 launch rm_control rm_control.launch.py arm_type:=65-6fb follow:=auto
+ros2 launch rm_control rm_control.launch.py arm_type:=65 follow:=auto
 ```
 
 | Argument | Default | Description |

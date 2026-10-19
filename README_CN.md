@@ -7,6 +7,25 @@
 
 # ros2_rm_robot
 
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 为例：
+
+```bash
+# 仿真（沿用三代 / 四代旧软件的 6fb 模型命名）
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6fb mode:=gazebo
+
+# 控制真实机械臂（四代控制器软件 > 1.0.5）
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6f
+
+# 注：四代控制器软件从 1.0.6 起将原 6fb 末端统一命名为 6f，四代真机按 6f 选择。
+```
+
+仿真不连接控制器，同一结构始终使用 `6fb` 模型名。三代或四代旧软件的真机使用 `arm_type:=65-6fb`；`mode` 默认 `real`，`allow_trajectory_execution` 默认 `true`。完整型号见[三、四代型号表](rm_bringup/README_CN.md#统一启动入口)。
+
+
 该功能包的主要作用为提供机械臂的ROS2支持，以下为使用环境。
 
 * 当前支持的机械臂有RM65系列、RM75系列、ECO62系列、ECO63系列、ECO65系列、RML63系列、GEN72系列、RX75人形双臂系列，详细可参考网址 [RealMan robots](http://www.realman-robotics.com/)。
@@ -137,13 +156,15 @@ colcon build
 `mode` 默认为 `real`，也可选 `gazebo`。
 
 ```bash
-# 真实机械臂：首次验证只规划、不执行
+# 仿真（沿用三代 / 四代旧软件的 6fb 模型命名）
 ros2 launch rm_bringup rm_bringup.launch.py \
-  arm_type:=65  allow_trajectory_execution:=false
+  arm_type:=65-6fb mode:=gazebo
 
-# Foxy Gazebo Classic
+# 控制真实机械臂（四代控制器软件 > 1.0.5）
 ros2 launch rm_bringup rm_bringup.launch.py \
-  arm_type:=65-6f mode:=gazebo
+  arm_type:=65-6f
+
+# 注：四代控制器软件从 1.0.6 起将原 6fb 末端统一命名为 6f，四代真机按 6f 选择。
 ```
 
 | 参数 | 默认值 | 说明 |

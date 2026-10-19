@@ -7,6 +7,25 @@
 
 # ros2_rm_robot
 
+## Launch examples
+
+After building and sourcing the workspace, for an RM65 with integrated force sensing:
+
+```bash
+# Simulation (retains the 6fb model name used by generation 3 and older generation 4 software)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6fb mode:=gazebo
+
+# Real robot (generation 4 controller software > 1.0.5)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6f
+
+# Note: Generation 4 controller software 1.0.6 and later names the former 6fb end link 6f.
+```
+
+Simulation does not connect to a controller and retains the `6fb` model name for this geometry. For a generation 3 robot or older generation 4 software, use `arm_type:=65-6fb`. `mode` defaults to `real` and `allow_trajectory_execution` defaults to `true`. See the [generation-specific model table](rm_bringup/README.md#unified-launch-entry).
+
+
 The package is mainly used for providing ROS2 support for the robotic arm, and the following is the use environment.
 
 * Currently supported robotic arms include RM65, RM75, ECO62, ECO63, ECO65, RML63, GEN72, and RX75 dual-arm series. For details, refer to [RealMan robots](http://www.realman-robotics.com/).
@@ -137,13 +156,15 @@ Use `arm_type` to select the model and end-link version, for example `65-6f`.
 `mode` defaults to `real` and also accepts `gazebo`.
 
 ```bash
-# Real robot: plan without executing during the first validation
+# Simulation (retains the 6fb model name used by generation 3 and older generation 4 software)
 ros2 launch rm_bringup rm_bringup.launch.py \
-  arm_type:=65 mode:=real allow_trajectory_execution:=false
+  arm_type:=65-6fb mode:=gazebo
 
-# Foxy Gazebo Classic
+# Real robot (generation 4 controller software > 1.0.5)
 ros2 launch rm_bringup rm_bringup.launch.py \
-  arm_type:=65-6f mode:=gazebo
+  arm_type:=65-6f
+
+# Note: Generation 4 controller software 1.0.6 and later names the former 6fb end link 6f.
 ```
 
 | Argument | Default | Description |

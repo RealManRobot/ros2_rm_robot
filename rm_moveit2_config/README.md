@@ -25,6 +25,20 @@ Revision History:
 
 </div>
 
+## Launch examples
+
+After building and sourcing the workspace, use the integrated-force RM65 configuration in `rm_65_config`:
+
+```bash
+# Simulation (fake joint controllers; launch filenames retain 6fb)
+ros2 launch rm_65_config demo_6fb.launch.py
+
+# Real robot (generation 4 controller software > 1.0.5, end link named 6f)
+ros2 launch rm_65_config real_moveit_demo_6fb.launch.py
+```
+
+Generation 4 controller software 1.0.6 and later names the former `6fb` end link `6f`; this configuration package retains `6fb` filenames. The same files apply to integrated-force end links on generation 3 and older generation 4 software. `real_moveit_demo_6f.launch.py` selects the original force-sensor geometry. The real-robot command starts MoveIt only: first start `rm_driver`, `rm_description`, and `rm_control` as described below. `allow_trajectory_execution` defaults to `true`. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
+
 ## Content
 * 1.[rm_moveit2_config Description](#rm_moveit2_config_Description)
 * 2.[rm_moveit2_config Use](#rm_moveit2_config_Use)

@@ -25,6 +25,22 @@ Revision History:
 
 </div>
 
+## Launch examples
+
+After building and sourcing the workspace, display an RM65 model with integrated force sensing:
+
+```bash
+# Model preview for simulation, generation 3, or older generation 4 software (GUI joint controls)
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=true
+
+# Real-robot state display (generation 4 controller software > 1.0.5; start rm_driver first)
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true
+```
+
+Generation 4 controller software 1.0.6 and later names the former `6fb` end link `6f`. This standalone display does not query controller generation: keep `65-6fb` to select the same model. Real-robot display uses joint states from the driver without enabling the GUI joint-state publisher. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
+
 ## Content
 * 1.[rm_description Package Description](#rm_description_Package_Description)
 * 2.[rm_description Package Use](#rm_description_Package_Use)
