@@ -129,7 +129,7 @@ First, after configuring the environment and completing the connection, we can d
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models are 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, gen72_II, and rx75. For RX75, use `rm_rx75_6fb_bringup.launch.py` for RX75-6FB and `rm_rx75_6fb_v_bringup.launch.py` for RX75-6FB-V.
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. This standard-model template supports 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, and gen72_II. For RX75, use `rm_rx75_6fb_bringup.launch.py` for RX75-6FB and `rm_rx75_6fb_v_bringup.launch.py` for RX75-6FB-V.
 The command to start the six-axis force version is currently available for 63, 65, 75, and eco65:
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_6f_bringup.launch.py
@@ -154,7 +154,7 @@ We can run the launch.py file in the rm_bringup package through the following co
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_gazebo.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models are 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, gen72_II, and rx75. For RX75, use `rm_rx75_6fb_gazebo.launch.py` for RX75-6FB and `rm_rx75_6fb_v_gazebo.launch.py` for RX75-6FB-V.
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. This standard-model template supports 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, and gen72_II. For RX75, use `rm_rx75_6fb_gazebo.launch.py` for RX75-6FB and `rm_rx75_6fb_v_gazebo.launch.py` for RX75-6FB-V.
 
 The command to start the six-axis force version is currently available for 63, 65, 75, and eco65:
 ```

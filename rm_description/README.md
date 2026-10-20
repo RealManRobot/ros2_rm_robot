@@ -36,7 +36,7 @@ ros2 launch rm_description rm_description.launch.py \
 
 # Real-robot state display (generation 4 controller software > 1.0.5; start rm_driver first)
 ros2 launch rm_description rm_description.launch.py \
-  arm_type:=65-6fb use_rviz:=true
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=false
 ```
 
 Generation 4 controller software 1.0.6 and later names the former `6fb` end link `6f`. This standalone display does not query controller generation: keep `65-6fb` to select the same model. Real-robot display uses joint states from the driver without enabling the GUI joint-state publisher. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
@@ -68,7 +68,7 @@ The generic entry is recommended:
 
 ```bash
 ros2 launch rm_description rm_description.launch.py \
-  arm_type:=65-6f
+  arm_type:=65-6f use_joint_state_publisher_gui:=true use_rviz:=true
 ```
 
 It explicitly supports the 21 catalogued model/variant combinations. `model` accepts
