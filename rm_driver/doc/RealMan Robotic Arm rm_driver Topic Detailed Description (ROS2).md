@@ -570,6 +570,8 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 
 #### Get_Controller_RS485_Mode
 
+Supported on third- and fourth-generation controllers. The driver selects the matching API2 query; third-generation Modbus RTU `timeout` uses 100 ms units, while fourth-generation results use 0.
+
 | Function description | Get_Controller_RS485_Mode |
 | :---: | :---- |
 | Parameter description | ROS msg std_msgs::msg::Empty |
@@ -587,6 +589,8 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Return example | ros2 topic echo /rm_driver/set_tool_rs485_mode_result |
 
 #### Get_Tool_End_RS485_Mode
+
+Supported on third- and fourth-generation controllers. The driver selects the matching API2 query; third-generation Modbus RTU `timeout` uses 100 ms units, while fourth-generation results use 0. Tool-end `mode`: generation 3 uses 0 for RS485 serial communication and 1 for Modbus RTU master; generation 4 uses 0 for Modbus RTU master, 1 for dexterous hand, and 2 for gripper.
 
 | Function description | Get_Tool_End_RS485_Mode |
 | :---: | :---- |
@@ -1353,12 +1357,12 @@ corresponding publisher is disabled in the source.
 
 | Function Description | Reading Basic Information of End-Effector Device |
 | :----: | :---- |
-| parameter description | rm_ros_interfaces::msg::Rmplusbase.msg<br>string manu:Device manufacturer.<br>int8 type: Device type, including 1 - Two-finger gripper, 2 - Five-finger dexterous hand, 3 - Three-finger gripper<br>string hv:Hardware version<br>string sv:Software version<br>string bv:Bootloader version<br>int32 id:Device ID<br>int8 dof:Degrees of freedom<br>int8 check:Self-check switch<br>int8 bee:Beeper switch<br>bool force:Force control support<br>bool touch:Tactile support<br>int8 touch_num:Number of tactile sensors<br>int8 touch_sw:Tactile switch<br>int8 hand:Hand orientation, including 1 - Left hand, 2 - Right hand<br>int32[12] pos_up:Position upper limit<br>int32[12] pos_low:Position lower limit<br>int32[12] angle_up:Angle upper limit,Unit: 0.01 degrees.<br>int32[12] angle_low:Angle lower limit,Unit: 0.01 degrees.<br>int32[12] speed_up:Speed upper limit<br>int32[12] speed_low:Speed lower limit<br>int32[12] force_up:Force upper limit<br>int32[12] force_low:Force lower limit,Unit: 0.001N.|
+| parameter description | rm_ros_interfaces::msg::Rmplusbase.msg<br>string manu:Device manufacturer.<br>int8 type: Device type, including 1 - Two-finger gripper, 2 - Five-finger dexterous hand, 3 - Three-finger gripper<br>string hv:Hardware version<br>string sv:Software version<br>string bv:Bootloader version<br>int32 id:Device ID<br>int8 dof:Degrees of freedom<br>int8 check:Self-check switch<br>int8 bee:Beeper switch<br>bool force:Force control support<br>bool touch:Tactile support<br>int8 touch_num:Number of tactile sensors<br>int8 touch_sw:Tactile switch<br>int8 hand:Hand orientation, including 1 - Left hand, 2 - Right hand<br>int32[6] pos_up:Position upper limit<br>int32[6] pos_low:Position lower limit<br>int32[6] angle_up:Angle upper limit,Unit: 0.01 degrees.<br>int32[6] angle_low:Angle lower limit,Unit: 0.01 degrees.<br>int32[6] speed_up:Speed upper limit<br>int32[6] speed_low:Speed lower limit<br>int32[6] force_up:Force upper limit<br>int32[6] force_low:Force lower limit,Unit: 0.001N.|
 | query example | ros2 topic echo /rm_driver/udp_rm_plus_base |
 
 * Reading Real-Time Information of End-Effector Device
 
 | Function Description | Reading Real-Time Information of End-Effector Device |
 | :----: | :---- |
-| parameter description | rm_ros_interfaces::msg::Rmplusstate.msg<br>int32 sys_state:System status.<br>int32[12] dof_state:Current status of each degree of freedom (DoF)<br>int32[12] dof_err:Error information of each DoF<br>int32[12] pos: Current position of each DoF<br>int32[12] speed:Current speed of each DoF<br>int32[12] angle:Current Angle of Each Degree of Freedom angle,Unit: 0.01 degrees.<br>int32[12] current:Current of each DoF,Unit: mA.<br>int32[18] normal_force:Normal force of the tactile three-dimensional force of each DoF<br>int32[18] tangential_force:Tangential force of the tactile three-dimensional force of each DoF<br>int32[18] tangential_force_dir:Direction of the tangential force of the tactile three-dimensional force of each DoF<br>uint32[12] tsa:Tactile self-approach of each DoF<br>uint32[12] tma:Tactile mutual approach of each DoF<br>int32[18] touch_data:Raw data from the tactile sensor<br>int32[12] force:Torque of each DoF,Unit: 0.001N.|
+| parameter description | rm_ros_interfaces::msg::Rmplusstate.msg<br>int32 sys_state:System status.<br>int32[6] dof_state:Current status of each degree of freedom (DoF)<br>int32[6] dof_err:Error information of each DoF<br>int32[6] pos: Current position of each DoF<br>int32[6] speed:Current speed of each DoF<br>int32[6] angle:Current Angle of Each Degree of Freedom angle,Unit: 0.01 degrees.<br>int32[6] current:Current of each DoF,Unit: mA.<br>int32[18] normal_force:Normal force of the tactile three-dimensional force of each DoF<br>int32[18] tangential_force:Tangential force of the tactile three-dimensional force of each DoF<br>int32[18] tangential_force_dir:Direction of the tangential force of the tactile three-dimensional force of each DoF<br>uint32[12] tsa:Tactile self-approach of each DoF<br>uint32[12] tma:Tactile mutual approach of each DoF<br>int32[18] touch_data:Raw data from the tactile sensor<br>int32[6] force:Torque of each DoF,Unit: 0.001N.|
 | query example | ros2 topic echo /rm_driver/udp_rm_plus_state |

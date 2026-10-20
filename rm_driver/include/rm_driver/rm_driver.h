@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <iterator>
+#include <array>
 #include <iostream>
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/clock.hpp" 
@@ -129,6 +131,13 @@
 #include "rm_ros_interfaces/msg/toolsoftwareversionv4.hpp"
 #include "rm_ros_interfaces/msg/alohastate.hpp"
 
+template<typename T, std::size_t N, std::size_t M>
+void copy_sdk_array(const T (&source)[N], std::array<T, M> & destination)
+{
+    static_assert(N == M, "SDK and ROS message array lengths must match");
+    std::copy(std::begin(source), std::end(source), destination.begin());
+}
+
 #define RAD_DEGREE 57.295791433
 #define DEGREE_RAD 0.01745
 #define TIME_OUT 5
@@ -173,51 +182,6 @@ RM_Service Rm_Api;
 //机械臂控制句柄
 rm_robot_handle *robot_handle = nullptr;
 
-//末端设备基础信息
-typedef struct{
-    char manu[10];          // 设备厂家
-    int type;               // 设备类型 1：两指夹爪 2：五指灵巧手 3：三指夹爪
-    char hv[10];            // 硬件版本
-    char sv[10];            // 软件版本
-    char bv[10];            // boot版本
-    int id;                 // 设备ID
-    int dof;                // 自由度
-    int check;              // 自检开关
-    int bee;                // 蜂鸣器开关
-    bool force;             // 力控支持
-    bool touch;             // 触觉支持
-    int touch_num;          // 触觉个数
-    int touch_sw;           // 触觉开关
-    int hand;               // 手方向 1 ：左手 2： 右手
-    int pos_up[12];         // 位置上限,单位：无量纲
-    int pos_low[12];        // 位置下限,单位：无量纲
-    int angle_up[12];       // 角度上限,单位：0.01度
-    int angle_low[12];      // 角度下限,单位：0.01度
-    int speed_up[12];       // 速度上限,单位：无量纲
-    int speed_low[12];      // 速度下限,单位：无量纲
-    int force_up[12];       // 力上限,单位：0.001N 
-    int force_low[12];      // 力下限,单位：0.001N 
-} RM_PLUS_BASE_INFO;
-
-//末端设备实时信息(末端生态协议支持)
-typedef struct
-{
-    int sys_state;                   //系统状态
-    int dof_state[12];               //各自由度当前状态
-    int dof_err[12];                 //各自由度错误信息
-    int pos[12];                     //各自由度当前位置
-    int speed[12];                   //各自由度当前速度
-    int angle[12];                   //各自由度当前角度
-    int current[12];                 //各自由度当前电流
-    int normal_force[18];            //自由度触觉三维力的法向力
-    int tangential_force[18];        //自由度触觉三维力的切向力
-    int tangential_force_dir[18];    //自由度触觉三维力的切向力方向
-    uint32_t tsa[12];                //自由度触觉自接近
-    uint32_t tma[12];                //自由度触觉互接近
-    int touch_data[18];              //触觉传感器原始数据
-    int force[12];                   //自由度力矩
-} RM_PLUS_STATE_INFO;
-
 typedef struct
 {
     uint8_t err_len;
@@ -253,8 +217,8 @@ typedef struct
     uint16_t hand_err;                          //灵巧手系统错误，1表示有错误，0表示无错误
     uint16_t arm_current_status;                //当前机械臂状态上报，
     float    joint_speed[7];                    //当前关节速度，精度0.02RPM。
-    RM_PLUS_STATE_INFO udp_rm_plus_state_info;  //末端设备实时信息
-    RM_PLUS_BASE_INFO udp_rm_plus_base_info;    //末端设备实时信息
+    rm_plus_state_info_t udp_rm_plus_state_info;  //末端设备实时信息
+    rm_plus_base_info_t udp_rm_plus_base_info;    //末端设备实时信息
     RM_ERR udp_rm_err;
     
 } JOINT_STATE_VALUE;

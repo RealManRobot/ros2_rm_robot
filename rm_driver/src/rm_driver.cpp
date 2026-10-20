@@ -4076,78 +4076,12 @@ void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data)
     
     if(rm_plus_base_g == true)
     {
-        for(int i = 0; i < 12; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_up[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_low[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_up[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_low[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_up[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_low[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_base_info.force_up[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_base_info.force_low[i] = 0;
-        }
-        for(int i = 0; i < 10; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_base_info.manu[i] = data.plus_base_info.manu[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.hv[i] = data.plus_base_info.hv[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.sv[i] = data.plus_base_info.sv[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.bv[i] = data.plus_base_info.bv[i];
-        }
-        for(int i = 0; i < 6; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_up[i] = data.plus_base_info.pos_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_low[i] = data.plus_base_info.pos_low[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_up[i] = data.plus_base_info.angle_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_low[i] = data.plus_base_info.angle_low[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_up[i] = data.plus_base_info.speed_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_low[i] = data.plus_base_info.speed_low[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.force_up[i] = data.plus_base_info.force_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.force_low[i] = data.plus_base_info.force_low[i];
-        }
-        Udp_RM_Joint.udp_rm_plus_base_info.id = data.plus_base_info.id;
-        Udp_RM_Joint.udp_rm_plus_base_info.dof = data.plus_base_info.dof;
-        Udp_RM_Joint.udp_rm_plus_base_info.check = data.plus_base_info.check;
-        Udp_RM_Joint.udp_rm_plus_base_info.bee = data.plus_base_info.bee;
-        Udp_RM_Joint.udp_rm_plus_base_info.force = data.plus_base_info.force;
-        Udp_RM_Joint.udp_rm_plus_base_info.touch = data.plus_base_info.touch;
-        Udp_RM_Joint.udp_rm_plus_base_info.touch_num = data.plus_base_info.touch_num;
-        Udp_RM_Joint.udp_rm_plus_base_info.touch_sw = data.plus_base_info.touch_sw;
-        Udp_RM_Joint.udp_rm_plus_base_info.hand = data.plus_base_info.hand;
+        Udp_RM_Joint.udp_rm_plus_base_info = data.plus_base_info;
     }
 
     if(rm_plus_state_g == true)
     {
-        Udp_RM_Joint.udp_rm_plus_state_info.sys_state = data.plus_state_info.sys_state;
-        for(int i = 0; i < 12; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_state_info.dof_state[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_state_info.dof_err[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_state_info.pos[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_state_info.speed[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_state_info.angle[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_state_info.current[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_state_info.force[i] = 0;
-            Udp_RM_Joint.udp_rm_plus_state_info.tsa[i] = data.plus_state_info.tsa[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tma[i] = data.plus_state_info.tma[i];
-        }
-        for(int i = 0; i < 6; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_state_info.dof_state[i] = data.plus_state_info.dof_state[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.dof_err[i] = data.plus_state_info.dof_err[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.pos[i] = data.plus_state_info.pos[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.speed[i] = data.plus_state_info.speed[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.angle[i] = data.plus_state_info.angle[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.current[i] = data.plus_state_info.current[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.force[i] = data.plus_state_info.force[i];
-        }
-        for(int i = 0; i < 18; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_state_info.normal_force[i] = data.plus_state_info.normal_force[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tangential_force[i] = data.plus_state_info.tangential_force[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tangential_force_dir[i] = data.plus_state_info.tangential_force_dir[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.touch_data[i] = data.plus_state_info.touch_data[i];
-        }
+        Udp_RM_Joint.udp_rm_plus_state_info = data.plus_state_info;
     }
     if(udp_lift_state_g == true)
     {
@@ -4281,66 +4215,52 @@ void UdpPublisherNode::udp_timer_callback()
         }
         if(rm_plus_base_g == true)
         {
-            for(int i = 0;i<10;i++)
-            {
-                udp_rm_plus_base_.pos_up[i] = Udp_RM_Joint.udp_rm_plus_base_info.pos_up[i];
-                udp_rm_plus_base_.pos_low[i] = Udp_RM_Joint.udp_rm_plus_base_info.pos_low[i];
-                udp_rm_plus_base_.speed_up[i] = Udp_RM_Joint.udp_rm_plus_base_info.speed_up[i];
-                udp_rm_plus_base_.speed_low[i] = Udp_RM_Joint.udp_rm_plus_base_info.speed_low[i];
-                udp_rm_plus_base_.force_up[i] = Udp_RM_Joint.udp_rm_plus_base_info.force_up[i];
-                udp_rm_plus_base_.force_low[i] = Udp_RM_Joint.udp_rm_plus_base_info.force_low[i];
-            }
-            for(int i = 0; i < 2; i++)
-            {
-                udp_rm_plus_base_.pos_up[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.pos_up[10+i];
-                udp_rm_plus_base_.pos_low[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.pos_low[10+i];
-                udp_rm_plus_base_.speed_up[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.speed_up[10+i];
-                udp_rm_plus_base_.speed_low[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.speed_low[10+i];
-                udp_rm_plus_base_.force_up[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.force_up[10+i];
-                udp_rm_plus_base_.force_low[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.force_low[10+i];
-            }
-            udp_rm_plus_base_.manu = Udp_RM_Joint.udp_rm_plus_base_info.manu;
-            udp_rm_plus_base_.hv = Udp_RM_Joint.udp_rm_plus_base_info.hv;
-            udp_rm_plus_base_.sv = Udp_RM_Joint.udp_rm_plus_base_info.sv;
-            udp_rm_plus_base_.bv = Udp_RM_Joint.udp_rm_plus_base_info.bv;
-
-            udp_rm_plus_base_.id = Udp_RM_Joint.udp_rm_plus_base_info.id;
-            udp_rm_plus_base_.dof = Udp_RM_Joint.udp_rm_plus_base_info.dof;
-            udp_rm_plus_base_.check = Udp_RM_Joint.udp_rm_plus_base_info.check;
-            udp_rm_plus_base_.bee = Udp_RM_Joint.udp_rm_plus_base_info.bee;
-            udp_rm_plus_base_.force = Udp_RM_Joint.udp_rm_plus_base_info.force;
-            udp_rm_plus_base_.touch = Udp_RM_Joint.udp_rm_plus_base_info.touch;
-            udp_rm_plus_base_.touch_num = Udp_RM_Joint.udp_rm_plus_base_info.touch_num;
-            udp_rm_plus_base_.touch_sw = Udp_RM_Joint.udp_rm_plus_base_info.touch_sw;
-            udp_rm_plus_base_.hand = Udp_RM_Joint.udp_rm_plus_base_info.hand;
+            const auto & info = Udp_RM_Joint.udp_rm_plus_base_info;
+            copy_sdk_array(info.pos_up, udp_rm_plus_base_.pos_up);
+            copy_sdk_array(info.pos_low, udp_rm_plus_base_.pos_low);
+            copy_sdk_array(info.angle_up, udp_rm_plus_base_.angle_up);
+            copy_sdk_array(info.angle_low, udp_rm_plus_base_.angle_low);
+            copy_sdk_array(info.speed_up, udp_rm_plus_base_.speed_up);
+            copy_sdk_array(info.speed_low, udp_rm_plus_base_.speed_low);
+            copy_sdk_array(info.force_up, udp_rm_plus_base_.force_up);
+            copy_sdk_array(info.force_low, udp_rm_plus_base_.force_low);
+            udp_rm_plus_base_.manu.assign(
+                info.manu, std::find(std::begin(info.manu), std::end(info.manu), '\0'));
+            udp_rm_plus_base_.hv.assign(
+                info.hv, std::find(std::begin(info.hv), std::end(info.hv), '\0'));
+            udp_rm_plus_base_.sv.assign(
+                info.sv, std::find(std::begin(info.sv), std::end(info.sv), '\0'));
+            udp_rm_plus_base_.bv.assign(
+                info.bv, std::find(std::begin(info.bv), std::end(info.bv), '\0'));
+            udp_rm_plus_base_.type = info.type;
+            udp_rm_plus_base_.id = info.id;
+            udp_rm_plus_base_.dof = info.dof;
+            udp_rm_plus_base_.check = info.check;
+            udp_rm_plus_base_.bee = info.bee;
+            udp_rm_plus_base_.force = info.force;
+            udp_rm_plus_base_.touch = info.touch;
+            udp_rm_plus_base_.touch_num = info.touch_num;
+            udp_rm_plus_base_.touch_sw = info.touch_sw;
+            udp_rm_plus_base_.hand = info.hand;
             this->Rm_Plus_Base_Result->publish(udp_rm_plus_base_);
         }
         if(rm_plus_state_g == true)
         {
-            udp_rm_plus_state_.sys_state = Udp_RM_Joint.udp_rm_plus_state_info.sys_state;
-            for(int i = 0; i < 12; i++)
-            {
-                udp_rm_plus_state_.dof_state[i] = Udp_RM_Joint.udp_rm_plus_state_info.dof_state[i];
-                udp_rm_plus_state_.dof_err[i] = Udp_RM_Joint.udp_rm_plus_state_info.dof_err[i];
-                udp_rm_plus_state_.pos[i] = Udp_RM_Joint.udp_rm_plus_state_info.pos[i];
-                udp_rm_plus_state_.speed[i] = Udp_RM_Joint.udp_rm_plus_state_info.speed[i];
-                udp_rm_plus_state_.angle[i] = Udp_RM_Joint.udp_rm_plus_state_info.angle[i];
-                udp_rm_plus_state_.current[i] = Udp_RM_Joint.udp_rm_plus_state_info.current[i];
-                udp_rm_plus_state_.normal_force[i] = Udp_RM_Joint.udp_rm_plus_state_info.normal_force[i];
-                udp_rm_plus_state_.tangential_force[i] = Udp_RM_Joint.udp_rm_plus_state_info.tangential_force[i];
-                udp_rm_plus_state_.tangential_force_dir[i] = Udp_RM_Joint.udp_rm_plus_state_info.tangential_force_dir[i];
-                udp_rm_plus_state_.tsa[i] = Udp_RM_Joint.udp_rm_plus_state_info.tsa[i];
-                udp_rm_plus_state_.tma[i] = Udp_RM_Joint.udp_rm_plus_state_info.tma[i];
-                udp_rm_plus_state_.touch_data[i] = Udp_RM_Joint.udp_rm_plus_state_info.touch_data[i];
-                udp_rm_plus_state_.force[i] = Udp_RM_Joint.udp_rm_plus_state_info.force[i];
-            }
-            for(int i = 12; i < 18; i++)
-            {
-                udp_rm_plus_state_.normal_force[i] = Udp_RM_Joint.udp_rm_plus_state_info.normal_force[i];
-                udp_rm_plus_state_.tangential_force[i] = Udp_RM_Joint.udp_rm_plus_state_info.tangential_force[i];
-                udp_rm_plus_state_.tangential_force_dir[i] = Udp_RM_Joint.udp_rm_plus_state_info.tangential_force_dir[i];
-                udp_rm_plus_state_.touch_data[i] = Udp_RM_Joint.udp_rm_plus_state_info.touch_data[i];
-            }
+            const auto & info = Udp_RM_Joint.udp_rm_plus_state_info;
+            udp_rm_plus_state_.sys_state = info.sys_state;
+            copy_sdk_array(info.dof_state, udp_rm_plus_state_.dof_state);
+            copy_sdk_array(info.dof_err, udp_rm_plus_state_.dof_err);
+            copy_sdk_array(info.pos, udp_rm_plus_state_.pos);
+            copy_sdk_array(info.speed, udp_rm_plus_state_.speed);
+            copy_sdk_array(info.angle, udp_rm_plus_state_.angle);
+            copy_sdk_array(info.current, udp_rm_plus_state_.current);
+            copy_sdk_array(info.normal_force, udp_rm_plus_state_.normal_force);
+            copy_sdk_array(info.tangential_force, udp_rm_plus_state_.tangential_force);
+            copy_sdk_array(info.tangential_force_dir, udp_rm_plus_state_.tangential_force_dir);
+            copy_sdk_array(info.tsa, udp_rm_plus_state_.tsa);
+            copy_sdk_array(info.tma, udp_rm_plus_state_.tma);
+            copy_sdk_array(info.touch_data, udp_rm_plus_state_.touch_data);
+            copy_sdk_array(info.force, udp_rm_plus_state_.force);
             this->Rm_Plus_State_Result->publish(udp_rm_plus_state_);
         }
         if(Udp_RM_Joint.control_version == 2)
