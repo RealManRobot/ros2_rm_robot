@@ -105,7 +105,7 @@ ros2 launch rm_bringup rm_bringup.launch.py \
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II、rx75。
+上述普通型号模板适用于65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II。RX75 真机请使用专用入口：RX75-6FB 使用 `rm_rx75_6fb_bringup.launch.py`，RX75-6FB-V 使用 `rm_rx75_6fb_v_bringup.launch.py`。
 
 启动六维力版本机械臂的命令为（当前支持63、65、75、eco65）：
 ```
@@ -131,7 +131,7 @@ rm@rm-desktop:~$ ros2 launch rm_bringup rm_65_bringup.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_gazebo.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II、rx75。
+上述普通型号模板适用于65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II。RX75 Gazebo 仿真请使用专用入口：RX75-6FB 使用 `rm_rx75_6fb_gazebo.launch.py`，RX75-6FB-V 使用 `rm_rx75_6fb_v_gazebo.launch.py`。
 
 启动六维力版本机械臂的命令为（当前支持63、65、75、eco65）：
 ```

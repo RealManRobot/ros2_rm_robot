@@ -82,7 +82,8 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6f.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6fb.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II、RX75 。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II、RX75 。
+GEN72-II 提供独立虚拟演示入口：`ros2 launch rm_gen72_config demo_II.launch.py`。
 例如65机械臂的启动命令：  
 ```
 rm@rm-desktop:~$ ros2 launch rm_65_config demo.launch.py
@@ -129,13 +130,13 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6f.launch.py
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 ```
 注意以上指令均需要将<arm_type>更换为对应的机械臂型号，可选择的型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II。RX75 请使用 `rm_rx75_config` 下的专用 launch：RX75-6FB-V 执行 `ros2 launch rm_rx75_config real_moveit_demo_6fb_v.launch.py`，RX75-6FB 执行 `ros2 launch rm_rx75_config real_moveit_demo_6fb.launch.py`。  
-**注：新添加的gen72_II型和63_III型均在对应的型号文件下，区别在于启动时需要在demo后面添加II或III的标识**  
+**注：gen72_II 和 63_III 分别复用 `rm_gen72_config`、`rm_63_config` 功能包，真机入口分别为 `real_moveit_demo_II.launch.py`、`real_moveit_demo_III.launch.py`。**
 如63_III启动命令如下：
-``` C++
-//普通B版本
-ros2 launch rm_63_config demo_III.launch.py
-//六维力6FB版本
-ros2 launch rm_63_config demo_III_6fb.launch.py
+```bash
+# 普通B版本
+ros2 launch rm_63_config real_moveit_demo_III.launch.py
+# 六维力6FB版本
+ros2 launch rm_63_config real_moveit_demo_III_6fb.launch.py
 ```
 也可以使用rm_bringup功能包一键启动这四个功能包(强烈建议)
 ```
