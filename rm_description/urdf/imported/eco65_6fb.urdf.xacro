@@ -2,9 +2,9 @@
 <robot name="rm_eco65_description">
   <link name="baselink">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.00059982 -9.2932E-05 0.043301" />
-      <mass value="0.61127" />
-      <inertia ixx="0.00080212" ixy="3.0281E-06" ixz="-2.8747E-05" iyy="0.00080502" iyz="1.9749E-06" izz="0.00066167" />
+      <origin rpy="0 0 0" xyz="0.003036 -0.000732 0.035587" />
+      <mass value="0.379" />
+      <inertia ixx="0.00052904" ixy="6.208e-06" ixz="-4.25e-05" iyy="0.000554542" iyz="7.765e-06" izz="0.000472967" />
     </inertial>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0" />
@@ -15,15 +15,15 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://rm_description/meshes/dae/base/base_v1.0.dae" />
+        <mesh filename="package://rm_description/meshes/dae/eco65/base_link.dae" />
       </geometry>
     </visual>
   </link>
   <link name="Link1">
     <inertial>
-      <origin rpy="0 0 0" xyz="-0.022858 -2.0784E-06 -0.013658" />
-      <mass value="0.74247" />
-      <inertia ixx="0.00081398" ixy="-1.9024E-05" ixz="0.00022746" iyy="0.001848" iyz="2.0444E-06" izz="0.0015286" />
+      <origin rpy="0 0 0" xyz="-0.011054685 2.7361459e-05 -0.03347252" />
+      <mass value="1.50782" />
+      <inertia ixx="0.0019588448" ixy="-2.3338144e-05" ixz="0.00053244189" iyy="0.0031016399" iyz="9.1355063e-06" izz="0.002425702" />
     </inertial>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0" />
@@ -43,22 +43,22 @@
     <parent link="baselink" />
     <child link="Link1" />
     <axis xyz="0 0 1" />
-    <limit effort="100" lower="-3.1067" upper="3.1067" velocity="3.14" />
+    <limit effort="60" lower="-3.106686" upper="3.106686" velocity="3.141593" />
   </joint>
   <link name="Link2">
     <inertial>
-      <origin rpy="0 0 0" xyz="-1.6049E-06 0.10336 0.067332" />
-      <mass value="1.3502" />
-      <inertia ixx="0.012821" ixy="-7.2979E-08" ixz="1.1499E-08" iyy="0.0011237" iyz="-0.00033755" izz="0.012933" />
+      <origin rpy="0 0 0" xyz="-1.1827560982036e-05 0.0581820316859641 0.0523635875292498" />
+      <mass value="2.0227481" />
+      <inertia ixx="0.0173147479782545" ixy="-6.2090363142666e-06" ixz="2.96020913640401e-06" iyy="0.00227460292023923" iyz="-0.00144144918722487" izz="0.0172255442015063" />
     </inertial>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0" />
+      <origin rpy="3.14158898038469 7.34641020661009e-06 1.5707963267814" xyz="0 0 0" />
       <geometry>
         <mesh filename="package://rm_description/meshes/rm_eco65_arm/Link_2.STL" />
       </geometry>
     </collision>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="3.14158898038469 7.34641020661009e-06 1.5707963267814" />
       <geometry>
         <mesh filename="package://rm_description/meshes/dae/eco65/link_2.dae" />
       </geometry>
@@ -68,111 +68,111 @@
     <origin rpy="1.5708 0 0" xyz="-0.086 0 0" />
     <parent link="Link1" />
     <child link="Link2" />
-    <axis xyz="0 0 -1" />
-    <limit effort="100" lower="-3.1067" upper="2.3562" velocity="3.14" />
+    <axis xyz="3.67320510324953e-06 -7.3464102065635e-06 -0.999999999966269" />
+    <limit effort="60" lower="-3.106686" upper="2.356194" velocity="3.141593" />
   </joint>
   <link name="Link3">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.10374 7.0495E-07 0.018599" />
-      <mass value="1.0422" />
-      <inertia ixx="0.00084115" ixy="-2.2514E-08" ixz="-0.00068613" iyy="0.0094046" iyz="-3.3287E-09" izz="0.0092482" />
+      <origin rpy="0 0 0" xyz="0.0927608650369262 -9.35058669887521e-05 0.00181173169117229" />
+      <mass value="1.8858232" />
+      <inertia ixx="0.00191652381683187" ixy="-3.36456196501919e-06" ixz="-0.00169426703402793" iyy="0.0224831040748002" iyz="4.49340801680471e-06" izz="0.0218928120083679" />
     </inertial>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0" />
+      <origin rpy="-1.10196153102445e-05 -7.34638322152925e-06 3.67327256545311e-06" xyz="0 0 0" />
       <geometry>
         <mesh filename="package://rm_description/meshes/rm_eco65_arm/Link_3.STL" />
       </geometry>
     </collision>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="-1.10196153102445e-05 -7.34638322152925e-06 3.67327256545311e-06" />
       <geometry>
         <mesh filename="package://rm_description/meshes/dae/eco65/link_3.dae" />
       </geometry>
     </visual>
   </link>
   <joint name="joint3" type="revolute">
-    <origin rpy="3.1416 0 1.5708" xyz="0 0.26 0" />
+    <origin rpy="-3.14158530717959 0 1.5708" xyz="3.50802442650178e-12 0.259999999992984 -1.9100666536913e-06" />
     <parent link="Link2" />
     <child link="Link3" />
-    <axis xyz="0 0 1" />
-    <limit effort="100" lower="-2.7925" upper="2.5307" velocity="3.92" />
+    <axis xyz="-7.34642369894967e-06 1.101958832465e-05 0.999999999912299" />
+    <limit effort="30" lower="-2.792527" upper="2.530727" velocity="3.926991" />
   </joint>
   <link name="Link4">
     <inertial>
-      <origin rpy="0 0 0" xyz="1.1437E-07 -0.0098794 0.013445" />
-      <mass value="0.27261" />
-      <inertia ixx="0.00023835" ixy="1.6845E-09" ixz="6.2757E-09" iyy="0.00019072" iyz="4.0013E-05" izz="0.0001713" />
+      <origin rpy="0 0 0" xyz="-4.01148883191065e-05 -0.0349601672193299 0.00380178317316994" />
+      <mass value="0.57008114" />
+      <inertia ixx="0.000497615349667958" ixy="5.35705039856691e-07" ixz="6.17233202862662e-07" iyy="0.000316732930736851" iyz="-7.576478576108e-05" izz="0.000466587199595189" />
     </inertial>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0" />
+      <origin rpy="-7.3463427445208e-06 1.10196422946629e-05 3.67319161125999e-06" xyz="0 0 0" />
       <geometry>
         <mesh filename="package://rm_description/meshes/rm_eco65_arm/Link_4.STL" />
       </geometry>
     </collision>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="-7.3463427445208e-06 1.10196422946629e-05 3.67319161125999e-06" />
       <geometry>
         <mesh filename="package://rm_description/meshes/dae/eco65/link_4.dae" />
       </geometry>
     </visual>
   </link>
   <joint name="joint4" type="revolute">
-    <origin rpy="0 0 1.5708" xyz="0.24 0 -0.05888" />
+    <origin rpy="0 0 1.5708" xyz="0.240000432549332 2.32752055130155e-07 -0.0588782368628631" />
     <parent link="Link3" />
     <child link="Link4" />
-    <axis xyz="0 0 1" />
-    <limit effort="100" lower="-3.1067" upper="3.1067" velocity="3.92" />
+    <axis xyz="1.10196153094966e-05 7.34638322169204e-06 0.999999999912299" />
+    <limit effort="10" lower="-3.106686" upper="3.106686" velocity="3.926991" />
   </joint>
   <link name="Link5">
     <inertial>
-      <origin rpy="0 0 0" xyz="-0.00040425 0.0066328 -0.012475" />
-      <mass value="0.27794" />
-      <inertia ixx="0.00024751" ixy="-5.6849E-09" ixz="5.4838E-10" iyy="0.00017648" iyz="-2.8552E-05" izz="0.00019295" />
+      <origin rpy="0 0 0" xyz="-3.94947255713416e-05 0.0226471863250741 -0.00736581902916809" />
+      <mass value="0.64138580" />
+      <inertia ixx="0.000623392164126553" ixy="-5.34181904997698e-07" ixz="-5.63337361425283e-07" iyy="0.000393373805621096" iyz="-0.000113396956738583" izz="0.00055741652025235" />
     </inertial>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0" />
+      <origin rpy="-7.34638322158019e-06 3.67315113369848e-06 -1.10196557870313e-05" xyz="0 0 0" />
       <geometry>
         <mesh filename="package://rm_description/meshes/rm_eco65_arm/Link_5.STL" />
       </geometry>
     </collision>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="-7.34638322158019e-06 3.67315113369848e-06 -1.10196557870313e-05" />
       <geometry>
         <mesh filename="package://rm_description/meshes/dae/eco65/link_5.dae" />
       </geometry>
     </visual>
   </link>
   <joint name="joint5" type="revolute">
-    <origin rpy="1.5708 0 0" xyz="0.00040486 -0.10983 0" />
+    <origin rpy="1.5708 0 0" xyz="4.04059982175579e-07 -0.10999999999629 8.08097701837738e-07" />
     <parent link="Link4" />
     <child link="Link5" />
-    <axis xyz="0 0 1" />
-    <limit effort="100" lower="-3.1067" upper="3.1067" velocity="3.92" />
+    <axis xyz="3.67323208790056e-06 7.34634274417768e-06 0.999999999966269" />
+    <limit effort="10" lower="-3.106686" upper="3.106686" velocity="3.926991" />
   </joint>
   <link name="Link6">
     <inertial>
-      <origin rpy="0 0 0" xyz="3.31048262667971E-05 6.95510812775968E-06 -0.0237376311302851" />
-      <mass value="0.305602477849543" />
-      <inertia ixx="0.000113828576086565" ixy="-3.65320556215084E-08" ixz="1.14192955580674E-07" iyy="0.000114694733259546" iyz="-4.34359001412421E-08" izz="0.000126193153799782" />
+      <origin rpy="0 0 0" xyz="0.000447725707649944 -0.000213552855705973 -0.0103357983658304" />
+      <mass value="0.085705209" />
+      <inertia ixx="3.30270919354927e-05" ixy="-2.54214741276868e-06" ixz="1.02639934585639e-07" iyy="3.02066550894742e-05" iyz="-8.39420734887784e-08" izz="5.14596739750329e-05" />
     </inertial>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0" />
+      <origin rpy="-7.3463427445208e-06 1.10196422946629e-05 3.67319161125999e-06" xyz="0 0 0" />
       <geometry>
         <mesh filename="package://rm_description/meshes/rm_eco65_arm/Link_6fb.STL" />
       </geometry>
     </collision>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="-7.3463427445208e-06 1.10196422946629e-05 3.67319161125999e-06" />
       <geometry>
         <mesh filename="package://rm_description/meshes/dae/eco65/link_6_fb.dae" />
       </geometry>
     </visual>
   </link>
   <joint name="joint6" type="revolute">
-    <origin rpy="-1.5708 0 0" xyz="0 0.0967 0" />
+    <origin rpy="-1.5708 0 0" xyz="1.06559810516363e-06 0.0966999999915193 -7.1039525751845e-07" />
     <parent link="Link5" />
     <child link="Link6" />
-    <axis xyz="0 0 -1" />
-    <limit effort="100" lower="-3.105" upper="3.105" velocity="1" />
+    <axis xyz="-1.10196153094966e-05 -7.34638322169204e-06 -0.999999999912299" />
+    <limit effort="10" lower="-6.283185" upper="6.283185" velocity="3.926991" />
   </joint>
 </robot>
