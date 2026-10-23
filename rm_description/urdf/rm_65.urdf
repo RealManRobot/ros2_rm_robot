@@ -94,8 +94,8 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.1"
-      upper="3.1"
+      lower="-3.106"
+      upper="3.106"
       effort="60"
       velocity="3.14" />
   </joint>
@@ -144,7 +144,7 @@
     type="revolute">
     <origin
       xyz="0 0 0"
-      rpy="1.5708 -1.5708 0" />
+      rpy="-1.57079265345464 -1.57079265358979 3.14159265345464" />
     <parent
       link="Link1" />
     <child
@@ -152,8 +152,8 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-2.268"
-      upper="2.268"
+      lower="-2.2689"
+      upper="2.2689"
       effort="60"
       velocity="3.14" />
   </joint>
@@ -210,10 +210,10 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-2.355"
-      upper="2.355"
+      lower="-2.356"
+      upper="2.356"
       effort="30"
-      velocity="3.92" />
+      velocity="3.14" />
   </joint>
   <link
     name="Link4">
@@ -268,10 +268,10 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.1"
-      upper="3.1"
+      lower="-3.106"
+      upper="3.106"
       effort="10"
-      velocity="3.92" />
+      velocity="3.14" />
   </joint>
   <link
     name="Link5">
@@ -326,10 +326,10 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-2.233"
-      upper="2.233"
+      lower="-2.234"
+      upper="2.234"
       effort="10"
-      velocity="3.92" />
+      velocity="3.14" />
   </joint>
   <link
     name="Link6">
@@ -387,6 +387,6 @@
       lower="-6.28"
       upper="6.28"
       effort="10"
-      velocity="3.92" />
+      velocity="3.14" />
   </joint>
 </robot>

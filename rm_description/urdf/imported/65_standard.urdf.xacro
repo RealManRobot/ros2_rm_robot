@@ -15,7 +15,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://rm_description/meshes/glb/base/base_v1.0.glb" />
+        <mesh filename="package://rm_description/meshes/glb/rm65/base_link.glb" />
       </geometry>
     </visual>
   </link>
@@ -43,7 +43,7 @@
     <parent link="base_link" />
     <child link="Link1" />
     <axis xyz="0 0 1" />
-    <limit effort="60" lower="-3.1" upper="3.1" velocity="3.14" />
+    <limit effort="60" lower="-3.106" upper="3.106" velocity="3.14" />
   </joint>
   <link name="Link2">
     <inertial>
@@ -65,11 +65,11 @@
     </visual>
   </link>
   <joint name="joint2" type="revolute">
-    <origin rpy="1.5708 -1.5708 0" xyz="0 0 0" />
+    <origin rpy="-1.57079265345464 -1.57079265358979 3.14159265345464" xyz="0 0 0" />
     <parent link="Link1" />
     <child link="Link2" />
     <axis xyz="0 0 1" />
-    <limit effort="60" lower="-2.268" upper="2.268" velocity="3.14" />
+    <limit effort="60" lower="-2.2689" upper="2.2689" velocity="3.14" />
   </joint>
   <link name="Link3">
     <inertial>
@@ -95,7 +95,7 @@
     <parent link="Link2" />
     <child link="Link3" />
     <axis xyz="0 0 1" />
-    <limit effort="30" lower="-2.355" upper="2.355" velocity="3.92" />
+    <limit effort="30" lower="-2.356" upper="2.356" velocity="3.14" />
   </joint>
   <link name="Link4">
     <inertial>
@@ -121,7 +121,7 @@
     <parent link="Link3" />
     <child link="Link4" />
     <axis xyz="0 0 1" />
-    <limit effort="10" lower="-3.1" upper="3.1" velocity="3.92" />
+    <limit effort="10" lower="-3.106" upper="3.106" velocity="3.14" />
   </joint>
   <link name="Link5">
     <inertial>
@@ -147,7 +147,7 @@
     <parent link="Link4" />
     <child link="Link5" />
     <axis xyz="0 0 1" />
-    <limit effort="10" lower="-2.233" upper="2.233" velocity="3.92" />
+    <limit effort="10" lower="-2.234" upper="2.234" velocity="3.14" />
   </joint>
   <link name="Link6">
     <inertial>
@@ -173,6 +173,6 @@
     <parent link="Link5" />
     <child link="Link6" />
     <axis xyz="0 0 1" />
-    <limit effort="10" lower="-6.28" upper="6.28" velocity="3.92" />
+    <limit effort="10" lower="-6.28" upper="6.28" velocity="3.14" />
   </joint>
 </robot>
