@@ -20,7 +20,11 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 
 def _launch_setup(context):
-    moveit_config = MoveItConfigsBuilder("rm_eco62_description", package_name="rm_eco62_config").to_moveit_configs()
+    moveit_config = (
+        MoveItConfigsBuilder("rm_eco62_description", package_name="rm_eco62_config")
+        .robot_description(file_path="config/rm_eco62_gazebo_moveit.urdf.xacro")
+        .to_moveit_configs()
+    )
     moveit_config.robot_description["robot_description"] = apply_visual_model(
         moveit_config.robot_description["robot_description"],
         "eco62", LaunchConfiguration("model").perform(context),

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rm_eco62">
+    <!-- Match Gazebo's TF tree; the non-Gazebo model adds an unpublished base_root. -->
+    <xacro:arg name="link6_type" default="Link6" />
+    <xacro:include filename="$(find rm_description)/urdf/rm_eco62_gazebo.urdf.xacro" />
+</robot>
