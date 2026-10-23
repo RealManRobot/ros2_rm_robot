@@ -15,7 +15,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://rm_description/meshes/dae/base/base_v1.0.dae" />
+        <mesh filename="package://rm_description/meshes/dae/rm65/base_link.dae" />
       </geometry>
     </visual>
   </link>
@@ -65,7 +65,7 @@
     </visual>
   </link>
   <joint name="joint2" type="revolute">
-    <origin rpy="1.5708 -1.5708 0" xyz="0 0 0" />
+    <origin rpy="-1.57079265345464 -1.57079265358979 3.14159265345464" xyz="0 0 0" />
     <parent link="Link1" />
     <child link="Link2" />
     <axis xyz="0 0 1" />
