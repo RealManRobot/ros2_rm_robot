@@ -1,4 +1,5 @@
 import os
+import tempfile
 import runpy
 
 from ament_index_python.packages import get_package_share_directory
@@ -12,7 +13,7 @@ from launch.actions import (
     TimerAction,
 )
 from launch.conditions import IfCondition
-from launch.event_handlers import OnProcessExit
+from launch.event_handlers import OnProcessExit, OnShutdown
 from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
@@ -73,16 +74,41 @@ def generate_gazebo_classic_demo_actions(
         robot_description = description["_apply_visual_model"](robot_description, arm_type, model)
     params = {"robot_description": robot_description}
 
+    server_arguments = {
+        "init": "true",
+        "factory": "true",
+        "server_required": "true",
+        "verbose": "true",
+    }
+    camera_cleanup = []
+    if robot_name_in_model == "rm_rx75_dual":
+        camera_directory = tempfile.TemporaryDirectory(prefix="rm_rx75_")
+        world_path = os.path.join(camera_directory.name, "rx75.world")
+        # Gazebo Classic reads its initial camera from the world GUI element.
+        with open(world_path, "w", encoding="utf-8") as target:
+            target.write("""<sdf version="1.5">
+  <world name="default">
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <gui fullscreen="0">
+      <camera name="user_camera">
+        <pose>2.5 0 2 0 0.45 3.141592653589793</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
+  </world>
+</sdf>
+""")
+        server_arguments["world"] = world_path
+        camera_cleanup.append(RegisterEventHandler(OnShutdown(
+            on_shutdown=lambda event, context: camera_directory.cleanup(),
+        )))
+
     gzserver = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(gazebo_ros_share, "launch", "gzserver.launch.py")
         ),
-        launch_arguments={
-            "init": "true",
-            "factory": "true",
-            "server_required": "true",
-            "verbose": "true",
-        }.items(),
+        launch_arguments=server_arguments.items(),
         condition=IfCondition(start_gazebo),
     )
 
@@ -221,6 +247,7 @@ def generate_gazebo_classic_demo_actions(
         )
 
     return [
+        *camera_cleanup,
         spawn_controllers_event,
         *controller_exit_events,
         gzserver,

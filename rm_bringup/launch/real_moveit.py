@@ -65,7 +65,7 @@ def build_moveit_config(arm_type, model="auto", mount_mappings=None):
 def build_real_moveit_actions(
     context, arm_type, model, joint_states_topic, *, allow_execution, use_rviz,
 ):
-    mount_defaults = {'left_xyz': '0 -0.075 0.5', 'left_rpy': '3.14 1.57 1.5707963267949', 'right_xyz': '0 0.075 0.5', 'right_rpy': '3.14 1.57 -1.5707963267949'}
+    mount_defaults = {'left_xyz': '0 0.075 1.5', 'left_rpy': '3.14 -1.57 1.5707963267949', 'right_xyz': '0 -0.075 1.5', 'right_rpy': '3.14 -1.57 -1.5707963267949'}
     topic = joint_states_topic.strip()
     if not topic:
         raise RuntimeError("joint_states_topic must not be empty")

@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <robot name="rm_rx75_dual" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:arg name="right_rpy" default="3.14 1.57 -1.5707963267949" />
-  <xacro:arg name="right_xyz" default="0 0.075 0.5" />
-  <xacro:arg name="left_rpy" default="3.14 1.57 1.5707963267949" />
-  <xacro:arg name="left_xyz" default="0 -0.075 0.5" />
+  <xacro:arg name="right_rpy" default="3.14 -1.57 -1.5707963267949" />
+  <xacro:arg name="right_xyz" default="0 -0.075 1.5" />
+  <xacro:arg name="left_rpy" default="3.14 -1.57 1.5707963267949" />
+  <xacro:arg name="left_xyz" default="0 0.075 1.5" />
   <link name="base_root" />
   <joint name="left_base_mount" type="fixed">
     <origin rpy="$(arg left_rpy)" xyz="$(arg left_xyz)" />

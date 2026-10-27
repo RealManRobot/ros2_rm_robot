@@ -77,10 +77,10 @@ ros2 launch rm_description rm_description.launch.py \
 | `right_joint_states_topic` | `/right_arm/joint_states` | Right-arm input topic, used only when the dual-arm bridge is enabled |
 | `use_joint_state_publisher_gui` | `false` | Start the joint slider GUI to adjust the displayed pose |
 | `use_rviz` | `false` | Start RViz for model display |
-| `left_xyz` | `0 -0.075 0.5` | RX75 only: left-arm mounting position `x y z`, in metres |
-| `left_rpy` | `3.14 1.57 1.5707963267949` | RX75 only: left-arm mounting orientation `roll pitch yaw`, in radians |
-| `right_xyz` | `0 0.075 0.5` | RX75 only: right-arm mounting position `x y z`, in metres |
-| `right_rpy` | `3.14 1.57 -1.5707963267949` | RX75 only: right-arm mounting orientation `roll pitch yaw`, in radians |
+| `left_xyz` | `0 0.075 1.5` | RX75 only: left-arm mounting position `x y z`, in metres |
+| `left_rpy` | `3.14 -1.57 1.5707963267949` | RX75 only: left-arm mounting orientation `roll pitch yaw`, in radians |
+| `right_xyz` | `0 -0.075 1.5` | RX75 only: right-arm mounting position `x y z`, in metres |
+| `right_rpy` | `3.14 -1.57 -1.5707963267949` | RX75 only: right-arm mounting orientation `roll pitch yaw`, in radians |
 
 `arm_type` directly selects the model and end-link version; see the
 [rm_bringup support matrix](../rm_bringup/README.md).

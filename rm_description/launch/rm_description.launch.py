@@ -370,13 +370,13 @@ def generate_launch_description():
                 "use_joint_state_publisher_gui", default_value="false"
             ),
             DeclareLaunchArgument("use_rviz", default_value="false"),
-            DeclareLaunchArgument("left_xyz", default_value="0 -0.075 0.5"),
+            DeclareLaunchArgument("left_xyz", default_value="0 0.075 1.5"),
             DeclareLaunchArgument(
-                "left_rpy", default_value="3.14 1.57 1.5707963267949"
+                "left_rpy", default_value="3.14 -1.57 1.5707963267949"
             ),
-            DeclareLaunchArgument("right_xyz", default_value="0 0.075 0.5"),
+            DeclareLaunchArgument("right_xyz", default_value="0 -0.075 1.5"),
             DeclareLaunchArgument(
-                "right_rpy", default_value="3.14 1.57 -1.5707963267949"
+                "right_rpy", default_value="3.14 -1.57 -1.5707963267949"
             ),
             # Internal compatibility hooks used by legacy display wrappers.
             DeclareLaunchArgument("link6_type_override", default_value=""),
