@@ -262,7 +262,7 @@ async def _read_controller_version(context, arm_type):
     from std_msgs.msg import Empty
 
     ros_context = Context()
-    rclpy.init(context=ros_context)
+    rclpy.init(args=[], context=ros_context)
     node = None
     executor = None
     try:
