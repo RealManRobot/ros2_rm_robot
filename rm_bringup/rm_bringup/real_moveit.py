@@ -52,10 +52,10 @@ def build_real_moveit_actions(
     context, arm_type, model, joint_states_topic, *, allow_execution, use_rviz,
 ):
     mount_defaults = {
-        "left_xyz": "0 -0.075 0.5",
-        "left_rpy": "3.14 1.57 1.5707963267949",
-        "right_xyz": "0 0.075 0.5",
-        "right_rpy": "3.14 1.57 -1.5707963267949",
+        "left_xyz": "0 0.075 1.5",
+        "left_rpy": "3.14 -1.57 1.5707963267949",
+        "right_xyz": "0 -0.075 1.5",
+        "right_rpy": "3.14 -1.57 -1.5707963267949",
     }
     try:
         config = build_moveit_config(

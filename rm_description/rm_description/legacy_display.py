@@ -34,10 +34,10 @@ def generate_legacy_display_launch(
         "joint_states_topic": "/joint_states",
         "left_joint_states_topic": "/left_arm/joint_states",
         "right_joint_states_topic": "/right_arm/joint_states",
-        "left_xyz": "0 -0.075 0.5",
-        "left_rpy": "3.14 1.57 1.5707963267949",
-        "right_xyz": "0 0.075 0.5",
-        "right_rpy": "3.14 1.57 -1.5707963267949",
+        "left_xyz": "0 0.075 1.5",
+        "left_rpy": "3.14 -1.57 1.5707963267949",
+        "right_xyz": "0 -0.075 1.5",
+        "right_rpy": "3.14 -1.57 -1.5707963267949",
     }
 
     for argument_name, default_value in xacro_arguments:
@@ -50,10 +50,10 @@ def generate_legacy_display_launch(
 
     if rx_display:
         rx_defaults = (
-            ("left_xyz", "0 -0.075 0.5"),
-            ("left_rpy", "3.14 1.57 1.5707963267949"),
-            ("right_xyz", "0 0.075 0.5"),
-            ("right_rpy", "3.14 1.57 -1.5707963267949"),
+            ("left_xyz", "0 0.075 1.5"),
+            ("left_rpy", "3.14 -1.57 1.5707963267949"),
+            ("right_xyz", "0 -0.075 1.5"),
+            ("right_rpy", "3.14 -1.57 -1.5707963267949"),
             ("use_joint_state_bridge", "false"),
             ("use_joint_state_publisher_gui", "true"),
             ("use_rviz", "true"),

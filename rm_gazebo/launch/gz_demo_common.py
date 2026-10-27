@@ -1,7 +1,13 @@
 import os
+import re
+import tempfile
 import shutil
 
-from ament_index_python.packages import PackageNotFoundError, get_package_share_directory
+from ament_index_python.packages import (
+    PackageNotFoundError,
+    get_package_prefix,
+    get_package_share_directory,
+)
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
@@ -12,7 +18,7 @@ from launch.actions import (
     TimerAction,
 )
 from launch.conditions import IfCondition
-from launch.event_handlers import OnProcessExit
+from launch.event_handlers import OnProcessExit, OnShutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import EnvironmentVariable, LaunchConfiguration
 from launch_ros.actions import Node
@@ -192,11 +198,36 @@ def generate_gz_demo_actions(
         ],
     )
 
+    gz_args = f"-v 4 -r {world_name}.sdf"
+    camera_cleanup = []
+    if robot_name_in_model == "rm_rx75_dual":
+        system_gui_config = os.path.join(
+            get_package_prefix("gz_sim_vendor"),
+            "opt", "gz_sim_vendor", "share", "gz", "gz-sim8", "gui", "gui.config",
+        )
+        # Keep the installed GUI layout; override only the RX75 camera in a temporary copy.
+        with open(system_gui_config, encoding="utf-8") as source:
+            gui_config, count = re.subn(
+                r"<camera_pose>[^<]*</camera_pose>",
+                "<camera_pose>2.5 0 2 0 0.45 3.141592653589793</camera_pose>",
+                source.read(), count=1,
+            )
+        if count != 1:
+            raise RuntimeError("Gazebo GUI configuration is missing camera_pose")
+        camera_directory = tempfile.TemporaryDirectory(prefix="rm_rx75_")
+        gui_config_path = os.path.join(camera_directory.name, "gui.config")
+        with open(gui_config_path, "w", encoding="utf-8") as target:
+            target.write(gui_config)
+        camera_cleanup.append(RegisterEventHandler(OnShutdown(
+            on_shutdown=lambda event, context: camera_directory.cleanup(),
+        )))
+        gz_args += f' --gui-config "{gui_config_path}"'
+
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(ros_gz_sim_share, "launch", "gz_sim.launch.py")
         ),
-        launch_arguments={"gz_args": f"-v 4 -r {world_name}.sdf"}.items(),
+        launch_arguments={"gz_args": gz_args}.items(),
         condition=IfCondition(start_gazebo),
     )
 
@@ -268,6 +299,7 @@ def generate_gz_demo_actions(
     )
 
     return [
+        *camera_cleanup,
         gz_resource_path,
         close_evt1,
         gazebo,
