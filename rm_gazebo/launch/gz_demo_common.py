@@ -1,4 +1,6 @@
 import os
+import re
+import tempfile
 from ament_index_python.packages import (
     PackageNotFoundError,
     get_package_prefix,
@@ -15,7 +17,7 @@ from launch.actions import (
     TimerAction,
 )
 from launch.conditions import IfCondition
-from launch.event_handlers import OnProcessExit
+from launch.event_handlers import OnProcessExit, OnShutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import EnvironmentVariable, LaunchConfiguration
 from launch_ros.actions import Node
@@ -224,6 +226,25 @@ def generate_gz_demo_actions(
         "-r",
     ]
     system_gui_config = "/usr/share/ignition/ignition-gazebo6/gui/gui.config"
+    camera_cleanup = []
+    if robot_name_in_model == "rm_rx75_dual":
+        # Keep the installed GUI layout; override only the RX75 camera in a temporary copy.
+        with open(system_gui_config, encoding="utf-8") as source:
+            gui_config, count = re.subn(
+                r"<camera_pose>[^<]*</camera_pose>",
+                "<camera_pose>2.5 0 2 0 0.45 3.141592653589793</camera_pose>",
+                source.read(), count=1,
+            )
+        if count != 1:
+            raise RuntimeError("Gazebo GUI configuration is missing camera_pose")
+        camera_directory = tempfile.TemporaryDirectory(prefix="rm_rx75_")
+        gui_config_path = os.path.join(camera_directory.name, "gui.config")
+        with open(gui_config_path, "w", encoding="utf-8") as target:
+            target.write(gui_config)
+        camera_cleanup.append(RegisterEventHandler(OnShutdown(
+            on_shutdown=lambda event, context: camera_directory.cleanup(),
+        )))
+        system_gui_config = gui_config_path
     if os.path.isfile(system_gui_config):
         gazebo_arguments.extend(["--gui-config", system_gui_config])
     gazebo_arguments.extend([f"{world_name}.sdf", "--force-version", "6"])
@@ -319,6 +340,7 @@ def generate_gz_demo_actions(
     )
 
     return [
+        *camera_cleanup,
         gz_resource_path,
         ign_resource_path,
         gz_plugin_path,
