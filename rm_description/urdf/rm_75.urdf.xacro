@@ -497,8 +497,8 @@
     name="joint7"
     type="revolute">
     <origin
-      xyz="0 -0.1725 0"
-      rpy="1.5708 0 0" />
+      xyz="0 6.33627880320126e-07 0.172499999998836"
+      rpy="0 0 0" />
     <parent
       link="Link6" />
     <child

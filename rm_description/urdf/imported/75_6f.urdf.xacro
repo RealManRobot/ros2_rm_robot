@@ -195,7 +195,7 @@
     </visual>
   </link>
   <joint name="joint7" type="revolute">
-    <origin rpy="1.5708 0 0" xyz="0 -0.1725 0" />
+    <origin rpy="0 0 0" xyz="0 6.33627880320126e-07 0.172499999998836" />
     <parent link="Link6" />
     <child link="Link7" />
     <axis xyz="0 0 1" />
