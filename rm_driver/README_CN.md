@@ -42,8 +42,6 @@ ros2 launch rm_driver rm_driver.launch.py \
 
 本包用于真机链路；Gazebo 使用仿真控制器。`arm_type` 按基础型号选择配置。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
 
-随包 C++ SDK 已更新为 `1.1.7.T2`，同时提供 x86_64 和 ARM64 动态库。
-
 ## 目录
 * 1.[rm_driver功能包说明](#rm_driver功能包说明)
 * 2.[rm_driver功能包使用](#rm_driver功能包使用)
@@ -178,26 +176,31 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_rx75_left_config.yaml   #RX75左臂配置文件
 │   └── rm_rx75_right_config.yaml  #RX75右臂配置文件
 ├── doc
+│   ├── Description of Function Expansion for Realman Robotic Arm ROS Driver Package.md
 │   ├── RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2).md
 │   ├── rm_driver1.png
 │   ├── rm_driver2.png
 │   ├── rm_driver3.png
 │   ├── rm_driver4.png
-│   └── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
+│   ├── rm_driver5.png
+│   ├── rm_driver6.png
+│   ├── rm_driver7.png
+│   ├── rm_driver8.png
+│   ├── rm_driver9.png
+│   ├── rm_driver10.png
+│   ├── rm_driver11.png
+│   ├── rm_driver12.png
+│   ├── rm_driver13.png
+│   ├── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
+│   └── 睿尔曼机械臂ROS驱动包功能拓展说明.md
 ├── include                        #依赖头文件文件夹
-│   └── rm_driver
-│       ├── cJSON.h                #API头文件
-│       ├── constant_define.h      #API头文件
-│       ├── rman_int.h             #API头文件
-│       ├── rm_base_global.h       #API头文件
-│       ├── rm_base.h              #API头文件
-│       ├── rm_define.h            #API头文件
-│       ├── rm_driver.h            #rm_driver.cpp头文件
-│       ├── rm_praser_data.h       #API头文件
-│       ├── rm_queue.h             #API头文件
-│       ├── rm_service_global.h    #API头文件
-│       ├── rm_service.h           #API头文件
-│       └── robot_define.h         #API头文件
+│   └── rm_driver/
+│       ├── rm_define.h                               # SDK 数据类型、枚举和常量
+│       ├── rm_driver.h                               # ROS 2 驱动节点、回调及运行状态定义
+│       ├── rm_interface.h                            # SDK C 接口声明
+│       ├── rm_interface_global.h                     # SDK 接口导出宏
+│       ├── rm_service.h                              # SDK C++ RM_Service 类接口
+│       └── rm_version.h                              # SDK 版本定义
 ├── launch
 │   ├── rm_driver.launch.py        #统一driver启动入口
 │   ├── rm_63_driver.launch.py     #63启动文件
@@ -209,12 +212,12 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_gen72_driver.launch.py  #gen72启动文件
 │   └── rm_rx75_driver.launch.py   #RX75启动文件
 ├── lib
-│   ├── libRM_Service.so -> libRM_Service.so.1.0.0        #API库文件
-│   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      #API库文件
-│   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    #API库文件
-│   ├── libRM_Service.so.1.0.0                            #API库文件
-│   ├── linux_arm_service_release_v4.3.7.t7.tar.bz2       #API库文件
-│   └── linux_x86_service_release_v4.3.7.t7.tar.bz2       #API库文件
+│   ├── lib_install.sh                                # 按主机架构选择并安装 SDK 库
+│   ├── libapi_cpp.so                                 # CMake 链接并随包安装的 SDK 动态库
+│   ├── linux_arm64_c++_v1.1.7/
+│   │   └── libapi_cpp.so                             # ARM64 SDK 动态库
+│   └── linux_x86_c++_v1.1.7/
+│       └── libapi_cpp.so                             # x86_64 SDK 动态库
 ├── package.xml                                           #依赖声明文件
 ├── README_CN.md
 ├── README.md

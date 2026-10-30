@@ -13,8 +13,8 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 case "$(uname -m)" in
-    x86_64) sdk_dir="linux_x86_c++_v1.1.7.T2" ;;
-    aarch64|arm64) sdk_dir="linux_arm64_c++_v1.1.7.T2" ;;
+    x86_64) sdk_dir="linux_x86_c++_v1.1.7" ;;
+    aarch64|arm64) sdk_dir="linux_arm64_c++_v1.1.7" ;;
     *) echo "Error: unsupported architecture"; exit 1 ;;
 esac
 cd -- "$(dirname -- "$0")"

@@ -45,8 +45,6 @@ ros2 launch rm_driver rm_driver.launch.py \
 
 This package is part of the real-robot control chain; Gazebo uses simulation controllers. `arm_type` selects the base-family configuration. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
 
-The bundled C++ SDK is `1.1.7.T2`, with x86_64 and ARM64 libraries.
-
 ## Content
 * 1.rm_driver package description
 * 2.rm_driver package use
@@ -189,26 +187,31 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_rx75_left_config.yaml  # RX75 left-arm configuration file
 │   └── rm_rx75_right_config.yaml # RX75 right-arm configuration file
 ├── doc
+│   ├── Description of Function Expansion for Realman Robotic Arm ROS Driver Package.md
 │   ├── RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2).md
 │   ├── rm_driver1.png
 │   ├── rm_driver2.png
 │   ├── rm_driver3.png
 │   ├── rm_driver4.png
-│   └── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
+│   ├── rm_driver5.png
+│   ├── rm_driver6.png
+│   ├── rm_driver7.png
+│   ├── rm_driver8.png
+│   ├── rm_driver9.png
+│   ├── rm_driver10.png
+│   ├── rm_driver11.png
+│   ├── rm_driver12.png
+│   ├── rm_driver13.png
+│   ├── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
+│   └── 睿尔曼机械臂ROS驱动包功能拓展说明.md
 ├── include                       # dependency header file folder
-│   └── rm_driver
-│       ├── cJSON.h                # API header file
-│       ├── constant_define.h      # API header file
-│       ├── rman_int.h             # API header file
-│       ├── rm_base_global.h       # API header file
-│       ├── rm_base.h              # API header file
-│       ├── rm_define.h            # API header file
-│       ├── rm_driver.h            # rm_driver.cpp header file
-│       ├── rm_praser_data.h       # API header file
-│       ├── rm_queue.h             # API header file
-│       ├── rm_service_global.h    # API header file
-│       ├── rm_service.h           # API header file
-│       └── robot_define.h         # API header file
+│   └── rm_driver/
+│       ├── rm_define.h                               # SDK data types, enums and constants
+│       ├── rm_driver.h                               # ROS 2 driver nodes, callbacks and runtime state
+│       ├── rm_interface.h                            # SDK C interface declarations
+│       ├── rm_interface_global.h                     # SDK symbol export macros
+│       ├── rm_service.h                              # SDK C++ RM_Service class interface
+│       └── rm_version.h                              # SDK version definition
 ├── launch
 │   ├── rm_driver.launch.py        # unified driver launch entry
 │   ├── rm_63_driver.launch.py     # 63 launch file
@@ -220,12 +223,12 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_gen72_driver.launch.py  # gen72 launch file
 │   └── rm_rx75_driver.launch.py   # RX75 launch file
 ├── lib
-│   ├── libRM_Service.so -> libRM_Service.so.1.0.0        # API library file
-│   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      # API library file
-│   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    # API library file
-│   ├── libRM_Service.so.1.0.0                            # API library file
-│   ├── linux_arm_service_release_v4.3.7.t7.tar.bz2       # API library file
-│   └── linux_x86_service_release_v4.3.7.t7.tar.bz2       # API library file
+│   ├── lib_install.sh                                # Select and install the SDK library for the host architecture
+│   ├── libapi_cpp.so                                 # SDK shared library linked and installed by CMake
+│   ├── linux_arm64_c++_v1.1.7/
+│   │   └── libapi_cpp.so                             # ARM64 SDK shared library
+│   └── linux_x86_c++_v1.1.7/
+│       └── libapi_cpp.so                             # x86_64 SDK shared library
 ├── package.xml                                           # dependency declaration file
 ├── README_CN.md
 ├── README.md
