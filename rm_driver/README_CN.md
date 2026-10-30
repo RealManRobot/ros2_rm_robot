@@ -63,10 +63,6 @@ rm_driver功能包在机械臂ROS2功能包中是十分重要的，该功能包�
 * 3.熟悉功能包相关的话题，方便开发和使用  
 ## rm_driver功能包使用
 ### 功能包基础使用
-随包 C++ SDK 已更新为 `1.1.7.T2`，兼容四代 `6F/6F-V` 与旧 `6FB/6FB-V` 命名，
-内部仍使用 ISF/ISFV 枚举。Driver 只按基础臂型选择配置；模型代际用法见
-[统一启动入口](../rm_bringup/README_CN.md#统一启动入口)。
-
 推荐优先使用统一入口：
 ```bash
 ros2 launch rm_driver rm_driver.launch.py arm_type:=65
@@ -194,9 +190,9 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 ├── lib
 │   ├── lib_install.sh                                   #API库安装脚本
 │   ├── libapi_cpp.so                                    #默认API库
-│   ├── linux_arm64_c++_v1.1.6
+│   ├── linux_arm64_c++_v1.1.7
 │   │   └── libapi_cpp.so                                #ARM64 API库
-│   └── linux_x86_c++_v1.1.6
+│   └── linux_x86_c++_v1.1.7
 │       └── libapi_cpp.so                                #x86_64 API库
 ├── package.xml                                           #依赖声明文件
 ├── README_CN.md

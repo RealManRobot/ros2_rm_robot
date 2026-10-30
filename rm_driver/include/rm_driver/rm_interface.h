@@ -470,7 +470,7 @@ RM_INTERFACE_EXPORT int rm_get_joint_err_flag(rm_robot_handle *handle,uint16_t *
  * @param speed 末端最大线速度，单位m/s
  * @return int 函数执行的状态码。  
             - 0: 成功。  
-            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。  
+            - 1: 参数非法、控制器返回false或机械臂状态发生错误。
             - -1: 数据发送失败，通信过程中出现问题。
             - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。  
             - -3: 返回值解析失败，接收到的数据格式不正确或不完整。 
@@ -483,7 +483,7 @@ RM_INTERFACE_EXPORT int rm_set_arm_max_line_speed(rm_robot_handle *handle,float 
  * @param acc 末端最大线加速度，单位m/s^2
  * @return int 函数执行的状态码。  
             - 0: 成功。  
-            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。  
+            - 1: 参数非法、控制器返回false或机械臂状态发生错误。
             - -1: 数据发送失败，通信过程中出现问题。
             - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。  
             - -3: 返回值解析失败，接收到的数据格式不正确或不完整。 
@@ -496,7 +496,7 @@ RM_INTERFACE_EXPORT int rm_set_arm_max_line_acc(rm_robot_handle *handle,float ac
  * @param speed 末端最大角速度，单位rad/s
  * @return int 函数执行的状态码。  
             - 0: 成功。  
-            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。  
+            - 1: 参数非法、控制器返回false或机械臂状态发生错误。
             - -1: 数据发送失败，通信过程中出现问题。
             - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。  
             - -3: 返回值解析失败，接收到的数据格式不正确或不完整。 
@@ -509,7 +509,7 @@ RM_INTERFACE_EXPORT int rm_set_arm_max_angular_speed(rm_robot_handle *handle,flo
  * @param acc 末端最大角加速度，单位rad/s^2
  * @return int 函数执行的状态码。  
             - 0: 成功。  
-            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。  
+            - 1: 参数非法、控制器返回false或机械臂状态发生错误。
             - -1: 数据发送失败，通信过程中出现问题。
             - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。  
             - -3: 返回值解析失败，接收到的数据格式不正确或不完整。 
@@ -1886,7 +1886,7 @@ RM_INTERFACE_EXPORT int rm_set_DO_state(rm_robot_handle *handle, int io_num, int
  * @param trajectory_replay_enabled 蓝色轨迹复现按钮，1：启用，0：禁用
  * @return int 函数执行的状态码。  
  *            - 0: 成功。  
- *            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。
+ *            - 1: 控制器返回false，传递参数错误或机械臂状态发生错误。  
  *            - -1: 数据发送失败，通信过程中出现问题。
  *            - -2: 数据接收失败，通信过程中出现问题或者控制器超时没有返回。  
  *            - -3: 返回值解析失败，接收到的数据格式不正确或不完整。 
@@ -4381,19 +4381,19 @@ RM_INTERFACE_EXPORT rm_pose_t rm_algo_matrix2pos(rm_matrix_t matrix);
 /**
  * @brief 基坐标系转工作坐标系
  * 
- * @param matrix 工作坐标系在基坐标系下的矩阵
- * @param state 工具端坐标在基坐标系下位姿
- * @return rm_pose_t 基坐标系在工作坐标系下的位姿
+ * @param pose 基坐标系相对于工作坐标系的位姿
+ * @param state 工具端在基坐标系下的位姿
+ * @return rm_pose_t 工具端在工作坐标系下的位姿
  */
-RM_INTERFACE_EXPORT rm_pose_t rm_algo_base2workframe(rm_matrix_t matrix, rm_pose_t state);
+RM_INTERFACE_EXPORT rm_pose_t rm_algo_base2workframe(rm_pose_t pose, rm_pose_t state);
 /**
  * @brief 工作坐标系转基坐标系
  * 
- * @param matrix 工作坐标系在基坐标系下的矩阵
- * @param state 工具端坐标在工作坐标系下位姿
- * @return rm_pose_t 工作坐标系在基坐标系下的位姿
+ * @param pose 工作坐标系相对于基坐标系的位姿
+ * @param state 工具端在工作坐标系下的位姿
+ * @return rm_pose_t 工具端在基坐标系下的位姿
  */
-RM_INTERFACE_EXPORT rm_pose_t rm_algo_workframe2base(rm_matrix_t matrix, rm_pose_t state);
+RM_INTERFACE_EXPORT rm_pose_t rm_algo_workframe2base(rm_pose_t pose, rm_pose_t state);
 /**
  * @brief 计算环绕运动位姿
  * 
