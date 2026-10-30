@@ -4,7 +4,7 @@
 
 ## 1.项目介绍
 
-本项目是一个基于RM65、RM75、RX75机械臂和ROS功能包实现MoveJ、MoveJ_P、MoveL、MoveC规划运动功能，在程序执行时将依次执行关节运动MoveJ指令，位姿运动MoveJ_P指令、直线运动MoveL指令，圆弧运动MoveC指令，在执行成功或失败时终端都会收到相关提示，目的是使ROS开发者迅速掌握并灵活运用机械臂。
+本项目基于RM65、RM75、RX75机械臂和ROS功能包实现MoveJ、MoveJ_P、MoveL、MoveC规划运动，并提供默认禁止执行的微小关节运动示例。完整运动示例会依次执行MoveJ、MoveJ_P、MoveL、MoveC；微小运动示例会先读取当前关节状态，再执行不超过1°的偏移，并可返回起始位置。
 
 ## 2.代码结构
 
@@ -13,12 +13,14 @@
 ├── launch                                   <-启动文件夹
 │   ├── rm_65_move.launch.py               <-启动文件(RM65)
 │   ├── rm_75_move.launch.py               <-启动文件(RM75)
-│   └── rm_rx75_move.launch.py             <-启动文件(RX75)
+│   ├── rm_rx75_move.launch.py             <-RX75双臂微小运动启动文件
+│   └── slight_move.launch.py              <-通用微小运动启动文件
 ├── LICENSE                                  <-版本说明
 ├── package.xml                              <-依赖描述文件夹
 ├── README.md                                <-说明文档
 └── src                                      <-C++源码文件夹
-    └── api_Move_demo.cpp                    <-源码文件
+    ├── api_Move_demo.cpp                    <-完整运动示例源码
+    └── api_Slight_Move_demo.cpp             <-微小运动示例源码
 ```
 
 ## 3.项目下载
@@ -29,15 +31,15 @@
 
 | 项目 | 内容 |
 | :-- | :-- |
-| 系统 | Ubuntu22.04 |
-| ROS版本 | humble |
-| 依赖 | 机械臂的ROS2-humble功能包 |
+| 系统 | Ubuntu 22.04 |
+| ROS版本 | Humble |
+| 依赖 | 机械臂的ROS 2 Humble功能包 |
 
 **配置过程**
 
-1. 首先需要准备好Ubuntu22.04操作系统的虚拟机或其他设备。
-2. 安装ROS2环境[humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html),也可参考ROS2-humble功能包中的安装说明进行安装。
-3. ROS2-Humble功能包安装
+1. 首先需要准备好Ubuntu 22.04操作系统的虚拟机或其他设备。
+2. 安装ROS 2环境[Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html)，也可参考ROS 2 Humble功能包中的安装说明进行安装。
+3. ROS 2 Humble功能包安装
 
     新建工作空间和src文件
     ```
@@ -101,6 +103,26 @@
     ```
     ros2 launch control_arm_move rm_rx75_move.launch.py
     ```
+
+    RX75启动文件默认不会发送运动指令。确认操作人员在场、运动空间无障碍且急停可用后，只启用需要测试的一侧：
+
+    ```
+    ros2 launch control_arm_move rm_rx75_move.launch.py left_execute_motion:=true
+    ```
+
+    其他型号可使用通用微小运动示例。默认的 `execute_motion:=false` 只检查节点和参数，不会运动：
+
+    ```
+    ros2 launch control_arm_move slight_move.launch.py
+    ```
+
+    完成现场安全确认后，可显式启用0.5°微动并自动返回起始位置：
+
+    ```
+    ros2 launch control_arm_move slight_move.launch.py execute_motion:=true joint_index:=1
+    ```
+
+    使用命名空间启动驱动时，需传入相同命名空间，例如 `arm_namespace:=left_arm`。示例拒绝超过1°的偏移，但该限制不能替代机械臂限位检查、急停和现场操作人员。
 
     > 若非RM65、RM75、RX75机械臂可能会出现无法到达点位的情况，为正常现象。
     

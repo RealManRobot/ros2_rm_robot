@@ -1,14 +1,14 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_description/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_description/README.md)
- 
+[简体中文](README_CN.md)|[English](README.md)
+
 </div>
 
 <div align="center">
 
-# RealMan Robot rm_description User Manual V1.6
+# RealMan Robot rm_description User Manual V1.7
 
-RealMan Intelligent Technology (Beijing) Co., Ltd. 
+RealMan Intelligent Technology (Beijing) Co., Ltd.
 
 Revision History:
 
@@ -21,8 +21,25 @@ Revision History:
 |V1.4   | 2025-4-7 | Amend(Add GEN72_II adapter files) |
 |V1.5   | 2025-11-13 | Amend(Add RML63_III adapter files) |
 |V1.6   | 2026-4-16 | Amend(Add ECO62 and RX75 adapter files) |
+|V1.7   | 2026-8-13 | Amend(Add the unified model-description entry, synchronize URDF/mesh assets, and add model-aware variant defaults) |
 
 </div>
+
+## Launch examples
+
+After building and sourcing the workspace, display an RM65 model with integrated force sensing:
+
+```bash
+# Model preview for simulation, generation 3, or older generation 4 software (GUI joint controls)
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=true
+
+# Real-robot state display (generation 4 controller software > 1.0.5; start rm_driver first)
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=false
+```
+
+Generation 4 controller software 1.0.6 and later names the former `6fb` end link `6f`. This standalone display does not query controller generation: keep `65-6fb` to select the same model. Real-robot display uses joint states from the driver without enabling the GUI joint-state publisher. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
 
 ## Content
 * 1.[rm_description Package Description](#rm_description_Package_Description)
@@ -42,11 +59,36 @@ Through the introduction of the three parts, it can help you:
 * 3.Familiar with the topic related to the package for easy development and use.
 Source code address:https://github.com/RealManRobot/ros2_rm_robot.git.
 ## rm_description_Package_Use
+Model selection defaults to `model:=auto`: variants with matching assets use colored DAE,
+while other variants use STL. Select `model:=stl` for the original appearance, or
+`model:=dae` to require DAE. See the [supported arm_type values](../rm_bringup/README.md#unified-launch-entry)
+and [MoveIt model selection](../rm_bringup/README.md#model-selection).
+
+The generic entry is recommended:
+
+```bash
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6f use_joint_state_publisher_gui:=true use_rviz:=true
+```
+
+It explicitly supports the 21 catalogued model/variant combinations. `model` accepts
+`auto/stl/dae` and defaults to `auto`; forcing `dae` for a variant without matching assets
+fails before nodes start. Other common arguments include `use_sim_time`, `joint_states_topic`,
+`use_joint_state_bridge`, `use_joint_state_publisher_gui`, and `use_rviz`.
+RX75 also accepts `left_xyz/left_rpy/right_xyz/right_rpy`. Invalid
+combinations fail before nodes are started. The historical
+`*_display.launch.py` commands below are compatibility wrappers and also default to
+`model:=auto`. Other original arguments and defaults are retained. Append `model:=stl`
+to display the original STL appearance.
+
+Select the model and end-link version directly with `arm_type`, for example
+`65-6fb` or `eco63-6fb`. A bare family selects its standard version.
+
 First, after configuring the environment and completing the connection, we can directly start the node and run the rm_description package.
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models are 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, gen72_II, and rx75. For RX75, explicitly use `rm_rx75_6fb_display.launch.py` for RX75-6FB and `rm_rx75_6fb_v_display.launch.py` for RX75-6FB-V.  
+The `rm_<arm_type>_display.launch.py` pattern applies to 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, and gen72_II.
 
 The command to start the six-axis force version is currently available for 63, 65, 75, and eco65:
 ```
@@ -60,7 +102,7 @@ The command to start the vision-enabled integrated six-axis force version is cur
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6fb_v_display.launch.py
 ```
-For example, the launch command of 65 robotic arm:  
+For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_65_display.launch.py
 ```
@@ -82,10 +124,19 @@ After loading, you can see the current state of the robotic arm in the interface
 ![image](doc/rm_description1.png)
 ## rm_description_Package_Architecture_Description
 ### Overview_of_package_files
-The current rm_description package is composed of the following files.  
+The current rm_description package is composed of the following files.
 ```
 ├── CMakeLists.txt                # compilation rule file
+├── config                        # legacy controller joint-name configurations
+│   ├── joint_names_rm_65_description.yaml
+│   └── joint_names_rml_63_description.yaml
+├── doc                           # documentation images
+│   ├── rm_description1.png
+│   ├── rm_description2.png
+│   ├── rm_description3.png
+│   └── rm_description4.png
 ├── launch
+│   ├── rm_description.launch.py       # unified model and variant launch entry
 │   ├── rm_63_6f_display.launch.py  # 63 six-axis force launch file
 │   ├── rm_63_6fb_display.launch.py # 63 integrated six-axis force launch file
 │   ├── rm_63_display.launch.py     # 63 launch file
@@ -108,6 +159,7 @@ The current rm_description package is composed of the following files.
 │   ├── rm_rx75_6fb_display.launch.py   # RX75-6FB dual-arm launch file
 │   └── rm_rx75_6fb_v_display.launch.py # RX75-6FB-V dual-arm launch file
 ├── meshes                       # model file storage folder
+│   ├── dae                      # matching colored assets preferred by model:=auto
 │   ├── rm_63_arm                 #63 robotic arm model file storage folder
 │   │   ├── base_link.STL
 │   │   ├── link1.STL
@@ -228,6 +280,10 @@ The current rm_description package is composed of the following files.
 ├── package.xml
 ├── README_CN.md
 ├── README.md
+├── rm_description               # Python launch support module
+│   ├── __init__.py
+│   ├── legacy_display.py         # legacy display-wrapper definitions
+│   └── variant_catalog.py        # supported model/variant catalog
 ├── rviz                               #rviz2 configuration file storage folder
 │   ├── rm_63.rviz
 │   ├── rm_65.rviz
@@ -239,7 +295,6 @@ The current rm_description package is composed of the following files.
 │   └── rm_rx75.rviz
 ├── scripts
 │   └── dual_arm_joint_state_bridge.py  # RX75 dual-arm joint state bridge
-├── textures
 └── urdf
     ├── display_arm.rviz
     ├── rm_eco62.csv

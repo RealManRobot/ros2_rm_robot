@@ -185,10 +185,10 @@ void ForcePositionControlDemoPub::looppub_timer_callback()
 /***********************************构造函数，初始化发布器订阅器****************************************/
 ForcePositionControlDemoPub::ForcePositionControlDemoPub():rclcpp::Node("Force_Position_Control_pub_node")
 {
-  movej_p_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movejp>("/rm_driver/movej_p_cmd", rclcpp::ParametersQoS());
-  movel_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movel>("/rm_driver/movel_cmd", rclcpp::ParametersQoS());
-  set_force_postion_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Setforceposition>("/rm_driver/set_force_postion_cmd", rclcpp::ParametersQoS());
-  stop_force_postion_publisher_ = this->create_publisher<std_msgs::msg::Bool>("/rm_driver/stop_force_postion_cmd", rclcpp::ParametersQoS());
+  movej_p_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movejp>("rm_driver/movej_p_cmd", rclcpp::ParametersQoS());
+  movel_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Movel>("rm_driver/movel_cmd", rclcpp::ParametersQoS());
+  set_force_postion_publisher_ = this->create_publisher<rm_ros_interfaces::msg::Setforceposition>("rm_driver/set_force_postion_cmd", rclcpp::ParametersQoS());
+  stop_force_postion_publisher_ = this->create_publisher<std_msgs::msg::Bool>("rm_driver/stop_force_postion_cmd", rclcpp::ParametersQoS());
   loop_pub_Timer = this->create_wall_timer(std::chrono::milliseconds(100), 
         std::bind(&ForcePositionControlDemoPub::looppub_timer_callback,this));
   std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -198,10 +198,10 @@ ForcePositionControlDemoPub::ForcePositionControlDemoPub():rclcpp::Node("Force_P
 /***********************************构造函数，初始化发布器订阅器****************************************/
 ForcePositionControlDemoSub::ForcePositionControlDemoSub():rclcpp::Node("Force_Position_Control_sub_node")
 {
-  movej_p_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movej_p_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::MoveJPDemo_Callback, this,_1));
-  movel_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/movel_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::MoveLDemo_Callback, this,_1));
-  set_force_postion_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/set_force_postion_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::SetForcePostionDemo_Callback, this,_1));
-  stop_force_postion_subscription_ = this->create_subscription<std_msgs::msg::Bool>("/rm_driver/stop_force_postion_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::StopForcePostionDemo_Callback, this,_1));
+  movej_p_subscription_ = this->create_subscription<std_msgs::msg::Bool>("rm_driver/movej_p_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::MoveJPDemo_Callback, this,_1));
+  movel_subscription_ = this->create_subscription<std_msgs::msg::Bool>("rm_driver/movel_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::MoveLDemo_Callback, this,_1));
+  set_force_postion_subscription_ = this->create_subscription<std_msgs::msg::Bool>("rm_driver/set_force_postion_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::SetForcePostionDemo_Callback, this,_1));
+  stop_force_postion_subscription_ = this->create_subscription<std_msgs::msg::Bool>("rm_driver/stop_force_postion_result", rclcpp::ParametersQoS(), std::bind(&ForcePositionControlDemoSub::StopForcePostionDemo_Callback, this,_1));
   std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 }
 /***********************************************end**************************************************/

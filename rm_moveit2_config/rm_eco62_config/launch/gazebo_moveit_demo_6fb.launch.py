@@ -18,7 +18,7 @@ def generate_launch_description():
     # moveit_config = MoveItConfigsBuilder("rm_eco62_description", package_name="rm_eco62_config").to_moveit_configs() 
     moveit_config = (
         MoveItConfigsBuilder("rm_eco62_description", package_name="rm_eco62_config")
-        .robot_description(file_path="config/rm_eco62_6fb_description.urdf.xacro", mappings={"link6_type": "Link6_6fb"})
+        .robot_description(file_path="config/rm_eco62_gazebo_moveit.urdf.xacro", mappings={"link6_type": "Link6_6fb"})
         .to_moveit_configs()
     )
     ld = LaunchDescription()
@@ -100,6 +100,8 @@ def my_generate_moveit_rviz_launch(ld, moveit_config):
     )
 
     rviz_parameters = [
+        moveit_config.robot_description,
+        moveit_config.robot_description_semantic,
         moveit_config.planning_pipelines,
         moveit_config.robot_description_kinematics,
     ]

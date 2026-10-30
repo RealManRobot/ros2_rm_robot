@@ -1,31 +1,21 @@
-import os
-from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch_ros.actions import Node
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration
+# Copyright 2026 realman-robotics
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-import xacro
+from rm_description.legacy_display import generate_legacy_display_launch
+
 
 def generate_launch_description():
-    # 声明参数 link7_type
-    declare_link7_type_arg = DeclareLaunchArgument(
-        'link7_type',
-        default_value='Link7_6f',
-        description='Type of link7'
+    return generate_legacy_display_launch(
+        "75-6f", xacro_arguments=(("link7_type", "Link7_6f"),)
     )
-    realman_xacro_file = os.path.join(get_package_share_directory('rm_description'), 'urdf',
-                                        'rm_75.urdf.xacro')
-    robot_description = Command(
-        [FindExecutable(name='xacro'), ' ', realman_xacro_file, ' ','link7_type:=', LaunchConfiguration('link7_type')])
-
-    return LaunchDescription([
-            Node(
-                package='robot_state_publisher',
-                executable='robot_state_publisher',
-                name='robot_state_publisher',
-                respawn=True,
-                parameters=[{'robot_description': robot_description}],
-                output='screen'
-            )
-        ])

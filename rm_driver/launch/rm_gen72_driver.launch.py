@@ -1,27 +1,31 @@
-import launch
-import os
-import yaml
-import launch_ros
+# Copyright 2026 realman-robotics
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from launch import LaunchDescription
-from launch_ros.actions import Node
-from launch.substitutions import Command, LaunchConfiguration
-from ament_index_python.packages import get_package_share_directory
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
+
 
 def generate_launch_description():
-
-    arm_config = os.path.join(get_package_share_directory('rm_driver'),'config','rm_gen72_config.yaml')
-
-    with open(arm_config,'r') as f:
-        params = yaml.safe_load(f)["rm_driver"]["ros__parameters"]
-
-    return LaunchDescription([
-
-        Node(
-            package= "rm_driver",                 #功能包。
-            executable= "rm_driver",         #节点。
-            parameters= [arm_config
-                ],             #接入参数文件
-            output= 'screen'
+    unified_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution(
+                [FindPackageShare('rm_driver'), 'launch', 'rm_driver.launch.py']
             )
-
-    ])
+        ),
+        launch_arguments={'arm_type': 'gen72'}.items(),
+    )
+    return LaunchDescription([unified_launch])

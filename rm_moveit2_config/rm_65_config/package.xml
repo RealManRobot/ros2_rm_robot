@@ -4,7 +4,7 @@
   <name>rm_65_config</name>
   <version>0.3.0</version>
   <description>
-     An automatically generated package with all the configuration and launch files for using the rm_65_description with the MoveIt Motion Planning Framework
+     An automatically generated package with all the configuration and launch files for using rm_description with the MoveIt Motion Planning Framework
   </description>
   <maintainer email="Kaola@qq.com">Kaola</maintainer>
 
@@ -36,7 +36,7 @@
   <exec_depend>moveit_ros_visualization</exec_depend>
   <exec_depend>moveit_ros_warehouse</exec_depend>
   <exec_depend>moveit_setup_assistant</exec_depend>
-  <exec_depend>rm_65_description</exec_depend>
+  <exec_depend>rm_description</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>rviz_common</exec_depend>

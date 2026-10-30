@@ -1,12 +1,12 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/README.md)
+[简体中文](README_CN.md)|[English](README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_driver使用说明书V1.7
+# 睿尔曼机器人rm_driver使用说明书V1.8
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -22,8 +22,25 @@
 |V1.5    |2025-05-29|修订（适配四代控制器、添加版本查询接口、添加笛卡尔空间直线偏移运动接口、添加Modbus接口、添加轨迹列表接口详见话题接口说明文档）|
 |V1.6    |2025-11-13|修订（添加UDP所有基础使能配置）|
 |V1.7    |2026-4-16 |修订（添加ECO62、RX75适配文件）|
+|V1.8    |2026-8-13 |修订（新增统一驱动入口、SDK库V1.1.6、端点独占、安全退出与重连处理，整理头文件/源文件职责，并修复数组初始化和越界编译告警）|
 
 </div>
+
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 为例：
+
+```bash
+# 连接真实机械臂（三、四代均使用基础型号）
+ros2 launch rm_driver rm_driver.launch.py \
+  arm_type:=65
+
+# 注：四代控制器软件自 1.0.6 起将原 6fb 末端统一命名为 6f。
+# rm_driver 和 rm_control 只需指定基础型号，如 63、65、75、eco63 或 eco65，无需末端后缀。
+# 此处仅提示三、四代的命名差异，启动参数保持一致。
+```
+
+本包用于真机链路；Gazebo 使用仿真控制器。`arm_type` 按基础型号选择配置。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
 
 ## 目录
 * 1.[rm_driver功能包说明](#rm_driver功能包说明)
@@ -46,6 +63,23 @@ rm_driver功能包在机械臂ROS2功能包中是十分重要的，该功能包�
 * 3.熟悉功能包相关的话题，方便开发和使用  
 ## rm_driver功能包使用
 ### 功能包基础使用
+推荐优先使用统一入口：
+```bash
+ros2 launch rm_driver rm_driver.launch.py arm_type:=65
+```
+
+统一入口参数：
+
+- `arm_type`（必填）：可选 `63`、`63_iii`、`65`、`75`、`eco62`、`eco63`、`eco65`、`gen72`、`gen72_ii` 或 `rx75`。同时接受受支持的完整型号，如 `65-6fb`、`eco63-6fb`、`rx75-6fb-v`；末端后缀支持范围见 [完整型号表](../rm_bringup/README_CN.md#统一启动入口)。
+- `driver_config`（默认 `auto`）：单臂型号的驱动 YAML 路径。
+- `left_driver_config` / `right_driver_config`（默认 `auto`）：RX75 左、右臂的驱动 YAML 路径。
+
+末端后缀只用于完整型号选择，Driver 仍按基础型号选择原有 YAML；例如 `65-6fb` 与 `65` 使用相同的 `rm_65_config.yaml`。
+
+RX75（包括 `rx75-6fb`、`rx75-6fb-v`）使用左右两份配置；如需覆盖默认配置，应使用 `left_driver_config` 和 `right_driver_config`。`driver_config` 仅用于单臂型号，左右臂参数仅用于 RX75；无效组合或不存在的文件会直接报错。
+
+原有 8 个型号入口（`63`、`65`、`75`、`eco62`、`eco63`、`eco65`、`gen72`、`rx75`）现为兼容 wrapper，原命令仍可继续使用。
+
 首先配置好环境完成连接后我们可以通过以下命令直接启动节点，控制机械臂。  
 当前的控制基于我们没有改变过机械臂的IP即当前机械臂的IP仍为192.168.1.18。  
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py  
@@ -137,19 +171,14 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   └── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
 ├── include                        #依赖头文件文件夹
 │   └── rm_driver
-│       ├── cJSON.h                #API头文件
-│       ├── constant_define.h      #API头文件
-│       ├── rman_int.h             #API头文件
-│       ├── rm_base_global.h       #API头文件
-│       ├── rm_base.h              #API头文件
-│       ├── rm_define.h            #API头文件
+│       ├── rm_define.h            #API定义头文件
 │       ├── rm_driver.h            #rm_driver.cpp头文件
-│       ├── rm_praser_data.h       #API头文件
-│       ├── rm_queue.h             #API头文件
-│       ├── rm_service_global.h    #API头文件
-│       ├── rm_service.h           #API头文件
-│       └── robot_define.h         #API头文件
+│       ├── rm_interface.h         #驱动接口头文件
+│       ├── rm_interface_global.h  #接口导出头文件
+│       ├── rm_service.h           #服务接口头文件
+│       └── rm_version.h           #版本定义头文件
 ├── launch
+│   ├── rm_driver.launch.py        #统一驱动启动入口
 │   ├── rm_63_driver.launch.py     #63启动文件
 │   ├── rm_65_driver.launch.py     #65启动文件
 │   ├── rm_75_driver.launch.py     #75启动文件
@@ -159,12 +188,12 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_gen72_driver.launch.py  #gen72启动文件
 │   └── rm_rx75_driver.launch.py   #RX75启动文件
 ├── lib
-│   ├── libRM_Service.so -> libRM_Service.so.1.0.0        #API库文件
-│   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      #API库文件
-│   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    #API库文件
-│   ├── libRM_Service.so.1.0.0                            #API库文件
-│   ├── linux_arm_service_release_v4.3.7.t7.tar.bz2       #API库文件
-│   └── linux_x86_service_release_v4.3.7.t7.tar.bz2       #API库文件
+│   ├── lib_install.sh                                   #API库安装脚本
+│   ├── libapi_cpp.so                                    #默认API库
+│   ├── linux_arm64_c++_v1.1.7
+│   │   └── libapi_cpp.so                                #ARM64 API库
+│   └── linux_x86_c++_v1.1.7
+│       └── libapi_cpp.so                                #x86_64 API库
 ├── package.xml                                           #依赖声明文件
 ├── README_CN.md
 ├── README.md

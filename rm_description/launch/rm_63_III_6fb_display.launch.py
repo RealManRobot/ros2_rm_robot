@@ -1,41 +1,25 @@
-import os
-from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch_ros.actions import Node
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration
+# Copyright 2026 realman-robotics
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-import xacro
+from rm_description.legacy_display import generate_legacy_display_launch
+
 
 def generate_launch_description():
-    # 声明参数 link6_type
-    declare_link6_type_arg = DeclareLaunchArgument(
-        'link6_type',
-        default_value='Link6_6fb',
-        description='Type of link6'
+    return generate_legacy_display_launch(
+        "63_iii-6fb",
+        xacro_arguments=(
+            ("link6_type", "Link6_6fb"),
+            ("base_type", "base_link_III"),
+        ),
     )
-    declare_base_type_arg = DeclareLaunchArgument(
-        'base_type',
-        default_value='base_link_III',
-        description='Type of base'
-    )
-
-    realman_xacro_file = os.path.join(get_package_share_directory('rm_description'), 'urdf',
-                                        'rml_63.urdf.xacro')
-    robot_description = Command(
-        [FindExecutable(name='xacro'), ' ', realman_xacro_file,' ','link6_type:=',LaunchConfiguration('link6_type'),' ','base_type:=',LaunchConfiguration('base_type')])
-    # robot_description = Command(
-    #     [FindExecutable(name='xacro'), ' ', realman_xacro_file,' ','base_type:=',LaunchConfiguration('base_type')])
-
-    return LaunchDescription([
-            declare_link6_type_arg,
-            declare_base_type_arg,
-            Node(
-                package='robot_state_publisher',
-                executable='robot_state_publisher',
-                name='robot_state_publisher',
-                respawn=True,
-                parameters=[{'robot_description': robot_description}],
-                output='screen'
-            )
-        ])

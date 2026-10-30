@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>rm_moveit2</name>
-  <version>1.7.0</version>
+  <version>1.7.1</version>
   <description>Simple MoveIt2 pose target demo for RealMan robots.</description>
 
   <maintainer email="rm@todo.todo">yifei</maintainer>

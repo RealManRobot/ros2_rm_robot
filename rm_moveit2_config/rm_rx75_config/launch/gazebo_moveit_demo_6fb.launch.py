@@ -1,3 +1,6 @@
+from launch.actions import OpaqueFunction
+from rm_description.variant_catalog import MODEL_FORMATS, apply_visual_model
+
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -42,8 +45,12 @@ def build_moveit_config():
     )
 
 
-def generate_launch_description():
+def _launch_setup(context):
     moveit_config = build_moveit_config()
+    moveit_config.robot_description["robot_description"] = apply_visual_model(
+        moveit_config.robot_description["robot_description"],
+        "rx75-6fb", LaunchConfiguration("model").perform(context),
+    )
     joint_states_topic = LaunchConfiguration("joint_states_topic")
 
     allow_trajectory_execution = ParameterValue(
@@ -139,4 +146,11 @@ def generate_launch_description():
                 output="screen",
             ),
         ]
-    )
+    ).entities
+
+
+def generate_launch_description():
+    return LaunchDescription([
+        DeclareLaunchArgument("model", default_value="auto", choices=MODEL_FORMATS),
+        OpaqueFunction(function=_launch_setup),
+    ])

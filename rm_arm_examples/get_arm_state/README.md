@@ -27,13 +27,13 @@
 
 | 项目 | 内容 |
 | :-- | :-- |
-| 系统 | Ubuntu22.04 |
-| ROS版本 | humble |
-| 依赖 | 机械臂的ROS2-humble功能包 |
+| 系统 | Ubuntu 22.04 |
+| ROS版本 | Humble |
+| 依赖 | 机械臂的ROS 2 Humble功能包 |
 
-1. 首先需要准备好Ubuntu22.04操作系统的虚拟机或其他设备。
-2. 安装ROS2环境[humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html),也可参考ROS2-humble功能包中的安装说明进行安装。
-3. ROS2-Humble功能包安装
+1. 首先需要准备好Ubuntu 22.04操作系统的虚拟机或其他设备。
+2. 安装ROS 2环境[Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html)，也可参考ROS 2 Humble功能包中的安装说明进行安装。
+3. ROS 2 Humble功能包安装
 
     新建工作空间和src文件夹
     ```

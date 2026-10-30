@@ -13,7 +13,7 @@ def build_moveit_config():
     description_path = os.path.join(
         get_package_share_directory("rm_description"),
         "urdf",
-        "rm_rx75-6fb_v.urdf.xacro",
+        "rm_rx75-6fb.urdf.xacro",
     )
 
     return (

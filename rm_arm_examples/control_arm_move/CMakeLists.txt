@@ -32,14 +32,16 @@ if(BUILD_TESTING)
 endif()
 
 add_executable(move_demo src/api_Move_demo.cpp)
+add_executable(slight_move_demo src/api_Slight_Move_demo.cpp)
 
 ament_target_dependencies(move_demo rclcpp std_msgs rm_ros_interfaces)
+ament_target_dependencies(slight_move_demo rclcpp std_msgs rm_ros_interfaces)
 
 
 install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME})
 
 install(TARGETS
-move_demo
+move_demo slight_move_demo
   DESTINATION lib/${PROJECT_NAME})
 ament_package()

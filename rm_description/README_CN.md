@@ -1,14 +1,14 @@
 <div align="right">
- 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_description/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_description/README.md)
+
+[简体中文](README_CN.md)|[English](README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_description使用说明书V1.6
- 
-睿尔曼智能科技（北京）有限公司 
+# 睿尔曼机器人rm_description使用说明书V1.7
+
+睿尔曼智能科技（北京）有限公司
 文件修订记录：
 
 | 版本号| 时间   | 备注  | 
@@ -20,8 +20,25 @@
 | V1.4  |2025-4-7 |修订(添加了GEN72_II适配文件) |
 | V1.5  |2025-11-13 |修订(添加了RML63_III适配文件) |
 | V1.6  |2026-4-16 |修订(添加ECO62、RX75适配文件) |
+| V1.7  |2026-8-13 |修订(新增统一模型描述入口、同步URDF与网格资源，并增加按型号解析的末端默认值) |
 
 </div>
+
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 的模型显示为例：
+
+```bash
+# 仿真预览 / 三代或四代旧软件的模型显示（GUI 调整关节）
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=true
+
+# 真机状态显示（四代控制器软件 > 1.0.5；先启动 rm_driver）
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=false
+```
+
+四代控制器软件从 `1.0.6` 起将原 `6fb` 末端命名为 `6f`；本包不读取控制器代际，单独启动时仍使用 `65-6fb` 选择同一模型。真机显示使用驱动上报的关节状态，不启用 GUI 关节发布器。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
 
 ## 目录
 * 1.[rm_description功能包说明](#rm_description功能包说明)
@@ -39,12 +56,29 @@ rm_description功能包为显示机器人模型和TF变换的功能包，通过�
 * 1.了解该功能包的使用。
 * 2.熟悉功能包中的文件构成及作用。
 * 3.熟悉功能包相关的话题，方便开发和使用
+
 ## rm_description功能包使用
-首先配置好环境完成连接后我们可以通过以下命令直接启动节点，运行rm_description功能包。  
+推荐使用统一入口：
+
+```bash
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6f use_joint_state_publisher_gui:=true use_rviz:=true
+```
+
+统一入口显式支持能力表中的 21 个型号/末端组合。`model` 可设为 `auto/stl/dae`，
+默认 `auto`，有配套资源时使用彩色 DAE，其余使用 STL。`arm_type` 直接选择完整型号，
+如 `65-6fb`、`eco63-6fb`。使用 `dae` 但该型号没有配套资源时，会在启动节点前报错。常用参数还包括
+`use_sim_time`、`joint_states_topic`、`use_joint_state_bridge`、
+`use_joint_state_publisher_gui` 和 `use_rviz`；RX75 还支持左右臂的
+`left_xyz/left_rpy/right_xyz/right_rpy`。非法组合会在启动节点前报错。
+下面列出的旧 `*_display.launch.py` 命令已改为兼容 wrapper，也默认采用
+`model:=auto`；其余原参数和默认值继续保留。要显示旧 STL，可在命令后添加 `model:=stl`。
+
+首先配置好环境完成连接后我们可以通过以下命令直接启动节点，运行rm_description功能包。
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II、rx75。  
+`rm_<arm_type>_display.launch.py` 形式适用于65、63、63_III、75、eco62、eco63、eco65、gen72和gen72_II。
 启动六维力版本机械臂的命令为（当前支持63、65、75、eco65）：
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_6f_display.launch.py
@@ -79,10 +113,19 @@ rm@rm-desktop:~$ rviz2
 ![image](doc/rm_description1.png)
 ## rm_description功能包架构说明
 ## 功能包文件总览
-当前rm_description功能包的文件构成如下。  
+当前rm_description功能包的文件构成如下。
 ```
 ├── CMakeLists.txt                #编译规则文件
+├── config                        #旧版控制器关节名称配置
+│   ├── joint_names_rm_65_description.yaml
+│   └── joint_names_rml_63_description.yaml
+├── doc                           #辅助文档、图片存放文件夹
+│   ├── rm_description1.png
+│   ├── rm_description2.png
+│   ├── rm_description3.png
+│   └── rm_description4.png
 ├── launch
+│   ├── rm_description.launch.py       #统一型号和末端启动入口
 │   ├── rm_63_6f_display.launch.py  #63六维力启动文件
 │   ├── rm_63_6fb_display.launch.py #63一体化六维力启动文件
 │   ├── rm_63_display.launch.py     #63启动文件
@@ -105,6 +148,7 @@ rm@rm-desktop:~$ rviz2
 │   ├── rm_rx75_6fb_display.launch.py   #RX75-6FB双臂启动文件
 │   └── rm_rx75_6fb_v_display.launch.py #RX75-6FB-V双臂启动文件
 ├── meshes                       #模型文件存放文件夹
+│   ├── dae                      #配套彩色模型，model:=auto 优先使用
 │   ├── rm_63_arm                 #63机械臂模型文件存放文件夹
 │   │   ├── base_link.STL
 │   │   ├── link1.STL
@@ -223,6 +267,12 @@ rm@rm-desktop:~$ rviz2
 │           ├── Link7.STL
 │           └── Link8.STL
 ├── package.xml
+├── README_CN.md
+├── README.md
+├── rm_description               #Python启动辅助模块
+│   ├── __init__.py
+│   ├── legacy_display.py         #旧display入口兼容定义
+│   └── variant_catalog.py        #支持的型号/末端能力表
 ├── rviz                          #rviz2配置文件存放文件夹
 │   ├── rm_63.rviz
 │   ├── rm_65.rviz
@@ -234,7 +284,6 @@ rm@rm-desktop:~$ rviz2
 │   └── rm_rx75.rviz
 ├── scripts
 │   └── dual_arm_joint_state_bridge.py  #RX75双臂关节状态桥接脚本
-├── textures
 └── urdf
     ├── display_arm.rviz
     ├── rm_eco62.csv

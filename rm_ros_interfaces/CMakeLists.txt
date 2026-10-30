@@ -81,7 +81,7 @@ set(msg_files
   msg/Moveloffset.msg
   msg/Jointversion.msg
   msg/Stop.msg
-  msg/Mastername.msg  
+  msg/Mastername.msg
   msg/Getmodbustcpmasterlist.msg
   msg/RS485params.msg
   msg/Modbusreaddata.msg

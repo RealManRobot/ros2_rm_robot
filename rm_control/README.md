@@ -1,14 +1,14 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_control/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_control/README.md)
- 
+[简体中文](README_CN.md)|[English](README.md)
+
 </div>
 
 <div align="center">
 
-# RealMan Robot rm_control User Manual V1.3
+# RealMan Robot rm_control User Manual V1.4
 
-RealMan Intelligent Technology (Beijing) Co., Ltd. 
+RealMan Intelligent Technology (Beijing) Co., Ltd.
 
 Revision History:
 
@@ -18,7 +18,24 @@ Revision History:
 |V1.1	  | 2024-7-3 | Amend(Add GEN72 related adapter files) |
 |V1.2   | 2024-9-10 | Amend(Add ECO63 related adapter files) |
 |V1.3   | 2026-4-16 | Amend(Add ECO62 and RX75 related adapter files) |
+|V1.4   | 2026-8-13 | Amend(Add the unified control launch entry, follow override, and model-specific compatibility wrappers) |
 </div>
+
+## Launch examples
+
+After building and sourcing the workspace, for an RM65 with integrated force sensing:
+
+```bash
+# Start trajectory control (generation 3 and 4 both use the base model)
+ros2 launch rm_control rm_control.launch.py \
+  arm_type:=65
+
+# Note: Generation 4 software 1.0.6 and later names the former 6fb end link 6f.
+# rm_driver and rm_control only need a base model, such as 63, 65, 75, eco63 or eco65.
+# The naming difference does not change these launch arguments.
+```
+
+This package is part of the real-robot control chain; Gazebo uses simulation controllers. `arm_type` selects the base-family configuration. Start `rm_driver` first. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
 
 ## Content
 * 1.[rm_control Package Description](#rm_control_Package_Description)
@@ -41,11 +58,23 @@ Through the introduction of the three parts, it can help you:
 Source code address: https://github.com/RealManRobot/ros2_rm_robot.git。
 ## rm_control_Package_Function
 ### Basic_use_of_the_package
+The unified entry point is recommended:
+```bash
+ros2 launch rm_control rm_control.launch.py arm_type:=65
+```
+
+Unified launch arguments:
+
+- `arm_type` (required): `63`, `63_iii`, `65`, `75`, `eco62`, `eco63`, `eco65`, `gen72`, `gen72_ii`, or `rx75`. Complete selectors such as `65-6fb`, `eco63-6fb`, and `rx75-6fb-v` are also supported; see the [complete model table](../rm_bringup/README.md#unified-launch-entry).
+- `follow` (default: `auto`): accepts only `auto`, `true`, or `false`; `auto` selects low-follow mode (`false`) for all models; use `follow:=true` to select high-follow mode.
+
+Selecting `rx75` creates both the `left_arm` and `right_arm` control nodes. The eight legacy model entry points (`63`, `65`, `75`, `eco62`, `eco63`, `eco65`, `gen72`, and `rx75`) are now compatibility wrappers, and their existing commands remain supported.
+
 First, after configuring the environment and completing the connection, we can directly start the node and run the rm_control package.
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_<arm_type>_control.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, eco62, 75, gen72, and rx75.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models of the robotic arm are 65, 63, eco65, eco63, eco62, 75, gen72, and rx75.
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_65_control.launch.py
@@ -54,17 +83,15 @@ The following screen appears in the interface after successful node startup.
 ![image](doc/rm_control1.png)
 It does not play a role when the node of the package is launched alone. It needs to be combined with the rm_driver package and the relevant nodes of moveit2 to play a role. For details, please refer to the relevant content of "rm_moveit2_config Detailed Description".
 ### Advanced_use_of_the_package
-Some parameters can be configured in the rm_control package. Because there are not many parameters, the parameters are directly configured in the launch file.
-![image](doc/rm_control2.png)
-As shown in the figure above, the position of the first red box is the file path, and the position of the second box is the current configurable parameter.  
-Parameter follows: represents the following mode used by the current transmission, where true is high following and false is low following. The high following indicates that the robotic arm's movement mode is consistent with the transmission. It must do detailed calculations based on its transmission rate, speed, and acceleration. The threshold is set too high, but the control is fine. The low following indicates that the robotic arm moves to the transmission point based on its transmission rate, speed, and acceleration. If there are points that cannot be reached in time, there may be abandonment. The threshold is set low, and the control is not very fine but meets the use.  
-Parameter arm_type: represents the current model of the robotic arm. The parameters that can be selected are 65 (RM65 series), 651 (ECO65 series), 634 (ECO63 series), 632 (RM63 series), 621 (ECO62 series), 75 (RM75 series and RX75 series), and 72 (GEN72 series).  
-In practice, we choose the corresponding launch file to start, which will automatically select the correct model. If there are special requirements, you can modify the corresponding parameters here. After modification, recompile the configuration in the workspace directory, and then the modified configuration will take effect.  
-Run colcon build command in the workspace directory.  
+The following mode is configured directly through the unified launch entry; editing a launch file and rebuilding the workspace are not required:
+
+```bash
+ros2 launch rm_control rm_control.launch.py arm_type:=65 follow:=true
 ```
-rm@rm-desktop: ~/ros2_ws$ colcon build
-```
-After successful compilation, follow the above commands to start the package.
+
+`follow:=true` selects high-follow mode, while `follow:=false` selects low-follow mode. High-follow mode tracks the transmitted trajectory more closely and requires suitable transmission rate, velocity, and acceleration settings. Low-follow mode has a lower usage threshold, but points that cannot be reached in time may be discarded. The default and `follow:=auto` both select low-follow mode; use `follow:=true` to opt into high-follow mode.
+
+The user-facing `arm_type` value is the canonical model string listed in the basic-use section. The numeric values `65`, `651`, `634`, `632`, `621`, `75`, and `72` are internal node-parameter mappings maintained by the unified launch file; they are not values that users should pass to the `arm_type` launch argument.
 ## rm_control_Package_Architecture_Description
 ### Overview_of_package_files
 The current rm_control package is composed of the following files.
@@ -74,9 +101,11 @@ The current rm_control package is composed of the following files.
 │   ├── rm_control1.png
 │   └── rm_control2.png
 ├── include                            # dependency header file folder
-│   ├── cubicSpline.h                  # cubic spline interpolation header file
-│   └── rm_control.h                   #rm_control header file
+│   └── rm_control
+│       ├── cubicSpline.h              # cubic spline interpolation header file
+│       └── rm_control.h               # rm_control header file
 ├── launch
+│   ├── rm_control.launch.py           # unified control launch entry
 │   ├── rm_63_control.launch.py        # 63 launch file
 │   ├── rm_65_control.launch.py        # 65 launch file
 │   ├── rm_75_control.launch.py        # 75 launch file
@@ -96,7 +125,7 @@ The following is the topic description of the package.
 ```
   Subscribers:
     /parameter_events: rcl_interfaces/msg/ParameterEvent
-    /rm_driver/move_stop_cmd: std_msgs::msg::Bool
+    /rm_driver/move_stop_cmd: std_msgs/msg/Empty
   Publishers:
     /parameter_events: rcl_interfaces/msg/ParameterEvent
     /rm_driver/movej_canfd_cmd: rm_ros_interfaces/msg/Jointpos
@@ -114,7 +143,9 @@ The following is the topic description of the package.
     /rm_group_controller/follow_joint_trajectory: control_msgs/action/FollowJointTrajectory
   Action Clients:
 ```
-We mainly focus on the following topics.  
-Publishers: represents its current published topic, the most important published topic is /rm_driver/movej_canfd_cmd, through which we publish the subdivided points to rm_driver node, and then rm_driver node gives the corresponding path to the robotic arm through the transmission way.  
-Action Servers: represents the action information it receives and publishes, /rm_group controller/follow_joint_trajectory action as the bridge of communication between rm_control and moveit2, through which rm_control receives the path planned by moveit2, and rm_control further subdivides these paths from the above topic to rm_driver.  
+The paths above show the root namespace used by single-arm models. For RX75, each control node applies its arm namespace: the corresponding interfaces are `/left_arm/rm_driver/move_stop_cmd`, `/left_arm/rm_driver/movej_canfd_cmd`, and `/left_arm/rm_group_controller/follow_joint_trajectory`, with equivalent `/right_arm/...` paths for the right arm.
+
+We mainly focus on the following topics.
+Publishers: represents its current published topic, the most important published topic is /rm_driver/movej_canfd_cmd, through which we publish the subdivided points to rm_driver node, and then rm_driver node gives the corresponding path to the robotic arm through the transmission way.
+Action Servers: represents the action information it receives and publishes, `/rm_group_controller/follow_joint_trajectory` action as the bridge of communication between rm_control and moveit2, through which rm_control receives the path planned by moveit2, and rm_control further subdivides these paths from the above topic to rm_driver.
 There are relatively few remaining topics and service use scenarios, so we do not introduce them in detail here, and you can learn by yourself.

@@ -1,11 +1,16 @@
+from launch.actions import OpaqueFunction
+from rm_description.variant_catalog import MODEL_FORMATS, apply_visual_model
+
 from moveit_configs_utils import MoveItConfigsBuilder
 from moveit_configs_utils.launches import generate_moveit_rviz_launch
 
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    GroupAction,
     IncludeLaunchDescription,
 )
+from launch.conditions import IfCondition
 from moveit_configs_utils.launch_utils import (
     add_debuggable_node,
     DeclareBooleanLaunchArg,
@@ -14,22 +19,34 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.parameter_descriptions import ParameterValue
 
 
-def generate_launch_description():
+def _launch_setup(context):
     # moveit_config = MoveItConfigsBuilder("rm_75_description", package_name="rm_75_config").to_moveit_configs() 
     moveit_config = (
         MoveItConfigsBuilder("rm_75_description", package_name="rm_75_config")
         .robot_description(file_path="config/rm_75_6fb_description.urdf.xacro", mappings={"link7_type": "Link7_6f"})
         .to_moveit_configs()
     )
-    
+    moveit_config.robot_description["robot_description"] = apply_visual_model(
+        moveit_config.robot_description["robot_description"],
+        "75-6f", LaunchConfiguration("model").perform(context),
+    )
+
     ld = LaunchDescription()
+    ld.add_action(DeclareBooleanLaunchArg("use_rviz", default_value=True))
 
     # 启动move_group
     my_generate_move_group_launch(ld, moveit_config)
     # 启动rviz
-    my_generate_moveit_rviz_launch(ld, moveit_config)
+    rviz_ld = LaunchDescription()
+    my_generate_moveit_rviz_launch(rviz_ld, moveit_config)
+    ld.add_action(
+        GroupAction(
+            actions=list(rviz_ld.entities),
+            condition=IfCondition(LaunchConfiguration("use_rviz")),
+        )
+    )
 
-    return ld
+    return list(ld.entities)
 
 
 def my_generate_move_group_launch(ld, moveit_config):
@@ -101,6 +118,8 @@ def my_generate_moveit_rviz_launch(ld, moveit_config):
     )
 
     rviz_parameters = [
+        moveit_config.robot_description,
+        moveit_config.robot_description_semantic,
         moveit_config.planning_pipelines,
         moveit_config.robot_description_kinematics,
     ]
@@ -117,3 +136,10 @@ def my_generate_moveit_rviz_launch(ld, moveit_config):
     )
 
     return ld
+
+
+def generate_launch_description():
+    return LaunchDescription([
+        DeclareLaunchArgument("model", default_value="auto", choices=MODEL_FORMATS),
+        OpaqueFunction(function=_launch_setup),
+    ])

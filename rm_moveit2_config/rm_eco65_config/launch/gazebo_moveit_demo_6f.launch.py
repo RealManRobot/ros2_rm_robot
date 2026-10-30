@@ -1,11 +1,20 @@
+from launch.actions import OpaqueFunction
+from rm_description.variant_catalog import MODEL_FORMATS, apply_visual_model
+
+import os
+
+from ament_index_python.packages import get_package_share_directory
 from moveit_configs_utils import MoveItConfigsBuilder
 from moveit_configs_utils.launches import generate_moveit_rviz_launch
+import yaml
 
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    GroupAction,
     IncludeLaunchDescription,
 )
+from launch.conditions import IfCondition
 from moveit_configs_utils.launch_utils import (
     add_debuggable_node,
     DeclareBooleanLaunchArg,
@@ -14,22 +23,43 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.parameter_descriptions import ParameterValue
 
 
-def generate_launch_description():
-    # moveit_config = MoveItConfigsBuilder("rm_eco65_description", package_name="rm_eco65_config").to_moveit_configs() 
+def load_yaml(path):
+    with open(path, "r") as file:
+        return yaml.safe_load(file)
+
+
+def _launch_setup(context):
+    description_path = os.path.join(
+        get_package_share_directory("rm_gazebo"),
+        "config",
+        "gazebo_eco65_6fb_description.urdf.xacro",
+    )
+    builder = MoveItConfigsBuilder("rm_eco65_description", package_name="rm_eco65_config")
     moveit_config = (
-        MoveItConfigsBuilder("rm_eco65_description", package_name="rm_eco65_config")
-        .robot_description(file_path="config/rm_eco65_6fb_description.urdf.xacro", mappings={"link6_type": "Link6_6f"})
+        builder.robot_description(file_path=description_path, mappings={"link6_type": "Link6_6f"})
         .to_moveit_configs()
     )
-    
+    moveit_config.robot_description["robot_description"] = apply_visual_model(
+        moveit_config.robot_description["robot_description"],
+        "eco65-6f", LaunchConfiguration("model").perform(context),
+    )
+
     ld = LaunchDescription()
+    ld.add_action(DeclareBooleanLaunchArg("use_rviz", default_value=True))
 
     # 启动move_group
     my_generate_move_group_launch(ld, moveit_config)
     # 启动rviz
-    my_generate_moveit_rviz_launch(ld, moveit_config)
+    rviz_ld = LaunchDescription()
+    my_generate_moveit_rviz_launch(rviz_ld, moveit_config)
+    ld.add_action(
+        GroupAction(
+            actions=list(rviz_ld.entities),
+            condition=IfCondition(LaunchConfiguration("use_rviz")),
+        )
+    )
 
-    return ld
+    return list(ld.entities)
 
 
 def my_generate_move_group_launch(ld, moveit_config):
@@ -53,6 +83,7 @@ def my_generate_move_group_launch(ld, moveit_config):
     should_publish = LaunchConfiguration("publish_monitored_planning_scene")
 
     move_group_configuration = {
+        "publish_robot_description": True,
         "publish_robot_description_semantic": True,
         "allow_trajectory_execution": LaunchConfiguration("allow_trajectory_execution"),
         # Note: Wrapping the following values is necessary so that the parameter value can be the empty string
@@ -69,12 +100,24 @@ def my_generate_move_group_launch(ld, moveit_config):
         "publish_transforms_updates": should_publish,
         "monitor_dynamics": False,
     }
+    pilz_cartesian_limits = {
+        "robot_description_planning": load_yaml(
+            moveit_config.package_path / "config/pilz_cartesian_limits.yaml"
+        )
+    }
 
     move_group_params = [
-        moveit_config.to_dict(),
+        moveit_config.robot_description,
+        moveit_config.robot_description_semantic,
+        moveit_config.robot_description_kinematics,
+        moveit_config.planning_pipelines,
+        moveit_config.trajectory_execution,
+        moveit_config.planning_scene_monitor,
+        moveit_config.joint_limits,
+        pilz_cartesian_limits,
         move_group_configuration,
+        {"use_sim_time": True},
     ]
-    move_group_params.append({"use_sim_time": True})
 
     add_debuggable_node(
         ld,
@@ -89,6 +132,7 @@ def my_generate_move_group_launch(ld, moveit_config):
     )
     return ld
 
+
 def my_generate_moveit_rviz_launch(ld, moveit_config):
     """Launch file for rviz"""
 
@@ -101,6 +145,8 @@ def my_generate_moveit_rviz_launch(ld, moveit_config):
     )
 
     rviz_parameters = [
+        moveit_config.robot_description,
+        moveit_config.robot_description_semantic,
         moveit_config.planning_pipelines,
         moveit_config.robot_description_kinematics,
     ]
@@ -117,3 +163,10 @@ def my_generate_moveit_rviz_launch(ld, moveit_config):
     )
 
     return ld
+
+
+def generate_launch_description():
+    return LaunchDescription([
+        DeclareLaunchArgument("model", default_value="auto", choices=MODEL_FORMATS),
+        OpaqueFunction(function=_launch_setup),
+    ])

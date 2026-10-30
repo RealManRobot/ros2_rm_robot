@@ -1,7 +1,7 @@
 <div align="right">
   
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_ros_interfaces/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_ros_interfaces/README.md)
+[中文简体](README_CN.md)|
+[English](README.md)
 
 </div>
 
@@ -90,21 +90,31 @@ rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行
 ## rm_ros_interface功能包架构说明
 ### 功能包文件总览
 ```
-当前rm_driver功能包的文件构成如下。
-├── CMakeLists.txt                #编译规则文件
-├── include                       #依赖头文件文件夹
-│   └── rm_ros_interfaces
-├── msg                          #当前的消息文件（详细请看下方介绍）
+当前rm_ros_interfaces功能包的文件构成如下。
+├── CMakeLists.txt                # 编译规则文件
+├── README.md                     # 英文说明文档
+├── README_CN.md                  # 中文说明文档
+├── msg                           # 当前的消息文件（详细请看下方介绍）
+│   ├── Alohastate.msg
 │   ├── Armcurrentstatus.msg
 │   ├── Armoriginalstate.msg
+│   ├── Armsoftversion.msg
+│   ├── Armsoftversionv3.msg
+│   ├── Armsoftversionv4.msg
 │   ├── Armstate.msg
 │   ├── Cartepos.msg
 │   ├── Carteposcustom.msg
+│   ├── Expandpos.msg
+│   ├── Expandstate.msg
+│   ├── Flowchartrunstate.msg
+│   ├── Force_Position_State.msg
+│   ├── Forcepositionmove.msg
 │   ├── Forcepositionmovejoint.msg
 │   ├── Forcepositionmovepose.msg
-│   ├── Force_Position_State.msg
-│   ├── Getallframe.msg
 │   ├── GetArmState_Command.msg
+│   ├── Getallframe.msg
+│   ├── Getmodbustcpmasterlist.msg
+│   ├── Gettrajectorylist.msg
 │   ├── Gripperpick.msg
 │   ├── Gripperset.msg
 │   ├── Handangle.msg
@@ -117,31 +127,52 @@ rm_ros_interface功能包的主要作用为为机械臂在ROS2的框架下运行
 │   ├── Jointenflag.msg
 │   ├── Jointerrclear.msg
 │   ├── Jointerrorcode.msg
-│   ├── Jointposeeuler.msg
 │   ├── Jointpos.msg
 │   ├── Jointposcustom.msg
+│   ├── Jointposeeuler.msg
 │   ├── Jointspeed.msg
 │   ├── Jointteach.msg
 │   ├── Jointtemperature.msg
+│   ├── Jointversion.msg
 │   ├── Jointvoltage.msg
 │   ├── Liftheight.msg
 │   ├── Liftspeed.msg
 │   ├── Liftstate.msg
+│   ├── Mastername.msg
+│   ├── Modbusreaddata.msg
+│   ├── Modbusrtureadparams.msg
+│   ├── Modbusrtuwriteparams.msg
+│   ├── Modbustcpmasterinfo.msg
+│   ├── Modbustcpmasterlist.msg
+│   ├── Modbustcpmasterupdata.msg
+│   ├── Modbustcpreadparams.msg
+│   ├── Modbustcpwriteparams.msg
 │   ├── Movec.msg
 │   ├── Movej.msg
 │   ├── Movejp.msg
 │   ├── Movel.msg
+│   ├── Moveloffset.msg
 │   ├── Ortteach.msg
 │   ├── Posteach.msg
+│   ├── Programrunstate.msg
+│   ├── RS485params.msg
 │   ├── Rmerr.msg
 │   ├── Rmplusbase.msg
 │   ├── Rmplusstate.msg
+│   ├── Rmversion.msg
+│   ├── RobotInfo.msg
+│   ├── Sendproject.msg
 │   ├── Setforceposition.msg
 │   ├── Setrealtimepush.msg
 │   ├── Sixforce.msg
-│   └── Stop.msg
-├── package.xml                       #依赖声明文件
-└── src
+│   ├── Softwarebuildinfo.msg
+│   ├── Stop.msg
+│   ├── Toolsoftwareversionv4.msg
+│   ├── Trajectoryinfo.msg
+│   ├── Trajectorylist.msg
+│   ├── Udpexpandstate.msg
+│   └── Udpliftstate.msg
+└── package.xml                   # 依赖声明文件
 ```
 ## rm_ros_interface消息说明
 ### 关节错误代码Jointerrorcode_msg
@@ -678,6 +709,8 @@ __err__
 当前报错代码，int32。
 
 ### 末端设备基础信息Rmplusbase_msg
+
+数组长度与当前 API2 SDK 一致：自由度及限值数组为 6 项，`tsa`/`tma` 为 12 项，三维触觉及原始触觉数组为 18 项。数组长度变更后，发布端与订阅端均需重新编译并加载同一套消息定义。
 ```
 string manu              # 设备厂家
 int8 type                # 设备类型 1：两指夹爪 2：五指灵巧手 3：三指夹爪
@@ -693,31 +726,31 @@ bool touch               # 触觉支持
 int8 touch_num           # 触觉个数
 int8 touch_sw            # 触觉开关
 int8 hand                # 手方向 1 ：左手 2： 右手
-int32[12] pos_up         # 位置上限,单位：无量纲
-int32[12] pos_low        # 位置下限,单位：无量纲
-int32[12] angle_up       # 角度上限,单位：0.01度
-int32[12] angle_low      # 角度下限,单位：0.01度
-int32[12] speed_up       # 速度上限,单位：无量纲
-int32[12] speed_low      # 速度下限,单位：无量纲
-int32[12] force_up       # 力上限,单位：0.001N 
-int32[12] force_low      # 力下限,单位：0.001N 
+int32[6] pos_up         # 位置上限,单位：无量纲
+int32[6] pos_low        # 位置下限,单位：无量纲
+int32[6] angle_up       # 角度上限,单位：0.01度
+int32[6] angle_low      # 角度下限,单位：0.01度
+int32[6] speed_up       # 速度上限,单位：无量纲
+int32[6] speed_low      # 速度下限,单位：无量纲
+int32[6] force_up       # 力上限,单位：0.001N
+int32[6] force_low      # 力下限,单位：0.001N
 ```  
 ### 末端设备基础信息Rmplusstate_msg
 ```
 int32 sys_state                   #系统状态
-int32[12] dof_state               #各自由度当前状态
-int32[12] dof_err                 #各自由度错误信息
-int32[12] pos                     #各自由度当前位置
-int32[12] speed                   #各自由度当前速度
-int32[12] angle                   #各自由度当前角度
-int32[12] current                 #各自由度当前电流
+int32[6] dof_state               #各自由度当前状态
+int32[6] dof_err                 #各自由度错误信息
+int32[6] pos                     #各自由度当前位置
+int32[6] speed                   #各自由度当前速度
+int32[6] angle                   #各自由度当前角度
+int32[6] current                 #各自由度当前电流
 int32[18] normal_force            #自由度触觉三维力的法向力
 int32[18] tangential_force        #自由度触觉三维力的切向力
 int32[18] tangential_force_dir    #自由度触觉三维力的切向力方向
 uint32[12] tsa                    #自由度触觉自接近
 uint32[12] tma                    #自由度触觉互接近
 int32[18] touch_data              #触觉传感器原始数据
-int32[12] force                   #自由度力矩
+int32[6] force                   #自由度力矩
 ```  
 
 ### 自定义高跟随模式角度透传Jointposcustom_msg
@@ -760,4 +793,4 @@ __radio__
 设置曲线拟合模式下平滑系数（范围0-100）或者滤波模式下的滤波参数（范围0-1000），数值越大表示平滑效果越好。
 
 
-主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](https://github.com/kaola-zero/ros2_rm_robot/blob/main/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS2rm_driver%E8%AF%9D%E9%A2%98%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E.md)》进行查看。
+主要为套用API实现的一些机械臂本体的功能，其详细介绍和使用在此不详细展开，可以通过专门的文档《[睿尔曼机械臂ROS2话题详细说明](../rm_driver/doc/睿尔曼机械臂ROS2rm_driver话题详细说明.md)》进行查看。

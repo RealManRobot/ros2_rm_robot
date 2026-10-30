@@ -1,7 +1,7 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_moveit2_config/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_moveit2_config/README.md)
- 
+[简体中文](README_CN.md)|[English](README.md)
+
 </div>
 
 <div align="center">
@@ -23,6 +23,20 @@ Revision History:
 |V1.6    | 2026-4-16 | Amend(Add ECO62 and RX75 adapter files) |
 
 </div>
+
+## Launch examples
+
+After building and sourcing the workspace, use the integrated-force RM65 configuration in `rm_65_config`:
+
+```bash
+# Simulation (fake joint controllers; launch filenames retain 6fb)
+ros2 launch rm_65_config demo_6fb.launch.py
+
+# Real robot (generation 4 controller software > 1.0.5, end link named 6f)
+ros2 launch rm_65_config real_moveit_demo_6fb.launch.py
+```
+
+Generation 4 controller software 1.0.6 and later names the former `6fb` end link `6f`; this configuration package retains `6fb` filenames. The same files apply to integrated-force end links on generation 3 and older generation 4 software. `real_moveit_demo_6f.launch.py` selects the original force-sensor geometry. The real-robot command starts MoveIt only: first start `rm_driver`, `rm_description`, and `rm_control` as described below. `allow_trajectory_execution` defaults to `true`. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
 
 ## Content
 * 1.[rm_moveit2_config Description](#rm_moveit2_config_Description)
@@ -59,7 +73,8 @@ The command to start the integrated six-axis force version is currently availabl
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6fb.launch.py
 ```
-In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models are 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, gen72_II, and RX75. RX75 uses dedicated launch files under `rm_rx75_config`: `ros2 launch rm_rx75_config demo_6fb_v.launch.py` for RX75-6FB-V and `ros2 launch rm_rx75_config demo_6fb.launch.py` for RX75-6FB.  
+In practice, the above <arm_type> needs to be replaced by the actual model of the robotic arm. The available models are 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, and RX75. RX75 uses dedicated launch files under `rm_rx75_config`: `ros2 launch rm_rx75_config demo_6fb_v.launch.py` for RX75-6FB-V and `ros2 launch rm_rx75_config demo_6fb.launch.py` for RX75-6FB.
+GEN72-II currently has no standalone mock demo (`demo_II.launch.py`). The `rm_gen72_config` package provides `gazebo_moveit_demo_II.launch.py` for use with Gazebo and `real_moveit_demo_II.launch.py` for a real robot.
 For example, the launch command of 65 robotic arm:
 ```
 rm@rm-desktop:~$ ros2 launch rm_65_config demo.launch.py
@@ -104,15 +119,15 @@ The command to start the integrated six-axis force version is currently availabl
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 ```
-Note that the above commands need to replace <arm_type> with the corresponding robotic arm model, which can be selected as 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, and gen72_II. RX75 uses dedicated launch files under `rm_rx75_config`: `ros2 launch rm_rx75_config real_moveit_demo_6fb_v.launch.py` for RX75-6FB-V and `ros2 launch rm_rx75_config real_moveit_demo_6fb.launch.py` for RX75-6FB.  
+Note that the above commands need to replace <arm_type> with the corresponding robotic arm model, which can be selected as 65, 63, 63_III, 75, eco62, eco63, eco65, gen72, and gen72_II. RX75 uses dedicated launch files under `rm_rx75_config`: `ros2 launch rm_rx75_config real_moveit_demo_6fb_v.launch.py` for RX75-6FB-V and `ros2 launch rm_rx75_config real_moveit_demo_6fb.launch.py` for RX75-6FB.
 After completing the above operations, the following interface appears, and we can control the movement of the robotic arm by dragging the control ball.  
-**Note: The newly added gen72_II and 63_III models are both included in their respective model files. The difference lies in the fact that during startup, it is necessary to append the identifier II or III after "demo"**
+**Note: gen72_II and 63_III reuse the `rm_gen72_config` and `rm_63_config` packages, respectively. Their real-robot entry points are `real_moveit_demo_II.launch.py` and `real_moveit_demo_III.launch.py`.**
 The start command for 63_III is as follows:
-``` C++
-//Regular Version B
-ros2 launch rm_63_config demo_III.launch.py
-//Six-axis force 6FB version
-ros2 launch rm_63_config demo_III_6fb.launch.py
+```bash
+# Regular Version B
+ros2 launch rm_63_config real_moveit_demo_III.launch.py
+# Six-axis force 6FB version
+ros2 launch rm_63_config real_moveit_demo_III_6fb.launch.py
 ```
 ![image](doc/rm_moveit2_config4.png)
 ## rm_moveit2_config_Architecture_Description
@@ -305,7 +320,6 @@ The current rm_moveit2_config package is composed of the following files.
     │   └── ros2_controllers.yaml
     ├── launch
     │   ├── demo.launch.py
-    │   ├── demo_II.launch.py
     │   ├── gazebo_moveit_demo.launch.py
     │   ├── gazebo_moveit_demo_II.launch.py
     │   ├── move_group.launch.py

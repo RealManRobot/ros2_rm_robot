@@ -1,22 +1,41 @@
 <div align="right">
 
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/README.md)
+[中文简体](README_CN.md)|
+[English](README.md)
 
 </div>
 
 # ros2_rm_robot
 
+## Launch examples
+
+After building and sourcing the workspace, for an RM65 with integrated force sensing:
+
+```bash
+# Simulation (retains the 6fb model name used by generation 3 and older generation 4 software)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6fb mode:=gazebo
+
+# Real robot (generation 4 controller software > 1.0.5)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6f
+
+# Note: Generation 4 controller software 1.0.6 and later names the former 6fb end link 6f.
+```
+
+Simulation does not connect to a controller and retains the `6fb` model name for this geometry. For a generation 3 robot or older generation 4 software, use `arm_type:=65-6fb`. `mode` defaults to `real` and `allow_trajectory_execution` defaults to `true`. See the [generation-specific model table](rm_bringup/README.md#unified-launch-entry).
+
+
 The package is mainly used for providing ROS2 support for the robotic arm, and the following is the use environment.
 
 * Currently supported robotic arms include RM65, RM75, ECO62, ECO63, ECO65, RML63, GEN72, and RX75 dual-arm series. For details, refer to [RealMan robots](http://www.realman-robotics.com/).
-* Version V1.7.0.
-* Based on robotic arm controller version 1.7.3.
-* The Ubuntu version is 22.04, and the ROS2 version is Humble.
+* Version V1.7.1.
+* Based on robotic arm controller version 1.7.5.
+* The Ubuntu version is 22.04, and the ROS 2 version is Humble.
 
 The following is the installation and use tutorial of the package.
 
-## 1\. Build the environment
+## 1. Build the environment
 
 ---
 
@@ -34,6 +53,7 @@ Before using the package, we first need to do the following operations.
 We provide the installation script for ROS2, ros2_install.sh, which is located in the scripts folder of the rm_install package. In practice, we need to move to the path and execute the following commands.
 
 ```
+cd ./ros2_rm_robot/rm_install/scripts
 sudo bash ros2_install.sh
 ```
 
@@ -68,9 +88,9 @@ sudo bash lib_install.sh
 After the above execution is successful, execute the following commands to compile the package. First, we need to build a workspace and import the package file into the src folder under the workspace, and then use the colcon build command to compile.
 
 ```
-mkdir -p ~/ros2_ws/src
-cp -r ros2_rm_robot ~/ros2_ws/src
-cd ~/ros2_ws
+mkdir -p ./ros2_ws/src
+cp -r ros2_rm_robot ./ros2_ws/src
+cd ./ros2_ws
 colcon build --packages-select rm_ros_interfaces
 source ./install/setup.bash
 colcon build
@@ -112,7 +132,7 @@ Package introduction
 
 * This package is the moveit2 adaptation package of the robotic arm. It is used to adapt and realize the moveit2 planning and control functions of various series of robotic arms, mainly including the control functions of virtual robotic arm control and real robotic arm control.
 
-10. Moveit2 and hardware driver communication connection ([rm_config](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_control))
+10. Moveit2 and hardware driver communication connection ([rm_control](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_control))
 
 * This package is the communication connection package between the underlying driver package (rm_driver) and the moveit2 package (rm_moveit2_config). It is mainly used to subdivide the planning points of moveit2 and then pass them to the underlying driver package in the form of transmission to control the motion of the robotic arm.
 
@@ -120,15 +140,43 @@ Package introduction
 
 * This package is the gazebo simulation robotic arm package. It is mainly used to display the robotic arm model in the gazebo simulation environment, and the planning and control of the simulated robotic arm can be carried out through moveit2.
 
-12. Use examples ([rm_examples](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_example))
+12. Use examples ([rm_example](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_example))
 
 * This package is some use examples of the robotic arm, and it is mainly used to realize some basic control functions and motion functions of the robotic arm.
 
-13. Technical documentation ([rm_docs](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_doc))
+13. Technical documentation ([rm_doc](https://github.com/RealManRobot/ros2_rm_robot/tree/humble/rm_doc))
 
 * This package is an introduction document package, which mainly includes a document that provides an overall introduction to the content and usage of the packages, as well as a document that provides a detailed introduction to the content and usage of each package.
 
 The above are the current major packages. Each package has its own role. For more details, refer to the documentation under `rm_doc`.
+
+### 2.0 Unified launch entry
+
+The recommended entry point is `rm_bringup.launch.py`. `arm_type` is required
+and selects the robot model including its end-link version, e.g. `65`,
+`65-6f`, or `eco63-6fb`; `mode` selects a real robot or Gazebo and defaults to
+`real`. For example:
+
+```bash
+# Simulation (retains the 6fb model name used by generation 3 and older generation 4 software)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6fb mode:=gazebo
+
+# Real robot (generation 4 controller software > 1.0.5)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6f
+
+# Note: Generation 4 controller software 1.0.6 and later names the former 6fb end link 6f.
+```
+
+`arm_type` selects the complete model, such as `65-6fb` or `eco63-6fb`; Driver/Control also accept these values.
+RViz2 and Gazebo prefer matching DAE assets and otherwise use STL. Add `model:=stl` to select the original model.
+
+Unsupported model and end-link combinations fail before any node starts.
+The model-specific commands below are compatibility wrappers that forward to
+the unified entry, so their existing filenames and
+commands remain supported. See the [rm_bringup README](rm_bringup/README.md)
+for the complete support matrix and advanced arguments.
 
 ### 2.1 Run the virtual robotic arm
 
@@ -137,7 +185,7 @@ The above are the current major packages. Each package has its own role. For mor
 Use the following command to launch the gazebo to display the simulation robotic arm, and launch moveit2 for the planning and control of the simulation robotic arm.
 
 ```
-source ~/ros2_ws/install/setup.bash
+source ./ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_gazebo.launch.py
 ```
 
@@ -156,7 +204,7 @@ After successful launch, you can use moveit2 for the control of the virtual robo
 Use the following command to launch the hardware driver of the robotic arm, and launch moveit2 for the planning and control of the robotic arm.
 
 ```
-source ~/ros2_ws/install/setup.bash
+source ./ros2_ws/install/setup.bash
 ros2 launch rm_bringup rm_<arm_type>_bringup.launch.py
 ```
 
@@ -178,5 +226,3 @@ Please refer to the following operation specifications when using the robotic ar
 * During the running of the robotic arm, no person shall be in the falling or working range of the robotic arm, nor shall any other object be placed in the robot arm's safety range.
 * Place the robotic arm in a safe location when not in use to avoid it from falling down and damaging or injuring other objects during vibration.
 * Disconnect the robotic arm from the power supply in time when not in use.
-
-<!-- v1.7.0 -->

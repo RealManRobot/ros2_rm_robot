@@ -6,22 +6,25 @@
     <!-- arg->property -->
     <xacro:property name="link6_type" value="$(arg link6_type)" />
     <xacro:property name="base_type" value="$(arg base_type)" />
+    <!-- RML63II and RML63III use different link geometry. Keep each URDF
+         coordinate system paired with the meshes exported for that model. -->
+    <xacro:property name="mesh_dir" value="${'rm_63_III_arm' if base_type == 'base_link_III' else 'rm_63_arm'}" />
     <xacro:if value="${ base_type =='base_link' }">
     <link
     name="base_link">
     <inertial>
       <origin
-        xyz="0.0002051 -8.259E-05 0.043092"
+        xyz="0.0014213 -0.00010164 0.050087"
         rpy="0 0 0" />
       <mass
-        value="1.6314" />
+        value="1.862" />
       <inertia
-        ixx="0.0022252"
-        ixy="7.9005E-06"
-        ixz="-7.7558E-05"
-        iyy="0.0022156"
-        iyz="5.9846E-06"
-        izz="0.0018513" />
+        ixx="0.00099641"
+        ixy="-3.2815E-06"
+        ixz="1.0053E-05"
+        iyy="0.0010164"
+        iyz="-1.2859E-06"
+        izz="0.00067934" />
     </inertial>
     <visual>
       <origin
@@ -29,7 +32,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/base_link.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -43,7 +46,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/base_link.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -51,17 +54,17 @@
     name="link1">
     <inertial>
       <origin
-        xyz="-0.030909 -0.0013023 -0.0053121"
+        xyz="-0.068442 -0.023913 -0.006938"
         rpy="0 0 0" />
       <mass
-        value="1.7668" />
+        value="1.837" />
       <inertia
-        ixx="0.0014534"
-        ixy="-0.00017578"
-        ixz="0.0002802"
-        iyy="0.0043772"
-        iyz="1.7209E-05"
-        izz="0.0040911" />
+        ixx="0.002323337"
+        ixy="-0.000758998"
+        ixz="0.000825985"
+        iyy="0.003950377"
+        iyz="0.000254693"
+        izz="0.003921999" />
     </inertial>
     <visual>
       <origin
@@ -69,7 +72,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link1.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link1.STL" />
       </geometry>
       <material
         name="">
@@ -83,7 +86,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link1.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link1.STL" />
       </geometry>
     </collision>
   </link>
@@ -100,10 +103,10 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.107"
-      upper="3.107"
-      effort="100"
-      velocity="1" />
+      lower="-3.106"
+      upper="3.106"
+      effort="60"
+      velocity="3.14" />
   </joint>
   </xacro:if>
 <xacro:if value="${ base_type =='base_link_III' }">
@@ -111,17 +114,17 @@
     name="base_link">
     <inertial>
       <origin
-        xyz="0.000204933302096124 -8.24661684233942E-05 0.0435919339026087"
+        xyz="0.00020481 -8.2366E-05 0.043092"
         rpy="0 0 0" />
       <mass
-        value="0.604237569846431" />
+        value="1.1" />
       <inertia
-        ixx="0.00082415777403083"
-        ixy="2.9270718368632E-06"
-        ixz="-2.8722520476522E-05"
-        iyy="0.000820579526371655"
-        iyz="2.21535061552891E-06"
-        izz="0.000685679517381249" />
+        ixx="0.00082415"
+        ixy="-2.9296E-06"
+        ixz="2.8721E-05"
+        iyy="0.00082056"
+        iyz="-2.2126E-06"
+        izz="0.00068567" />
     </inertial>
     <visual>
       <origin
@@ -129,7 +132,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/base_link_III.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -143,7 +146,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/base_link_III.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -151,17 +154,17 @@
     name="link1">
     <inertial>
       <origin
-        xyz="-0.030909 -0.0013023 -0.0053121"
+        xyz="-0.0129 0.0001 -0.0298"
         rpy="0 0 0" />
       <mass
-        value="1.7668" />
+        value="1.5979" />
       <inertia
-        ixx="0.0014534"
-        ixy="-0.00017578"
-        ixz="0.0002802"
-        iyy="0.0043772"
-        iyz="1.7209E-05"
-        izz="0.0040911" />
+        ixx="0.0017312851"
+        ixy="-0.0000201865"
+        ixz="0.0006018106"
+        iyy="0.0031817492"
+        iyz="0.0000016777"
+        izz="0.0025668855" />
     </inertial>
     <visual>
       <origin
@@ -169,7 +172,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link1_III.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link1.STL" />
       </geometry>
       <material
         name="">
@@ -183,7 +186,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link1_III.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link1.STL" />
       </geometry>
     </collision>
   </link>
@@ -200,27 +203,27 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.107"
-      upper="3.107"
-      effort="100"
-      velocity="1" />
+      lower="-3.106"
+      upper="3.106"
+      effort="60"
+      velocity="3.14" />
   </joint>
   </xacro:if>
   <link
     name="link2">
     <inertial>
       <origin
-        xyz="0.16852 9.8217E-07 -0.077258"
+        xyz="${'0.1098 0.0001 -0.0672' if base_type == 'base_link_III' else '0.1667 -0.000002 -0.09259'}"
         rpy="0 0 0" />
       <mass
-        value="4.3415" />
+        value="${'2.9903' if base_type == 'base_link_III' else '2.006'}" />
       <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
+        ixx="${'0.0032215462' if base_type == 'base_link_III' else '0.001465511'}"
+        ixy="${'0.0000006897' if base_type == 'base_link_III' else '-0.000001176'}"
+        ixz="${'0.0040170668' if base_type == 'base_link_III' else '-0.000161533'}"
+        iyy="${'0.0532159255' if base_type == 'base_link_III' else '0.030618537'}"
+        iyz="${'0.0000012973' if base_type == 'base_link_III' else '0.00000004'}"
+        izz="${'0.0524195464' if base_type == 'base_link_III' else '0.030971934'}" />
     </inertial>
     <visual>
       <origin
@@ -228,7 +231,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link2.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link2.STL" />
       </geometry>
       <material
         name="">
@@ -242,7 +245,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link2.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link2.STL" />
       </geometry>
     </collision>
   </link>
@@ -251,7 +254,7 @@
     type="revolute">
     <origin
       xyz="-0.086 0 0"
-      rpy="-1.5708 -1.5708 0" />
+      rpy="${'1.5708 -1.5708 3.1416' if base_type == 'base_link_III' else '1.5708 -1.5708 3.14'}" />
     <parent
       link="link1" />
     <child
@@ -259,26 +262,26 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.107"
-      upper="3.107"
-      effort="100"
-      velocity="1" />
+      lower="-3.106"
+      upper="3.106"
+      effort="60"
+      velocity="3.14" />
   </joint>
   <link
     name="link3">
     <inertial>
       <origin
-        xyz="0.034488 -0.010948 -0.0056239"
+        xyz="${'0.0144 -0.0056 -0.0294' if base_type == 'base_link_III' else '0.033399 -0.029498 -0.017697'}"
         rpy="0 0 0" />
       <mass
-        value="1.7286" />
+        value="${'1.357' if base_type == 'base_link_III' else '1.961'}" />
       <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
+        ixx="${'0.0019004631' if base_type == 'base_link_III' else '0.004112772'}"
+        ixy="${'0.0003993072' if base_type == 'base_link_III' else '0.001938241'}"
+        ixz="${'-0.0005755251' if base_type == 'base_link_III' else '-0.001141244'}"
+        iyy="${'0.0026290758' if base_type == 'base_link_III' else '0.0042931'}"
+        iyz="${'0.0002275281' if base_type == 'base_link_III' else '0.001002886'}"
+        izz="${'0.0021313348' if base_type == 'base_link_III' else '0.005363959'}" />
     </inertial>
     <visual>
       <origin
@@ -286,7 +289,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link3.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link3.STL" />
       </geometry>
       <material
         name="">
@@ -300,7 +303,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link3.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link3.STL" />
       </geometry>
     </collision>
   </link>
@@ -317,26 +320,26 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.107"
-      upper="2.531"
-      effort="100"
-      velocity="1" />
+      lower="-3.106"
+      upper="2.5307"
+      effort="30"
+      velocity="3.14" />
   </joint>
   <link
     name="link4">
     <inertial>
       <origin
-        xyz="4.1778E-07 -0.030483 -0.19739"
+        xyz="${'-0.0001 -0.023 0.2362' if base_type == 'base_link_III' else '0 -0.035177 -0.1844'}"
         rpy="0 0 0" />
       <mass
-        value="2.4734" />
+        value="${'1.8636' if base_type == 'base_link_III' else '1.201'}" />
       <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />i
+        ixx="${'0.0233659749' if base_type == 'base_link_III' else '0.010697086'}"
+        ixy="${'-0.0000002808' if base_type == 'base_link_III' else '-0.000000036'}"
+        ixz="${'-0.000011416' if base_type == 'base_link_III' else '0.000000111'}"
+        iyy="${'0.0219583225' if base_type == 'base_link_III' else '0.009929454'}"
+        iyz="${'0.0054859936' if base_type == 'base_link_III' else '0.002698114'}"
+        izz="${'0.0026979008' if base_type == 'base_link_III' else '0.001388994'}" />i
     </inertial>
     <visual>
       <origin
@@ -344,7 +347,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link4.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link4.STL" />
       </geometry>
       <material
         name="">
@@ -358,7 +361,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link4.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link4.STL" />
       </geometry>
     </collision>
   </link>
@@ -375,26 +378,26 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.107"
-      upper="3.107"
-      effort="100"
-      velocity="1" />
+      lower="-3.106"
+      upper="3.106"
+      effort="30"
+      velocity="3.14" />
   </joint>
   <link
     name="link5">
     <inertial>
       <origin
-        xyz="5.2596E-06 0.025125 -0.0072574"
+        xyz="${'0.0001 0.0326 -0.0152' if base_type == 'base_link_III' else '-0.000031 0.030146 -0.012341'}"
         rpy="0 0 0" />
       <mass
-        value="0.93162" />
+        value="${'1.0227' if base_type == 'base_link_III' else '1.026'}" />
       <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
+        ixx="${'0.0019750111' if base_type == 'base_link_III' else '0.001643891'}"
+        ixy="${'0.0000021684' if base_type == 'base_link_III' else '-0.000003076'}"
+        ixz="${'-0.0000014555' if base_type == 'base_link_III' else '0.000000764'}"
+        iyy="${'0.0007714019' if base_type == 'base_link_III' else '0.000673543'}"
+        iyz="${'-0.0005071366' if base_type == 'base_link_III' else '-0.000383963'}"
+        izz="${'0.0016577729' if base_type == 'base_link_III' else '0.001451996'}" />
     </inertial>
     <visual>
       <origin
@@ -402,7 +405,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link5.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link5.STL" />
       </geometry>
       <material
         name="">
@@ -416,7 +419,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link5.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link5.STL" />
       </geometry>
     </collision>
   </link>
@@ -433,27 +436,27 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.107"
-      upper="3.107"
-      effort="100"
-      velocity="1" />
+      lower="-3.106"
+      upper="3.106"
+      effort="10"
+      velocity="3.14" />
   </joint>
   <xacro:if value="${ link6_type =='Link6' }">
     <link
     name="link6">
     <inertial>
       <origin
-        xyz="-0.00092265 9.4391E-05 -0.012705"
+        xyz="${'-0.0005 0 -0.0101' if base_type == 'base_link_III' else '-0.000481 0.000365 -0.010605'}"
         rpy="0 0 0" />
       <mass
-        value="0.065037" />
+        value="0.107" />
       <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
+        ixx="${'0.0000427569' if base_type == 'base_link_III' else '0.000041460'}"
+        ixy="${'-0.0000000681' if base_type == 'base_link_III' else '-0.000003111'}"
+        ixz="${'-0.0000001774' if base_type == 'base_link_III' else '-0.000000113'}"
+        iyy="${'0.0000353575' if base_type == 'base_link_III' else '0.000038008'}"
+        iyz="${'0.0000000298' if base_type == 'base_link_III' else '0.000000097'}"
+        izz="${'0.0000639583' if base_type == 'base_link_III' else '0.000064288'}" />
     </inertial>
     <visual>
       <origin
@@ -461,7 +464,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link6.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link6.STL" />
       </geometry>
       <material
         name="">
@@ -475,7 +478,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link6.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link6.STL" />
       </geometry>
     </collision>
   </link>
@@ -483,68 +486,8 @@
     name="joint6"
     type="revolute">
     <origin
-      xyz="-0.00010308 0.115 -0.00010734"
+      xyz="${'0 0.1151 0' if base_type == 'base_link_III' else '0 0.115 0'}"
       rpy="1.5708 0 3.1416" />
-    <parent
-      link="link5" />
-    <child
-      link="link6" />
-    <axis
-      xyz="0 0 -1" />
-    <limit
-      lower="-3.14"
-      upper="3.14"
-      effort="100"
-      velocity="1" />
-  </joint>
-    </xacro:if>
-    <xacro:if value="${ link6_type =='Link6_6f' }">
-      <link
-    name="link6">
-    <inertial>
-      <origin
-        xyz="-0.00032091 0.00017748 -0.028468"
-        rpy="0 0 0" />
-      <mass
-        value="0.14814" />
-      <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link6_6f.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="1 1 1 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link6_6f.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="joint6"
-    type="revolute">
-    <origin
-      xyz="0 0.1435 0"
-      rpy="1.5708 0 -3.1416" />
     <parent
       link="link5" />
     <child
@@ -552,28 +495,28 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-6.283"
-      upper="6.283"
-      effort="100"
-      velocity="1" />
+      lower="-6.28"
+      upper="6.28"
+      effort="10"
+      velocity="3.14" />
   </joint>
     </xacro:if>
-    <xacro:if value="${ link6_type =='Link6_6fb' }">
-       <link
+    <xacro:if value="${ link6_type =='Link6_6f' }">
+      <link
     name="link6">
     <inertial>
       <origin
-        xyz="-3.305E-05 -7.0431E-06 -0.023738"
+        xyz="${'-0.0005 0 -0.0101' if base_type == 'base_link_III' else '-0.000481 0.000365 -0.010605'}"
         rpy="0 0 0" />
       <mass
-        value="0.3056" />
+        value="0.248" />
       <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
+        ixx="${'0.0000427569' if base_type == 'base_link_III' else '0.000041460'}"
+        ixy="${'-0.0000000681' if base_type == 'base_link_III' else '-0.000003111'}"
+        ixz="${'-0.0000001774' if base_type == 'base_link_III' else '-0.000000113'}"
+        iyy="${'0.0000353575' if base_type == 'base_link_III' else '0.000038008'}"
+        iyz="${'0.0000000298' if base_type == 'base_link_III' else '0.000000097'}"
+        izz="${'0.0000639583' if base_type == 'base_link_III' else '0.000064288'}" />
     </inertial>
     <visual>
       <origin
@@ -581,7 +524,67 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link6_6fb.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link6_6f.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link6_6f.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint6"
+    type="revolute">
+    <origin
+      xyz="0 0.1436 0"
+      rpy="1.5708 0 3.1416" />
+    <parent
+      link="link5" />
+    <child
+      link="link6" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-6.28"
+      upper="6.28"
+      effort="10"
+      velocity="3.14" />
+  </joint>
+    </xacro:if>
+    <xacro:if value="${ link6_type =='Link6_6fb' }">
+       <link
+    name="link6">
+    <inertial>
+      <origin
+        xyz="${'-0.0005 0 -0.0101' if base_type == 'base_link_III' else '-0.000481 0.000365 -0.010605'}"
+        rpy="0 0 0" />
+      <mass
+        value="0.248" />
+      <inertia
+        ixx="${'0.0000427569' if base_type == 'base_link_III' else '0.000041460'}"
+        ixy="${'-0.0000000681' if base_type == 'base_link_III' else '-0.000003111'}"
+        ixz="${'-0.0000001774' if base_type == 'base_link_III' else '-0.000000113'}"
+        iyy="${'0.0000353575' if base_type == 'base_link_III' else '0.000038008'}"
+        iyz="${'0.0000000298' if base_type == 'base_link_III' else '0.000000097'}"
+        izz="${'0.0000639583' if base_type == 'base_link_III' else '0.000064288'}" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link6_6fb.STL" />
       </geometry>
       <material
         name="">
@@ -595,7 +598,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file://$(find rm_description)/meshes/rm_63_arm/link6_6fb.STL" />
+          filename="file://$(find rm_description)/meshes/${mesh_dir}/link6_6fb.STL" />
       </geometry>
     </collision>
   </link>
@@ -603,19 +606,19 @@
     name="joint6"
     type="revolute">
     <origin
-      xyz="0 0.1322 0"
+      xyz="0 0.1323 0"
       rpy="1.5708 0 3.1416" />
     <parent
       link="link5" />
     <child
       link="link6" />
     <axis
-      xyz="0 0 -1" />
+      xyz="0 0 1" />
     <limit
-      lower="-3.14"
-      upper="3.14"
-      effort="100"
-      velocity="1" />
+      lower="-6.28"
+      upper="6.28"
+      effort="10"
+      velocity="3.14" />
   </joint>
 
     </xacro:if>
