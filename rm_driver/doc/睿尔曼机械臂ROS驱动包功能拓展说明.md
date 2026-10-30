@@ -1,6 +1,6 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS%E9%A9%B1%E5%8A%A8%E5%8C%85%E5%8A%9F%E8%83%BD%E6%8B%93%E5%B1%95%E8%AF%B4%E6%98%8E.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/doc/Description%20of%20Function%20Expansion%20for%20Realman%20Robotic%20Arm%20ROS%20Driver%20Package.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/jazzy/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS%E9%A9%B1%E5%8A%A8%E5%8C%85%E5%8A%9F%E8%83%BD%E6%8B%93%E5%B1%95%E8%AF%B4%E6%98%8E.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/jazzy/rm_driver/doc/Description%20of%20Function%20Expansion%20for%20Realman%20Robotic%20Arm%20ROS%20Driver%20Package.md)
 
 </div>
 
@@ -32,7 +32,7 @@
 ## 主要环境概览
 
 * 系统  
-ROS2目前有两个版本，Foxy和Humble，Foxy需要运行在Ubuntu20.04系统上，Humble需要运行在Ubuntu22.04的系统上。
+本项目目前支持ROS 2 Foxy、Humble和Jazzy，分别运行于Ubuntu 20.04、Ubuntu 22.04和Ubuntu 24.04。
 * 参考文档  
 ROS2当前是强依赖于API进行设计的，在进行开发时我们需要参考API文档。  
 三代控制器的API文档[链接](https://develop.realman-robotics.com/robot/apic/getStarted/)；  

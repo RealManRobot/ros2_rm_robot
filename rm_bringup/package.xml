@@ -5,9 +5,31 @@
   <version>1.7.0</version>
   <description>TODO: Package description</description>
   <maintainer email="rm@todo.todo">rm</maintainer>
-  <license>TODO: License declaration</license>
+  <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>rm_ros_interfaces</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>moveit_configs_utils</exec_depend>
+  <exec_depend>moveit_ros_move_group</exec_depend>
+  <exec_depend>rm_control</exec_depend>
+  <exec_depend>rm_description</exec_depend>
+  <exec_depend>rm_driver</exec_depend>
+  <exec_depend>rm_gazebo</exec_depend>
+  <exec_depend>rm_63_config</exec_depend>
+  <exec_depend>rm_65_config</exec_depend>
+  <exec_depend>rm_75_config</exec_depend>
+  <exec_depend>rm_eco62_config</exec_depend>
+  <exec_depend>rm_eco63_config</exec_depend>
+  <exec_depend>rm_eco65_config</exec_depend>
+  <exec_depend>rm_gen72_config</exec_depend>
+  <exec_depend>rm_rx75_config</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

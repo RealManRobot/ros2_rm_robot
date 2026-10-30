@@ -15,12 +15,179 @@
 
 #include "rm_driver.h"
 
+
 using namespace std::chrono_literals;
 
-static void my_handler(int sig)  // can be called asynchronously
-{ 
+namespace
+{
+volatile sig_atomic_t hangup_requested = 0;
+std::mutex arm_lifecycle_mutex;
+bool rm_api_initialized = false;
+int arm_ownership_fd = -1;
+char arm_ownership_endpoint[INET_ADDRSTRLEN + 7] {};
+
+void hangup_handler(int sig)
+{
     (void)sig;
-    ctrl_flag = true; // set flag
+    hangup_requested = 1;
+}
+
+bool install_hangup_handler()
+{
+    struct sigaction action {};
+    action.sa_handler = hangup_handler;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    return sigaction(SIGHUP, &action, nullptr) == 0;
+}
+
+void monitor_hangup()
+{
+    while(rclcpp::ok())
+    {
+        if(hangup_requested != 0)
+        {
+            rclcpp::shutdown();
+            return;
+        }
+        std::this_thread::sleep_for(50ms);
+    }
+}
+
+std::string normalize_ipv4_address(const std::string & address)
+{
+    struct in_addr binary_address {};
+    if(inet_pton(AF_INET, address.c_str(), &binary_address) != 1)
+    {
+        throw std::invalid_argument("Invalid arm_ip IPv4 address: " + address);
+    }
+
+    char normalized[INET_ADDRSTRLEN] {};
+    if(inet_ntop(AF_INET, &binary_address, normalized, sizeof(normalized)) == nullptr)
+    {
+        throw std::runtime_error(
+            "Failed to normalize arm_ip " + address + ": " + strerror(errno));
+    }
+    return normalized;
+}
+
+bool ensure_private_directory(const std::string & path)
+{
+    if(mkdir(path.c_str(), 0700) != 0 && errno != EEXIST)
+    {
+        return false;
+    }
+
+    struct stat directory_stat {};
+    if(lstat(path.c_str(), &directory_stat) != 0)
+    {
+        return false;
+    }
+    return S_ISDIR(directory_stat.st_mode) &&
+           directory_stat.st_uid == getuid() &&
+           (directory_stat.st_mode & 0077) == 0;
+}
+
+std::string arm_lock_directory()
+{
+    const char * runtime_dir = std::getenv("XDG_RUNTIME_DIR");
+    if(runtime_dir != nullptr && runtime_dir[0] == '/')
+    {
+        const std::string candidate = std::string(runtime_dir) + "/rm_driver";
+        if(ensure_private_directory(candidate))
+        {
+            return candidate;
+        }
+    }
+
+    const std::string fallback = "/tmp/rm_driver-" + std::to_string(getuid());
+    if(!ensure_private_directory(fallback))
+    {
+        throw std::runtime_error(
+            "Unable to create a private rm_driver lock directory at " + fallback);
+    }
+    return fallback;
+}
+
+void Acquire_Arm_Ownership(const std::string & ip, int port)
+{
+    if(port <= 0 || port > 65535)
+    {
+        throw std::invalid_argument("Invalid tcp_port: " + std::to_string(port));
+    }
+
+    const std::string endpoint = ip + ":" + std::to_string(port);
+    if(arm_ownership_fd >= 0)
+    {
+        if(endpoint == arm_ownership_endpoint)
+        {
+            return;
+        }
+        throw std::logic_error(
+            "rm_driver already owns endpoint " + std::string(arm_ownership_endpoint));
+    }
+
+    const std::string lock_path =
+        arm_lock_directory() + "/arm-" + ip + "-" + std::to_string(port) + ".lock";
+    const int lock_fd = open(
+        lock_path.c_str(), O_RDWR | O_CREAT | O_CLOEXEC | O_NOFOLLOW, 0600);
+    if(lock_fd < 0)
+    {
+        throw std::runtime_error(
+            "Unable to open ownership lock for " + endpoint + ": " + strerror(errno));
+    }
+
+    if(flock(lock_fd, LOCK_EX | LOCK_NB) != 0)
+    {
+        const int lock_error = errno;
+        close(lock_fd);
+        if(lock_error == EWOULDBLOCK || lock_error == EAGAIN)
+        {
+            throw std::runtime_error(
+                "Robot endpoint " + endpoint +
+                " is already owned by another rm_driver process");
+        }
+        throw std::runtime_error(
+            "Unable to lock robot endpoint " + endpoint + ": " + strerror(lock_error));
+    }
+
+    const std::string owner =
+        "pid=" + std::to_string(getpid()) + " endpoint=" + endpoint + "\n";
+    if(ftruncate(lock_fd, 0) == 0)
+    {
+        const ssize_t ignored = write(lock_fd, owner.data(), owner.size());
+        (void)ignored;
+    }
+    arm_ownership_fd = lock_fd;
+    std::snprintf(
+        arm_ownership_endpoint, sizeof(arm_ownership_endpoint), "%s", endpoint.c_str());
+}
+
+void Release_Arm_Ownership()
+{
+    if(arm_ownership_fd >= 0)
+    {
+        flock(arm_ownership_fd, LOCK_UN);
+        close(arm_ownership_fd);
+        arm_ownership_fd = -1;
+        arm_ownership_endpoint[0] = '\0';
+    }
+}
+
+void Arm_Destroy()
+{
+    std::lock_guard<std::mutex> lock(arm_lifecycle_mutex);
+    if(robot_handle != nullptr)
+    {
+        Rm_Api.rm_delete_robot_arm(robot_handle);
+        robot_handle = nullptr;
+    }
+    if(rm_api_initialized)
+    {
+        Rm_Api.rm_destroy();
+        rm_api_initialized = false;
+    }
+}
 }
 
 //连接机械臂网络   
@@ -108,19 +275,35 @@ int Arm_Socket_Start_Connect(void)
 
 int Arm_Start(void)
 {
+    std::lock_guard<std::mutex> lock(arm_lifecycle_mutex);
     std::string version;
-    Rm_Api.rm_init(RM_TRIPLE_MODE_E);
+    if(!rm_api_initialized)
+    {
+        int init_result = Rm_Api.rm_init(RM_TRIPLE_MODE_E);
+        if(init_result != 0)
+        {
+            return init_result;
+        }
+        rm_api_initialized = true;
+    }
 
     version = Rm_Api.rm_api_version();
     // std::cout << version.c_str() << std::endl;
     // Rm_Api.rm_set_log_call_back(NULL ,0);
     // Rm_Api.rm_set_log_save("/home/yangfan/Plog.txt");
-    robot_handle = Rm_Api.rm_create_robot_arm((char*)tcp_ip, tcp_port);
-    if(robot_handle->id < 0)
+    rm_robot_handle *new_handle = Rm_Api.rm_create_robot_arm((char*)tcp_ip, tcp_port);
+    if(new_handle == nullptr)
     {
-        rm_delete_robot_arm(robot_handle);
-        std::cout<<"arm connect err..."<< robot_handle << std::endl;
+        return -1;
     }
+    if(new_handle->id < 0)
+    {
+        int create_result = new_handle->id;
+        Rm_Api.rm_delete_robot_arm(new_handle);
+        std::cout<<"arm connect err..."<< new_handle << std::endl;
+        return create_result;
+    }
+    robot_handle = new_handle;
     // else if(robot_handle != NULL)
     // {
     //     std::cout<<"connect success, arm id :"<<robot_handle->id<<std::endl;
@@ -130,7 +313,12 @@ int Arm_Start(void)
 
 void Arm_Close(void)
 {
-    Rm_Api.rm_delete_robot_arm(robot_handle);
+    std::lock_guard<std::mutex> lock(arm_lifecycle_mutex);
+    if(robot_handle != nullptr)
+    {
+        Rm_Api.rm_delete_robot_arm(robot_handle);
+        robot_handle = nullptr;
+    }
 }
 
 void RmArm::Arm_MoveJ_Callback(rm_ros_interfaces::msg::Movej::SharedPtr msg)
@@ -1363,16 +1551,17 @@ void RmArm::Set_Controller_RS485_Mode_Callback(const rm_ros_interfaces::msg::RS4
 {
     int32_t res;
     // copy = msg;
-    int tool_rs485_mode,baudrate;
+    int tool_rs485_mode,baudrate,timeout;
     std_msgs::msg::Bool controller_RS485_mode_set_result;
     tool_rs485_mode = msg->mode;
     baudrate = msg->baudrate;
     // RCLCPP_INFO (this->get_logger(),"mode is %d baudrate is %d\n",tool_rs485_mode,baudrate);
+    timeout = msg->timeout > 0 ? msg->timeout : TIME_OUT;
     if(controller_type == 4)
     res = Rm_Api.rm_set_controller_rs485_mode(robot_handle, tool_rs485_mode, baudrate);
     else
     {
-        res = Rm_Api.rm_set_modbus_mode(robot_handle, tool_rs485_mode, baudrate, TIME_OUT);
+        res = Rm_Api.rm_set_modbus_mode(robot_handle, tool_rs485_mode, baudrate, timeout);
     }
     if(res == 0)
     {
@@ -1398,7 +1587,8 @@ void RmArm::Set_Controller_Tcp_Mode_Callback(const rm_ros_interfaces::msg::Modbu
         ip_str = msg->ip;
         const char *ip = ip_str.c_str();
         port = msg->port;
-        res = Rm_Api.rm_set_modbustcp_mode(robot_handle, ip, port, 2000);
+        const int timeout = msg->timeout > 0 ? msg->timeout : 2000;
+        res = Rm_Api.rm_set_modbustcp_mode(robot_handle, ip, port, timeout);
         if(res == 0)
         {
             controller_Tcp_mode_set_result.data = true;
@@ -1479,17 +1669,22 @@ void RmArm::Close_Controller_Tcp_Modbus_Callback(const std_msgs::msg::Empty::Sha
 void RmArm::Get_Controller_RS485_Mode_v4_Callback(const std_msgs::msg::Empty::SharedPtr msg)
 {
     int32_t res;
-    int tool_rs485_mode, baudrate;
+    int tool_rs485_mode = 0, baudrate = 0;
+    int timeout = 0;
     rm_ros_interfaces::msg::RS485params controller_rs485_mode_get_result;
     copy = msg;
     
-    res = Rm_Api.rm_get_controller_rs485_mode_v4(robot_handle, &tool_rs485_mode, &baudrate);
+    if(controller_type == 4)
+        res = Rm_Api.rm_get_controller_rs485_mode_v4(robot_handle, &tool_rs485_mode, &baudrate);
+    else
+        res = Rm_Api.rm_get_controller_RS485_mode(robot_handle, &tool_rs485_mode, &baudrate, &timeout);
     
     if(res == 0)
     {
         controller_rs485_mode_get_result.mode = tool_rs485_mode;
         controller_rs485_mode_get_result.baudrate = baudrate;
         controller_rs485_mode_get_result.state = true;
+        controller_rs485_mode_get_result.timeout = timeout;
         this->Get_Controller_RS485_Mode_v4_Result->publish(controller_rs485_mode_get_result);
     }
     else
@@ -1528,14 +1723,19 @@ void RmArm::Get_Tool_RS485_Mode_v4_Callback(const std_msgs::msg::Empty::SharedPt
     int tool_rs485_mode = 0;
     int baudrate = 0;
     rm_ros_interfaces::msg::RS485params tool_rs485_mode_get_result;
+    int timeout = 0;
     copy = msg;
-    res = Rm_Api.rm_get_tool_rs485_mode_v4(robot_handle, &tool_rs485_mode, &baudrate);
+    if(controller_type == 4)
+        res = Rm_Api.rm_get_tool_rs485_mode_v4(robot_handle, &tool_rs485_mode, &baudrate);
+    else
+        res = Rm_Api.rm_get_tool_RS485_mode(robot_handle, &tool_rs485_mode, &baudrate, &timeout);
     
     if(res == 0)
     {
         tool_rs485_mode_get_result.mode = tool_rs485_mode;
         tool_rs485_mode_get_result.baudrate = baudrate;
         tool_rs485_mode_get_result.state = true;
+        tool_rs485_mode_get_result.timeout = timeout;
         this->Get_Tool_RS485_Mode_v4_Result->publish(tool_rs485_mode_get_result);
     }
     else
@@ -3692,65 +3892,12 @@ void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data)
     
     if(rm_plus_base_g == true)
     {
-        for(int i = 0; i < 10; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_base_info.manu[i] = data.plus_base_info.manu[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.hv[i] = data.plus_base_info.hv[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.sv[i] = data.plus_base_info.sv[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.bv[i] = data.plus_base_info.bv[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_up[i] = data.plus_base_info.pos_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_low[i] = data.plus_base_info.pos_low[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_up[i] = data.plus_base_info.speed_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_low[i] = data.plus_base_info.speed_low[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.force_up[i] = data.plus_base_info.force_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.force_low[i] = data.plus_base_info.force_low[i];
-        }
-        for(int i = 0; i < 2; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_up[10+i] = data.plus_base_info.pos_up[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_low[10+i] = data.plus_base_info.pos_low[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_up[10+i] = data.plus_base_info.speed_up[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_low[10+i] = data.plus_base_info.speed_low[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.force_up[10+i] = data.plus_base_info.force_up[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.force_low[10+i] = data.plus_base_info.force_low[10+i];
-        }
-        Udp_RM_Joint.udp_rm_plus_base_info.id = data.plus_base_info.id;
-        Udp_RM_Joint.udp_rm_plus_base_info.dof = data.plus_base_info.dof;
-        Udp_RM_Joint.udp_rm_plus_base_info.check = data.plus_base_info.check;
-        Udp_RM_Joint.udp_rm_plus_base_info.bee = data.plus_base_info.bee;
-        Udp_RM_Joint.udp_rm_plus_base_info.force = data.plus_base_info.force;
-        Udp_RM_Joint.udp_rm_plus_base_info.touch = data.plus_base_info.touch;
-        Udp_RM_Joint.udp_rm_plus_base_info.touch_num = data.plus_base_info.touch_num;
-        Udp_RM_Joint.udp_rm_plus_base_info.touch_sw = data.plus_base_info.touch_sw;
-        Udp_RM_Joint.udp_rm_plus_base_info.hand = data.plus_base_info.hand;
+        Udp_RM_Joint.udp_rm_plus_base_info = data.plus_base_info;
     }
 
     if(rm_plus_state_g == true)
     {
-        Udp_RM_Joint.udp_rm_plus_state_info.sys_state = data.plus_state_info.sys_state;
-        for(int i = 0; i < 12; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_state_info.dof_state[i] = data.plus_state_info.dof_state[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.dof_err[i] = data.plus_state_info.dof_err[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.pos[i] = data.plus_state_info.pos[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.speed[i] = data.plus_state_info.speed[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.angle[i] = data.plus_state_info.angle[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.current[i] = data.plus_state_info.current[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.normal_force[i] = data.plus_state_info.normal_force[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tangential_force[i] = data.plus_state_info.tangential_force[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tangential_force_dir[i] = data.plus_state_info.tangential_force_dir[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tsa[i] = data.plus_state_info.tsa[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tma[i] = data.plus_state_info.tma[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.touch_data[i] = data.plus_state_info.touch_data[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.force[i] = data.plus_state_info.force[i];
-        }
-        for(int i = 12; i < 18; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_state_info.normal_force[i] = data.plus_state_info.normal_force[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tangential_force[i] = data.plus_state_info.tangential_force[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tangential_force_dir[i] = data.plus_state_info.tangential_force_dir[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.touch_data[i] = data.plus_state_info.touch_data[i];
-        }
+        Udp_RM_Joint.udp_rm_plus_state_info = data.plus_state_info;
     }
     if(udp_lift_state_g == true)
     {
@@ -3884,66 +4031,52 @@ void UdpPublisherNode::udp_timer_callback()
         }
         if(rm_plus_base_g == true)
         {
-            for(int i = 0;i<10;i++)
-            {
-                udp_rm_plus_base_.pos_up[i] = Udp_RM_Joint.udp_rm_plus_base_info.pos_up[i];
-                udp_rm_plus_base_.pos_low[i] = Udp_RM_Joint.udp_rm_plus_base_info.pos_low[i];
-                udp_rm_plus_base_.speed_up[i] = Udp_RM_Joint.udp_rm_plus_base_info.speed_up[i];
-                udp_rm_plus_base_.speed_low[i] = Udp_RM_Joint.udp_rm_plus_base_info.speed_low[i];
-                udp_rm_plus_base_.force_up[i] = Udp_RM_Joint.udp_rm_plus_base_info.force_up[i];
-                udp_rm_plus_base_.force_low[i] = Udp_RM_Joint.udp_rm_plus_base_info.force_low[i];
-            }
-            for(int i = 0; i < 2; i++)
-            {
-                udp_rm_plus_base_.pos_up[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.pos_up[10+i];
-                udp_rm_plus_base_.pos_low[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.pos_low[10+i];
-                udp_rm_plus_base_.speed_up[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.speed_up[10+i];
-                udp_rm_plus_base_.speed_low[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.speed_low[10+i];
-                udp_rm_plus_base_.force_up[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.force_up[10+i];
-                udp_rm_plus_base_.force_low[10+i] = Udp_RM_Joint.udp_rm_plus_base_info.force_low[10+i];
-            }
-            udp_rm_plus_base_.manu = Udp_RM_Joint.udp_rm_plus_base_info.manu;
-            udp_rm_plus_base_.hv = Udp_RM_Joint.udp_rm_plus_base_info.hv;
-            udp_rm_plus_base_.sv = Udp_RM_Joint.udp_rm_plus_base_info.sv;
-            udp_rm_plus_base_.bv = Udp_RM_Joint.udp_rm_plus_base_info.bv;
-
-            udp_rm_plus_base_.id = Udp_RM_Joint.udp_rm_plus_base_info.id;
-            udp_rm_plus_base_.dof = Udp_RM_Joint.udp_rm_plus_base_info.dof;
-            udp_rm_plus_base_.check = Udp_RM_Joint.udp_rm_plus_base_info.check;
-            udp_rm_plus_base_.bee = Udp_RM_Joint.udp_rm_plus_base_info.bee;
-            udp_rm_plus_base_.force = Udp_RM_Joint.udp_rm_plus_base_info.force;
-            udp_rm_plus_base_.touch = Udp_RM_Joint.udp_rm_plus_base_info.touch;
-            udp_rm_plus_base_.touch_num = Udp_RM_Joint.udp_rm_plus_base_info.touch_num;
-            udp_rm_plus_base_.touch_sw = Udp_RM_Joint.udp_rm_plus_base_info.touch_sw;
-            udp_rm_plus_base_.hand = Udp_RM_Joint.udp_rm_plus_base_info.hand;
+            const auto & info = Udp_RM_Joint.udp_rm_plus_base_info;
+            copy_sdk_array(info.pos_up, udp_rm_plus_base_.pos_up);
+            copy_sdk_array(info.pos_low, udp_rm_plus_base_.pos_low);
+            copy_sdk_array(info.angle_up, udp_rm_plus_base_.angle_up);
+            copy_sdk_array(info.angle_low, udp_rm_plus_base_.angle_low);
+            copy_sdk_array(info.speed_up, udp_rm_plus_base_.speed_up);
+            copy_sdk_array(info.speed_low, udp_rm_plus_base_.speed_low);
+            copy_sdk_array(info.force_up, udp_rm_plus_base_.force_up);
+            copy_sdk_array(info.force_low, udp_rm_plus_base_.force_low);
+            udp_rm_plus_base_.manu.assign(
+                info.manu, std::find(std::begin(info.manu), std::end(info.manu), '\0'));
+            udp_rm_plus_base_.hv.assign(
+                info.hv, std::find(std::begin(info.hv), std::end(info.hv), '\0'));
+            udp_rm_plus_base_.sv.assign(
+                info.sv, std::find(std::begin(info.sv), std::end(info.sv), '\0'));
+            udp_rm_plus_base_.bv.assign(
+                info.bv, std::find(std::begin(info.bv), std::end(info.bv), '\0'));
+            udp_rm_plus_base_.type = info.type;
+            udp_rm_plus_base_.id = info.id;
+            udp_rm_plus_base_.dof = info.dof;
+            udp_rm_plus_base_.check = info.check;
+            udp_rm_plus_base_.bee = info.bee;
+            udp_rm_plus_base_.force = info.force;
+            udp_rm_plus_base_.touch = info.touch;
+            udp_rm_plus_base_.touch_num = info.touch_num;
+            udp_rm_plus_base_.touch_sw = info.touch_sw;
+            udp_rm_plus_base_.hand = info.hand;
             this->Rm_Plus_Base_Result->publish(udp_rm_plus_base_);
         }
         if(rm_plus_state_g == true)
         {
-            udp_rm_plus_state_.sys_state = Udp_RM_Joint.udp_rm_plus_state_info.sys_state;
-            for(int i = 0; i < 12; i++)
-            {
-                udp_rm_plus_state_.dof_state[i] = Udp_RM_Joint.udp_rm_plus_state_info.dof_state[i];
-                udp_rm_plus_state_.dof_err[i] = Udp_RM_Joint.udp_rm_plus_state_info.dof_err[i];
-                udp_rm_plus_state_.pos[i] = Udp_RM_Joint.udp_rm_plus_state_info.pos[i];
-                udp_rm_plus_state_.speed[i] = Udp_RM_Joint.udp_rm_plus_state_info.speed[i];
-                udp_rm_plus_state_.angle[i] = Udp_RM_Joint.udp_rm_plus_state_info.angle[i];
-                udp_rm_plus_state_.current[i] = Udp_RM_Joint.udp_rm_plus_state_info.current[i];
-                udp_rm_plus_state_.normal_force[i] = Udp_RM_Joint.udp_rm_plus_state_info.normal_force[i];
-                udp_rm_plus_state_.tangential_force[i] = Udp_RM_Joint.udp_rm_plus_state_info.tangential_force[i];
-                udp_rm_plus_state_.tangential_force_dir[i] = Udp_RM_Joint.udp_rm_plus_state_info.tangential_force_dir[i];
-                udp_rm_plus_state_.tsa[i] = Udp_RM_Joint.udp_rm_plus_state_info.tsa[i];
-                udp_rm_plus_state_.tma[i] = Udp_RM_Joint.udp_rm_plus_state_info.tma[i];
-                udp_rm_plus_state_.touch_data[i] = Udp_RM_Joint.udp_rm_plus_state_info.touch_data[i];
-                udp_rm_plus_state_.force[i] = Udp_RM_Joint.udp_rm_plus_state_info.force[i];
-            }
-            for(int i = 12; i < 18; i++)
-            {
-                udp_rm_plus_state_.normal_force[i] = Udp_RM_Joint.udp_rm_plus_state_info.normal_force[i];
-                udp_rm_plus_state_.tangential_force[i] = Udp_RM_Joint.udp_rm_plus_state_info.tangential_force[i];
-                udp_rm_plus_state_.tangential_force_dir[i] = Udp_RM_Joint.udp_rm_plus_state_info.tangential_force_dir[i];
-                udp_rm_plus_state_.touch_data[i] = Udp_RM_Joint.udp_rm_plus_state_info.touch_data[i];
-            }
+            const auto & info = Udp_RM_Joint.udp_rm_plus_state_info;
+            udp_rm_plus_state_.sys_state = info.sys_state;
+            copy_sdk_array(info.dof_state, udp_rm_plus_state_.dof_state);
+            copy_sdk_array(info.dof_err, udp_rm_plus_state_.dof_err);
+            copy_sdk_array(info.pos, udp_rm_plus_state_.pos);
+            copy_sdk_array(info.speed, udp_rm_plus_state_.speed);
+            copy_sdk_array(info.angle, udp_rm_plus_state_.angle);
+            copy_sdk_array(info.current, udp_rm_plus_state_.current);
+            copy_sdk_array(info.normal_force, udp_rm_plus_state_.normal_force);
+            copy_sdk_array(info.tangential_force, udp_rm_plus_state_.tangential_force);
+            copy_sdk_array(info.tangential_force_dir, udp_rm_plus_state_.tangential_force_dir);
+            copy_sdk_array(info.tsa, udp_rm_plus_state_.tsa);
+            copy_sdk_array(info.tma, udp_rm_plus_state_.tma);
+            copy_sdk_array(info.touch_data, udp_rm_plus_state_.touch_data);
+            copy_sdk_array(info.force, udp_rm_plus_state_.force);
             this->Rm_Plus_State_Result->publish(udp_rm_plus_state_);
         }
         if(Udp_RM_Joint.control_version == 2)
@@ -3992,25 +4125,20 @@ void UdpPublisherNode::udp_timer_callback()
             udp_onezeroforce_.force_fz = Udp_RM_Joint.one_zero_force;
             this->One_Zero_Force_Result->publish(udp_onezeroforce_);
         }
-        if(ctrl_flag == true )
-        {
-            rclcpp::shutdown();
-        }
     }
     else
     {
         if(come_time == 0)
         {Arm_Close();}
         come_time++;
-        while(Arm_Socket_Start_Connect())
+        while(rclcpp::ok() && Arm_Socket_Start_Connect())
         {
-            if(ctrl_flag == true )
-            {
-                rclcpp::shutdown();
-                exit(0);
-            }
             RCLCPP_INFO (this->get_logger(),"Wait for connect ");
             sleep(1);
+        }
+        if(!rclcpp::ok())
+        {
+            return;
         }
         come_time = 0;
         connect_state = 0;
@@ -4043,10 +4171,7 @@ void UdpPublisherNode::heart_timer_callback()
     }
     else
     {
-        if(robot_handle != NULL)
-        {
-            Rm_Api.rm_delete_robot_arm(robot_handle);
-        }
+        Arm_Close();
     }
 }
 
@@ -4119,7 +4244,7 @@ UdpPublisherNode::UdpPublisherNode():
 
 RmArm::~RmArm()
 { 
-    Arm_Close();
+    Arm_Destroy();
 }
 
 RmArm::RmArm():
@@ -4221,9 +4346,11 @@ RmArm::RmArm():
     {
         realman_arm = 75;
     }
-    tcp_ip = (char*)arm_ip_.c_str();
-    
+    arm_ip_ = normalize_ipv4_address(arm_ip_);
     tcp_port = tcp_port_;
+    tcp_ip = const_cast<char *>(arm_ip_.c_str());
+    Acquire_Arm_Ownership(arm_ip_, tcp_port);
+
     udp_hand_g = udp_hand_;
     rm_plus_base_g = udp_rm_plus_base_;
     rm_plus_state_g = udp_rm_plus_state_;
@@ -4232,17 +4359,20 @@ RmArm::RmArm():
     udp_joint_speed_state_g = udp_joint_speed_state_;
     udp_arm_current_status_state_g = udp_arm_current_status_state_;
     // RCLCPP_INFO (this->get_logger(),"arm_ip is %s", arm_ip_.c_str());
-    while(Arm_Socket_Start_Connect())
+    while(rclcpp::ok() && Arm_Socket_Start_Connect())
     {
-        if(ctrl_flag == true )
-        {
-            rclcpp::shutdown();
-            exit(0);
-        }
         RCLCPP_INFO (this->get_logger(),"Waiting for connect");
         sleep(1);
     }
+    if(!rclcpp::ok())
+    {
+        throw std::runtime_error("Shutdown requested while waiting for the robot connection");
+    }
     usleep(2000000);
+    if(!rclcpp::ok())
+    {
+        throw std::runtime_error("Shutdown requested during driver startup");
+    }
     RCLCPP_INFO (this->get_logger(),"%s_driver is running ",arm_type_.c_str());
     /************************************************初始化变量********************************************/
     udp_real_joint_.name.resize(arm_dof_);
@@ -4452,6 +4582,16 @@ RmArm::RmArm():
     Set_Controller_RS485_Mode_Cmd = this->create_subscription<rm_ros_interfaces::msg::RS485params>("rm_driver/set_controller_rs485_mode_cmd",rclcpp::ParametersQoS(),
         std::bind(&RmArm::Set_Controller_RS485_Mode_Callback,this,std::placeholders::_1),
         sub_opt5);
+    /***********************************************************************查询控制器RS485模式(三四代共用)***********************************************************************/
+    Get_Controller_RS485_Mode_v4_Result = this->create_publisher<rm_ros_interfaces::msg::RS485params>("rm_driver/get_controller_rs485_mode_result", rclcpp::ParametersQoS());
+    Get_Controller_RS485_Mode_v4_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_controller_rs485_mode_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Get_Controller_RS485_Mode_v4_Callback,this,std::placeholders::_1),
+        sub_opt5);
+    /***********************************************************************查询工具端RS485模式(三四代共用)***********************************************************************/
+    Get_Tool_RS485_Mode_v4_Result = this->create_publisher<rm_ros_interfaces::msg::RS485params>("rm_driver/get_tool_rs485_mode_v4_result", rclcpp::ParametersQoS());
+    Get_Tool_RS485_Mode_v4_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_tool_rs485_mode_cmd",rclcpp::ParametersQoS(),
+        std::bind(&RmArm::Get_Tool_RS485_Mode_v4_Callback,this,std::placeholders::_1),
+        sub_opt2);
     // Add_Modbus_Tcp_Master_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/add_modbus_tcp_master_result", rclcpp::ParametersQoS());
     // Add_Modbus_Tcp_Master_Cmd = this->create_subscription<rm_ros_interfaces::msg::Modbustcpmasterinfo>("rm_driver/add_modbus_tcp_master_cmd",rclcpp::ParametersQoS(),
     //     std::bind(&RmArm::Add_Modbus_Tcp_Master_Callback,this,std::placeholders::_1),
@@ -4489,21 +4629,11 @@ RmArm::RmArm():
             std::bind(&RmArm::Get_Modbus_Tcp_Master_List_Callback,this,std::placeholders::_1),
             sub_opt5);
         
-        /***********************************************************************查询控制器RS485模式(四代控制器支持)***********************************************************************/
-        Get_Controller_RS485_Mode_v4_Result = this->create_publisher<rm_ros_interfaces::msg::RS485params>("rm_driver/get_controller_rs485_mode_result", rclcpp::ParametersQoS());
-        Get_Controller_RS485_Mode_v4_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_controller_rs485_mode_cmd",rclcpp::ParametersQoS(),
-            std::bind(&RmArm::Get_Controller_RS485_Mode_v4_Callback,this,std::placeholders::_1),
-            sub_opt5);
         /***********************************************************************设置工具端RS485模式(四代控制器支持)***********************************************************************/
         Set_Tool_RS485_Mode_Result = this->create_publisher<std_msgs::msg::Bool>("rm_driver/set_tool_rs485_mode_result", rclcpp::ParametersQoS());
         Set_Tool_RS485_Mode_Cmd = this->create_subscription<rm_ros_interfaces::msg::RS485params>("rm_driver/set_tool_rs485_mode_cmd",rclcpp::ParametersQoS(),
             std::bind(&RmArm::Set_Tool_RS485_Mode_Callback,this,std::placeholders::_1),
             sub_opt5);
-        /***********************************************************************查询工具端RS485模式(四代控制器支持)***********************************************************************/
-        Get_Tool_RS485_Mode_v4_Result = this->create_publisher<rm_ros_interfaces::msg::RS485params>("rm_driver/get_tool_rs485_mode_v4_result", rclcpp::ParametersQoS());
-        Get_Tool_RS485_Mode_v4_Cmd = this->create_subscription<std_msgs::msg::Empty>("rm_driver/get_tool_rs485_mode_cmd",rclcpp::ParametersQoS(),
-            std::bind(&RmArm::Get_Tool_RS485_Mode_v4_Callback,this,std::placeholders::_1),
-            sub_opt2);
     }
     else{
         // Set_Controller_RS485_Mode_Cmd = this->create_subscription<rm_ros_interfaces::msg::RS485params>("rm_driver/set_controller_rs485_mode_cmd",rclcpp::ParametersQoS(),
@@ -4814,13 +4944,43 @@ RmArm::RmArm():
 
 int main(int argc, char **argv) {
     rclcpp::init(argc, argv);
-    signal(SIGINT, my_handler); 
-    rclcpp::executors::MultiThreadedExecutor executor(rclcpp::ExecutorOptions(),8,true);
-    auto node = std::make_shared<RmArm>();
-    auto udpnode = std::make_shared<UdpPublisherNode>();
-    executor.add_node(node);
-    executor.add_node(udpnode);
-    executor.spin();
-    rclcpp::shutdown();
-    return EXIT_SUCCESS;
+    if(!install_hangup_handler())
+    {
+        std::cerr << "Failed to install SIGHUP handler: " << strerror(errno) << std::endl;
+        rclcpp::shutdown();
+        return EXIT_FAILURE;
+    }
+
+    std::thread hangup_monitor(monitor_hangup);
+    int exit_code = EXIT_SUCCESS;
+    try
+    {
+        rclcpp::executors::MultiThreadedExecutor executor(rclcpp::ExecutorOptions(),8,true);
+        auto node = std::make_shared<RmArm>();
+        auto udpnode = std::make_shared<UdpPublisherNode>();
+        executor.add_node(node);
+        executor.add_node(udpnode);
+        executor.spin();
+    }
+    catch(const std::exception &exception)
+    {
+        if(rclcpp::ok())
+        {
+            std::cerr << "rm_driver stopped with an exception: " << exception.what() << std::endl;
+            exit_code = EXIT_FAILURE;
+            rclcpp::shutdown();
+        }
+    }
+
+    Arm_Destroy();
+    Release_Arm_Ownership();
+    if(rclcpp::ok())
+    {
+        rclcpp::shutdown();
+    }
+    if(hangup_monitor.joinable())
+    {
+        hangup_monitor.join();
+    }
+    return exit_code;
 }

@@ -1,3 +1,6 @@
+from launch.actions import OpaqueFunction
+from rm_description.variant_catalog import MODEL_FORMATS, apply_visual_model
+
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -8,8 +11,10 @@ import yaml
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    GroupAction,
     IncludeLaunchDescription,
 )
+from launch.conditions import IfCondition
 from moveit_configs_utils.launch_utils import (
     add_debuggable_node,
     DeclareBooleanLaunchArg,
@@ -23,7 +28,7 @@ def load_yaml(path):
         return yaml.safe_load(file)
 
 
-def generate_launch_description():
+def _launch_setup(context):
     description_path = os.path.join(
         get_package_share_directory("rm_gazebo"),
         "config",
@@ -34,15 +39,27 @@ def generate_launch_description():
         builder.robot_description(file_path=description_path, mappings={"link6_type": "Link6_6fb"})
         .to_moveit_configs()
     )
+    moveit_config.robot_description["robot_description"] = apply_visual_model(
+        moveit_config.robot_description["robot_description"],
+        "eco65-6fb", LaunchConfiguration("model").perform(context),
+    )
 
     ld = LaunchDescription()
+    ld.add_action(DeclareBooleanLaunchArg("use_rviz", default_value=True))
 
     # 启动move_group
     my_generate_move_group_launch(ld, moveit_config)
     # 启动rviz
-    my_generate_moveit_rviz_launch(ld, moveit_config)
+    rviz_ld = LaunchDescription()
+    my_generate_moveit_rviz_launch(rviz_ld, moveit_config)
+    ld.add_action(
+        GroupAction(
+            actions=list(rviz_ld.entities),
+            condition=IfCondition(LaunchConfiguration("use_rviz")),
+        )
+    )
 
-    return ld
+    return list(ld.entities)
 
 
 def my_generate_move_group_launch(ld, moveit_config):
@@ -146,3 +163,10 @@ def my_generate_moveit_rviz_launch(ld, moveit_config):
     )
 
     return ld
+
+
+def generate_launch_description():
+    return LaunchDescription([
+        DeclareLaunchArgument("model", default_value="auto", choices=MODEL_FORMATS),
+        OpaqueFunction(function=_launch_setup),
+    ])

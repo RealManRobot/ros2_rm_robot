@@ -4,8 +4,10 @@ from moveit_configs_utils.launches import generate_moveit_rviz_launch
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    GroupAction,
     IncludeLaunchDescription,
 )
+from launch.conditions import IfCondition
 from moveit_configs_utils.launch_utils import (
     add_debuggable_node,
     DeclareBooleanLaunchArg,
@@ -18,11 +20,19 @@ def generate_launch_description():
     moveit_config = MoveItConfigsBuilder("rm_65_description", package_name="rm_65_config").to_moveit_configs() 
 
     ld = LaunchDescription()
+    ld.add_action(DeclareBooleanLaunchArg("use_rviz", default_value=True))
 
     # 启动move_group
     my_generate_move_group_launch(ld, moveit_config)
     # 启动rviz
-    my_generate_moveit_rviz_launch(ld, moveit_config)
+    rviz_ld = LaunchDescription()
+    my_generate_moveit_rviz_launch(rviz_ld, moveit_config)
+    ld.add_action(
+        GroupAction(
+            actions=list(rviz_ld.entities),
+            condition=IfCondition(LaunchConfiguration("use_rviz")),
+        )
+    )
 
     # generate_rsp_launch(ld, moveit_config)
 

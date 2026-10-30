@@ -9,7 +9,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     moveit_config = MoveItConfigsBuilder(
-        "rm_eco62_description", package_name="rm_eco62_config"
+        "rm_eco63_description", package_name="rm_eco63_config"
     ).to_moveit_configs()
 
     return LaunchDescription(

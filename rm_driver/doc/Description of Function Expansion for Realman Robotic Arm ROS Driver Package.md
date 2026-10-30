@@ -1,6 +1,6 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS%E9%A9%B1%E5%8A%A8%E5%8C%85%E5%8A%9F%E8%83%BD%E6%8B%93%E5%B1%95%E8%AF%B4%E6%98%8E.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_driver/doc/Description%20of%20Function%20Expansion%20for%20Realman%20Robotic%20Arm%20ROS%20Driver%20Package.md)
+[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/jazzy/rm_driver/doc/%E7%9D%BF%E5%B0%94%E6%9B%BC%E6%9C%BA%E6%A2%B0%E8%87%82ROS%E9%A9%B1%E5%8A%A8%E5%8C%85%E5%8A%9F%E8%83%BD%E6%8B%93%E5%B1%95%E8%AF%B4%E6%98%8E.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/jazzy/rm_driver/doc/Description%20of%20Function%20Expansion%20for%20Realman%20Robotic%20Arm%20ROS%20Driver%20Package.md)
 
 </div>
 
@@ -32,7 +32,7 @@ Since the current ROS development package is mainly created as a functional and 
 ## Main Environment Overview
 
 * System
-ROS2 currently has two versions, Foxy and Humble. Foxy needs to run on Ubuntu 20.04, and Humble needs to run on Ubuntu 22.04.
+This project currently supports ROS 2 Foxy, Humble, and Jazzy on Ubuntu 20.04, Ubuntu 22.04, and Ubuntu 24.04, respectively.
 * Reference Documents 
 ROS2 is currently strongly dependent on APIs for design. During development, we need to refer to the API documents. 
 API document for the 3rd generation controller[link](https://develop.realman-robotics.com/robot/apic/getStarted/)；  

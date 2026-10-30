@@ -1,7 +1,7 @@
 <div align="right">
   
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_ros_interfaces/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_ros_interfaces/README.md)
+[中文简体](README_CN.md)|
+[English](README.md)
 
 </div>
 
@@ -709,6 +709,9 @@ __err__
 当前报错代码，int32。
 
 ### 末端设备基础信息Rmplusbase_msg
+
+数组长度与当前 API2 SDK 一致：自由度及限值数组为 6 项，`tsa`/`tma` 为 12 项，三维触觉及原始触觉数组为 18 项。数组长度变更后，发布端与订阅端均需重新编译并加载同一套消息定义。
+
 ```
 string manu              # 设备厂家
 int8 type                # 设备类型 1：两指夹爪 2：五指灵巧手 3：三指夹爪
@@ -724,31 +727,31 @@ bool touch               # 触觉支持
 int8 touch_num           # 触觉个数
 int8 touch_sw            # 触觉开关
 int8 hand                # 手方向 1 ：左手 2： 右手
-int32[12] pos_up         # 位置上限,单位：无量纲
-int32[12] pos_low        # 位置下限,单位：无量纲
-int32[12] angle_up       # 角度上限,单位：0.01度
-int32[12] angle_low      # 角度下限,单位：0.01度
-int32[12] speed_up       # 速度上限,单位：无量纲
-int32[12] speed_low      # 速度下限,单位：无量纲
-int32[12] force_up       # 力上限,单位：0.001N 
-int32[12] force_low      # 力下限,单位：0.001N 
+int32[6] pos_up         # 位置上限,单位：无量纲
+int32[6] pos_low        # 位置下限,单位：无量纲
+int32[6] angle_up       # 角度上限,单位：0.01度
+int32[6] angle_low      # 角度下限,单位：0.01度
+int32[6] speed_up       # 速度上限,单位：无量纲
+int32[6] speed_low      # 速度下限,单位：无量纲
+int32[6] force_up       # 力上限,单位：0.001N
+int32[6] force_low      # 力下限,单位：0.001N
 ```  
 ### 末端设备基础信息Rmplusstate_msg
 ```
 int32 sys_state                   #系统状态
-int32[12] dof_state               #各自由度当前状态
-int32[12] dof_err                 #各自由度错误信息
-int32[12] pos                     #各自由度当前位置
-int32[12] speed                   #各自由度当前速度
-int32[12] angle                   #各自由度当前角度
-int32[12] current                 #各自由度当前电流
+int32[6] dof_state               #各自由度当前状态
+int32[6] dof_err                 #各自由度错误信息
+int32[6] pos                     #各自由度当前位置
+int32[6] speed                   #各自由度当前速度
+int32[6] angle                   #各自由度当前角度
+int32[6] current                 #各自由度当前电流
 int32[18] normal_force            #自由度触觉三维力的法向力
 int32[18] tangential_force        #自由度触觉三维力的切向力
 int32[18] tangential_force_dir    #自由度触觉三维力的切向力方向
 uint32[12] tsa                    #自由度触觉自接近
 uint32[12] tma                    #自由度触觉互接近
 int32[18] touch_data              #触觉传感器原始数据
-int32[12] force                   #自由度力矩
+int32[6] force                   #自由度力矩
 ```  
 
 ### 自定义高跟随模式角度透传Jointposcustom_msg

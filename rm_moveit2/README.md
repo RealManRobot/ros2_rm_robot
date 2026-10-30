@@ -1,6 +1,6 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_moveit2/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/humble/rm_moveit2/README.md)
+[简体中文](README_CN.md)|[English](README.md)
  
 </div>
 
@@ -16,6 +16,17 @@ Revision History:
 |V1.0    | 2026-4-16 | Draft |
 
 </div>
+
+## Launch examples
+
+After building and sourcing the workspace, run the standard RM75 motion-planning example provided by this package:
+
+```bash
+# Simulation or generation 3/4 real robot: start the matching standard RM75 MoveIt environment, then run in another terminal
+ros2 launch rm_moveit2 moveit_rm75.launch.py
+```
+
+This package provides motion-planning examples for ECO63, RM75, and RX75. The launch filename selects the model; these examples do not expose `arm_type` or `mode`. Simulation and real robots use the same example entry, with the running MoveIt environment determining the target. This example uses the standard RM75. For generation 4 `6f` (formerly `6fb`) end-link selection, see the unified-entry model table. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
 
 ## Content
 * 1.[rm_moveit2 Package Description](#rm_moveit2_Package_Description)

@@ -23,9 +23,10 @@ endif()
 find_package(ament_cmake REQUIRED) 
 find_package(rclcpp_action REQUIRED) 
 find_package(control_msgs REQUIRED) 
-find_package(rclcpp REQUIRED) 
-find_package(std_msgs REQUIRED) 
-find_package(rm_ros_interfaces REQUIRED) 
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(rm_ros_interfaces REQUIRED)
 
 include_directories(
   ${PROJECT_SOURCE_DIR}  

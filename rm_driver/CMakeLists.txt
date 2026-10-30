@@ -49,7 +49,14 @@ set_target_properties(rm_driver PROPERTIES
   INSTALL_RPATH "$ORIGIN/.."
 )
 
-ament_target_dependencies(rm_driver rclcpp std_msgs sensor_msgs rm_ros_interfaces)
+ament_target_dependencies(
+  rm_driver
+  rclcpp
+  std_msgs
+  sensor_msgs
+  geometry_msgs
+  rm_ros_interfaces
+)
 
 install(TARGETS  rm_driver  DESTINATION lib/${PROJECT_NAME})
 install(FILES ${RM_API_LIBRARY} DESTINATION lib)
