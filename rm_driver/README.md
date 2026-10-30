@@ -73,11 +73,6 @@ Through the introduction of the three parts, it can help you:
 Source code address:https://github.com/RealManRobot/ros2_rm_robot.git.
 ## 2. rm_driver package use
 ### 2.1 Basic use of the package
-The bundled C++ SDK is `1.1.7.T2`, supporting both generation 4 `6F/6F-V` names
-and the old `6FB/6FB-V` names while retaining ISF/ISFV enum values. Driver selects
-the base-family configuration; see the [unified entry](../rm_bringup/README.md#unified-launch-entry)
-for controller generation and model selection.
-
 The unified entry point is recommended:
 ```bash
 ros2 launch rm_driver rm_driver.launch.py arm_type:=65-6fb
@@ -208,9 +203,9 @@ The current rm_driver package is composed of the following files.
 ├── lib
 │   ├── lib_install.sh                                   # API library installation script
 │   ├── libapi_cpp.so                                    # default API library
-│   ├── linux_arm64_c++_v1.1.5
+│   ├── linux_arm64_c++_v1.1.7
 │   │   └── libapi_cpp.so                                # ARM64 API library
-│   └── linux_x86_c++_v1.1.5
+│   └── linux_x86_c++_v1.1.7
 │       └── libapi_cpp.so                                # x86_64 API library
 ├── package.xml                                           # dependency declaration file
 ├── README_CN.md
