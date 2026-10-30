@@ -12,33 +12,19 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-# Cleanup old library
-echo "Removing existing libapi_cpp.so..."
-sudo rm -f /usr/local/lib/libapi_cpp.so* 2>/dev/null || true
-
-if [ $(uname -m) = "x86_64" ]; then
-    if [ -f "./linux_x86_c++_v1.1.5/libapi_cpp.so" ];then
-        echo "find x86 file"
-        cd linux_x86_c++*
-        sudo cp ./libapi_cpp.so /usr/local/lib/
-        sudo cp ./libapi_cpp.so ..
-        cd ..
-    else
-        echo "Error: x86libapi_cpp.so not found in current directory!"
-        exit 1
-    fi
-else
-    if [ -f "./linux_arm64_c++_v1.1.5/libapi_cpp.so" ];then
-        echo "find arm file"
-        cd linux_arm64_c++*
-        sudo cp ./libapi_cpp.so /usr/local/lib/
-        sudo cp ./libapi_cpp.so ..
-        cd ..
-    else
-        echo "Error: arm64libapi_cpp.so not found in current directory!"
-        exit 1
-    fi
-fi 
+case "$(uname -m)" in
+    x86_64) sdk_dir="linux_x86_c++_v1.1.7" ;;
+    aarch64|arm64) sdk_dir="linux_arm64_c++_v1.1.7" ;;
+    *) echo "Error: unsupported architecture"; exit 1 ;;
+esac
+cd -- "$(dirname -- "$0")"
+sdk_library="$sdk_dir/libapi_cpp.so"
+if [ ! -f "$sdk_library" ]; then
+    echo "Error: SDK library not found: $sdk_library"
+    exit 1
+fi
+sudo cp "$sdk_library" /usr/local/lib/libapi_cpp.so
+sudo cp "$sdk_library" ./libapi_cpp.so
 
 # Configure library path
 echo "Updating system library configuration..."

@@ -148,16 +148,16 @@ void GetArmState::get_arm_state()
 /***********************************构造函数，初始化发布器订阅器****************************************/
 GetArmState::GetArmState():rclcpp::Node("get_state")
 {
-  subscription_original_state = this->create_subscription<rm_ros_interfaces::msg::Armoriginalstate>("/rm_driver/get_current_arm_original_state_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::GetArmOriginalState_Callback, this,_1));
-  subscription_arm_state = this->create_subscription<rm_ros_interfaces::msg::Armstate>("/rm_driver/get_current_arm_state_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::GetArmState_Callback, this,_1));
-  subscription_software_version = this->create_subscription<rm_ros_interfaces::msg::Armsoftversion>("/rm_driver/get_arm_software_version_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::GetArmSoftwareVersion_Callback, this,_1));
-  subscription_force_data = this->create_subscription<rm_ros_interfaces::msg::Sixforce>("/rm_driver/get_force_data_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::ForceData_Callback, this,_1));
-  subscription_zero_force_data = this->create_subscription<rm_ros_interfaces::msg::Sixforce>("/rm_driver/get_zero_force_data_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::ZeroForceData_Callback, this,_1));
-  subscription_work_force_data = this->create_subscription<rm_ros_interfaces::msg::Sixforce>("/rm_driver/get_work_force_data_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::WorkForceData_Callback, this,_1));
-  subscription_tool_force_data = this->create_subscription<rm_ros_interfaces::msg::Sixforce>("/rm_driver/get_tool_force_data_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::ToolForceData_Callback, this,_1));
-  arm_state_publisher_ = this->create_publisher<std_msgs::msg::Empty>("/rm_driver/get_current_arm_state_cmd", rclcpp::ParametersQoS());
-  arm_software_version_publisher_ = this->create_publisher<std_msgs::msg::Empty>("/rm_driver/get_arm_software_version_cmd", rclcpp::ParametersQoS());
-  get_force_data_publisher_ = this->create_publisher<std_msgs::msg::Empty>("/rm_driver/get_force_data_cmd", rclcpp::ParametersQoS());
+  subscription_original_state = this->create_subscription<rm_ros_interfaces::msg::Armoriginalstate>("rm_driver/get_current_arm_original_state_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::GetArmOriginalState_Callback, this,_1));
+  subscription_arm_state = this->create_subscription<rm_ros_interfaces::msg::Armstate>("rm_driver/get_current_arm_state_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::GetArmState_Callback, this,_1));
+  subscription_software_version = this->create_subscription<rm_ros_interfaces::msg::Armsoftversion>("rm_driver/get_arm_software_version_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::GetArmSoftwareVersion_Callback, this,_1));
+  subscription_force_data = this->create_subscription<rm_ros_interfaces::msg::Sixforce>("rm_driver/get_force_data_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::ForceData_Callback, this,_1));
+  subscription_zero_force_data = this->create_subscription<rm_ros_interfaces::msg::Sixforce>("rm_driver/get_zero_force_data_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::ZeroForceData_Callback, this,_1));
+  subscription_work_force_data = this->create_subscription<rm_ros_interfaces::msg::Sixforce>("rm_driver/get_work_force_data_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::WorkForceData_Callback, this,_1));
+  subscription_tool_force_data = this->create_subscription<rm_ros_interfaces::msg::Sixforce>("rm_driver/get_tool_force_data_result", rclcpp::ParametersQoS(), std::bind(&GetArmState::ToolForceData_Callback, this,_1));
+  arm_state_publisher_ = this->create_publisher<std_msgs::msg::Empty>("rm_driver/get_current_arm_state_cmd", rclcpp::ParametersQoS());
+  arm_software_version_publisher_ = this->create_publisher<std_msgs::msg::Empty>("rm_driver/get_arm_software_version_cmd", rclcpp::ParametersQoS());
+  get_force_data_publisher_ = this->create_publisher<std_msgs::msg::Empty>("rm_driver/get_force_data_cmd", rclcpp::ParametersQoS());
   get_arm_state();
 }
 /***********************************************end**************************************************/

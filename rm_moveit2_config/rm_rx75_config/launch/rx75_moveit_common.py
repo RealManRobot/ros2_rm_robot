@@ -1,11 +1,14 @@
+import runpy
+from launch.actions import OpaqueFunction
 import os
 
 import xacro
 import yaml
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, EmitEvent
 from launch.conditions import IfCondition
+from launch.events import Shutdown
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -38,6 +41,7 @@ def generate_rx75_moveit_launch(
     srdf_file,
     controllers_file,
     joint_states_default="/joint_state_broadcaster/joint_states",
+    model="stl",
 ):
     package_name = "rm_rx75_config"
     joint_states_topic = LaunchConfiguration("joint_states_topic")
@@ -50,6 +54,13 @@ def generate_rx75_moveit_launch(
         )
     )
     robot_description = {"robot_description": robot_description_config.toxml()}
+    description = runpy.run_path(os.path.join(
+        get_package_share_directory("rm_description"), "launch", "rm_description.launch.py",
+    ))
+    robot_description["robot_description"] = description["_apply_visual_model"](
+        robot_description["robot_description"], description_xacro[3:-len(".urdf.xacro")].replace("_", "-"), model,
+    )
+
 
     robot_description_semantic = {
         "robot_description_semantic": load_file(package_name, f"config/{srdf_file}")
@@ -159,6 +170,9 @@ def generate_rx75_moveit_launch(
                 ),
             ),
             Node(
+                on_exit=[
+                    EmitEvent(event=Shutdown(reason="MoveIt move_group exited"))
+                ],
                 package="moveit_ros_move_group",
                 executable="move_group",
                 output="screen",
@@ -191,12 +205,13 @@ def generate_rx75_moveit_launch(
 
 
 def generate_rx75_gazebo_moveit_launch(description_xacro, srdf_file):
-    return generate_rx75_moveit_launch(
-        description_xacro,
-        srdf_file,
-        "moveit_controllers_gazebo.yaml",
-        "/joint_state_broadcaster/joint_states",
-    )
+    return LaunchDescription([
+        DeclareLaunchArgument("model", default_value="auto", choices=["auto", "stl", "dae"]),
+        OpaqueFunction(function=lambda context: list(generate_rx75_moveit_launch(
+            description_xacro, srdf_file, "moveit_controllers_gazebo.yaml",
+            "/joint_state_broadcaster/joint_states", LaunchConfiguration("model").perform(context),
+        ).entities)),
+    ])
 
 
 def generate_rx75_real_moveit_launch(description_xacro, srdf_file):

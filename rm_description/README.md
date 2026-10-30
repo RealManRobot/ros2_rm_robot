@@ -1,12 +1,12 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_description/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_description/README.md)
+[简体中文](README_CN.md)|[English](README.md)
  
 </div>
 
 <div align="center">
 
-# RealMan Robot rm_description User Manual V1.6
+# RealMan Robot rm_description User Manual V1.7
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -21,8 +21,25 @@ Revision History:
 |V1.4   | 2025-4-7 | Amend(Add GEN72_II adapter files) |
 |V1.5   | 2025-11-13 | Amend(Add RML63_III adapter files) |
 |V1.6   | 2026-4-16 | Amend(Add ECO62 and RX75 adapter files) |
+|V1.7   | 2026-8-14 | Amend(Add the Foxy unified description entry, synchronize URDF data, and correct RX75 J8 offsets) |
 
 </div>
+
+## Launch examples
+
+After building and sourcing the workspace, display an RM65 model with integrated force sensing:
+
+```bash
+# Model preview for simulation, generation 3, or older generation 4 software (GUI joint controls)
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=true
+
+# Real-robot state display (generation 4 controller software > 1.0.5; start rm_driver first)
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=false
+```
+
+Generation 4 controller software 1.0.6 and later names the former `6fb` end link `6f`. This standalone display does not query controller generation: keep `65-6fb` to select the same model. Real-robot display uses joint states from the driver without enabling the GUI joint-state publisher. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
 
 ## Content
 * 1.[rm_description Package Description](#rm_description_Package_Description)
@@ -42,6 +59,43 @@ Through the introduction of the three parts, it can help you:
 * 3.Familiar with the topic related to the package for easy development and use.
 Source code address:https://github.com/RealManRobot/ros2_rm_robot.git.
 ## rm_description_Package_Use
+The unified entry point is recommended:
+
+```bash
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6f use_joint_state_publisher_gui:=true use_rviz:=true
+```
+
+| Argument | Default | Description |
+| :--- | :--- | :--- |
+| `arm_type` | Required | Model and end-link version, e.g. `65-6f` or `eco63-6fb`; see the model table linked below |
+| `model` | `auto` | `auto` prefers matching DAE and falls back to STL; `stl` selects the original meshes, `dae` requires matching DAE |
+| `use_sim_time` | `false` | Use the ROS simulation clock |
+| `joint_states_topic` | `/joint_states` | Joint-state topic consumed by the model; also the merged output topic when the dual-arm bridge is enabled |
+| `use_joint_state_bridge` | `auto` | Merge dual-arm joint states; `auto` enables it for RX75, or set `true` or `false` |
+| `left_joint_states_topic` | `/left_arm/joint_states` | Left-arm input topic, used only when the dual-arm bridge is enabled |
+| `right_joint_states_topic` | `/right_arm/joint_states` | Right-arm input topic, used only when the dual-arm bridge is enabled |
+| `use_joint_state_publisher_gui` | `false` | Start the joint slider GUI to adjust the displayed pose |
+| `use_rviz` | `false` | Start RViz for model display |
+| `left_xyz` | `0 0.075 1.5` | RX75 only: left-arm mounting position `x y z`, in metres |
+| `left_rpy` | `3.14 -1.57 1.5707963267949` | RX75 only: left-arm mounting orientation `roll pitch yaw`, in radians |
+| `right_xyz` | `0 -0.075 1.5` | RX75 only: right-arm mounting position `x y z`, in metres |
+| `right_rpy` | `3.14 -1.57 -1.5707963267949` | RX75 only: right-arm mounting orientation `roll pitch yaw`, in radians |
+
+`arm_type` directly selects the model and end-link version; see the
+[rm_bringup support matrix](../rm_bringup/README.md).
+Models with DAE use it by default; `model:=stl` selects the original STL.
+`model:=dae` requires matching DAE resources. Legacy display entries also accept `model`.
+DAE resources and their textures are installed under `rm_description/meshes/dae/`.
+Only visuals change; original joints, inertia and STL collisions are retained.
+
+The Foxy URDF values were synchronized field by field from `rm_models` commit
+`bdb12ca3db532cb677ae33fa94795ac9c1b01f98` while preserving Foxy package URIs,
+names, transmissions, and Gazebo integration. That source has no independent
+GEN72-II model, so GEN72-II remains the existing Foxy model and is not claimed
+as source-synchronized. For RX75-6FB, J8 is left `-0.0962 m` and right
+`+0.0962 m`; RX75-6FB-V remains left `-0.119 m` and right `+0.119 m`.
+
 First, after configuring the environment and completing the connection, we can directly start the node and run the rm_description package.
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
@@ -86,6 +140,7 @@ The current rm_description package is composed of the following files.
 ```
 ├── CMakeLists.txt                # compilation rule file
 ├── launch
+│   ├── rm_description.launch.py     # unified model-description entry
 │   ├── rm_63_6f_display.launch.py  # 63 six-axis force launch file
 │   ├── rm_63_6fb_display.launch.py # 63 integrated six-axis force launch file
 │   ├── rm_63_display.launch.py     # 63 launch file

@@ -1,12 +1,12 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README.md)
+[简体中文](README_CN.md)|[English](README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_driver使用说明书V1.7
+# 睿尔曼机器人rm_driver使用说明书V1.7.1
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -22,8 +22,25 @@
 |V1.5    |2025-05-29|修订（适配四代控制器、添加版本查询接口、添加笛卡尔空间直线偏移运动接口、添加Modbus接口、添加轨迹列表接口详见话题接口说明文档）|
 |V1.6    |2025-11-13|修订（添加UDP所有基础使能配置）|
 |V1.7    |2026-4-16 |修订（添加ECO62、RX75适配文件）|
+|V1.7.1    |2026-8-14 |修订（统一启动、Modbus超时、端点独占与信号安全清理）|
 
 </div>
+
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 为例：
+
+```bash
+# 连接真实机械臂（三、四代均使用基础型号）
+ros2 launch rm_driver rm_driver.launch.py \
+  arm_type:=65
+
+# 注：四代控制器软件自 1.0.6 起将原 6fb 末端统一命名为 6f。
+# rm_driver 和 rm_control 只需指定基础型号，如 63、65、75、eco63 或 eco65，无需末端后缀。
+# 此处仅提示三、四代的命名差异，启动参数保持一致。
+```
+
+本包用于真机链路；Gazebo 使用仿真控制器。`arm_type` 按基础型号选择配置。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
 
 ## 目录
 * 1.[rm_driver功能包说明](#rm_driver功能包说明)
@@ -46,6 +63,36 @@ rm_driver功能包在机械臂ROS2功能包中是十分重要的，该功能包�
 * 3.熟悉功能包相关的话题，方便开发和使用  
 ## rm_driver功能包使用
 ### 功能包基础使用
+推荐使用统一入口：
+
+```bash
+ros2 launch rm_driver rm_driver.launch.py arm_type:=65
+```
+
+| 参数 | 默认值 | 说明 |
+| :--- | :--- | :--- |
+| `arm_type` | 无，必须指定 | 型号或带末端后缀的型号，例如 `65`、`65-6fb`、`rx75`；支持值见[型号表](../rm_bringup/README_CN.md)，按基础型号选择驱动配置 |
+| `driver_config` | `auto` | 单臂 driver YAML 路径；`auto` 使用型号默认配置 |
+| `left_driver_config` | `auto` | 仅 RX75：左臂 driver YAML 路径；`auto` 使用默认左臂配置 |
+| `right_driver_config` | `auto` | 仅 RX75：右臂 driver YAML 路径；`auto` 使用默认右臂配置 |
+
+无效的型号/配置组合或不存在的YAML会在driver节点启动前报错。
+RX75会启动两个带namespace的driver节点。原有8个按型号启动的文件
+保留为兼容wrapper。
+
+driver在SDK初始化前对 `arm_ip:tcp_port` 取主机本地非阻塞锁。
+同一端点的第二个进程以非零状态退出，不同端点可并存。SIGINT、
+SIGTERM和SIGHUP汇合到同一个幂等SDK清理路径。该清理是尽力而为，
+对SIGKILL、掉电或崩溃并不能替代控制器watchdog和硬件急停。
+
+Modbus V1.7.1消息变更：
+
+- `RS485params.timeout`：三代Modbus RTU超时，单位100 ms；非正数使用
+  兼容默认值 `5`（500 ms）。
+- `Modbustcpmasterinfo.timeout`：三代Modbus TCP超时，单位ms；
+  非正数使用兼容默认值 `2000` ms。
+- 四代SDK查询路径不提供超时值，查询结果回填 `timeout=0`。
+
 首先配置好环境完成连接后我们可以通过以下命令直接启动节点，控制机械臂。  
 当前的控制基于我们没有改变过机械臂的IP即当前机械臂的IP仍为192.168.1.18。  
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py  
@@ -129,27 +176,33 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_rx75_left_config.yaml   #RX75左臂配置文件
 │   └── rm_rx75_right_config.yaml  #RX75右臂配置文件
 ├── doc
+│   ├── Description of Function Expansion for Realman Robotic Arm ROS Driver Package.md
 │   ├── RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2).md
 │   ├── rm_driver1.png
 │   ├── rm_driver2.png
 │   ├── rm_driver3.png
 │   ├── rm_driver4.png
-│   └── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
+│   ├── rm_driver5.png
+│   ├── rm_driver6.png
+│   ├── rm_driver7.png
+│   ├── rm_driver8.png
+│   ├── rm_driver9.png
+│   ├── rm_driver10.png
+│   ├── rm_driver11.png
+│   ├── rm_driver12.png
+│   ├── rm_driver13.png
+│   ├── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
+│   └── 睿尔曼机械臂ROS驱动包功能拓展说明.md
 ├── include                        #依赖头文件文件夹
-│   └── rm_driver
-│       ├── cJSON.h                #API头文件
-│       ├── constant_define.h      #API头文件
-│       ├── rman_int.h             #API头文件
-│       ├── rm_base_global.h       #API头文件
-│       ├── rm_base.h              #API头文件
-│       ├── rm_define.h            #API头文件
-│       ├── rm_driver.h            #rm_driver.cpp头文件
-│       ├── rm_praser_data.h       #API头文件
-│       ├── rm_queue.h             #API头文件
-│       ├── rm_service_global.h    #API头文件
-│       ├── rm_service.h           #API头文件
-│       └── robot_define.h         #API头文件
+│   └── rm_driver/
+│       ├── rm_define.h                               # SDK 数据类型、枚举和常量
+│       ├── rm_driver.h                               # ROS 2 驱动节点、回调及运行状态定义
+│       ├── rm_interface.h                            # SDK C 接口声明
+│       ├── rm_interface_global.h                     # SDK 接口导出宏
+│       ├── rm_service.h                              # SDK C++ RM_Service 类接口
+│       └── rm_version.h                              # SDK 版本定义
 ├── launch
+│   ├── rm_driver.launch.py        #统一driver启动入口
 │   ├── rm_63_driver.launch.py     #63启动文件
 │   ├── rm_65_driver.launch.py     #65启动文件
 │   ├── rm_75_driver.launch.py     #75启动文件
@@ -159,12 +212,12 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── rm_gen72_driver.launch.py  #gen72启动文件
 │   └── rm_rx75_driver.launch.py   #RX75启动文件
 ├── lib
-│   ├── libRM_Service.so -> libRM_Service.so.1.0.0        #API库文件
-│   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      #API库文件
-│   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    #API库文件
-│   ├── libRM_Service.so.1.0.0                            #API库文件
-│   ├── linux_arm_service_release_v4.3.7.t7.tar.bz2       #API库文件
-│   └── linux_x86_service_release_v4.3.7.t7.tar.bz2       #API库文件
+│   ├── lib_install.sh                                # 按主机架构选择并安装 SDK 库
+│   ├── libapi_cpp.so                                 # CMake 链接并随包安装的 SDK 动态库
+│   ├── linux_arm64_c++_v1.1.7/
+│   │   └── libapi_cpp.so                             # ARM64 SDK 动态库
+│   └── linux_x86_c++_v1.1.7/
+│       └── libapi_cpp.so                             # x86_64 SDK 动态库
 ├── package.xml                                           #依赖声明文件
 ├── README_CN.md
 ├── README.md

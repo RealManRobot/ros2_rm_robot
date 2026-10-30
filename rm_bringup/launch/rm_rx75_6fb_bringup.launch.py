@@ -8,62 +8,25 @@ from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
-    use_moveit_rviz = LaunchConfiguration("use_moveit_rviz")
-
-    rm_rx75_driver = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory("rm_driver"),
-                "launch",
-                "rm_rx75_driver.launch.py",
-            )
-        )
+    unified_launch = os.path.join(
+        get_package_share_directory("rm_bringup"),
+        "launch",
+        "rm_bringup.launch.py",
     )
-
-    rm_rx75_description = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory("rm_description"),
-                "launch",
-                "rm_rx75_6fb_display.launch.py",
-            )
-        ),
-        launch_arguments={
-            "use_joint_state_bridge": "true",
-            "use_joint_state_publisher_gui": "false",
-            "use_rviz": "false",
-        }.items(),
-    )
-
-    rm_rx75_control = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory("rm_control"),
-                "launch",
-                "rm_rx75_control.launch.py",
-            )
-        )
-    )
-
-    rm_rx75_moveit = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory("rm_rx75_config"),
-                "launch",
-                "real_moveit_demo_6fb.launch.py",
-            )
-        ),
-        launch_arguments={
-            "use_rviz": use_moveit_rviz,
-        }.items(),
-    )
-
     return LaunchDescription(
         [
-            DeclareLaunchArgument("use_moveit_rviz", default_value="true"),
-            rm_rx75_driver,
-            rm_rx75_description,
-            rm_rx75_control,
-            rm_rx75_moveit,
+            DeclareLaunchArgument(
+                "use_moveit_rviz",
+                default_value="true",
+                description="Start RViz from the RX75 MoveIt launch",
+            ),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(unified_launch),
+                launch_arguments={
+                    "arm_type": "rx75-6fb",
+                    "mode": "real",
+                    "use_rviz": LaunchConfiguration("use_moveit_rviz"),
+                }.items(),
+            ),
         ]
     )

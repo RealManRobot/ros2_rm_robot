@@ -283,7 +283,7 @@ Rm_Control::Rm_Control(std::string name) : Node(name)
 
     rclcpp::QoS qos(10);
 
-    joint_pos_publisher = this->create_publisher<rm_ros_interfaces::msg::Jointpos>("/rm_driver/movej_canfd_cmd", qos);
+    joint_pos_publisher = this->create_publisher<rm_ros_interfaces::msg::Jointpos>("rm_driver/movej_canfd_cmd", qos);
 
     Get_Move_Stop_Cmd = this->create_subscription<std_msgs::msg::Bool>("rm_driver/move_stop_cmd",rclcpp::ParametersQoS(),
         std::bind(&Rm_Control::get_move_stop_callback,this,std::placeholders::_1));

@@ -1,10 +1,15 @@
+import runpy
+from launch.actions import OpaqueFunction
 import os
 import yaml
 from launch import LaunchDescription
+from launch.actions import EmitEvent
+from launch.events import Shutdown
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch.conditions import IfCondition, UnlessCondition
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 from launch.actions import ExecuteProcess
 from ament_index_python.packages import get_package_share_directory
 import xacro
@@ -32,7 +37,7 @@ def load_yaml(package_name, file_path):
         return None
 
 
-def generate_launch_description():
+def _launch_setup(context):
 
     # Command-line arguments
     tutorial_arg = DeclareLaunchArgument(
@@ -41,6 +46,11 @@ def generate_launch_description():
 
     # planning_context
     xacro_args = {"link6_type": "Link6_6fb"}
+    use_rviz_arg = DeclareLaunchArgument("use_rviz", default_value="true")
+    allow_trajectory_execution_arg = DeclareLaunchArgument(
+        "allow_trajectory_execution", default_value="true"
+    )
+
     robot_description_config = xacro.process_file(
         os.path.join(
             get_package_share_directory("rm_eco63_config"),
@@ -51,6 +61,13 @@ def generate_launch_description():
     )
 
     robot_description = {"robot_description": robot_description_config.toxml()}
+    description = runpy.run_path(os.path.join(
+        get_package_share_directory("rm_description"), "launch", "rm_description.launch.py",
+    ))
+    robot_description["robot_description"] = description["_apply_visual_model"](
+        robot_description["robot_description"], 'eco63-6fb', LaunchConfiguration("model").perform(context),
+    )
+
 
     robot_description_semantic_config = load_file(
         "rm_eco63_config", "config/rm_eco63_description.srdf"
@@ -103,7 +120,17 @@ def generate_launch_description():
     }
 
     # Start the actual move_group node/action server
+    move_group_configuration = {
+        "allow_trajectory_execution": ParameterValue(
+            LaunchConfiguration("allow_trajectory_execution"),
+            value_type=bool,
+        )
+    }
+
     run_move_group_node = Node(
+        on_exit=[
+            EmitEvent(event=Shutdown(reason="MoveIt move_group exited"))
+        ],
         package="moveit_ros_move_group",
         executable="move_group",
         output="screen",
@@ -115,6 +142,7 @@ def generate_launch_description():
             trajectory_execution,
             moveit_controllers,
             planning_scene_monitor_parameters,
+            move_group_configuration,
         ],
     )
 
@@ -138,6 +166,7 @@ def generate_launch_description():
     #     condition=IfCondition(tutorial_mode),
     # )
     rviz_node = Node(
+        condition=IfCondition(LaunchConfiguration("use_rviz")),
         package="rviz2",
         executable="rviz2",
         name="rviz2",
@@ -215,6 +244,8 @@ def generate_launch_description():
     return LaunchDescription(
         [
             tutorial_arg,
+            use_rviz_arg,
+            allow_trajectory_execution_arg,
             rviz_node,
             static_tf,
             robot_state_publisher,
@@ -223,3 +254,10 @@ def generate_launch_description():
         ]
         # + load_controllers
     )
+
+
+def generate_launch_description():
+    return LaunchDescription([
+        DeclareLaunchArgument("model", default_value="auto", choices=["auto", "stl", "dae"]),
+        OpaqueFunction(function=lambda context: list(_launch_setup(context).entities)),
+    ])

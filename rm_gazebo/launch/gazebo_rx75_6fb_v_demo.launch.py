@@ -1,19 +1,50 @@
-import sys
-from pathlib import Path
+import os
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-
-from gz_demo_common import generate_gz_demo_launch
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
-    return generate_gz_demo_launch(
-        urdf_filename="gazebo_rx75_6fb_v_description.urdf.xacro",
-        robot_name_in_model="rm_rx75_dual",
-        controller_names=[
-            "joint_state_broadcaster",
-            "left_arm_controller",
-            "right_arm_controller",
-        ],
-        joint_states_topic_default="/joint_state_broadcaster/joint_states",
+    unified_launch = os.path.join(
+        get_package_share_directory("rm_gazebo"),
+        "launch",
+        "rm_gazebo.launch.py",
+    )
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument("model", default_value="auto", choices=["auto", "stl", "dae"]),
+            DeclareLaunchArgument("start_gazebo", default_value="true"),
+            DeclareLaunchArgument("use_gazebo_gui", default_value="true"),
+            DeclareLaunchArgument(
+                "clock_topic", default_value="/clock"
+            ),
+            DeclareLaunchArgument(
+                "joint_states_topic",
+                default_value="auto",
+                choices=["auto"],
+            ),
+            DeclareLaunchArgument(
+                "spawn_entity_timeout", default_value="120"
+            ),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(unified_launch),
+                launch_arguments={
+                    "arm_type": "rx75-6fb-v",
+                    "model": LaunchConfiguration("model"),
+                    "start_gazebo": LaunchConfiguration("start_gazebo"),
+                    "use_gazebo_gui": LaunchConfiguration("use_gazebo_gui"),
+                    "clock_topic": LaunchConfiguration("clock_topic"),
+                    "joint_states_topic": LaunchConfiguration(
+                        "joint_states_topic"
+                    ),
+                    "spawn_entity_timeout": LaunchConfiguration(
+                        "spawn_entity_timeout"
+                    ),
+                    "use_sim_time": "true",
+                }.items(),
+            ),
+        ]
     )

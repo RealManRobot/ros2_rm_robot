@@ -1,26 +1,25 @@
 import os
-from  ament_index_python.packages import get_package_share_directory
+
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import SetEnvironmentVariable
-from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration
-from launch.actions import DeclareLaunchArgument
-from launch.conditions import IfCondition
-from launch.actions import (DeclareLaunchArgument, GroupAction,
-                            IncludeLaunchDescription, SetEnvironmentVariable)
+from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
+
 def generate_launch_description():
-
-    rm_eco62_gazebo_up = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(('rm_gazebo')),'launch', 'gazebo_eco62_demo.launch.py'))
+    unified_launch = os.path.join(
+        get_package_share_directory("rm_bringup"),
+        "launch",
+        "rm_bringup.launch.py",
     )
-
-    rm_eco62_gazebo_moveit = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(('rm_eco62_config')),'launch', 'gazebo_moveit_demo.launch.py'))
+    return LaunchDescription(
+        [
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(unified_launch),
+                launch_arguments={
+                    "arm_type": "eco62",
+                    "mode": "gazebo",
+                }.items(),
+            ),
+        ]
     )
-
-    return LaunchDescription([
-    rm_eco62_gazebo_up,
-    rm_eco62_gazebo_moveit
-    ])

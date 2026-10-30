@@ -1,41 +1,38 @@
 import os
+
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch_ros.actions import Node
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 
-import xacro
 
 def generate_launch_description():
-    # 声明参数 link6_type
-    declare_link6_type_arg = DeclareLaunchArgument(
-        'link6_type',
-        default_value='Link6',
-        description='Type of link6'
+    actions = [
+        DeclareLaunchArgument("model", default_value="auto", choices=["auto", "stl", "dae"]),
+        DeclareLaunchArgument("link6_type", default_value="Link6"),
+        DeclareLaunchArgument("base_type", default_value="base_link_III"),
+    ]
+    launch_arguments = {
+        "model": LaunchConfiguration("model"),
+        "arm_type": "63_iii",
+        "use_sim_time": "false",
+        "joint_states_topic": "/joint_states",
+        "link6_type_override": LaunchConfiguration("link6_type"),
+        "base_type_override": LaunchConfiguration("base_type"),
+        "use_joint_state_bridge": "false",
+        "use_joint_state_publisher_gui": "false",
+        "use_rviz": "false",
+    }
+    unified_launch = os.path.join(
+        get_package_share_directory("rm_description"),
+        "launch",
+        "rm_description.launch.py",
     )
-    declare_base_type_arg = DeclareLaunchArgument(
-        'base_type',
-        default_value='base_link_III',
-        description='Type of base'
+    actions.append(
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(unified_launch),
+            launch_arguments=launch_arguments.items(),
+        )
     )
-
-    realman_xacro_file = os.path.join(get_package_share_directory('rm_description'), 'urdf',
-                                        'rml_63.urdf.xacro')
-    robot_description = Command(
-        [FindExecutable(name='xacro'), ' ', realman_xacro_file,' ','link6_type:=',LaunchConfiguration('link6_type'),' ','base_type:=',LaunchConfiguration('base_type')])
-    # robot_description = Command(
-    #     [FindExecutable(name='xacro'), ' ', realman_xacro_file,' ','base_type:=',LaunchConfiguration('base_type')])
-
-    return LaunchDescription([
-            declare_link6_type_arg,
-            declare_base_type_arg,
-            Node(
-                package='robot_state_publisher',
-                executable='robot_state_publisher',
-                name='robot_state_publisher',
-                respawn=True,
-                parameters=[{'robot_description': robot_description}],
-                output='screen'
-            )
-        ])
+    return LaunchDescription(actions)

@@ -563,46 +563,50 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 
 | Function description | Set_Controller_RS485_Mode |
 | :---: | :---- |
-| Parameter description | RS485params.msg<br>int32 mode: 0-RS485 serial communication, 1-modbus RTU master mode, 2-Modbus RTU slave mode. <br>Int32 baudrate: Currently supports 9600 19200 38400 57600 115200 230400 460800. |
-| Command example | ros2 topic pub /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200}" |
+| Parameter description | RS485params.msg<br>int32 mode: 0-RS485 serial communication, 1-modbus RTU master mode, 2-Modbus RTU slave mode.<br>int32 baudrate: Currently supports 9600 19200 38400 57600 115200 230400 460800.<br>int32 timeout: Modbus RTU timeout in units of 100 ms. It is used by third-generation controllers only; values <= 0 use the compatible default 5 (500 ms), and fourth-generation controllers ignore it. |
+| Command example | ros2 topic pub --once /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200, timeout: 5, state: false}" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_controller_rs485_mode_result |
 
 #### Get_Controller_RS485_Mode
 
+Supported on third- and fourth-generation controllers. The driver selects the matching API2 query; third-generation Modbus RTU `timeout` uses 100 ms units, while fourth-generation results use 0.
+
 | Function description | Get_Controller_RS485_Mode |
 | :---: | :---- |
 | Parameter description | ROS msg std_msgs::msg::Empty |
-| Command example | ros2 topic pub /rm_driv/get_controller_rs485_mode_cmd std_msgs/msg/Empty "{}" |
-| Return value | RS485params.msg<br>int32 mode: 0-RS485 serial communication, 1-modbus RTU master mode, 2-Modbus RTU slave mode. <br>Int32 baudrate: Currently supports 9600 19200 38400 57600 115200 230400 460800.  |
+| Command example | ros2 topic pub --once /rm_driver/get_controller_rs485_mode_cmd std_msgs/msg/Empty "{}" |
+| Return value | RS485params.msg<br>int32 mode: RS485 mode.<br>int32 baudrate: Configured baud rate.<br>int32 timeout: Third-generation Modbus RTU timeout in units of 100 ms; fourth-generation controllers return 0 because the SDK query has no timeout field.<br>bool state: Query status. |
 | Return example | ros2 topic echo /rm_driver/get_controller_rs485_mode_result |
 
 #### Set_Tool_End_RS485_Mode
 
 | Function description | Set_Tool_End_RS485_Mode |
 | :---: | :---- |
-| Parameter description | RS485params.msg<br>int32 mode: 0- Set the RS485 port of the tool end to RTU master station, 1- Smart hand mode, 2- Claw mode. <br>Int32 baudrate: Currently supports 9600 115200 460800. |
-| Command example | ros2 topic pub --once /rm_driver/set_tool_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200}" |
+| Parameter description | RS485params.msg<br>int32 mode: 0- Set the RS485 port of the tool end to RTU master station, 1- Smart hand mode, 2- Claw mode.<br>int32 baudrate: Currently supports 9600 115200 460800.<br>int32 timeout: Not used by the fourth-generation tool-end setting API; set it to 0. |
+| Command example | ros2 topic pub --once /rm_driver/set_tool_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200, timeout: 0, state: false}" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code.  |
 | Return example | ros2 topic echo /rm_driver/set_tool_rs485_mode_result |
 
 #### Get_Tool_End_RS485_Mode
 
+Supported on third- and fourth-generation controllers. The driver selects the matching API2 query; third-generation Modbus RTU `timeout` uses 100 ms units, while fourth-generation results use 0. Tool-end `mode`: generation 3 uses 0 for RS485 serial communication and 1 for Modbus RTU master; generation 4 uses 0 for Modbus RTU master, 1 for dexterous hand, and 2 for gripper.
+
 | Function description | Get_Tool_End_RS485_Mode |
 | :---: | :---- |
 | Parameter description | ROS msg std_msgs::msg::Empty |
 | Command example | ros2 topic pub /rm_driver/get_tool_rs485_mode_cmd std_msgs/msg/Empty "{}" |
-| Return value | RS485params.msg<br>int32 mode: 0- Set the RS485 port of the tool end to RTU master station, 1- Smart hand mode, 2- Claw mode. <br>Int32 baudrate: Currently supports 9600 115200 460800. |
-| Return example | ros2 topic echo /rm_driver/get_tool_rs485_mode_result |
+| Return value | RS485params.msg<br>int32 mode: Tool-end RS485 mode.<br>int32 baudrate: Configured baud rate.<br>int32 timeout: Third-generation Modbus RTU timeout in units of 100 ms; fourth-generation controllers return 0.<br>bool state: Query status. |
+| Return example | ros2 topic echo /rm_driver/get_tool_rs485_mode_v4_result |
 
 #### Set_Controller_And_Tools_ModbusRTU_Mode-Three_Generations
 
 | Function description | Set_Controller_And_Tools_ModbusRTU_Mode |
 | :---: | :---- |
-| Parameter description | RS485params.msg<br>int32 mode: 0- Set the RS485 port of the tool end to RTU master station, 1- Smart hand mode, 2- Claw mode. <br>Int32 baudrate: Currently supports 9600 115200 460800. |
-| Command example | ros2 topic pub --once /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200, state: false}" |
+| Parameter description | RS485params.msg<br>int32 mode: 0- Controller RS485 RTU master, 1- tool interface RS485 RTU master, 2- controller RS485 RTU slave.<br>int32 baudrate: Currently supports 9600 115200 460800.<br>int32 timeout: Modbus RTU timeout in units of 100 ms; values <= 0 use 5 (500 ms). |
+| Command example | ros2 topic pub --once /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200, timeout: 5, state: false}" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code. |
-| Return example | ros2 topic echo /rm_driver/get_tool_rs485_mode_result |
+| Return example | ros2 topic echo /rm_driver/set_controller_rs485_mode_result |
 
 #### Close_Controller_And_Tools_ModbusRTU_Mode-Three_Generations
 
@@ -611,7 +615,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | Parameter description | std_msgs::msg::Uint16<br>Uint16 data: 0- Close the RS485 port of the tool end to RTU master station, 1- Smart hand mode, 2- Claw mode. |
 | Command example | ros2 topic pub --once /rm_driver/close_controller_rtu_modbus_cmd std_msgs/msg/UInt16 "data: 0" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code. |
-| Return example | ros2 topic echo /rm_driver/get_tool_rs485_mode_result |
+| Return example | ros2 topic echo /rm_driver/close_controller_rtu_modbus_result |
 
 ### ModbusTCP_Master
 
@@ -619,8 +623,8 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 
 | Function description | Add_Modbus_TCP_Master |
 | :---: | :---- |
-| Parameter description | Modbustcpmasterinfo.msg<br>string master_name: Modbus master station name. <br>String ip: TCP master IP address. <br>Int32 port: TCP primary port number. |
-| Command example | ros2 topic pub /rm_driver/add_modbus_tcp_master_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '1',ip: '127.0.0.1',port: 502}" |
+| Parameter description | Modbustcpmasterinfo.msg<br>string master_name: Modbus master station name.<br>string ip: TCP master IP address.<br>int32 port: TCP primary port number.<br>int32 timeout: Not supported by the fourth-generation master API; use 0. |
+| Command example | ros2 topic pub --once /rm_driver/add_modbus_tcp_master_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '1', ip: '127.0.0.1', port: 502, timeout: 0, state: false}" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code.  |
 | Return example | ros2 topic echo /rm_driver/add_modbus_tcp_master_result |
 
@@ -648,7 +652,7 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 | :---: | :---- |
 | Parameter description | Mastername.msg<br>string master_name: Modbus master station name. |
 | Command example | ros2 topic pub /rm_driver/get_modbus_tcp_master_cmd rm_ros_interfaces/msg/Mastername "master_name: '321'" |
-| Return value | Modbustcpmasterinfo.msg<br>string master_name # Name of the Modbus master station, with a maximum length of 15 characters, not exceeding 15 characters<br>string ip # IP address of the TCP master station<br>int32 port # Port number of the TCP master station<br>bool state # Query status information, false for failure, true for success<br>On failure, the driver terminal returns an error code.  |
+| Return value | Modbustcpmasterinfo.msg<br>string master_name: Name of the Modbus master station.<br>string ip: IP address of the TCP master station.<br>int32 port: Port number of the TCP master station.<br>int32 timeout: Always 0 for fourth-generation master queries.<br>bool state: Query status.<br>On failure, the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/get_modbus_tcp_master_result |
 
 #### Get_Modbus_TCP_Master_List
@@ -664,8 +668,8 @@ string vague_search # Fuzzy search<br>Trajectoryinfo[] tra_list # List of trajec
 
 | Function description | Add_Modbus_TCP_Master |
 | :---: | :---- |
-| Parameter description | Modbustcpmasterinfo.msg<br>string master_name: Modbus master station name(No configuration required). <br>String ip: TCP master IP address. <br>Int32 port: TCP primary port number. |
-| Command example | ros2 topic pub --once /rm_driver/set_controller_tcp_mode_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '', ip: '192.168.1.18', port: 502, state: false}" |
+| Parameter description | Modbustcpmasterinfo.msg<br>string master_name: Not used by third-generation controllers.<br>string ip: TCP master IP address.<br>int32 port: TCP master port.<br>int32 timeout: Modbus TCP timeout in ms; values <= 0 use the compatible default 2000 ms. |
+| Command example | ros2 topic pub --once /rm_driver/set_controller_tcp_mode_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '', ip: '192.168.1.18', port: 502, timeout: 3000, state: false}" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code.  |
 | Return example | ros2 topic echo rm_driver/set_controller_tcp_mode_result |
 
@@ -1108,43 +1112,27 @@ The RealMan robotic arm can be integrated with the self-developed lifting mechan
 
 ### End_Effector_Ecosystem_Command_Set
 
-Reading of basic and real-time information of end-effector devices supported by the end-effector ecosystem protocol.
+The current Foxy `rm_driver` supports reading end-effector basic and real-time
+information through UDP push; see the active-reporting section for the actual
+Topics. SDK 1.1.6 provides the four lower-level APIs below, but this driver does
+not create ROS 2 publishers or subscriptions for them, so they cannot be called
+with `ros2 topic`.
 
 #### Setting_End_Effector_Ecosystem_Protocol_Mode
 
-| Function description | Set End-Effector Ecosystem Protocol Mode |
-| :---: | :---- |
-| Parameter description | std_msgs::msg::Int32 <br>0 - Disable protocol;<br>9600 - Enable protocol (baud rate 9600);<br>115200 - Enable protocol (baud rate 115200);<br>256000 - Enable protocol (baud rate 256000);<br>460800 - Enable protocol (baud rate 460800). |
-| Command example | ros2 topic pub /rm_driver/set_rm_plus_mode_cmd std_msgs/msg/Int32 "data: 0" |
-| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
-| Return example | ros2 topic echo /rm_driver/set_rm_plus_mode_result |
+No ROS 2 Topic is exposed for this API in the current driver.
 
 #### Querying_End_Effector_Ecosystem_Protocol_Mode
 
-| Function description | Querying End-Effector Ecosystem Protocol Mode |
-| :---: | :---- |
-| Parameter description | std_msgs::msg::Empty |
-| Command example | ros2 topic pub /rm_driver/get_rm_plus_mode_cmd std_msgs/msg/Empty "{}" |
-| Return value | 0 - Disable protocol;<br>9600 - Enable protocol (baud rate 9600);<br>115200 - Enable protocol (baud rate 115200);<br>256000 - Enable protocol (baud rate 256000);<br>460800 - Enable protocol (baud rate 460800). |
-| Return example | ros2 topic echo /rm_driver/get_rm_plus_mode_result |
+No ROS 2 Topic is exposed for this API in the current driver.
 
 #### Setting Tactile Sensor Mode
 
-| Function description | Setting Tactile Sensor Mode |
-| :---: | :---- |
-| Parameter description | std_msgs::msg::Int32 <br>0 - Disable tactile sensor;<br>1 - Enable tactile sensor (returns processed data);<br>2 - Enable tactile sensor (returns raw data). |
-| Command example | ros2 topic pub /rm_driver/set_rm_plus_touch_cmd std_msgs::msg::Int32 "data: 0" |
-| Return value | Successful return: true; failure returns: false, the driver terminal returns an error code. |
-| Return example | ros2 topic echo /rm_driver/set_rm_plus_touch_result |
+No ROS 2 Topic is exposed for this API in the current driver.
 
 #### Querying_Tactile_Sensor_Mode
 
-| Function description | Querying_Tactile_Sensor_Mode |
-| :---: | :---- |
-| Parameter description | std_msgs::msg::Empty |
-| Command example | ros2 topic pub /rm_driver/get_rm_plus_mode_cmd std_msgs/msg/Empty "{}" |
-| Return value | std_msgs::msg::Int32 <br>0 - Disable protocol;<br>9600 - Enable protocol (baud rate 9600);<br>115200 - Enable protocol (baud rate 115200);<br>256000 - Enable protocol (baud rate 256000);<br>460800 - Enable protocol (baud rate 460800). |
-| Return example | ros2 topic echo /rm_driver/get_rm_plus_mode_result |
+No ROS 2 Topic is exposed for this API in the current driver.
 
 ### Functions_related_to_the_transmissive_force-position_compensation_Mode
 
@@ -1239,15 +1227,13 @@ If force data calibration has not been completed before the force operations, th
 
 | Function description | Robotic arm error |
 | :---: | :---- |
-| Parameter description | std_msgs::msg::UInt16<br>uint16 data: the robotic arm error message. |
-| Subscription command | ros2 topic echo /rm_driver/udp_arm_err |
+| Parameter description | Rmerr.msg<br>uint8 err_len: number of errors.<br>int32[] err: robotic-arm error-code array. |
+| Subscription command | ros2 topic echo /rm_driver/udp_rm_err |
 
 * System error
 
-| Function description | System error |
-| :---: | :---- |
-| Parameter description | std_msgs::msg::UInt16<br>uint16 data: the system error message. |
-| Subscription command | ros2 topic echo /rm_driver/udp_sys_err |
+The current Foxy driver does not publish a separate system-error Topic; the
+corresponding publisher is disabled in the source.
 
 * Joint error
 
@@ -1325,7 +1311,7 @@ If force data calibration has not been completed before the force operations, th
 | Function Description | Euler Angle Pose of Mechanical Arm |
 | :----: | :---- |
 | parameter description | rm_ros_interfaces:: msg:: Jointposeeuler.msg <br> float 32 [3] Euler: Euler angle of current waypoint attitude with accuracy of 0.001rad<br>float32[3] position: current waypoint position with accuracy of 0.000001M|
-| query example | ros2 topic echo /rm_driver/udp_joint_pose_Euler |
+| query example | ros2 topic echo /rm_driver/udp_joint_pose_euler |
 
 * Current joint speed
 
@@ -1371,12 +1357,12 @@ If force data calibration has not been completed before the force operations, th
 
 | Function Description | Reading Basic Information of End-Effector Device |
 | :----: | :---- |
-| parameter description | rm_ros_interfaces::msg::Rmplusbase.msg<br>string manu:Device manufacturer.<br>int8 type: Device type, including 1 - Two-finger gripper, 2 - Five-finger dexterous hand, 3 - Three-finger gripper<br>string hv:Hardware version<br>string sv:Software version<br>string bv:Bootloader version<br>int32 id:Device ID<br>int8 dof:Degrees of freedom<br>int8 check:Self-check switch<br>int8 bee:Beeper switch<br>bool force:Force control support<br>bool touch:Tactile support<br>int8 touch_num:Number of tactile sensors<br>int8 touch_sw:Tactile switch<br>int8 hand:Hand orientation, including 1 - Left hand, 2 - Right hand<br>int32[12] pos_up:Position upper limit<br>int32[12] pos_low:Position lower limit<br>int32[12] angle_up:Angle upper limit,Unit: 0.01 degrees.<br>int32[12] angle_low:Angle lower limit,Unit: 0.01 degrees.<br>int32[12] speed_up:Speed upper limit<br>int32[12] speed_low:Speed lower limit<br>int32[12] force_up:Force upper limit<br>int32[12] force_low:Force lower limit,Unit: 0.001N.|
+| parameter description | rm_ros_interfaces::msg::Rmplusbase.msg<br>string manu:Device manufacturer.<br>int8 type: Device type, including 1 - Two-finger gripper, 2 - Five-finger dexterous hand, 3 - Three-finger gripper<br>string hv:Hardware version<br>string sv:Software version<br>string bv:Bootloader version<br>int32 id:Device ID<br>int8 dof:Degrees of freedom<br>int8 check:Self-check switch<br>int8 bee:Beeper switch<br>bool force:Force control support<br>bool touch:Tactile support<br>int8 touch_num:Number of tactile sensors<br>int8 touch_sw:Tactile switch<br>int8 hand:Hand orientation, including 1 - Left hand, 2 - Right hand<br>int32[6] pos_up:Position upper limit<br>int32[6] pos_low:Position lower limit<br>int32[6] angle_up:Angle upper limit,Unit: 0.01 degrees.<br>int32[6] angle_low:Angle lower limit,Unit: 0.01 degrees.<br>int32[6] speed_up:Speed upper limit<br>int32[6] speed_low:Speed lower limit<br>int32[6] force_up:Force upper limit<br>int32[6] force_low:Force lower limit,Unit: 0.001N.|
 | query example | ros2 topic echo /rm_driver/udp_rm_plus_base |
 
 * Reading Real-Time Information of End-Effector Device
 
 | Function Description | Reading Real-Time Information of End-Effector Device |
 | :----: | :---- |
-| parameter description | rm_ros_interfaces::msg::Rmplusstate.msg<br>int32 sys_state:System status.<br>int32[12] dof_state:Current status of each degree of freedom (DoF)<br>int32[12] dof_err:Error information of each DoF<br>int32[12] pos: Current position of each DoF<br>int32[12] speed:Current speed of each DoF<br>int32[12] angle:Current Angle of Each Degree of Freedom angle,Unit: 0.01 degrees.<br>int32[12] current:Current of each DoF,Unit: mA.<br>int32[18] normal_force:Normal force of the tactile three-dimensional force of each DoF<br>int32[18] tangential_force:Tangential force of the tactile three-dimensional force of each DoF<br>int32[18] tangential_force_dir:Direction of the tangential force of the tactile three-dimensional force of each DoF<br>uint32[12] tsa:Tactile self-approach of each DoF<br>uint32[12] tma:Tactile mutual approach of each DoF<br>int32[18] touch_data:Raw data from the tactile sensor<br>int32[12] force:Torque of each DoF,Unit: 0.001N.|
+| parameter description | rm_ros_interfaces::msg::Rmplusstate.msg<br>int32 sys_state:System status.<br>int32[6] dof_state:Current status of each degree of freedom (DoF)<br>int32[6] dof_err:Error information of each DoF<br>int32[6] pos: Current position of each DoF<br>int32[6] speed:Current speed of each DoF<br>int32[6] angle:Current Angle of Each Degree of Freedom angle,Unit: 0.01 degrees.<br>int32[6] current:Current of each DoF,Unit: mA.<br>int32[18] normal_force:Normal force of the tactile three-dimensional force of each DoF<br>int32[18] tangential_force:Tangential force of the tactile three-dimensional force of each DoF<br>int32[18] tangential_force_dir:Direction of the tangential force of the tactile three-dimensional force of each DoF<br>uint32[12] tsa:Tactile self-approach of each DoF<br>uint32[12] tma:Tactile mutual approach of each DoF<br>int32[18] touch_data:Raw data from the tactile sensor<br>int32[6] force:Torque of each DoF,Unit: 0.001N.|
 | query example | ros2 topic echo /rm_driver/udp_rm_plus_state |

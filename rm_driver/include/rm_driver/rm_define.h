@@ -48,6 +48,8 @@ typedef enum{
     RM_MODEL_ZPFR74_E,    ///< ZM7RII
     RM_MODEL_RXL75II_E,    ///< 人型机器人左臂II
     RM_MODEL_RXR75II_E,    ///< 人型机器人右臂II
+    RM_MODEL_RXL75T_E,    ///< 力矩左臂
+    RM_MODEL_RXR75T_E,    ///< 力矩右臂
 }rm_robot_arm_model_e;
 
 /**

@@ -1,12 +1,12 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_gazebo/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_gazebo/README.md)
+[简体中文](README_CN.md)|[English](README.md)
  
 </div>
 
 <div align="center">
 
-# RealMan Robotic Arm rm_gazebo User Manual V1.6
+# RealMan Robotic Arm rm_gazebo User Manual V1.7
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -22,8 +22,21 @@ Revision History:
 |V1.4    | 2025-4-3 | Amend(Add Gen72_II adapter files) |
 |V1.5    | 2025-11-13 | Amend(Add RML63_III adapter files) |
 |V1.6    | 2026-4-16 | Amend(Add ECO62 and RX75 adapter files, update Gazebo version) |
+|V1.7    | 2026-8-14 | Amend(Add the Foxy Gazebo Classic unified entry and synchronized simulation models) |
 
 </div>
+
+## Launch examples
+
+After building and sourcing the workspace, simulate an RM65 with integrated force sensing in Gazebo:
+
+```bash
+# Simulation (generation 3 and 4 both retain the 6fb model name)
+ros2 launch rm_gazebo rm_gazebo.launch.py \
+  arm_type:=65-6fb
+```
+
+This package starts Gazebo simulation, which does not connect to a controller or depend on its software version. Generation 4 software 1.0.6 and later names the former `6fb` end link `6f`; keep `65-6fb` when simulating the same geometry. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
 
 ## Content
 * 1.[rm_gazebo Package Description](#rm_gazebo_Package_Description)
@@ -41,6 +54,34 @@ Through the introduction of this part, it can help you:
 * 2.Familiar with the file structure and function of the package.
 Source code address: https://github.com/RealManRobot/ros2_rm_robot.git。
 ## rm_gazebo_Package_Running
+The unified entry point is recommended:
+
+```bash
+ros2 launch rm_gazebo rm_gazebo.launch.py \
+  arm_type:=65-6f
+```
+
+This Foxy branch deliberately uses Gazebo Classic (`gazebo_ros` and
+`gazebo_ros2_control`), not the newer `ros_gz` stack. `arm_type` is required;
+Select the model directly with `arm_type`, such as `65-6f`.
+
+| Argument | Default | Description |
+| :--- | :--- | :--- |
+| `arm_type` | Required | Model and end-link version, e.g. `65-6f` or `rx75-6fb` |
+| `model` | `auto` | `auto` prefers matching DAE and falls back to STL; `stl` selects the original meshes, `dae` requires matching DAE |
+| `start_gazebo` | `true` | Start Gazebo Classic; `false` connects to an existing Gazebo world |
+| `use_gazebo_gui` | `true` | Open the graphical interface when starting Gazebo |
+| `clock_topic` | `auto` | ROS simulation clock topic; `auto` uses `/clock` |
+| `joint_states_topic` | `auto` | Currently accepts only `auto`, selecting the default joint-state topic for the model |
+| `use_sim_time` | `true` | Use the Gazebo simulation clock in robot_state_publisher |
+| `spawn_entity_timeout` | `120` | Timeout for waiting for the Gazebo spawn service, in seconds |
+
+The 14 model/end-link combinations with DAE assets default to colored DAE in Gazebo Classic and RViz2; other models keep STL. Only visuals change; collision and physics stay unchanged.
+
+Controller startup is sequenced after successful entity spawn,
+and a failed entity/controller process requests launch shutdown. The 21 old
+Gazebo files remain compatibility wrappers.
+
 ### Control_of_the_simulation_robotic_arm
 After the installation of the environment and the package, we can run the rm_gazebo package.  
 Use the following command to launch the Gazebo virtual space and the virtual robotic arm.
@@ -103,6 +144,7 @@ The current rm_gazebo package is composed of the following files.
 │   ├── rm_gazebo1.png
 │   └── rm_gazebo2.png
 ├── launch
+│   ├── rm_gazebo.launch.py                 # unified Gazebo Classic entry
 │   ├── gazebo_63_6fb_demo.launch.py       #63 integrated six-axis force gazebo launch file
 │   ├── gazebo_63_6f_demo.launch.py        #63 six-axis force gazebo launch file
 │   ├── gazebo_63_demo.launch.py           #63 gazebo launch file

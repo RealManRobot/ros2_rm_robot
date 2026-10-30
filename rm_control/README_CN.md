@@ -1,12 +1,12 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_control/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_control/README.md)
+[简体中文](README_CN.md)|[English](README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_moveit2_config使用说明书V1.2
+# 睿尔曼机器人rm_control使用说明书V1.4
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -16,8 +16,26 @@
 |V1.0    |2024-2-19  |拟制 |
 |V1.1    |2024-7-3   |修订(添加GEN72相关适配文件) |
 |V1.2    |2024-9-10  |修订(添加ECO63相关适配文件) |
+|V1.3    |2026-4-16  |修订(添加ECO62、RX75相关适配文件) |
+|V1.4    |2026-8-14  |修订(新增统一控制launch、follow覆盖参数和型号wrapper) |
 
 </div>
+
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 为例：
+
+```bash
+# 启动真机轨迹控制节点（三、四代均使用基础型号）
+ros2 launch rm_control rm_control.launch.py \
+  arm_type:=65
+
+# 注：四代控制器软件自 1.0.6 起将原 6fb 末端统一命名为 6f。
+# rm_driver 和 rm_control 只需指定基础型号，如 63、65、75、eco63 或 eco65，无需末端后缀。
+# 此处仅提示三、四代的命名差异，启动参数保持一致。
+```
+
+本包用于真机链路；Gazebo 使用仿真控制器。`arm_type` 按基础型号选择配置。 运行前需先启动 `rm_driver`。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
 
 ## 目录
 * 1.[rm_control功能包说明](#rm_control功能包说明)
@@ -39,6 +57,25 @@ rm_control功能包为实现moveit2控制真实机械臂时所必须的一个功
 * 3.熟悉功能包相关的话题，方便开发和使用
 ## rm_control功能包使用
 ### 功能包基础使用
+推荐使用统一入口：
+
+```bash
+ros2 launch rm_control rm_control.launch.py arm_type:=65 follow:=auto
+```
+
+| 参数 | 默认值 | 说明 |
+| :--- | :--- | :--- |
+| `arm_type` | 无，必须指定 | 型号或带末端后缀的型号，例如 `65`、`65-6fb`、`rx75` |
+| `follow` | `auto` | 透传跟随模式：`true` 为高跟随，`false` 为低跟随；`auto` 使用下方所述型号默认值 |
+
+`arm_type` 必须指定，可选 `63`、`63_iii`、`65`、`75`、`eco62`、
+`eco63`、`eco65`、`gen72`、`gen72_ii` 或 `rx75`。也支持 `65-6fb` 等后缀写法，
+支持值见[型号表](../rm_bringup/README_CN.md)；控制型号编号和默认 follow 使用基础型号的配置。`follow` 仅接受
+`auto`、`true` 或 `false`。`auto` 保留历史型号默认值：RM75、GEN72、
+GEN72-II和RX75默认高跟随，其他型号默认低跟随。RX75会启动左右两个
+带namespace的control节点。原有8个型号入口保留为兼容wrapper，无效
+参数会在节点启动前报错。
+
 首先配置好环境完成连接后我们可以通过以下命令直接启动节点，运行rm_control功能包。
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_<arm_type>_control.launch.py
@@ -75,6 +112,7 @@ rm@rm-desktop: ~/ros2_ws$ colcon build
 │   ├── cubicSpline.h               #三次样条插值头文件
 │   └── rm_control.h                #rm_control头文件
 ├── launch
+│   ├── rm_control.launch.py         #统一control启动入口
 │   ├── rm_63_control.launch.py     #63启动文件
 │   ├── rm_65_control.launch.py     #65启动文件
 │   ├── rm_75_control.launch.py     #75启动文件

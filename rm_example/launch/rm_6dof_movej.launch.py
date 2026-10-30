@@ -14,4 +14,3 @@ def generate_launch_description():
     ld.add_action(movej_node)
     return ld
 
-

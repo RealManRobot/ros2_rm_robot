@@ -11,17 +11,17 @@
     name="base_link">
     <inertial>
       <origin
-        xyz="0.0002051 -8.259E-05 0.043092"
+        xyz="0.0014213 -0.00010164 0.050087"
         rpy="0 0 0" />
       <mass
-        value="1.6314" />
+        value="1.862" />
       <inertia
-        ixx="0.0022252"
-        ixy="7.9005E-06"
-        ixz="-7.7558E-05"
-        iyy="0.0022156"
-        iyz="5.9846E-06"
-        izz="0.0018513" />
+        ixx="0.00099641"
+        ixy="-3.2815E-06"
+        ixz="1.0053E-05"
+        iyy="0.0010164"
+        iyz="-1.2859E-06"
+        izz="0.00067934" />
     </inertial>
     <visual>
       <origin
@@ -51,17 +51,17 @@
     name="link1">
     <inertial>
       <origin
-        xyz="-0.030909 -0.0013023 -0.0053121"
+        xyz="-0.068442 -0.023913 -0.006938"
         rpy="0 0 0" />
       <mass
-        value="1.7668" />
+        value="1.837" />
       <inertia
-        ixx="0.0014534"
-        ixy="-0.00017578"
-        ixz="0.0002802"
-        iyy="0.0043772"
-        iyz="1.7209E-05"
-        izz="0.0040911" />
+        ixx="0.002323337"
+        ixy="-0.000758998"
+        ixz="0.000825985"
+        iyy="0.003950377"
+        iyz="0.000254693"
+        izz="0.003921999" />
     </inertial>
     <visual>
       <origin
@@ -111,17 +111,17 @@
     name="base_link">
     <inertial>
       <origin
-        xyz="0.000204933302096124 -8.24661684233942E-05 0.0435919339026087"
+        xyz="0.00020481 -8.2366E-05 0.043092"
         rpy="0 0 0" />
       <mass
-        value="0.604237569846431" />
+        value="1.1" />
       <inertia
-        ixx="0.00082415777403083"
-        ixy="2.9270718368632E-06"
-        ixz="-2.8722520476522E-05"
-        iyy="0.000820579526371655"
-        iyz="2.21535061552891E-06"
-        izz="0.000685679517381249" />
+        ixx="0.00082415"
+        ixy="-2.9296E-06"
+        ixz="2.8721E-05"
+        iyy="0.00082056"
+        iyz="-2.2126E-06"
+        izz="0.00068567" />
     </inertial>
     <visual>
       <origin
@@ -151,17 +151,17 @@
     name="link1">
     <inertial>
       <origin
-        xyz="-0.030909 -0.0013023 -0.0053121"
+        xyz="-0.0129 0.0001 -0.0298"
         rpy="0 0 0" />
       <mass
-        value="1.7668" />
+        value="1.5979" />
       <inertia
-        ixx="0.0014534"
-        ixy="-0.00017578"
-        ixz="0.0002802"
-        iyy="0.0043772"
-        iyz="1.7209E-05"
-        izz="0.0040911" />
+        ixx="0.0017312851"
+        ixy="-0.0000201865"
+        ixz="0.0006018106"
+        iyy="0.0031817492"
+        iyz="0.0000016777"
+        izz="0.0025668855" />
     </inertial>
     <visual>
       <origin
@@ -208,20 +208,38 @@
   </xacro:if>
   <link
     name="link2">
-    <inertial>
-      <origin
-        xyz="0.16852 9.8217E-07 -0.077258"
-        rpy="0 0 0" />
-      <mass
-        value="4.3415" />
-      <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
-    </inertial>
+    <xacro:if value="${ base_type =='base_link' }">
+      <inertial>
+        <origin
+          xyz="0.1667 -0.000002 -0.09259"
+          rpy="0 0 0" />
+        <mass
+          value="2.006" />
+        <inertia
+          ixx="0.001465511"
+          ixy="-0.000001176"
+          ixz="-0.000161533"
+          iyy="0.030618537"
+          iyz="0.00000004"
+          izz="0.030971934" />
+      </inertial>
+    </xacro:if>
+    <xacro:if value="${ base_type =='base_link_III' }">
+      <inertial>
+        <origin
+          xyz="0.1098 0.0001 -0.0672"
+          rpy="0 0 0" />
+        <mass
+          value="2.9903" />
+        <inertia
+          ixx="0.0032215462"
+          ixy="0.0000006897"
+          ixz="0.0040170668"
+          iyy="0.0532159255"
+          iyz="0.0000012973"
+          izz="0.0524195464" />
+      </inertial>
+    </xacro:if>
     <visual>
       <origin
         xyz="0 0 0"
@@ -266,20 +284,38 @@
   </joint>
   <link
     name="link3">
-    <inertial>
-      <origin
-        xyz="0.034488 -0.010948 -0.0056239"
-        rpy="0 0 0" />
-      <mass
-        value="1.7286" />
-      <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
-    </inertial>
+    <xacro:if value="${ base_type =='base_link' }">
+      <inertial>
+        <origin
+          xyz="0.033399 -0.029498 -0.017697"
+          rpy="0 0 0" />
+        <mass
+          value="1.961" />
+        <inertia
+          ixx="0.004112772"
+          ixy="0.001938241"
+          ixz="-0.001141244"
+          iyy="0.0042931"
+          iyz="0.001002886"
+          izz="0.005363959" />
+      </inertial>
+    </xacro:if>
+    <xacro:if value="${ base_type =='base_link_III' }">
+      <inertial>
+        <origin
+          xyz="0.0144 -0.0056 -0.0294"
+          rpy="0 0 0" />
+        <mass
+          value="1.357" />
+        <inertia
+          ixx="0.0019004631"
+          ixy="0.0003993072"
+          ixz="-0.0005755251"
+          iyy="0.0026290758"
+          iyz="0.0002275281"
+          izz="0.0021313348" />
+      </inertial>
+    </xacro:if>
     <visual>
       <origin
         xyz="0 0 0"
@@ -324,20 +360,38 @@
   </joint>
   <link
     name="link4">
-    <inertial>
-      <origin
-        xyz="4.1778E-07 -0.030483 -0.19739"
-        rpy="0 0 0" />
-      <mass
-        value="2.4734" />
-      <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />i
-    </inertial>
+    <xacro:if value="${ base_type =='base_link' }">
+      <inertial>
+        <origin
+          xyz="0 -0.035177 -0.1844"
+          rpy="0 0 0" />
+        <mass
+          value="1.201" />
+        <inertia
+          ixx="0.010697086"
+          ixy="-0.000000036"
+          ixz="0.000000111"
+          iyy="0.009929454"
+          iyz="0.002698114"
+          izz="0.001388994" />
+      </inertial>
+    </xacro:if>
+    <xacro:if value="${ base_type =='base_link_III' }">
+      <inertial>
+        <origin
+          xyz="-0.0001 -0.023 0.2362"
+          rpy="0 0 0" />
+        <mass
+          value="1.8636" />
+        <inertia
+          ixx="0.0233659749"
+          ixy="-0.0000002808"
+          ixz="-0.000011416"
+          iyy="0.0219583225"
+          iyz="0.0054859936"
+          izz="0.0026979008" />
+      </inertial>
+    </xacro:if>
     <visual>
       <origin
         xyz="0 0 0"
@@ -382,20 +436,38 @@
   </joint>
   <link
     name="link5">
-    <inertial>
-      <origin
-        xyz="5.2596E-06 0.025125 -0.0072574"
-        rpy="0 0 0" />
-      <mass
-        value="0.93162" />
-      <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
-    </inertial>
+    <xacro:if value="${ base_type =='base_link' }">
+      <inertial>
+        <origin
+          xyz="-0.000031 0.030146 -0.012341"
+          rpy="0 0 0" />
+        <mass
+          value="1.026" />
+        <inertia
+          ixx="0.001643891"
+          ixy="-0.000003076"
+          ixz="0.000000764"
+          iyy="0.000673543"
+          iyz="-0.000383963"
+          izz="0.001451996" />
+      </inertial>
+    </xacro:if>
+    <xacro:if value="${ base_type =='base_link_III' }">
+      <inertial>
+        <origin
+          xyz="0.0001 0.0326 -0.0152"
+          rpy="0 0 0" />
+        <mass
+          value="1.0227" />
+        <inertia
+          ixx="0.0019750111"
+          ixy="0.0000021684"
+          ixz="-0.0000014555"
+          iyy="0.0007714019"
+          iyz="-0.0005071366"
+          izz="0.0016577729" />
+      </inertial>
+    </xacro:if>
     <visual>
       <origin
         xyz="0 0 0"
@@ -441,20 +513,38 @@
   <xacro:if value="${ link6_type =='Link6' }">
     <link
     name="link6">
-    <inertial>
-      <origin
-        xyz="-0.00092265 9.4391E-05 -0.012705"
-        rpy="0 0 0" />
-      <mass
-        value="0.065037" />
-      <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
-    </inertial>
+    <xacro:if value="${ base_type =='base_link' }">
+      <inertial>
+        <origin
+          xyz="-0.000481 0.000365 -0.010605"
+          rpy="0 0 0" />
+        <mass
+          value="0.107" />
+        <inertia
+          ixx="0.000041460"
+          ixy="-0.000003111"
+          ixz="-0.000000113"
+          iyy="0.000038008"
+          iyz="0.000000097"
+          izz="0.000064288" />
+      </inertial>
+    </xacro:if>
+    <xacro:if value="${ base_type =='base_link_III' }">
+      <inertial>
+        <origin
+          xyz="-0.0005 0 -0.0101"
+          rpy="0 0 0" />
+        <mass
+          value="0.107" />
+        <inertia
+          ixx="0.0000427569"
+          ixy="-0.0000000681"
+          ixz="-0.0000001774"
+          iyy="0.0000353575"
+          iyz="0.0000000298"
+          izz="0.0000639583" />
+      </inertial>
+    </xacro:if>
     <visual>
       <origin
         xyz="0 0 0"
@@ -503,17 +593,17 @@
     name="link6">
     <inertial>
       <origin
-        xyz="-0.00032091 0.00017748 -0.028468"
+        xyz="-0.000481 0.000365 -0.010605"
         rpy="0 0 0" />
       <mass
-        value="0.14814" />
+        value="0.248" />
       <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
+        ixx="0.000041460"
+        ixy="-0.000003111"
+        ixz="-0.000000113"
+        iyy="0.000038008"
+        iyz="0.000000097"
+        izz="0.000064288" />
     </inertial>
     <visual>
       <origin
@@ -561,20 +651,38 @@
     <xacro:if value="${ link6_type =='Link6_6fb' }">
        <link
     name="link6">
-    <inertial>
-      <origin
-        xyz="-3.305E-05 -7.0431E-06 -0.023738"
-        rpy="0 0 0" />
-      <mass
-        value="0.3056" />
-      <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
-    </inertial>
+    <xacro:if value="${ base_type =='base_link' }">
+      <inertial>
+        <origin
+          xyz="-0.000481 0.000365 -0.010605"
+          rpy="0 0 0" />
+        <mass
+          value="0.248" />
+        <inertia
+          ixx="0.000041460"
+          ixy="-0.000003111"
+          ixz="-0.000000113"
+          iyy="0.000038008"
+          iyz="0.000000097"
+          izz="0.000064288" />
+      </inertial>
+    </xacro:if>
+    <xacro:if value="${ base_type =='base_link_III' }">
+      <inertial>
+        <origin
+          xyz="-0.0005 0 -0.0101"
+          rpy="0 0 0" />
+        <mass
+          value="0.248" />
+        <inertia
+          ixx="0.0000427569"
+          ixy="-0.0000000681"
+          ixz="-0.0000001774"
+          iyy="0.0000353575"
+          iyz="0.0000000298"
+          izz="0.0000639583" />
+      </inertial>
+    </xacro:if>
     <visual>
       <origin
         xyz="0 0 0"

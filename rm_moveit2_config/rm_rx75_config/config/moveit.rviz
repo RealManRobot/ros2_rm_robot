@@ -13,20 +13,6 @@ Visualization Manager:
     - Class: rviz_default_plugins/Grid
       Name: Grid
       Value: true
-    - Class: moveit_rviz_plugin/Trajectory
-      Enabled: true
-      Name: Trajectory
-      Robot Description: robot_description
-      Trajectory Topic: /display_planned_path
-      Value: true
-    - Class: moveit_rviz_plugin/PlanningScene
-      Enabled: true
-      Name: PlanningScene
-      Planning Scene Topic: /monitored_planning_scene
-      Robot Description: robot_description
-      Scene Robot:
-        Robot Alpha: 0.5
-      Value: true
     - Class: moveit_rviz_plugin/MotionPlanning
       Enabled: true
       Move Group Namespace: ""

@@ -19,28 +19,28 @@
         <self_collide>false</self_collide>
         <gravity>false</gravity>
     </gazebo>
-    <gazebo reference="link1">
+    <gazebo reference="Link1">
         <material>Gazebo/Purple</material>
         <self_collide>false</self_collide>
         <gravity>false</gravity>
     </gazebo>
-    <gazebo reference="link2">
+    <gazebo reference="Link2">
         <material>Gazebo/Red</material>
         <gravity>false</gravity>
     </gazebo>
-    <gazebo reference="link3">
+    <gazebo reference="Link3">
         <material>Gazebo/Blue</material>
         <gravity>false</gravity>
     </gazebo>
-    <gazebo reference="link4">
+    <gazebo reference="Link4">
         <material>Gazebo/Green</material>
         <gravity>false</gravity>
     </gazebo>
-    <gazebo reference="link5">
+    <gazebo reference="Link5">
         <material>Gazebo/Yellow</material>
         <gravity>false</gravity>
     </gazebo>
-    <gazebo reference="link6">
+    <gazebo reference="Link6">
         <material>Gazebo/Orange</material>
         <gravity>false</gravity>
     </gazebo>
@@ -111,4 +111,3 @@
 
 
 </robot>
-

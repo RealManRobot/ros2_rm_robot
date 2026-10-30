@@ -1,10 +1,13 @@
 import os
 import yaml
 from launch import LaunchDescription
+from launch.actions import EmitEvent
+from launch.events import Shutdown
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch.conditions import IfCondition, UnlessCondition
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 from launch.actions import ExecuteProcess
 from ament_index_python.packages import get_package_share_directory
 import xacro
@@ -38,6 +41,11 @@ def generate_launch_description():
 
     tutorial_arg = DeclareLaunchArgument(
         "rviz_tutorial", default_value="False", description="Tutorial flag"
+    )
+
+    use_rviz_arg = DeclareLaunchArgument("use_rviz", default_value="true")
+    allow_trajectory_execution_arg = DeclareLaunchArgument(
+        "allow_trajectory_execution", default_value="true"
     )
 
     robot_description_config = xacro.process_file(
@@ -97,7 +105,17 @@ def generate_launch_description():
         "publish_transforms_updates": True,
     }
 
+    move_group_configuration = {
+        "allow_trajectory_execution": ParameterValue(
+            LaunchConfiguration("allow_trajectory_execution"),
+            value_type=bool,
+        )
+    }
+
     run_move_group_node = Node(
+        on_exit=[
+            EmitEvent(event=Shutdown(reason="MoveIt move_group exited"))
+        ],
         package="moveit_ros_move_group",
         executable="move_group",
         output="screen",
@@ -109,6 +127,7 @@ def generate_launch_description():
             trajectory_execution,
             moveit_controllers,
             planning_scene_monitor_parameters,
+            move_group_configuration,
         ],
     )
 
@@ -117,6 +136,7 @@ def generate_launch_description():
     rviz_full_config = os.path.join(rviz_base, "moveit.rviz")
 
     rviz_node = Node(
+        condition=IfCondition(LaunchConfiguration("use_rviz")),
         package="rviz2",
         executable="rviz2",
         name="rviz2",
@@ -175,6 +195,8 @@ def generate_launch_description():
     return LaunchDescription(
         [
             tutorial_arg,
+            use_rviz_arg,
+            allow_trajectory_execution_arg,
             rviz_node,
             static_tf,
             robot_state_publisher,

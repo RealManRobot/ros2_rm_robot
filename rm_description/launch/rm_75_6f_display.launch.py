@@ -1,31 +1,36 @@
 import os
+
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch_ros.actions import Node
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 
-import xacro
 
 def generate_launch_description():
-    # 声明参数 link7_type
-    declare_link7_type_arg = DeclareLaunchArgument(
-        'link7_type',
-        default_value='Link7_6f',
-        description='Type of link7'
+    actions = [
+        DeclareLaunchArgument("model", default_value="auto", choices=["auto", "stl", "dae"]),
+        DeclareLaunchArgument("link7_type", default_value="Link7_6f"),
+    ]
+    launch_arguments = {
+        "model": LaunchConfiguration("model"),
+        "arm_type": "75-6f",
+        "use_sim_time": "false",
+        "joint_states_topic": "/joint_states",
+        "link7_type_override": LaunchConfiguration("link7_type"),
+        "use_joint_state_bridge": "false",
+        "use_joint_state_publisher_gui": "false",
+        "use_rviz": "false",
+    }
+    unified_launch = os.path.join(
+        get_package_share_directory("rm_description"),
+        "launch",
+        "rm_description.launch.py",
     )
-    realman_xacro_file = os.path.join(get_package_share_directory('rm_description'), 'urdf',
-                                        'rm_75.urdf.xacro')
-    robot_description = Command(
-        [FindExecutable(name='xacro'), ' ', realman_xacro_file, ' ','link7_type:=', LaunchConfiguration('link7_type')])
-
-    return LaunchDescription([
-            Node(
-                package='robot_state_publisher',
-                executable='robot_state_publisher',
-                name='robot_state_publisher',
-                respawn=True,
-                parameters=[{'robot_description': robot_description}],
-                output='screen'
-            )
-        ])
+    actions.append(
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(unified_launch),
+            launch_arguments=launch_arguments.items(),
+        )
+    )
+    return LaunchDescription(actions)

@@ -1,12 +1,12 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_description/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_description/README.md)
+[简体中文](README_CN.md)|[English](README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_description使用说明书V1.6
+# 睿尔曼机器人rm_description使用说明书V1.7
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -20,8 +20,25 @@
 | V1.4  |2025-4-7 |修订(添加了GEN72_II适配文件) |
 | V1.5  |2025-11-13 |修订(添加了RML63_III适配文件) |
 | V1.6  |2026-4-16 |修订(添加ECO62、RX75适配文件) |
+| V1.7  |2026-8-14 |修订(新增统一模型描述入口、同步URDF数据并修正RX75 J8偏移) |
 
 </div>
+
+## 启动示例
+
+构建并 source 工作区后，以一体化六维力 RM65 的模型显示为例：
+
+```bash
+# 仿真预览 / 三代或四代旧软件的模型显示（GUI 调整关节）
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=true
+
+# 真机状态显示（四代控制器软件 > 1.0.5；先启动 rm_driver）
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6fb use_rviz:=true use_joint_state_publisher_gui:=false
+```
+
+四代控制器软件从 `1.0.6` 起将原 `6fb` 末端命名为 `6f`；本包不读取控制器代际，单独启动时仍使用 `65-6fb` 选择同一模型。真机显示使用驱动上报的关节状态，不启用 GUI 关节发布器。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
 
 ## 目录
 * 1.[rm_description功能包说明](#rm_description功能包说明)
@@ -40,6 +57,36 @@ rm_description功能包为显示机器人模型和TF变换的功能包，通过�
 * 2.熟悉功能包中的文件构成及作用。
 * 3.熟悉功能包相关的话题，方便开发和使用
 ## rm_description功能包使用
+推荐使用统一入口：
+
+```bash
+ros2 launch rm_description rm_description.launch.py \
+  arm_type:=65-6f use_joint_state_publisher_gui:=true use_rviz:=true
+```
+
+| 参数 | 默认值 | 说明 |
+| :--- | :--- | :--- |
+| `arm_type` | 无，必须指定 | 型号与末端版本，例如 `65-6f`、`eco63-6fb`；支持值见下方型号表链接 |
+| `model` | `auto` | 有配套资源时优先使用 DAE，否则使用 STL；`stl` 切回原网格，`dae` 要求配套 DAE |
+| `use_sim_time` | `false` | 是否使用 ROS 仿真时钟 |
+| `joint_states_topic` | `/joint_states` | 模型读取的关节状态话题；启用双臂桥接时也作为合并后的输出话题 |
+| `use_joint_state_bridge` | `auto` | 是否合并双臂关节状态；`auto` 仅对 RX75 启用，也可指定 `true` 或 `false` |
+| `left_joint_states_topic` | `/left_arm/joint_states` | 双臂桥接读取的左臂关节状态话题，仅启用桥接时使用 |
+| `right_joint_states_topic` | `/right_arm/joint_states` | 双臂桥接读取的右臂关节状态话题，仅启用桥接时使用 |
+| `use_joint_state_publisher_gui` | `false` | 是否启动关节滑块 GUI，用于手动调整模型姿态 |
+| `use_rviz` | `false` | 是否启动模型显示用 RViz |
+| `left_xyz` | `0 0.075 1.5` | 仅 RX75：左臂安装位置 `x y z`，单位 m |
+| `left_rpy` | `3.14 -1.57 1.5707963267949` | 仅 RX75：左臂安装姿态 `roll pitch yaw`，单位 rad |
+| `right_xyz` | `0 -0.075 1.5` | 仅 RX75：右臂安装位置 `x y z`，单位 m |
+| `right_rpy` | `3.14 -1.57 -1.5707963267949` | 仅 RX75：右臂安装姿态 `roll pitch yaw`，单位 rad |
+
+`arm_type` 直接选择型号和末端版本，支持值见
+[rm_bringup能力表](../rm_bringup/README_CN.md)。
+有 DAE 的型号默认使用 DAE（带材质和颜色的模型）；添加 `model:=stl` 使用原 STL（不带颜色与材质的模型），
+`model:=dae` 使用 DAE。旧 display 入口也支持 `model`。
+DAE 及其贴图随包安装，位于 `rm_description/meshes/dae/`。
+
+
 首先配置好环境完成连接后我们可以通过以下命令直接启动节点，运行rm_description功能包。  
 ```
 rm@rm-desktop:~$ ros2 launch rm_description rm_<arm_type>_display.launch.py
@@ -83,6 +130,7 @@ rm@rm-desktop:~$ rviz2
 ```
 ├── CMakeLists.txt                #编译规则文件
 ├── launch
+│   ├── rm_description.launch.py     #统一模型描述入口
 │   ├── rm_63_6f_display.launch.py  #63六维力启动文件
 │   ├── rm_63_6fb_display.launch.py #63一体化六维力启动文件
 │   ├── rm_63_display.launch.py     #63启动文件

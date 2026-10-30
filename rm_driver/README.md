@@ -1,12 +1,12 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_driver/README.md)
+[简体中文](README_CN.md)|[English](README.md)
  
 </div>
 
 <div align="center">
 
-# RealMan Robot rm_driver User Manual V1.7
+# RealMan Robot rm_driver User Manual V1.7.1
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -23,10 +23,27 @@ Revision History:
 |V1.5   | 2025-5-29 | Amend(Adapt to fourth-generation controllers, add a version query interface, Cartesian space linear offset motion interface, Modbus interface, and trajectory list interface; see the topic interface description document for details) |
 |V1.6   | 2025-11-13 | Amend(Add basic UDP enable configurations) |
 |V1.7   | 2026-4-16 | Amend(Add ECO62 and RX75 adapter files) |
+|V1.7.1 | 2026-8-14 | Amend(Add SDK V1.1.6, unified launch, Modbus timeouts, endpoint ownership, and signal-safe cleanup for Foxy) |
 
 </div>
 
  
+
+## Launch examples
+
+After building and sourcing the workspace, for an RM65 with integrated force sensing:
+
+```bash
+# Connect to the real robot (generation 3 and 4 both use the base model)
+ros2 launch rm_driver rm_driver.launch.py \
+  arm_type:=65
+
+# Note: Generation 4 software 1.0.6 and later names the former 6fb end link 6f.
+# rm_driver and rm_control only need a base model, such as 63, 65, 75, eco63 or eco65.
+# The naming difference does not change these launch arguments.
+```
+
+This package is part of the real-robot control chain; Gazebo uses simulation controllers. `arm_type` selects the base-family configuration. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
 
 ## Content
 * 1.rm_driver package description
@@ -53,6 +70,39 @@ Through the introduction of the three parts, it can help you:
 Source code address:https://github.com/RealManRobot/ros2_rm_robot.git.
 ## 2. rm_driver package use
 ### 2.1 Basic use of the package
+The unified entry point is recommended:
+
+```bash
+ros2 launch rm_driver rm_driver.launch.py arm_type:=65
+```
+
+| Argument | Default | Description |
+| :--- | :--- | :--- |
+| `arm_type` | Required | Model with an optional end-link suffix, e.g. `65`, `65-6fb` or `rx75`; see the [model table](../rm_bringup/README.md). Driver configuration is selected by the base model |
+| `driver_config` | `auto` | Single-arm driver YAML path; `auto` selects the model default |
+| `left_driver_config` | `auto` | RX75 only: left-arm driver YAML path; `auto` selects the default left-arm configuration |
+| `right_driver_config` | `auto` | RX75 only: right-arm driver YAML path; `auto` selects the default right-arm configuration |
+
+Invalid model/config combinations and missing YAML files fail before a driver
+node starts. RX75 launches two namespaced driver nodes. The eight historical
+model launch files remain supported as compatibility wrappers.
+
+The driver takes a host-local non-blocking lock on `arm_ip:tcp_port` before SDK
+initialization. A second process using the same endpoint exits non-zero; a
+different endpoint may run concurrently. SIGINT, SIGTERM, and SIGHUP converge
+on the same idempotent SDK cleanup path. This cleanup is best effort and does
+not replace a controller watchdog or hardware emergency stop for SIGKILL,
+power loss, or process crashes.
+
+Modbus V1.7.1 message additions:
+
+- `RS485params.timeout`: third-generation Modbus RTU timeout in 100 ms units;
+  non-positive input uses the compatible default `5` (500 ms).
+- `Modbustcpmasterinfo.timeout`: third-generation Modbus TCP timeout in ms;
+  non-positive input uses the compatible default `2000` ms.
+- Fourth-generation query responses report `timeout=0` because that SDK path
+  does not expose a timeout value.
+
 First, after configuring the environment and completing the connection, we can directly start the node and control the robotic arm through the following command.
 The current control is based on the fact that we have not changed the IP of the robotic arm, which is still 192.168.1.18.
 rm@rm-desktop:~$ ros2 launch rm_driver rm_<arm_type>_driver.launch.py
@@ -137,27 +187,33 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_rx75_left_config.yaml  # RX75 left-arm configuration file
 │   └── rm_rx75_right_config.yaml # RX75 right-arm configuration file
 ├── doc
+│   ├── Description of Function Expansion for Realman Robotic Arm ROS Driver Package.md
 │   ├── RealMan Robotic Arm rm_driver Topic Detailed Description (ROS2).md
 │   ├── rm_driver1.png
 │   ├── rm_driver2.png
 │   ├── rm_driver3.png
 │   ├── rm_driver4.png
-│   └── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
+│   ├── rm_driver5.png
+│   ├── rm_driver6.png
+│   ├── rm_driver7.png
+│   ├── rm_driver8.png
+│   ├── rm_driver9.png
+│   ├── rm_driver10.png
+│   ├── rm_driver11.png
+│   ├── rm_driver12.png
+│   ├── rm_driver13.png
+│   ├── 睿尔曼机械臂ROS2rm_driver话题详细说明.md
+│   └── 睿尔曼机械臂ROS驱动包功能拓展说明.md
 ├── include                       # dependency header file folder
-│   └── rm_driver
-│       ├── cJSON.h                # API header file
-│       ├── constant_define.h      # API header file
-│       ├── rman_int.h             # API header file
-│       ├── rm_base_global.h       # API header file
-│       ├── rm_base.h              # API header file
-│       ├── rm_define.h            # API header file
-│       ├── rm_driver.h            # rm_driver.cpp header file
-│       ├── rm_praser_data.h       # API header file
-│       ├── rm_queue.h             # API header file
-│       ├── rm_service_global.h    # API header file
-│       ├── rm_service.h           # API header file
-│       └── robot_define.h         # API header file
+│   └── rm_driver/
+│       ├── rm_define.h                               # SDK data types, enums and constants
+│       ├── rm_driver.h                               # ROS 2 driver nodes, callbacks and runtime state
+│       ├── rm_interface.h                            # SDK C interface declarations
+│       ├── rm_interface_global.h                     # SDK symbol export macros
+│       ├── rm_service.h                              # SDK C++ RM_Service class interface
+│       └── rm_version.h                              # SDK version definition
 ├── launch
+│   ├── rm_driver.launch.py        # unified driver launch entry
 │   ├── rm_63_driver.launch.py     # 63 launch file
 │   ├── rm_65_driver.launch.py     # 65 launch file
 │   ├── rm_75_driver.launch.py     # 75 launch file
@@ -167,12 +223,12 @@ The current rm_driver package is composed of the following files.
 │   ├── rm_gen72_driver.launch.py  # gen72 launch file
 │   └── rm_rx75_driver.launch.py   # RX75 launch file
 ├── lib
-│   ├── libRM_Service.so -> libRM_Service.so.1.0.0        # API library file
-│   ├── libRM_Service.so.1 -> libRM_Service.so.1.0.0      # API library file
-│   ├── libRM_Service.so.1.0 -> libRM_Service.so.1.0.0    # API library file
-│   ├── libRM_Service.so.1.0.0                            # API library file
-│   ├── linux_arm_service_release_v4.3.7.t7.tar.bz2       # API library file
-│   └── linux_x86_service_release_v4.3.7.t7.tar.bz2       # API library file
+│   ├── lib_install.sh                                # Select and install the SDK library for the host architecture
+│   ├── libapi_cpp.so                                 # SDK shared library linked and installed by CMake
+│   ├── linux_arm64_c++_v1.1.7/
+│   │   └── libapi_cpp.so                             # ARM64 SDK shared library
+│   └── linux_x86_c++_v1.1.7/
+│       └── libapi_cpp.so                             # x86_64 SDK shared library
 ├── package.xml                                           # dependency declaration file
 ├── README_CN.md
 ├── README.md

@@ -1,17 +1,22 @@
+import os
+
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch_ros.actions import Node
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+
+
 def generate_launch_description():
-    ld = LaunchDescription()
-    control_node = Node(
-    package='rm_control', #节点所在的功能包
-    executable='rm_control', #表示要运行的可执行文件名或脚本名字.py
-    parameters= [
-                    {'follow': False},
-                    {'arm_type': 631}
-                ],             #接入参数文件
-    output='screen', #用于将话题信息打印到屏幕
+    unified_launch = os.path.join(
+        get_package_share_directory("rm_control"),
+        "launch",
+        "rm_control.launch.py",
     )
-
-    ld.add_action(control_node)
-    return ld
-
+    return LaunchDescription(
+        [
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(unified_launch),
+                launch_arguments={"arm_type": "eco63"}.items(),
+            )
+        ]
+    )

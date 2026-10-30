@@ -1,17 +1,36 @@
 <div align="right">
 
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/README.md)
+[中文简体](README_CN.md)|
+[English](README.md)
 
 </div>
 
 # ros2_rm_robot
 
+## Launch examples
+
+After building and sourcing the workspace, for an RM65 with integrated force sensing:
+
+```bash
+# Simulation (retains the 6fb model name used by generation 3 and older generation 4 software)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6fb mode:=gazebo
+
+# Real robot (generation 4 controller software > 1.0.5)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6f
+
+# Note: Generation 4 controller software 1.0.6 and later names the former 6fb end link 6f.
+```
+
+Simulation does not connect to a controller and retains the `6fb` model name for this geometry. For a generation 3 robot or older generation 4 software, use `arm_type:=65-6fb`. `mode` defaults to `real` and `allow_trajectory_execution` defaults to `true`. See the [generation-specific model table](rm_bringup/README.md#unified-launch-entry).
+
+
 The package is mainly used for providing ROS2 support for the robotic arm, and the following is the use environment.
 
 * Currently supported robotic arms include RM65, RM75, ECO62, ECO63, ECO65, RML63, GEN72, and RX75 dual-arm series. For details, refer to [RealMan robots](http://www.realman-robotics.com/).
-* Version V1.7.0.
-* Based on robotic arm controller version 1.7.3.
+* Version V1.7.1.
+* Based on robotic arm controller version 1.7.5.
 * The Ubuntu version is 20.04.
 * The ROS2 version is Foxy.
 
@@ -113,7 +132,7 @@ Package introduction
 
 * This package is the moveit2 adaptation package of the robotic arm. It is used to adapt and realize the moveit2 planning and control functions of various series of robotic arms, mainly including the control functions of virtual robotic arm control and real robotic arm control.
 
-10. Moveit2 and hardware driver communication connection ([rm_config](https://github.com/RealManRobot/ros2_rm_robot/tree/foxy/rm_control))
+10. Moveit2 and hardware driver communication connection ([rm_control](rm_control/README.md))
 
 * This package is the communication connection package between the underlying driver package (rm_driver) and the moveit2 package (rm_moveit2_config). It is mainly used to subdivide the planning points of moveit2 and then pass them to the underlying driver package in the form of transmission to control the motion of the robotic arm.
 
@@ -121,15 +140,52 @@ Package introduction
 
 * This package is the gazebo simulation robotic arm package. It is mainly used to display the robotic arm model in the gazebo simulation environment, and the planning and control of the simulated robotic arm can be carried out through moveit2.
 
-12. Use examples ([rm_examples](https://github.com/RealManRobot/ros2_rm_robot/tree/foxy/rm_example))
+12. Use examples ([rm_example](rm_example/README.md))
 
 * This package is some use examples of the robotic arm, and it is mainly used to realize some basic control functions and motion functions of the robotic arm.
 
-13. Technical documentation ([rm_docs](https://github.com/RealManRobot/ros2_rm_robot/tree/foxy/rm_doc))
+13. Technical documentation (`rm_doc`)
 
 * This package is an introduction document package, which mainly includes a document that provides an overall introduction to the content and usage of the packages, as well as a document that provides a detailed introduction to the content and usage of each package.
 
 The above are the current major packages. Each package has its own role. For more details, refer to the documentation under `rm_doc`.
+
+### 2.0 Unified launch entry
+
+Use `arm_type` to select the model and end-link version, for example `65-6f`.
+`mode` defaults to `real` and also accepts `gazebo`.
+
+```bash
+# Simulation (retains the 6fb model name used by generation 3 and older generation 4 software)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6fb mode:=gazebo
+
+# Real robot (generation 4 controller software > 1.0.5)
+ros2 launch rm_bringup rm_bringup.launch.py \
+  arm_type:=65-6f
+
+# Note: Generation 4 controller software 1.0.6 and later names the former 6fb end link 6f.
+```
+
+| Argument | Default | Description |
+| :--- | :--- | :--- |
+| `arm_type` | Required | Model and end-link version, e.g. `65-6f`, `eco63-6fb` |
+| `model` | `auto` | `auto` prefers matching DAE and falls back to STL; `stl` selects the original meshes, `dae` requires matching DAE |
+| `mode` | `real` | `real` or `gazebo` |
+| `allow_trajectory_execution` | `true` | Whether MoveIt may execute trajectories; use `false` for the first real-robot validation |
+| `use_moveit` | `true` | Start MoveIt; when false, also set `use_rviz:=false` |
+| `use_rviz` | `true` | Start MoveIt RViz |
+| `driver_config` | `auto` | Single-arm driver YAML in real mode |
+| `left_driver_config` / `right_driver_config` | `auto` | RX75 left/right driver YAML in real mode |
+| `follow` | `auto` | Real-mode control policy: `auto/true/false` |
+| `joint_states_topic` | `auto` | Only `auto` is public; it selects the model/mode default |
+| `start_gazebo` | `true` | Start Gazebo Classic in gazebo mode |
+| `use_gazebo_gui` | `true` | Start the Gazebo Classic GUI |
+
+Unsupported model selections fail before nodes start. The historical
+model-specific launch files remain supported as compatibility wrappers. See
+the [rm_bringup manual](rm_bringup/README.md) for the complete matrix and all
+arguments.
 
 ### 2.1 Run the virtual robotic arm
 
@@ -180,4 +236,4 @@ Please refer to the following operation specifications when using the robotic ar
 * Place the robotic arm in a safe location when not in use to avoid it from falling down and damaging or injuring other objects during vibration.
 * Disconnect the robotic arm from the power supply in time when not in use.
 
-<!-- v1.7.0 -->
+<!-- v1.7.1 -->

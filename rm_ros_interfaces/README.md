@@ -1,13 +1,13 @@
 <div align="right">
   
-[中文简体](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_ros_interfaces/README_CN.md)|
-[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_ros_interfaces/README.md)
+[中文简体](README_CN.md)|
+[English](README.md)
 
 </div>
 
 <div align="center">
 
-# RealMan Robot rm_ros_interface User Manual V1.2
+# RealMan Robot rm_ros_interface User Manual V1.4
 
 
  
@@ -23,6 +23,7 @@ Revision History-
 |V1.1 | 7-8-2024  | Amend(Add teaching message) |
 |V1.2 | 12-25-2024  | Amend(Add UDP report message) |
 |V1.3 | 04-07-2025  | Amend(API2 Adaptation) |
+|V1.4 | 08-14-2026  | Amend(Add Modbus RTU/TCP timeout fields and direct builtin interface dependency) |
 
 
 </div>
@@ -87,6 +88,17 @@ Through the introduction of the three parts, it can help you-
 * 3.Familiar with the topic related to the package for easy development and use.  
 ## rm_ros_interface_Package_Use
 This package does not have any executable commands, but it is used to provide the necessary message files for other packages.
+
+V1.7.1 adds timeout information to two Modbus messages:
+
+| Message field | Meaning |
+| :--- | :--- |
+| `RS485params.timeout` | Third-generation Modbus RTU timeout in 100 ms units; non-positive setting input uses `5` (500 ms); fourth-generation query output is `0` |
+| `Modbustcpmasterinfo.timeout` | Third-generation Modbus TCP timeout in ms; non-positive setting input uses `2000`; fourth-generation query output is `0` |
+
+Because message layout changed, rebuild `rm_ros_interfaces` and all consumers
+before sourcing the workspace. Detailed topics are documented in the
+[rm_driver topic manual](../rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20%28ROS2%29.md).
 ## rm_ros_interface_Package_Architecture_Description
 ### Overview_of_Package_Files
 ```
@@ -675,6 +687,8 @@ __err__
 int32。
 
 ### Basic_information_of_the_end_effector_device_Rmplusbase_msg
+
+Array lengths match the current API2 SDK: 6 entries for DoF and limit arrays, 12 for `tsa`/`tma`, and 18 for three-dimensional tactile and raw tactile arrays. After an array length change, rebuild publishers and subscribers and load the same message definitions on both sides.
 ```
 string manu              # Device manufacturer;
 int8 type                # Device type, 1 - Two-finger gripper, 2 - Five-finger dexterous hand, 3 - Three-finger gripper;
@@ -690,31 +704,31 @@ bool touch               # Tactile support;
 int8 touch_num           # Number of tactile sensors;
 int8 touch_sw            # Tactile switch;
 int8 hand                # Hand orientation, 1 - Left hand, 2 - Right hand;
-int32[12] pos_up         # Position upper limit 
-int32[12] pos_low        # Position lower limit 
-int32[12] angle_up       # Angle upper limit 0.01°
-int32[12] angle_low      # Angle lower limit 0.01°
-int32[12] speed_up       # Speed upper limit 
-int32[12] speed_low      # Speed lower limit 
-int32[12] force_up       # Force upper limit 0.001N 
-int32[12] force_low      # Force lower limit 0.001N 
+int32[6] pos_up         # Position upper limit
+int32[6] pos_low        # Position lower limit
+int32[6] angle_up       # Angle upper limit 0.01°
+int32[6] angle_low      # Angle lower limit 0.01°
+int32[6] speed_up       # Speed upper limit
+int32[6] speed_low      # Speed lower limit
+int32[6] force_up       # Force upper limit 0.001N
+int32[6] force_low      # Force lower limit 0.001N
 ```  
 ### Real_time_information_of_the_end_effector_deviceRmplusstate_msg
 ```
 int32 sys_state                   #System status
-int32[12] dof_state               #Current status of each degree of freedom (DoF)
-int32[12] dof_err                 #Error information of each DoF
-int32[12] pos                     #Current position of each DoF
-int32[12] speed                   #Current Speed of Each Degree of each DoF
-int32[12] angle                   #Current Angle of Each Degree of each DoF
-int32[12] current                 #Current Current of Each Degree of Freedom
+int32[6] dof_state               #Current status of each degree of freedom (DoF)
+int32[6] dof_err                 #Error information of each DoF
+int32[6] pos                     #Current position of each DoF
+int32[6] speed                   #Current Speed of Each Degree of each DoF
+int32[6] angle                   #Current Angle of Each Degree of each DoF
+int32[6] current                 #Current Current of Each Degree of Freedom
 int32[18] normal_force            #Normal Force of Tactile Three-Dimensional Force of Each Degree of Freedom
 int32[18] tangential_force        #Tangential Force of Tactile Three-Dimensional Force of Each Degree of Freedom
 int32[18] tangential_force_dir    #Direction of Tangential Force of Tactile Three-Dimensional Force of Each Degree of Freedom
 uint32[12] tsa                    #Tactile Self-Approach of Each Degree of Freedom
 uint32[12] tma                    #Tactile Mutual Approach of Each Degree of Freedom
 int32[18] touch_data              #Raw Data of Tactile Sensors
-int32[12] force                   #Torque of Each Degree of Freedom
+int32[6] force                   #Torque of Each Degree of Freedom
 ```  
 
 
@@ -758,4 +772,4 @@ When the high following mode is set, multiple modes are supported, including 0- 
 __radio__  
 Set the smoothing coefficient in curve fitting mode (range 0-100) or the filter parameter in filtering mode (range 0-1000). The higher the value, the better the smoothing effect.  
 
-It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](https://github.com/kaola-zero/ros2_rm_robot/blob/foxy/rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20(ROS2).md)".
+It is mainly for the application of API to achieve some of the robotic arm functions; for a more complete introduction and use, please see the special document "[RealMan Robotic Arm ROS2 Topic Detailed Description](../rm_driver/doc/RealMan%20Robotic%20Arm%20rm_driver%20Topic%20Detailed%20Description%20%28ROS2%29.md)".

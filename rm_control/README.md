@@ -1,12 +1,12 @@
 <div align="right">
 
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_control/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_control/README.md)
+[简体中文](README_CN.md)|[English](README.md)
  
 </div>
 
 <div align="center">
 
-# RealMan Robotrm_controlUser Manual V1.2
+# RealMan Robot rm_control User Manual V1.4
 
 RealMan Intelligent Technology (Beijing) Co., Ltd. 
 
@@ -17,8 +17,26 @@ Revision History:
 |V1.0	  | 2/19/2024 | Draft |
 |V1.1	  | 7/8 /2024 | Amend(Add GEN72 adapter files) |
 |V1.2 | 9/11 /2024| Amend(Add ECO63 adapter files) |
+|V1.3 | 2026-4-16 | Amend(Add ECO62 and RX75 adapter files) |
+|V1.4 | 2026-8-14 | Amend(Add the Foxy unified control launch, follow override, and model wrappers) |
 
 </div>
+
+## Launch examples
+
+After building and sourcing the workspace, for an RM65 with integrated force sensing:
+
+```bash
+# Start trajectory control (generation 3 and 4 both use the base model)
+ros2 launch rm_control rm_control.launch.py \
+  arm_type:=65
+
+# Note: Generation 4 software 1.0.6 and later names the former 6fb end link 6f.
+# rm_driver and rm_control only need a base model, such as 63, 65, 75, eco63 or eco65.
+# The naming difference does not change these launch arguments.
+```
+
+This package is part of the real-robot control chain; Gazebo uses simulation controllers. `arm_type` selects the base-family configuration. Start `rm_driver` first. See the [generation-specific model table](../rm_bringup/README.md#unified-launch-entry).
 
 ## Content
 * 1.[rm_control Package Description](#rm_control_Package_Description)
@@ -41,6 +59,27 @@ Through the introduction of the three parts, it can help you:
 Source code address: https://github.com/RealManRobot/ros2_rm_robot.git。
 ## rm_control_Package_Function
 ### Basic_use_of_the_package
+The unified entry point is recommended:
+
+```bash
+ros2 launch rm_control rm_control.launch.py arm_type:=65 follow:=auto
+```
+
+| Argument | Default | Description |
+| :--- | :--- | :--- |
+| `arm_type` | Required | Model with an optional end-link suffix, e.g. `65`, `65-6fb` or `rx75` |
+| `follow` | `auto` | Trajectory following mode: `true` for high following, `false` for low following; `auto` uses the model defaults described below |
+
+`arm_type` is required and accepts `63`, `63_iii`, `65`, `75`, `eco62`,
+`eco63`, `eco65`, `gen72`, `gen72_ii`, or `rx75`. Supported suffixes such as
+`65-6fb` also work; see the [model table](../rm_bringup/README.md).
+The control model code and follow defaults remain those of the base model. `follow` accepts exactly
+`auto`, `true`, or `false`. `auto` preserves the historical model default:
+high-following is enabled for RM75, GEN72, GEN72-II, and RX75, and disabled for
+the other families. RX75 starts left and right namespaced control nodes. The
+eight old model-specific files remain compatibility wrappers, and invalid
+arguments fail before nodes start.
+
 First, after configuring the environment and completing the connection, we can directly start the node and run the rm_control package.
 ```
 rm@rm-desktop:~$ ros2 launch  rm_control rm_<arm_type>_control.launch.py
@@ -77,6 +116,7 @@ The current rm_driver package is composed of the following files.
 │   ├── cubicSpline.h                  # cubic spline interpolation header file
 │   └── rm_control.h                   #rm_control header file
 ├── launch
+│   ├── rm_control.launch.py         # unified control launch entry
 │   ├── rm_63_control.launch.py        # 63 launch file
 │   ├── rm_65_control.launch.py        # 65 launch file
 │   ├── rm_75_control.launch.py        # 75 launch file

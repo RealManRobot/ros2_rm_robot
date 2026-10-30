@@ -1,12 +1,12 @@
 <div align="right">
  
-[简体中文](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_moveit2_config/README_CN.md)|[English](https://github.com/RealManRobot/ros2_rm_robot/blob/foxy/rm_moveit2_config/README.md)
+[简体中文](README_CN.md)|[English](README.md)
 
 </div>
 
 <div align="center">
 
-# 睿尔曼机器人rm_moveit2_config使用说明书V1.6
+# 睿尔曼机器人rm_moveit2_config使用说明书V1.7
  
 睿尔曼智能科技（北京）有限公司 
 文件修订记录：
@@ -20,8 +20,23 @@
 |V1.4    |2025-4-3 |修订(添加了Gen72_II型适配文件) |
 |V1.5    |2025-11-13 |修订(添加了RML63_III型适配文件) |
 |V1.6    |2026-4-16 |修订(添加ECO62、RX75适配文件) |
+|V1.7    |2026-8-14 |修订(统一真机/Gazebo MoveIt launch的安全参数) |
 
 </div>
+
+## 启动示例
+
+构建并 source 工作区后，以 `rm_65_config` 中的一体化六维力 RM65 配置为例：
+
+```bash
+# 仿真（虚拟关节控制器，launch 文件沿用 6fb 名称）
+ros2 launch rm_65_config demo_6fb.launch.py
+
+# 控制真实机械臂（四代控制器软件 > 1.0.5，末端称为 6f）
+ros2 launch rm_65_config real_moveit_demo_6fb.launch.py
+```
+
+四代控制器软件从 `1.0.6` 起将原 `6fb` 末端命名为 `6f`，本配置包的文件名仍保留 `6fb`。三代及四代旧软件的一体化六维力末端也使用上述文件；`real_moveit_demo_6f.launch.py` 对应原六维力结构。真机命令仅启动 MoveIt，需按下文先启动 `rm_driver`、`rm_description` 和 `rm_control`；`allow_trajectory_execution` 默认 `true`。完整型号见[三、四代型号表](../rm_bringup/README_CN.md#统一启动入口)。
 
 ## 目录
 * 1.[rm_moveit2_config说明](#rm_moveit2_config说明)
@@ -42,6 +57,18 @@ rm_moveit2_config文件夹为实现moveit2控制真实机械臂的功能包，�
 * 2.熟悉功能包中的文件构成及作用。
 * 3.熟悉功能包相关的话题，方便开发和使用。
 ## rm_moveit2_config使用
+### 通用启动参数
+
+所有 44 个 `real_moveit_demo*` 和 `gazebo_moveit_demo*` 入口均支持：
+
+| 参数 | 默认值 | 说明 |
+| :--- | :--- | :--- |
+| `use_rviz` | `true` | 是否启动 MoveIt RViz |
+| `allow_trajectory_execution` | `true` | 是否允许 MoveIt 执行轨迹；首次真机验证使用 `false`，仅检查规划 |
+
+整套系统启动推荐使用 [`rm_bringup.launch.py`](../rm_bringup/README_CN.md)，该入口会转发上述参数。
+`move_group` 进程退出时会请求关闭所属 launch。
+
 ### moveit2控制虚拟机械臂
 首先配置好环境完成连接后我们可以通过以下命令直接启动节点。  
 ```
@@ -55,7 +82,8 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6f.launch.py
 ```
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config demo_6fb.launch.py
 ```
-在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II、RX75 。  
+在实际使用时需要将以上的<arm_type>更换为实际的机械臂型号，可选择的机械臂型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II、RX75 。
+GEN72-II 提供独立虚拟演示入口：`ros2 launch rm_gen72_config demo_II.launch.py`。
 例如65机械臂的启动命令：  
 ```
 rm@rm-desktop:~$ ros2 launch rm_65_config demo.launch.py
@@ -102,17 +130,17 @@ rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6f.launch.py
 rm@rm-desktop:~$ ros2 launch rm_<arm_type>_config real_moveit_demo_6fb.launch.py
 ```
 注意以上指令均需要将<arm_type>更换为对应的机械臂型号，可选择的型号有65、63、63_III、75、eco62、eco63、eco65、gen72、gen72_II。RX75 请使用 `rm_rx75_config` 下的专用 launch：RX75-6FB-V 执行 `ros2 launch rm_rx75_config real_moveit_demo_6fb_v.launch.py`，RX75-6FB 执行 `ros2 launch rm_rx75_config real_moveit_demo_6fb.launch.py`。  
-**注：新添加的gen72_II型和63_III型均在对应的型号文件下，区别在于启动时需要在demo后面添加II或III的标识**  
+**注：gen72_II 和 63_III 分别复用 `rm_gen72_config`、`rm_63_config` 功能包，真机入口分别为 `real_moveit_demo_II.launch.py`、`real_moveit_demo_III.launch.py`。**
 如63_III启动命令如下：
-``` C++
-//普通B版本
-ros2 launch rm_63_config demo_III.launch.py
-//六维力6FB版本
-ros2 launch rm_63_config demo_III_6fb.launch.py
+```bash
+# 普通B版本
+ros2 launch rm_63_config real_moveit_demo_III.launch.py
+# 六维力6FB版本
+ros2 launch rm_63_config real_moveit_demo_III_6fb.launch.py
 ```
 也可以使用rm_bringup功能包一键启动这四个功能包(强烈建议)
 ```
-rm@rm-desktop:~$ ros2 launch rm_bringup rm_<arm_type>_bringup/gazebo.launch.py
+rm@rm-desktop:~$ ros2 launch rm_bringup rm_bringup.launch.py arm_type:=65 mode:=real
 ```
 完成以上操作后将会出现以下界面，我们可以通过拖动控制球的方式控制机械臂运动。  
 ![image](doc/rm_moveit2_config4.png)

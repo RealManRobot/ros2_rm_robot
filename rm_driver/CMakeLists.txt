@@ -41,6 +41,7 @@ if(BUILD_TESTING)
   #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
 add_executable(rm_driver src/rm_driver.cpp)
 target_link_libraries(rm_driver ${RM_API_LIBRARY})
 
@@ -49,7 +50,12 @@ set_target_properties(rm_driver PROPERTIES
   INSTALL_RPATH "$ORIGIN/.."
 )
 
-ament_target_dependencies(rm_driver rclcpp std_msgs sensor_msgs rm_ros_interfaces)
+ament_target_dependencies(rm_driver
+  geometry_msgs
+  rclcpp
+  rm_ros_interfaces
+  sensor_msgs
+  std_msgs)
 
 install(TARGETS  rm_driver  DESTINATION lib/${PROJECT_NAME})
 install(FILES ${RM_API_LIBRARY} DESTINATION lib)
