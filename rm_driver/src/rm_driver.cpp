@@ -1670,7 +1670,6 @@ void RmArm::Set_Controller_RS485_Mode_Callback(const rm_ros_interfaces::msg::RS4
     int32_t res;
     // copy = msg;
     int tool_rs485_mode,baudrate;
-    const int timeout = msg->timeout > 0 ? msg->timeout : TIME_OUT;
     std_msgs::msg::Bool controller_RS485_mode_set_result;
     tool_rs485_mode = msg->mode;
     baudrate = msg->baudrate;
@@ -1679,7 +1678,7 @@ void RmArm::Set_Controller_RS485_Mode_Callback(const rm_ros_interfaces::msg::RS4
     res = Rm_Api.rm_set_controller_rs485_mode(robot_handle, tool_rs485_mode, baudrate);
     else
     {
-        res = Rm_Api.rm_set_modbus_mode(robot_handle, tool_rs485_mode, baudrate, timeout);
+        res = Rm_Api.rm_set_modbus_mode(robot_handle, tool_rs485_mode, baudrate, TIME_OUT);
     }
     if(res == 0)
     {
@@ -1705,8 +1704,7 @@ void RmArm::Set_Controller_Tcp_Mode_Callback(const rm_ros_interfaces::msg::Modbu
         ip_str = msg->ip;
         const char *ip = ip_str.c_str();
         port = msg->port;
-        const int timeout = msg->timeout > 0 ? msg->timeout : 2000;
-        res = Rm_Api.rm_set_modbustcp_mode(robot_handle, ip, port, timeout);
+        res = Rm_Api.rm_set_modbustcp_mode(robot_handle, ip, port, 2000);
         if(res == 0)
         {
             controller_Tcp_mode_set_result.data = true;
@@ -1807,7 +1805,6 @@ void RmArm::Get_Controller_RS485_Mode_v4_Callback(const std_msgs::msg::Empty::Sh
     {
         controller_rs485_mode_get_result.mode = tool_rs485_mode;
         controller_rs485_mode_get_result.baudrate = baudrate;
-        controller_rs485_mode_get_result.timeout = controller_type == 3 ? timeout : 0;
         controller_rs485_mode_get_result.state = true;
         this->Get_Controller_RS485_Mode_v4_Result->publish(controller_rs485_mode_get_result);
     }
@@ -1863,7 +1860,6 @@ void RmArm::Get_Tool_RS485_Mode_v4_Callback(const std_msgs::msg::Empty::SharedPt
     {
         tool_rs485_mode_get_result.mode = tool_rs485_mode;
         tool_rs485_mode_get_result.baudrate = baudrate;
-        tool_rs485_mode_get_result.timeout = controller_type == 3 ? timeout : 0;
         tool_rs485_mode_get_result.state = true;
         this->Get_Tool_RS485_Mode_v4_Result->publish(tool_rs485_mode_get_result);
     }

@@ -593,13 +593,13 @@
 
 #### 查询控制器RS485模式
 
-支持三代和四代控制器，驱动按代际调用对应 API2 查询接口；三代 Modbus RTU 的 `timeout` 单位为 100 ms，四代为 0。
+支持三代和四代控制器，驱动按代际调用对应 API2 查询接口。
 
 |   功能描述   | 查询控制器RS485模式                                                                                                                                                                                                                                                  |
 | :----------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |   参数说明   | ROS官方msg std_msgs::msg::Empty                                                                                                                                                                                                                                      |
 |   命令示例   | ros2 topic pub --once /rm_driver/get_controller_rs485_mode_cmd std_msgs/msg/Empty "{}"                                                                                                                                                                                 |
-|    返回值    | RS485params.msg <br>int32 mode     # 0代表默认RS485串行通讯，1代表modbus-RTU主站模式，2-代表modbus-RTU从站模式。<br>int32 baudrate # 波特率(当前支持9600 19200 38400 57600 115200 230400 460800)<br>int32 timeout # Modbus RTU超时时间，单位100ms，四代控制器返回0<br>bool state     # 查询状态 true查询成功 false查询失败 |
+|    返回值    | RS485params.msg <br>int32 mode     # 0代表默认RS485串行通讯，1代表modbus-RTU主站模式，2-代表modbus-RTU从站模式。<br>int32 baudrate # 波特率(当前支持9600 19200 38400 57600 115200 230400 460800)<br>bool state     # 查询状态 true查询成功 false查询失败 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_controller_rs485_mode_result                                                                                                                                                                                                          |
 
 #### 配置工具端RS485模式
@@ -613,21 +613,23 @@
 
 #### 查询工具端RS485模式
 
-支持三代和四代控制器，驱动按代际调用对应 API2 查询接口；三代 Modbus RTU 的 `timeout` 单位为 100 ms，四代为 0。工具端 `mode` 含义：三代为 0-RS485 串行通讯、1-Modbus RTU 主站；四代为 0-Modbus RTU 主站、1-灵巧手、2-夹爪。
+支持三代和四代控制器，驱动按代际调用对应 API2 查询接口。工具端 `mode` 含义：三代为 0-RS485 串行通讯、1-Modbus RTU 主站；四代为 0-Modbus RTU 主站、1-灵巧手、2-夹爪。
 
 |   功能描述   | 查询工具端RS485模式                                                                                                                                                                                                                                   |
 | :----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |   参数说明   | ROS官方msg std_msgs::msg::Empty                                                                                                                                                                                                                       |
 |   命令示例   | ros2 topic pub --once /rm_driver/get_tool_rs485_mode_cmd std_msgs/msg/Empty "{}"                                                                                                                                                                      |
-|    返回值    | RS485params.msg <br>int32 mode     # 三代：0-RS485串行通讯、1-Modbus RTU主站；四代：0-Modbus RTU主站、1-灵巧手、2-夹爪。<br>int32 baudrate # 波特率(当前支持9600 19200 38400 57600 115200 230400 460800)<br>int32 timeout # Modbus RTU超时时间，单位100ms，四代控制器返回0<br>bool state     # 查询状态 true查询成功 false查询失败。 |
+|    返回值    | RS485params.msg <br>int32 mode     # 三代：0-RS485串行通讯、1-Modbus RTU主站；四代：0-Modbus RTU主站、1-灵巧手、2-夹爪。<br>int32 baudrate # 波特率(当前支持9600 19200 38400 57600 115200 230400 460800)<br>bool state     # 查询状态 true查询成功 false查询失败。 |
 | 返回查询示例 | ros2 topic echo /rm_driver/get_tool_rs485_mode_v4_result                                                                                                                                                                                              |
 
 #### 配置通讯端口ModbusRTU模式-三代控制器
 
+通信超时由驱动固定为 500 ms，不通过话题配置。
+
 |   功能描述   | 配置控制器通讯端口RS485模式                                                                                                                                                      |
 | :----------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|   参数说明   | RS485params.msg <br>int32 mode: 0-控制器RS485端口为RTU主站，1-末端接口板RS485接口为RTU主站，2-控制器RS485端口为RTU从站。<br>int32 baudrate: 当前支持9600,115200,460800。<br>int32 timeout: Modbus RTU超时时间，单位100ms；小于等于0时使用默认值5（500ms）。 |
-|   命令示例   | ros2 topic pub --once /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200, timeout: 5, state: false}"                                     |
+|   参数说明   | RS485params.msg <br>int32 mode: 0-控制器RS485端口为RTU主站，1-末端接口板RS485接口为RTU主站，2-控制器RS485端口为RTU从站。<br>int32 baudrate: 当前支持9600,115200,460800。|
+|   命令示例   | ros2 topic pub --once /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200, state: false}"                                     |
 |    返回值    | 成功返回：true；失败返回：false，driver终端返回错误码。                                                                                                                          |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_controller_rs485_mode_result                                                                                                                      |
 
@@ -689,10 +691,12 @@
 
 #### 设置ModbusTCP主站连接-三代控制器
 
+通信超时由驱动固定为 2000 ms，不通过话题配置。
+
 |   功能描述   | 设置ModbusTCP主站连接                                                                                                                                                   |
 | :----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|   参数说明   | Modbustcpmasterinfo.msg <br>string master_name: Modbus主站名称(三代控制器无需配置)。<br>string ip: TCP主站IP地址。<br>int32 port: TCP主站端口号。<br>int32 timeout: Modbus TCP超时时间，单位ms；小于等于0时使用默认值2000ms。 |
-|   命令示例   | ros2 topic pub --once /rm_driver/set_controller_tcp_mode_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '', ip: '192.168.1.18', port: 502, timeout: 3000, state: false}" |
+|   参数说明   | Modbustcpmasterinfo.msg <br>string master_name: Modbus主站名称(三代控制器无需配置)。<br>string ip: TCP主站IP地址。<br>int32 port: TCP主站端口号。|
+|   命令示例   | ros2 topic pub --once /rm_driver/set_controller_tcp_mode_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '', ip: '192.168.1.18', port: 502, state: false}" |
 |    返回值    | 成功返回：true；失败返回：false，driver终端返回错误码。                                                                                                                 |
 | 返回查询示例 | ros2 topic echo /rm_driver/set_controller_tcp_mode_result                                                                                                               |
 
