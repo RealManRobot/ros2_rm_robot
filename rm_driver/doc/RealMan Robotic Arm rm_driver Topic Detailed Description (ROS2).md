@@ -573,13 +573,13 @@ This section describes how to query and control the robotic arm through the topi
 
 #### Get_Controller_RS485_Mode
 
-Supported on third- and fourth-generation controllers. The driver selects the matching API2 query; third-generation Modbus RTU `timeout` uses 100 ms units, while fourth-generation results use 0.
+Supported on third- and fourth-generation controllers. The driver selects the matching API2 query.
 
 | Function description | Get_Controller_RS485_Mode |
 | :---: | :---- |
 | Parameter description | ROS msg std_msgs::msg::Empty |
 | Command example | ros2 topic pub --once /rm_driver/get_controller_rs485_mode_cmd std_msgs/msg/Empty "{}" |
-| Return value | RS485params.msg<br>int32 mode # 0 for RS485 serial communication, 1 for Modbus RTU master mode, 2 for Modbus RTU slave mode<br>int32 baudrate # Supported values: 9600, 19200, 38400, 57600, 115200, 230400, and 460800<br>int32 timeout # Modbus RTU timeout in units of 100 ms; fourth-generation controllers return 0 because this setting is not applicable<br>bool state # Query status: true for success, false for failure |
+| Return value | RS485params.msg<br>int32 mode # 0 for RS485 serial communication, 1 for Modbus RTU master mode, 2 for Modbus RTU slave mode<br>int32 baudrate # Supported values: 9600, 19200, 38400, 57600, 115200, 230400, and 460800<br>bool state # Query status: true for success, false for failure |
 | Return example | ros2 topic echo /rm_driver/get_controller_rs485_mode_result |
 
 #### Set_Tool_End_RS485_Mode
@@ -593,21 +593,23 @@ Supported on third- and fourth-generation controllers. The driver selects the ma
 
 #### Get_Tool_End_RS485_Mode
 
-Supported on third- and fourth-generation controllers. The driver selects the matching API2 query; third-generation Modbus RTU `timeout` uses 100 ms units, while fourth-generation results use 0. Tool-end `mode`: generation 3 uses 0 for RS485 serial communication and 1 for Modbus RTU master; generation 4 uses 0 for Modbus RTU master, 1 for dexterous hand, and 2 for gripper.
+Supported on third- and fourth-generation controllers. The driver selects the matching API2 query. Tool-end `mode`: generation 3 uses 0 for RS485 serial communication and 1 for Modbus RTU master; generation 4 uses 0 for Modbus RTU master, 1 for dexterous hand, and 2 for gripper.
 
 | Function description | Get_Tool_End_RS485_Mode |
 | :---: | :---- |
 | Parameter description | ROS msg std_msgs::msg::Empty |
 | Command example | ros2 topic pub --once /rm_driver/get_tool_rs485_mode_cmd std_msgs/msg/Empty "{}" |
-| Return value | RS485params.msg<br>int32 mode # Generation 3: 0 for RS485 serial communication, 1 for Modbus RTU master; generation 4: 0 for Modbus RTU master, 1 for dexterous hand, 2 for gripper<br>int32 baudrate # Supported values: 9600, 19200, 38400, 57600, 115200, 230400, and 460800<br>int32 timeout # Modbus RTU timeout in units of 100 ms; fourth-generation controllers return 0 because this setting is not applicable<br>bool state # Query status: true for success, false for failure |
+| Return value | RS485params.msg<br>int32 mode # Generation 3: 0 for RS485 serial communication, 1 for Modbus RTU master; generation 4: 0 for Modbus RTU master, 1 for dexterous hand, 2 for gripper<br>int32 baudrate # Supported values: 9600, 19200, 38400, 57600, 115200, 230400, and 460800<br>bool state # Query status: true for success, false for failure |
 | Return example | ros2 topic echo /rm_driver/get_tool_rs485_mode_v4_result |
 
 #### Set_Controller_And_Tools_ModbusRTU_Mode-Three_Generations
 
+The driver uses a fixed communication timeout of 500 ms; it is not configured through this topic.
+
 | Function description | Set_Controller_And_Tools_ModbusRTU_Mode |
 | :---: | :---- |
-| Parameter description | RS485params.msg<br>int32 mode: 0 for controller-port RTU master mode, 1 for tool-end-interface RTU master mode, 2 for controller-port RTU slave mode.<br>int32 baudrate: Supported values are 9600, 115200, and 460800.<br>int32 timeout: Modbus RTU timeout in units of 100 ms. Values less than or equal to 0 use the default value of 5 (500 ms). |
-| Command example | ros2 topic pub --once /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200, timeout: 5, state: false}" |
+| Parameter description | RS485params.msg<br>int32 mode: 0 for controller-port RTU master mode, 1 for tool-end-interface RTU master mode, 2 for controller-port RTU slave mode.<br>int32 baudrate: Supported values are 9600, 115200, and 460800. |
+| Command example | ros2 topic pub --once /rm_driver/set_controller_rs485_mode_cmd rm_ros_interfaces/msg/RS485params "{mode: 0, baudrate: 115200, state: false}" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code. |
 | Return example | ros2 topic echo /rm_driver/set_controller_rs485_mode_result |
 
@@ -669,10 +671,12 @@ Supported on third- and fourth-generation controllers. The driver selects the ma
 
 #### Set_Modbus_TCP_Master-Three_Generations
 
+The driver uses a fixed communication timeout of 2000 ms; it is not configured through this topic.
+
 | Function description | Add_Modbus_TCP_Master |
 | :---: | :---- |
-| Parameter description | Modbustcpmasterinfo.msg<br>string master_name: Modbus master name; not required for third-generation controllers.<br>string ip: TCP master IP address.<br>int32 port: TCP master port.<br>int32 timeout: Modbus TCP timeout in milliseconds. Values less than or equal to 0 use the default of 2000 ms. |
-| Command example | ros2 topic pub --once /rm_driver/set_controller_tcp_mode_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '', ip: '192.168.1.18', port: 502, timeout: 3000, state: false}" |
+| Parameter description | Modbustcpmasterinfo.msg<br>string master_name: Modbus master name; not required for third-generation controllers.<br>string ip: TCP master IP address.<br>int32 port: TCP master port. |
+| Command example | ros2 topic pub --once /rm_driver/set_controller_tcp_mode_cmd rm_ros_interfaces/msg/Modbustcpmasterinfo "{master_name: '', ip: '192.168.1.18', port: 502, state: false}" |
 | Return value | Successful return: true; failure returns: false, and the driver terminal returns an error code.  |
 | Return example | ros2 topic echo /rm_driver/set_controller_tcp_mode_result |
 
