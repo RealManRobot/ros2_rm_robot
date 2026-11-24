@@ -220,7 +220,7 @@
     <parent link="left_Link6" />
     <child link="left_Link7" />
     <axis xyz="-2.69911102066782e-11 0 1" />
-    <limit effort="10" lower="-0.6109" upper="1.9024" velocity="3.925" />
+    <limit effort="10" lower="-1.9024" upper="0.6109" velocity="3.925" />
   </joint>
   <link name="left_tool0">
     <visual>
@@ -440,7 +440,7 @@
     <parent link="right_Link6" />
     <child link="right_Link7" />
     <axis xyz="0 7.34641020666559e-06 0.999999999973014" />
-    <limit effort="10" lower="-1.9024" upper="0.6109" velocity="3.925" />
+    <limit effort="10" lower="-0.6109" upper="1.9024" velocity="3.925" />
   </joint>
   <link name="right_tool0">
     <visual>
